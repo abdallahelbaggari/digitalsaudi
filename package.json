@@ -1,5 +1,9 @@
 {
-  "version": 1,
-  "include": ["/approve", "/complete", "/cancel-payment", "/api", "/news", "/images", "/privacy", "/terms"],
-  "exclude": []
+  "name": "digitalsaudi",
+  "version": "2.0.0",
+  "description": "DigitalSaudi — Saudi Digital Super App on Pi Network",
+  "scripts": {
+    "deploy": "npx wrangler pages deploy . --project-name digitalsaudi-pi",
+    "deploy:testnet": "npx wrangler pages deploy . --project-name digitalsaudi-pi-testnet"
+  }
 }
