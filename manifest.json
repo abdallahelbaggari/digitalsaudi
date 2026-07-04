@@ -1,17 +1,16 @@
 {
   "name": "DigitalSaudi",
   "short_name": "DigitalSaudi",
-  "description": "Saudi Digital Ecosystem on Pi — Technology, Startups, Business, Tourism, Vision 2030",
+  "description": "Saudi Digital Ecosystem on Pi — Technology, Startups, Events, Tourism, Culture, Vision 2030",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#03050A",
   "theme_color": "#006C35",
   "orientation": "portrait",
-  "icons": [
-    {"src": "https://ui-avatars.com/api/?name=DS&background=006C35&color=fff&size=192&bold=true&font-size=0.45", "sizes": "192x192", "type": "image/png"},
-    {"src": "https://ui-avatars.com/api/?name=DS&background=006C35&color=fff&size=512&bold=true&font-size=0.45", "sizes": "512x512", "type": "image/png"}
-  ],
-  "categories": ["lifestyle", "utilities", "business"],
   "lang": "en",
-  "dir": "ltr"
+  "categories": ["lifestyle", "utilities", "business"],
+  "icons": [
+    {"src": "https://ui-avatars.com/api/?name=DS&background=006C35&color=ffffff&size=192&bold=true&font-size=0.45&rounded=true", "sizes": "192x192", "type": "image/png"},
+    {"src": "https://ui-avatars.com/api/?name=DS&background=006C35&color=ffffff&size=512&bold=true&font-size=0.45&rounded=true", "sizes": "512x512", "type": "image/png", "purpose": "maskable"}
+  ]
 }
