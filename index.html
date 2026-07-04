@@ -4,290 +4,433 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#03050A">
-<meta name="description" content="Saudi Digital Ecosystem on Pi — Technology, Startups, Business, Tourism, Vision 2030">
+<meta name="description" content="Saudi Digital Ecosystem on Pi — Technology, Startups, Events, Tourism, Culture, Vision 2030">
 <title>DigitalSaudi</title>
 <link rel="manifest" href="/manifest.json">
 <script src="https://sdk.minepi.com/pi-sdk.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
-/* ── TOKENS ── */
 :root{
-  --bg0:#03050A;--bg1:#06080F;--bg2:#0B0F1A;--bg3:#111624;--bg4:#181E2E;
-  --t1:#F2F0EA;--t2:rgba(242,240,234,.72);--t3:rgba(242,240,234,.40);--t4:rgba(242,240,234,.14);
-  --g:#006C35;--g2:#008A42;--g3:#00A84F;
-  --gg:linear-gradient(135deg,#005A2B,#00A84F);
-  --gold:#C8A951;--gold2:#E5C26A;
-  --bd:rgba(0,108,53,.2);--bd2:rgba(0,108,53,.38);--bdo:rgba(200,169,81,.18);
-  --glow:0 0 32px rgba(0,168,79,.28);
-  --nav:68px;--r:14px;--r2:10px;
-  --f:'Inter',system-ui,sans-serif;
+  --bg0:#03050A;--bg1:#06080F;--bg2:#0D1117;--bg3:#111827;--bg4:#1C2333;
+  --t1:#F0EEE8;--t2:rgba(240,238,232,.72);--t3:rgba(240,238,232,.42);--t4:rgba(240,238,232,.14);
+  --green:#006C35;--g2:#00873F;--g3:#16C47F;
+  --gg:linear-gradient(135deg,#005A2B 0%,#16C47F 100%);
+  --gold:#C8A951;
+  --bd:rgba(22,196,127,.15);--bd2:rgba(22,196,127,.28);--bdo:rgba(200,169,81,.18);
+  --glow:0 0 40px rgba(22,196,127,.2);--glow2:0 4px 24px rgba(0,0,0,.4);
+  --nav:72px;--r:16px;--r2:12px;--f:'Inter',system-ui,sans-serif;
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent}
 html,body{height:100%;overflow:hidden;font-family:var(--f)}
 body{background:var(--bg0);color:var(--t1)}
 button{background:none;border:none;cursor:pointer;font-family:var(--f);touch-action:manipulation}
 input,select,textarea{font-family:var(--f);color:var(--t1)}
-a{color:var(--gold);text-decoration:none}
-img{display:block}
+a{color:var(--g3);text-decoration:none}
 
-/* ── LOGIN ── */
-#login{height:100vh;display:flex;flex-direction:column;overflow:hidden;position:relative}
-.lg-stripe{height:3.5px;background:var(--gg);flex-shrink:0}
-.lg-orb1{position:absolute;width:380px;height:380px;border-radius:50%;background:radial-gradient(circle,rgba(0,168,79,.12),transparent 70%);top:-80px;right:-80px;pointer-events:none}
-.lg-orb2{position:absolute;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(200,169,81,.08),transparent 70%);bottom:-60px;left:-60px;pointer-events:none}
+/* ══════════════════════════════
+   LOGIN
+══════════════════════════════ */
+#login{height:100vh;display:flex;flex-direction:column;overflow:hidden;position:relative;background:var(--bg0)}
+.lg-orb1{position:absolute;width:420px;height:420px;border-radius:50%;background:radial-gradient(circle,rgba(22,196,127,.1),transparent 70%);top:-100px;right:-100px;pointer-events:none;animation:pulse 4s ease-in-out infinite}
+.lg-orb2{position:absolute;width:320px;height:320px;border-radius:50%;background:radial-gradient(circle,rgba(200,169,81,.06),transparent 70%);bottom:-60px;left:-80px;pointer-events:none;animation:pulse 5s ease-in-out infinite reverse}
+@keyframes pulse{0%,100%{opacity:.5;transform:scale(1)}50%{opacity:1;transform:scale(1.05)}}
+.lg-stripe{height:3px;background:var(--gg);flex-shrink:0}
 .lg-body{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1.5rem;text-align:center;position:relative;z-index:1}
-.lg-bar{width:52px;height:3px;background:var(--gg);border-radius:99px;margin:0 auto .55rem}
-.lg-name{font-size:2.7rem;font-weight:900;letter-spacing:-.055em;line-height:1;background:linear-gradient(135deg,#00A84F 20%,#C8A951 80%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:.06rem}
-.lg-tag{font-size:.58rem;color:var(--t3);letter-spacing:.16em;text-transform:uppercase;margin-bottom:1.2rem}
-.lg-pills{display:grid;grid-template-columns:1fr 1fr;gap:.3rem;width:100%;max-width:288px;margin-bottom:1.1rem}
-.lg-pill{background:var(--bg3);border:1px solid var(--bd);border-radius:11px;padding:.48rem .52rem;text-align:left}
-.lp-ico{font-size:1.05rem;margin-bottom:.12rem}
-.lp-n{font-size:.56rem;font-weight:700;color:var(--t1)}
-.lp-s{font-size:.42rem;color:var(--t3)}
-.lg-foot{padding:.55rem 1.2rem 2rem;flex-shrink:0;position:relative;z-index:1}
-.btn-pi{width:100%;padding:.88rem;background:var(--gg);border-radius:var(--r);font-size:.96rem;font-weight:900;color:#fff;display:flex;align-items:center;justify-content:center;gap:.42rem;box-shadow:var(--glow);transition:all .15s}
-.btn-pi:active{transform:scale(.97);opacity:.92}
+.lg-badge{background:rgba(22,196,127,.1);border:1px solid var(--bd2);color:var(--g3);font-size:.52rem;font-weight:700;padding:.22rem .65rem;border-radius:99px;letter-spacing:.08em;text-transform:uppercase;margin-bottom:.8rem;display:inline-block}
+.lg-name{font-size:2.9rem;font-weight:900;letter-spacing:-.06em;line-height:1;background:var(--gg);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:.1rem}
+.lg-tag{font-size:.6rem;color:var(--t3);letter-spacing:.14em;text-transform:uppercase;margin-bottom:1.3rem}
+.lg-grid{display:grid;grid-template-columns:1fr 1fr;gap:.32rem;width:100%;max-width:300px;margin-bottom:1.2rem}
+.lg-card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:.52rem .55rem;text-align:left;backdrop-filter:blur(10px)}
+.lc-ico{font-size:1.1rem;margin-bottom:.14rem}
+.lc-n{font-size:.56rem;font-weight:700;color:var(--t1)}
+.lc-s{font-size:.42rem;color:var(--t3);margin-top:.03rem}
+.lg-foot{padding:.5rem 1.2rem 2rem;flex-shrink:0;position:relative;z-index:1}
+.btn-pi{width:100%;padding:.9rem;background:var(--gg);border-radius:var(--r);font-size:.96rem;font-weight:900;color:#fff;display:flex;align-items:center;justify-content:center;gap:.45rem;box-shadow:0 4px 32px rgba(22,196,127,.35);transition:all .15s}
+.btn-pi:active{transform:scale(.97)}
 .btn-pi:disabled{opacity:.5;cursor:not-allowed}
-#lmsg{font-size:.52rem;color:var(--t3);text-align:center;margin-top:.48rem;min-height:.85rem;line-height:1.4}
+#lmsg{font-size:.52rem;color:var(--t3);text-align:center;margin-top:.5rem;min-height:.85rem;line-height:1.45}
 .lg-links{display:flex;gap:.5rem;justify-content:center;margin-top:.7rem}
-.lg-links a{font-size:.46rem;color:rgba(200,169,81,.55);text-decoration:underline;text-underline-offset:3px}
+.lg-links a{font-size:.46rem;color:rgba(200,169,81,.5);text-decoration:underline;text-underline-offset:3px}
 
-/* ── APP SHELL ── */
+/* ══════════════════════════════
+   APP SHELL
+══════════════════════════════ */
 #app{display:none;flex-direction:column;height:100vh;overflow:hidden}
-#hdr{background:rgba(6,8,15,.97);border-bottom:1px solid var(--bd);padding:.36rem .68rem;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;backdrop-filter:blur(24px);z-index:20}
-.hdr-logo{font-size:1.08rem;font-weight:900;letter-spacing:-.03em;background:linear-gradient(135deg,#00A84F,#C8A951);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.hdr-sub{font-size:.34rem;color:var(--t3);margin-top:.02rem}
-.hdr-r{display:flex;align-items:center;gap:.3rem}
-#lang-btn{font-size:.48rem;font-weight:700;color:var(--gold);background:rgba(200,169,81,.1);border:1px solid var(--bdo);border-radius:99px;padding:.15rem .42rem}
-#user-chip{font-size:.44rem;color:var(--g3);font-weight:700}
+#hdr{background:rgba(3,5,10,.95);border-bottom:1px solid var(--bd);padding:.38rem .72rem;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;backdrop-filter:blur(24px);z-index:20}
+.hdr-logo{font-size:1.1rem;font-weight:900;letter-spacing:-.04em;background:var(--gg);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hdr-sub{font-size:.33rem;color:var(--t3);margin-top:.02rem}
+.hdr-r{display:flex;align-items:center;gap:.32rem}
+#lang-btn{font-size:.48rem;font-weight:700;color:var(--gold);background:rgba(200,169,81,.1);border:1px solid var(--bdo);border-radius:99px;padding:.15rem .42rem;transition:all .15s}
+#lang-btn:active{background:rgba(200,169,81,.2)}
+#user-chip{font-size:.44rem;color:var(--g3);font-weight:700;background:rgba(22,196,127,.1);padding:.12rem .38rem;border-radius:99px;border:1px solid var(--bd)}
 
-/* ── NAV ── */
-#nav{position:fixed;bottom:0;left:0;right:0;height:var(--nav);background:rgba(4,6,12,.98);border-top:1px solid var(--bd);display:flex;z-index:50;backdrop-filter:blur(24px);padding-bottom:env(safe-area-inset-bottom)}
-.nb{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.1rem;color:var(--t3);cursor:pointer;transition:color .18s;position:relative;padding:.25rem}
+/* ══════════════════════════════
+   BOTTOM NAV
+══════════════════════════════ */
+#nav{position:fixed;bottom:0;left:0;right:0;height:var(--nav);background:rgba(3,5,10,.97);border-top:1px solid var(--bd);display:flex;z-index:50;backdrop-filter:blur(24px);padding-bottom:env(safe-area-inset-bottom)}
+.nb{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.1rem;color:var(--t3);cursor:pointer;transition:all .18s;position:relative;padding:.22rem}
 .nb.on{color:var(--g3)}
-.nb.on::after{content:'';position:absolute;bottom:0;left:15%;right:15%;height:2.5px;background:var(--gg);border-radius:3px 3px 0 0}
-.nb-ico{font-size:1.32rem;line-height:1;transition:transform .18s}
-.nb.on .nb-ico{transform:scale(1.1)}
-.nb-lbl{font-size:.46rem;font-weight:700;text-transform:uppercase;letter-spacing:.03em}
+.nb.on::after{content:'';position:absolute;bottom:0;left:18%;right:18%;height:2px;background:var(--gg);border-radius:3px 3px 0 0}
+.nb-ico{font-size:1.35rem;line-height:1;transition:transform .18s}
+.nb.on .nb-ico{transform:scale(1.12)}
+.nb-lbl{font-size:.44rem;font-weight:700;text-transform:uppercase;letter-spacing:.03em}
 
-/* ── SCREENS ── */
+/* ══════════════════════════════
+   SCREENS
+══════════════════════════════ */
 #main{flex:1;overflow:hidden;min-height:0;position:relative}
 .scr{display:none;flex-direction:column;height:100%;overflow:hidden;min-height:0}
-.scr.on{display:flex;animation:sIn .14s ease}
-@keyframes sIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
-.scroll{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;min-height:0;height:0;padding-bottom:calc(var(--nav) + .6rem)}
+.scr.on{display:flex;animation:fadeUp .15s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+/* Scroll containers — Pi Browser fix */
+.scroll{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;min-height:0;height:0;padding-bottom:calc(var(--nav) + .8rem)}
 .scroll::-webkit-scrollbar{display:none}
 
-/* ── SCREEN HEADERS ── */
-.sbar{display:flex;align-items:center;justify-content:space-between;padding:.38rem .68rem;background:rgba(6,8,15,.97);border-bottom:1px solid var(--bd);flex-shrink:0;backdrop-filter:blur(20px)}
-.sbar-t{font-size:.9rem;font-weight:900;color:var(--t1);letter-spacing:-.01em}
-.sbar-s{font-size:.36rem;color:var(--t3);margin-top:.03rem}
-.sbar-btn{font-size:.9rem;color:var(--t3);padding:.18rem .3rem;border-radius:6px;transition:color .15s}
+/* Screen header */
+.sbar{display:flex;align-items:center;justify-content:space-between;padding:.4rem .72rem;background:rgba(3,5,10,.95);border-bottom:1px solid var(--bd);flex-shrink:0;backdrop-filter:blur(20px)}
+.sbar-t{font-size:.92rem;font-weight:900;letter-spacing:-.01em}
+.sbar-s{font-size:.35rem;color:var(--t3);margin-top:.03rem}
+.sbar-btn{font-size:.9rem;color:var(--t3);padding:.2rem .32rem;border-radius:8px;transition:color .15s}
 .sbar-btn:active{color:var(--g3)}
 
-/* ── TAB BARS ── */
+/* Sub tab bars */
 .tbr{display:flex;border-bottom:1px solid var(--bd);flex-shrink:0;background:var(--bg1)}
-.tb{flex:1;font-size:.52rem;font-weight:700;padding:.42rem .1rem;color:var(--t3);border-bottom:2.5px solid transparent;cursor:pointer;text-align:center;transition:all .14s;white-space:nowrap}
+.tb{flex:1;font-size:.52rem;font-weight:700;padding:.44rem .1rem;color:var(--t3);border-bottom:2px solid transparent;cursor:pointer;text-align:center;transition:all .14s;white-space:nowrap}
 .tb.on{color:var(--g3);border-bottom-color:var(--g3)}
-.catbar{display:flex;gap:.24rem;overflow-x:auto;padding:.28rem .48rem;scrollbar-width:none;border-bottom:1px solid var(--bd);flex-shrink:0}
+
+/* Cat / city bars */
+.catbar{display:flex;gap:.24rem;overflow-x:auto;padding:.28rem .5rem;scrollbar-width:none;border-bottom:1px solid var(--bd);flex-shrink:0}
 .catbar::-webkit-scrollbar{display:none}
-.cb{flex-shrink:0;font-size:.52rem;font-weight:700;padding:.22rem .56rem;background:var(--bg3);border:1px solid var(--bd);border-radius:99px;color:var(--t3);cursor:pointer;white-space:nowrap;transition:all .14s}
+.cb{flex-shrink:0;font-size:.52rem;font-weight:700;padding:.23rem .58rem;background:var(--bg3);border:1px solid var(--bd);border-radius:99px;color:var(--t3);cursor:pointer;white-space:nowrap;transition:all .14s}
 .cb.on{background:var(--gg);border-color:transparent;color:#fff}
-.citybar{display:flex;gap:.22rem;overflow-x:auto;padding:.26rem .46rem;scrollbar-width:none;border-bottom:1px solid var(--bd);flex-shrink:0}
+.citybar{display:flex;gap:.22rem;overflow-x:auto;padding:.26rem .48rem;scrollbar-width:none;border-bottom:1px solid var(--bd);flex-shrink:0}
 .citybar::-webkit-scrollbar{display:none}
 .cty{flex-shrink:0;font-size:.5rem;font-weight:700;padding:.22rem .52rem;background:var(--bg3);border:1px solid var(--bd);border-radius:99px;color:var(--t3);cursor:pointer;white-space:nowrap;transition:all .14s}
 .cty.on{background:var(--gg);border-color:transparent;color:#fff}
 
-/* ── AI CONCIERGE ── */
+/* ══════════════════════════════
+   UTILITY CARDS (large, finger-friendly)
+══════════════════════════════ */
+.u-card{background:var(--bg2);border-radius:var(--r);border:1px solid var(--bd);overflow:hidden;margin:.3rem .5rem;min-height:80px;transition:border-color .15s}
+.u-card:active{border-color:var(--g3)}
+.u-card-hdr{padding:.5rem .7rem;border-bottom:1px solid var(--bd);display:flex;align-items:center;gap:.4rem;background:rgba(22,196,127,.05)}
+.uc-ico{font-size:1.2rem;line-height:1}
+.uc-t{font-size:.8rem;font-weight:900;color:var(--t1)}
+.uc-s{font-size:.4rem;color:var(--t3);margin-top:.04rem}
+.u-card-body{padding:.6rem .7rem}
+
+/* ══════════════════════════════
+   AI CONCIERGE
+══════════════════════════════ */
 .ai-wrap{display:flex;flex-direction:column;height:100%;min-height:0}
-.ai-msgs{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;min-height:0;height:0;padding:.5rem .6rem;display:flex;flex-direction:column;gap:.42rem}
-.ai-msgs::-webkit-scrollbar{display:none}
-.ai-welcome{background:var(--bg2);border:1px solid var(--bd);border-radius:14px;padding:.65rem .72rem;margin:.2rem 0}
-.ai-welcome-title{font-size:.78rem;font-weight:900;color:var(--g3);margin-bottom:.2rem}
-.ai-welcome-sub{font-size:.54rem;color:var(--t2);line-height:1.55;margin-bottom:.42rem}
+.ai-feed{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;min-height:0;height:0;padding:.55rem .62rem;display:flex;flex-direction:column;gap:.45rem}
+.ai-feed::-webkit-scrollbar{display:none}
+.ai-welcome{background:linear-gradient(135deg,rgba(22,196,127,.08),rgba(0,108,53,.12));border:1px solid var(--bd2);border-radius:14px;padding:.7rem .75rem}
+.ai-w-title{font-size:.82rem;font-weight:900;color:var(--g3);margin-bottom:.18rem}
+.ai-w-sub{font-size:.55rem;color:var(--t2);line-height:1.58;margin-bottom:.45rem}
 .ai-chips{display:flex;flex-wrap:wrap;gap:.22rem}
-.ai-chip{font-size:.5rem;font-weight:600;background:rgba(0,168,79,.1);border:1px solid var(--bd2);color:var(--g3);border-radius:99px;padding:.2rem .52rem;cursor:pointer;transition:all .14s}
-.ai-chip:active{background:rgba(0,168,79,.2)}
-.msg{max-width:88%;padding:.5rem .65rem;border-radius:14px;font-size:.6rem;line-height:1.58;word-break:break-word;animation:sIn .15s ease}
-.msg.u{background:var(--gg);color:#fff;align-self:flex-end;border-bottom-right-radius:4px}
+.ai-chip{font-size:.5rem;font-weight:600;background:rgba(22,196,127,.1);border:1px solid var(--bd2);color:var(--g3);border-radius:99px;padding:.2rem .52rem;cursor:pointer;transition:all .14s;white-space:nowrap}
+.ai-chip:active{background:rgba(22,196,127,.22);transform:scale(.96)}
+.msg{max-width:86%;padding:.52rem .68rem;border-radius:14px;font-size:.6rem;line-height:1.6;word-break:break-word;animation:fadeUp .15s ease}
+.msg.u{background:var(--gg);color:#fff;align-self:flex-end;border-bottom-right-radius:4px;box-shadow:0 2px 12px rgba(22,196,127,.25)}
 .msg.a{background:var(--bg3);border:1px solid var(--bd);color:var(--t1);align-self:flex-start;border-bottom-left-radius:4px}
-.msg.typing{opacity:.6}
-.msg.typing::after{content:'●●●';animation:dots 1.2s infinite;letter-spacing:3px;font-size:.7rem}
-@keyframes dots{0%,100%{opacity:.3}50%{opacity:1}}
-.ai-bar{display:flex;gap:.3rem;padding:.38rem .5rem;border-top:1px solid var(--bd);background:var(--bg1);flex-shrink:0}
-#ai-input{flex:1;background:var(--bg3);border:1px solid var(--bd2);border-radius:99px;padding:.42rem .72rem;font-size:.6rem;color:var(--t1);outline:none}
-#ai-input:focus{border-color:var(--g2)}
-#ai-send{width:38px;height:38px;background:var(--gg);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;transition:all .14s;box-shadow:var(--glow)}
+.typing-msg{background:var(--bg3);border:1px solid var(--bd);padding:.52rem .68rem;border-radius:14px;border-bottom-left-radius:4px;align-self:flex-start;display:flex;gap:.3rem;align-items:center}
+.typing-dot{width:7px;height:7px;border-radius:50%;background:var(--g3);animation:tdot 1.2s infinite}
+.typing-dot:nth-child(2){animation-delay:.2s}
+.typing-dot:nth-child(3){animation-delay:.4s}
+@keyframes tdot{0%,80%,100%{opacity:.3;transform:scale(.8)}40%{opacity:1;transform:scale(1)}}
+.ai-bar{display:flex;gap:.3rem;padding:.4rem .52rem;border-top:1px solid var(--bd);background:var(--bg1);flex-shrink:0;align-items:center}
+#ai-inp{flex:1;background:var(--bg3);border:1px solid var(--bd2);border-radius:99px;padding:.44rem .75rem;font-size:.6rem;color:var(--t1);outline:none;transition:border-color .15s}
+#ai-inp:focus{border-color:var(--g3)}
+#ai-send{width:40px;height:40px;background:var(--gg);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;box-shadow:0 2px 12px rgba(22,196,127,.3);transition:all .14s}
 #ai-send:active{transform:scale(.92)}
 #ai-send:disabled{opacity:.5}
 
-/* ── PRAYER ── */
-.pr-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.28rem;padding:.44rem}
-.pr-cell{background:var(--bg3);border-radius:10px;padding:.42rem .35rem;text-align:center;border:1px solid var(--bd);position:relative;transition:all .2s}
-.pr-cell.next{border-color:var(--g2);background:rgba(0,108,53,.12);box-shadow:0 0 20px rgba(0,168,79,.15)}
-.pr-name{font-size:.46rem;font-weight:700;color:var(--t3);margin-bottom:.1rem}
-.pr-time{font-size:.94rem;font-weight:900;color:var(--t1);line-height:1}
+/* ══════════════════════════════
+   PRAYER
+══════════════════════════════ */
+.pr-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.3rem;padding:.48rem}
+.pr-cell{background:var(--bg3);border-radius:12px;padding:.48rem .35rem;text-align:center;border:1px solid var(--bd);position:relative;transition:all .2s;min-height:80px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.pr-cell.next{border-color:var(--g3);background:rgba(22,196,127,.08);box-shadow:0 0 20px rgba(22,196,127,.15)}
+.pr-name{font-size:.48rem;font-weight:700;color:var(--t3);margin-bottom:.12rem}
+.pr-time{font-size:.98rem;font-weight:900;color:var(--t1);line-height:1}
 .pr-cell.next .pr-time{color:var(--g3)}
-.next-badge{position:absolute;top:.12rem;right:.18rem;font-size:.32rem;background:var(--g3);color:#fff;border-radius:99px;padding:.04rem .2rem;font-weight:700}
-.cd-bar{background:var(--bg3);border:1px solid var(--g2);border-radius:9px;padding:.42rem .6rem;margin:.05rem .44rem .35rem;display:flex;align-items:center;justify-content:space-between}
-.cd-lbl{font-size:.46rem;color:var(--t3)}
-.cd-val{font-size:.96rem;font-weight:900;color:var(--g3)}
+.next-badge{position:absolute;top:.14rem;right:.2rem;font-size:.32rem;background:var(--g3);color:#fff;border-radius:99px;padding:.04rem .22rem;font-weight:700}
+.cd-bar{background:var(--bg3);border:1px solid var(--g3);border-radius:12px;padding:.48rem .65rem;margin:.05rem .48rem .38rem;display:flex;align-items:center;justify-content:space-between;min-height:56px}
+.cd-lbl{font-size:.48rem;color:var(--t3);font-weight:600}
+.cd-val{font-size:1rem;font-weight:900;color:var(--g3)}
 
-/* ── WEATHER ── */
-.wx-hero{display:flex;align-items:center;gap:.58rem;padding:.55rem .68rem .28rem}
-.wx-ico{font-size:2.7rem;line-height:1}
-.wx-tmp{font-size:3rem;font-weight:900;line-height:1}
-.wx-dsc{font-size:.54rem;color:var(--t2);margin-top:.07rem}
-.wx-meta{display:flex;gap:.48rem;padding:.05rem .68rem .42rem}
-.wm{font-size:.48rem;color:var(--t3)}
-.fc{display:grid;grid-template-columns:repeat(5,1fr);gap:.22rem;padding:.05rem .44rem .44rem}
-.fc-d{background:var(--bg3);border-radius:8px;padding:.28rem .18rem;text-align:center;border:1px solid var(--bd)}
-.fc-dt{font-size:.36rem;color:var(--t3);margin-bottom:.1rem}
-.fc-i{font-size:.8rem;margin-bottom:.08rem}
-.fc-hi{font-size:.54rem;font-weight:800;color:var(--t1)}
-.fc-lo{font-size:.46rem;color:var(--t3)}
-.wx-all{display:grid;grid-template-columns:repeat(3,1fr);gap:.26rem;padding:.4rem .44rem}
-.wag{background:var(--bg3);border-radius:9px;padding:.38rem .3rem;text-align:center;border:1px solid var(--bd)}
+/* ══════════════════════════════
+   WEATHER
+══════════════════════════════ */
+.wx-hero{display:flex;align-items:center;gap:.65rem;padding:.6rem .72rem .3rem;min-height:90px}
+.wx-ico{font-size:3rem;line-height:1}
+.wx-tmp{font-size:3.2rem;font-weight:900;line-height:1}
+.wx-dsc{font-size:.55rem;color:var(--t2);margin-top:.08rem}
+.wx-meta{display:flex;gap:.5rem;padding:.05rem .72rem .45rem}
+.wm{font-size:.5rem;color:var(--t3)}
+.fc{display:grid;grid-template-columns:repeat(5,1fr);gap:.24rem;padding:.05rem .48rem .48rem}
+.fcd{background:var(--bg3);border-radius:10px;padding:.3rem .2rem;text-align:center;border:1px solid var(--bd);min-height:72px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.fcd-dt{font-size:.36rem;color:var(--t3);margin-bottom:.1rem}
+.fcd-i{font-size:.85rem;margin-bottom:.08rem}
+.fcd-hi{font-size:.56rem;font-weight:800;color:var(--t1)}
+.fcd-lo{font-size:.46rem;color:var(--t3)}
+.wx-all{display:grid;grid-template-columns:repeat(3,1fr);gap:.28rem;padding:.42rem .48rem}
+.wag{background:var(--bg3);border-radius:10px;padding:.42rem .32rem;text-align:center;border:1px solid var(--bd);min-height:72px;display:flex;flex-direction:column;align-items:center;justify-content:center}
 .wag-c{font-size:.42rem;color:var(--t3);margin-bottom:.06rem}
-.wag-i{font-size:.98rem;margin-bottom:.06rem}
-.wag-t{font-size:.88rem;font-weight:900;color:var(--t1)}
+.wag-i{font-size:1rem;margin-bottom:.06rem}
+.wag-t{font-size:.9rem;font-weight:900;color:var(--t1)}
 
-/* ── CARDS / COMMON ── */
-.card{background:var(--bg2);border-radius:var(--r);border:1px solid var(--bd);overflow:hidden;margin:.28rem .5rem}
-.card-h{padding:.42rem .64rem;background:rgba(0,108,53,.07);border-bottom:1px solid var(--bd);display:flex;align-items:center;gap:.35rem}
-.ch-ico{font-size:1.02rem}
-.ch-t{font-size:.74rem;font-weight:900;color:var(--t1)}
-.ch-s{font-size:.4rem;color:var(--t3);margin-top:.03rem}
-.card-b{padding:.56rem .64rem}
-.row{display:flex;align-items:center;justify-content:space-between;padding:.44rem .64rem;border-bottom:1px solid rgba(255,255,255,.04)}
-.sec{padding:.32rem .64rem .1rem;font-size:.42rem;font-weight:800;color:var(--t3);letter-spacing:.1em;text-transform:uppercase}
+/* ══════════════════════════════
+   LIVE SCORES
+══════════════════════════════ */
+.lg-bar{display:flex;gap:.22rem;overflow-x:auto;padding:.28rem .48rem;scrollbar-width:none;border-bottom:1px solid var(--bd);flex-shrink:0}
+.lg-bar::-webkit-scrollbar{display:none}
+.lgb{flex-shrink:0;font-size:.5rem;font-weight:700;padding:.22rem .52rem;background:var(--bg3);border:1px solid var(--bd);border-radius:99px;color:var(--t3);cursor:pointer;white-space:nowrap;transition:all .14s}
+.lgb.on{background:var(--gg);border-color:transparent;color:#fff}
+.vw-bar{display:flex;gap:.22rem;padding:.26rem .48rem;border-bottom:1px solid var(--bd);flex-shrink:0}
+.vwb{font-size:.52rem;font-weight:700;padding:.22rem .52rem;background:var(--bg3);border:1px solid var(--bd);border-radius:99px;color:var(--t3);cursor:pointer;transition:all .14s}
+.vwb.on{background:rgba(22,196,127,.15);border-color:var(--g3);color:var(--g3)}
+.match{background:var(--bg2);border-radius:12px;border:1px solid var(--bd);padding:.48rem .55rem;margin:.22rem .48rem;min-height:80px;position:relative;overflow:hidden;transition:all .15s}
+.match:active{background:var(--bg3)}
+.match.live-m{border-color:var(--g3);box-shadow:0 0 16px rgba(22,196,127,.12)}
+.live-indicator{position:absolute;top:.38rem;right:.52rem;display:flex;align-items:center;gap:.2rem}
+.live-dot{width:6px;height:6px;border-radius:50%;background:var(--g3);animation:ldot 1.2s infinite}
+@keyframes ldot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(1.5)}}
+.live-lbl{font-size:.4rem;font-weight:800;color:var(--g3)}
+.match-comp{font-size:.4rem;color:var(--t3);margin-bottom:.3rem;font-weight:600}
+.match-row{display:grid;grid-template-columns:1fr auto 1fr;gap:.3rem;align-items:center}
+.team-n{font-size:.66rem;font-weight:800;color:var(--t1);line-height:1.2}
+.team-n.away{text-align:right}
+.team-row{display:flex;align-items:center;gap:.25rem}
+.team-row.away{justify-content:flex-end}
+.crest{width:20px;height:20px;object-fit:contain;border-radius:3px;background:var(--bg4);flex-shrink:0}
+.score-box{background:var(--bg3);border-radius:9px;padding:.25rem .48px;text-align:center;min-width:58px;border:1px solid var(--bd)}
+.score-n{font-size:1.2rem;font-weight:900;color:var(--t1);line-height:1}
+.score-t{font-size:.4rem;color:var(--t3);margin-top:.05rem}
+.score-vs{font-size:.72rem;color:var(--t3);font-weight:700}
+/* Table */
+.tbl-wrap{overflow-x:auto;padding:.4rem .5rem}
+.tbl{width:100%;border-collapse:collapse;font-size:.54rem}
+.tbl th{font-size:.4rem;font-weight:800;color:var(--t3);text-transform:uppercase;letter-spacing:.06em;padding:.3rem .28rem;border-bottom:1px solid var(--bd);text-align:center;white-space:nowrap}
+.tbl th:nth-child(2),.tbl td:nth-child(2){text-align:left;min-width:96px}
+.tbl td{padding:.34rem .28rem;border-bottom:1px solid rgba(255,255,255,.04);text-align:center;vertical-align:middle}
+.tbl tr.hl td{background:rgba(22,196,127,.06)}
+.pos{font-size:.5rem;font-weight:700;color:var(--t3)}
+.pos.cl{color:var(--g3)}.pos.eu{color:var(--gold)}.pos.rz{color:#e55}
+.club-cell{display:flex;align-items:center;gap:.28rem}
+.club-n{font-size:.58rem;font-weight:700;color:var(--t1)}
+.pts{font-size:.68rem;font-weight:900;color:var(--t1)}
+.form{display:flex;gap:2px}
+.fd{width:7px;height:7px;border-radius:50%}
+.fw{background:#16C47F}.fd2{background:var(--t3)}.fl{background:#e55}
 
-/* ── STARTUP / TECH CARDS ── */
-.item-card{background:var(--bg2);border-radius:var(--r2);border:1px solid var(--bd);padding:.52rem .62rem;margin:.2rem .5rem;transition:background .14s;cursor:pointer}
-.item-card:active{background:var(--bg3)}
-.ic-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:.14rem}
-.ic-name{font-size:.68rem;font-weight:800;color:var(--t1)}
-.ic-tag{font-size:.42rem;font-weight:700;color:var(--g3);background:rgba(0,168,79,.1);border:1px solid var(--bd2);border-radius:99px;padding:.07rem .28rem;white-space:nowrap;flex-shrink:0;margin-left:.3rem}
+/* ══════════════════════════════
+   HOLIDAYS
+══════════════════════════════ */
+.hol{display:flex;align-items:center;gap:.5rem;padding:.52rem .7rem;border-bottom:1px solid rgba(255,255,255,.04);min-height:72px}
+.hol-f{font-size:1.35rem;flex-shrink:0}
+.hol-n{font-size:.62rem;font-weight:700;color:var(--t1)}
+.hol-ar{font-family:serif;font-size:.68rem;color:var(--gold);direction:rtl}
+.hol-d{font-size:.44rem;color:var(--t3)}
+.hol-cnt{text-align:right;flex-shrink:0}
+.hol-days{font-size:1.1rem;font-weight:900;color:var(--g3)}
+.hol-unit{font-size:.36rem;color:var(--t3)}
+
+/* ══════════════════════════════
+   QIBLA
+══════════════════════════════ */
+.qibla-wrap{display:flex;flex-direction:column;align-items:center;padding:1.2rem .7rem}
+.compass{width:200px;height:200px;border-radius:50%;border:2px solid var(--bd2);background:var(--bg3);box-shadow:var(--glow);position:relative;display:flex;align-items:center;justify-content:center;margin-bottom:.75rem}
+.c-n{position:absolute;top:.48rem;font-size:.65rem;font-weight:900;color:var(--t3)}
+.c-arr{width:3px;height:78px;background:linear-gradient(180deg,var(--g3) 0%,transparent 100%);border-radius:99px;transform-origin:bottom center;position:absolute;bottom:50%;left:calc(50% - 1.5px);transition:transform .65s cubic-bezier(.34,1.56,.64,1)}
+.q-brg{font-size:2rem;font-weight:900;color:var(--g3)}
+.q-dist{font-size:.54rem;color:var(--t3);margin-top:.08rem}
+
+/* ══════════════════════════════
+   ZAKAT
+══════════════════════════════ */
+.z-inp{width:100%;background:var(--bg3);border:1px solid var(--bd2);border-radius:10px;padding:.52rem .65rem;color:var(--t1);font-size:.62rem;outline:none;margin-bottom:.32rem;min-height:52px}
+.z-inp:focus{border-color:var(--g3)}
+.z-res{background:rgba(22,196,127,.08);border:1px solid var(--g3);border-radius:12px;padding:.65rem;margin-top:.48rem;text-align:center;display:none}
+.z-amt{font-size:1.75rem;font-weight:900;color:var(--g3)}
+
+/* ══════════════════════════════
+   NEWS FEED (infinite scroll, full screen)
+══════════════════════════════ */
+.nfeed{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;min-height:0;height:0;padding-bottom:calc(var(--nav)+.8rem)}
+.nfeed::-webkit-scrollbar{display:none}
+.ncard{background:var(--bg1);border-bottom:3px solid var(--bg0);cursor:pointer;animation:fadeUp .18s ease;position:relative}
+.ncard:active{opacity:.88}
+.nc-img{width:100%;height:220px;object-fit:cover;display:block;background:var(--bg3);opacity:0;transition:opacity .3s}
+.nc-img.loaded{opacity:1}
+.nc-body{padding:.55rem .78rem .65rem}
+.nc-meta{display:flex;align-items:center;justify-content:space-between;margin-bottom:.18rem}
+.nc-src{font-size:.44rem;font-weight:700;color:var(--g3);text-transform:uppercase;letter-spacing:.05em}
+.nc-ago{font-size:.44rem;color:var(--t3)}
+.nc-title{font-size:1rem;font-weight:800;line-height:1.3;color:var(--t1);margin-bottom:.2rem;letter-spacing:-.01em}
+.nc-sum{font-size:.58rem;color:var(--t2);line-height:1.55;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.n-loader{display:flex;align-items:center;justify-content:center;padding:1.2rem;gap:.38rem;font-size:.54rem;color:var(--t3)}
+/* Skeleton */
+.skel{background:linear-gradient(90deg,var(--bg3) 25%,var(--bg4) 50%,var(--bg3) 75%);background-size:200% 100%;animation:shimmer 1.4s infinite;border-radius:6px}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+
+/* ══════════════════════════════
+   IMAGE FEED (masonry infinite)
+══════════════════════════════ */
+.ifeed{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;min-height:0;height:0;padding-bottom:calc(var(--nav)+.8rem)}
+.ifeed::-webkit-scrollbar{display:none}
+.img-grid{display:grid;grid-template-columns:1fr 1fr;gap:3px;padding:3px}
+.ig-item{overflow:hidden;border-radius:9px;background:var(--bg3);cursor:pointer;position:relative;aspect-ratio:4/3}
+.ig-item img{width:100%;height:100%;object-fit:cover;display:block;opacity:0;transition:opacity .3s}
+.ig-item img.loaded{opacity:1}
+.ig-item:nth-child(7n+1){grid-column:span 2;aspect-ratio:16/9}
+.ig-item:nth-child(5n+3){aspect-ratio:3/4}
+
+/* ══════════════════════════════
+   DISCOVER — Startups / Ecosystem
+══════════════════════════════ */
+.item-card{background:var(--bg2);border-radius:var(--r2);border:1px solid var(--bd);padding:.55rem .65rem;margin:.22rem .5rem;cursor:pointer;transition:all .15s;min-height:80px}
+.item-card:active{background:var(--bg3);border-color:var(--g3)}
+.ic-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:.12rem}
+.ic-name{font-size:.7rem;font-weight:800;color:var(--t1)}
+.ic-tag{font-size:.42rem;font-weight:700;color:var(--g3);background:rgba(22,196,127,.1);border:1px solid var(--bd2);border-radius:99px;padding:.07rem .28rem;white-space:nowrap;flex-shrink:0;margin-left:.3rem}
 .ic-year{font-size:.42rem;color:var(--t3);margin-bottom:.1rem}
-.ic-desc{font-size:.54rem;color:var(--t2);line-height:1.52}
-.ic-imp{font-size:.48rem;color:var(--gold);margin-top:.14rem;font-style:italic}
+.ic-desc{font-size:.55rem;color:var(--t2);line-height:1.52}
+.eco-sec{margin:.28rem .5rem}
+.eco-hdr{font-size:.62rem;font-weight:800;color:var(--t1);padding:.38rem .65rem .14rem;background:var(--bg2);border-radius:var(--r2) var(--r2) 0 0;border:1px solid var(--bd);border-bottom:none;display:flex;align-items:center;gap:.3rem}
+.eco-items{background:var(--bg2);border:1px solid var(--bd);border-top:1px solid rgba(22,196,127,.1);border-radius:0 0 var(--r2) var(--r2);overflow:hidden}
+.eco-row{padding:.42rem .65rem;border-bottom:1px solid rgba(255,255,255,.04);display:flex;align-items:center;justify-content:space-between;min-height:56px}
+.eco-row:last-child{border-bottom:none}
+.er-n{font-size:.6rem;font-weight:700;color:var(--t1)}
+.er-s{font-size:.44rem;color:var(--t3);margin-top:.05rem}
+.er-tag{font-size:.4rem;color:var(--g3);font-weight:700;white-space:nowrap;margin-left:.3rem}
 
-/* ── ECOSYSTEM MAP ── */
-.eco-section{margin:.28rem .5rem}
-.eco-title{font-size:.6rem;font-weight:800;color:var(--t1);padding:.35rem .62rem .12rem;background:var(--bg2);border-radius:var(--r2) var(--r2) 0 0;border:1px solid var(--bd);border-bottom:none;display:flex;align-items:center;gap:.3rem}
-.eco-items{background:var(--bg2);border:1px solid var(--bd);border-radius:0 0 var(--r2) var(--r2);border-top:1px solid var(--bd);overflow:hidden}
-.eco-item{padding:.38rem .62rem;border-bottom:1px solid rgba(255,255,255,.04);display:flex;align-items:center;justify-content:space-between}
-.eco-item:last-child{border-bottom:none}
-.ei-name{font-size:.58rem;font-weight:700;color:var(--t1)}
-.ei-sub{font-size:.44rem;color:var(--t3);margin-top:.04rem}
-.ei-tag{font-size:.4rem;color:var(--g3);font-weight:700;white-space:nowrap;margin-left:.3rem}
-
-/* ── EVENTS ── */
-.ev-card{background:var(--bg2);border-radius:var(--r2);border:1px solid var(--bd);padding:.52rem .62rem;margin:.2rem .5rem;position:relative;overflow:hidden}
+/* ══════════════════════════════
+   EVENTS
+══════════════════════════════ */
+.ev-card{background:var(--bg2);border-radius:var(--r2);border:1px solid var(--bd);padding:.55rem .65rem;margin:.22rem .5rem;position:relative;overflow:hidden;cursor:pointer;min-height:80px;transition:all .15s}
+.ev-card:active{background:var(--bg3)}
 .ev-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--gg)}
-.ev-head{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:.12rem}
-.ev-name{font-size:.66rem;font-weight:800;color:var(--t1)}
+.ev-head{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:.1rem}
+.ev-name{font-size:.68rem;font-weight:800;color:var(--t1)}
 .ev-date{font-size:.44rem;font-weight:700;color:var(--gold);white-space:nowrap;margin-left:.3rem}
 .ev-loc{font-size:.44rem;color:var(--t3);margin-bottom:.12rem}
-.ev-desc{font-size:.52rem;color:var(--t2);line-height:1.5}
+.ev-desc{font-size:.53rem;color:var(--t2);line-height:1.52}
 
-/* ── BUSINESS REG ── */
-.b-inp{width:100%;background:var(--bg3);border:1px solid var(--bd2);border-radius:9px;padding:.44rem .6rem;color:var(--t1);font-size:.6rem;outline:none;margin-bottom:.32rem}
-.b-inp:focus{border-color:var(--g2)}
-select.b-inp{cursor:pointer;appearance:none}
-.b-label{font-size:.5rem;font-weight:700;color:var(--t3);margin-bottom:.14rem;display:block}
-
-/* ── QR ── */
-.qr-out{display:flex;flex-direction:column;align-items:center;gap:.3rem;margin-top:.5rem}
-#qr-box{background:#fff;padding:10px;border-radius:11px}
-
-/* ── VISION ── */
-.giga{background:var(--bg2);border-radius:var(--r2);border:1px solid var(--bd);padding:.5rem .62rem;margin:.2rem .5rem;display:flex;gap:.38rem;align-items:flex-start}
-.g-emoji{font-size:1.2rem;flex-shrink:0;margin-top:.05rem}
-.g-name{font-size:.65rem;font-weight:800;color:var(--t1);margin-bottom:.06rem}
+/* ══════════════════════════════
+   VISION / GIGA PROJECTS
+══════════════════════════════ */
+.giga{background:var(--bg2);border-radius:var(--r2);border:1px solid var(--bd);padding:.55rem .65rem;margin:.22rem .5rem;display:flex;gap:.4rem;align-items:flex-start;cursor:pointer;min-height:80px;transition:all .15s}
+.giga:active{background:var(--bg3)}
+.g-emo{font-size:1.3rem;flex-shrink:0;margin-top:.04rem}
+.g-name{font-size:.66rem;font-weight:800;color:var(--t1);margin-bottom:.07rem}
 .g-desc{font-size:.52rem;color:var(--t2);line-height:1.5}
 .g-status{font-size:.4rem;font-weight:800;border-radius:99px;padding:.06rem .28rem;display:inline-block;margin-top:.1rem}
 .s-dev{color:var(--gold);background:rgba(200,169,81,.1);border:1px solid rgba(200,169,81,.2)}
-.s-open{color:var(--g3);background:rgba(0,168,79,.1);border:1px solid var(--bd2)}
-.s-act{color:var(--g3);background:rgba(0,168,79,.1);border:1px solid var(--bd2)}
+.s-open{color:var(--g3);background:rgba(22,196,127,.1);border:1px solid var(--bd2)}
+.s-act{color:var(--g3);background:rgba(22,196,127,.1);border:1px solid var(--bd2)}
 
-/* ── HOLIDAYS ── */
-.hol{display:flex;align-items:center;gap:.46rem;padding:.46rem .64rem;border-bottom:1px solid rgba(255,255,255,.04)}
-.hol-f{font-size:1.28rem;flex-shrink:0}
-.hol-n{font-size:.6rem;font-weight:700;color:var(--t1)}
-.hol-ar{font-family:serif;font-size:.65rem;color:var(--gold);direction:rtl}
-.hol-d{font-size:.44rem;color:var(--t3)}
-.hol-cnt{text-align:right;flex-shrink:0}
-.hol-days{font-size:1rem;font-weight:900;color:var(--g3)}
-.hol-unit{font-size:.36rem;color:var(--t3)}
+/* ══════════════════════════════
+   TOURISM
+══════════════════════════════ */
+.dest-grid{display:grid;grid-template-columns:1fr 1fr;gap:.32rem;padding:.38rem .48rem}
+.dest-card{border-radius:14px;overflow:hidden;background:var(--bg3);border:1px solid var(--bd);cursor:pointer;transition:all .15s;min-height:130px;display:flex;flex-direction:column}
+.dest-card:active{transform:scale(.97);border-color:var(--g3)}
+.dc-emo{flex:1;display:flex;align-items:center;justify-content:center;font-size:2.5rem;background:rgba(22,196,127,.04)}
+.dc-body{padding:.3rem .4rem}
+.dc-name{font-size:.6rem;font-weight:800;color:var(--t1)}
+.dc-tag{font-size:.4rem;color:var(--t3)}
 
-/* ── QIBLA ── */
-.qibla-wrap{display:flex;flex-direction:column;align-items:center;padding:1rem .7rem}
-.compass{width:186px;height:186px;border-radius:50%;border:2px solid var(--bd2);background:var(--bg3);box-shadow:var(--glow);position:relative;display:flex;align-items:center;justify-content:center;margin-bottom:.65rem}
-.c-n{position:absolute;top:.42rem;font-size:.6rem;font-weight:900;color:var(--t3)}
-.c-arr{width:3px;height:72px;background:linear-gradient(180deg,var(--g3),transparent);border-radius:99px;transform-origin:bottom center;position:absolute;bottom:50%;left:calc(50% - 1.5px);transition:transform .6s cubic-bezier(.34,1.56,.64,1)}
-.q-brg{font-size:1.85rem;font-weight:900;color:var(--g3)}
-.q-dist{font-size:.52rem;color:var(--t3);margin-top:.07rem}
+/* ══════════════════════════════
+   CULTURE
+══════════════════════════════ */
+.phrase-row{background:var(--bg2);border:1px solid var(--bd);border-radius:10px;padding:.38rem .52rem;display:flex;align-items:center;gap:.45rem;min-height:56px}
+.ph-ar{font-family:serif;font-size:.95rem;color:var(--gold);direction:rtl;min-width:5.8rem;text-align:right;flex-shrink:0}
+.ph-ph{font-size:.54rem;color:var(--t1);font-style:italic}
+.ph-en{font-size:.46rem;color:var(--t3)}
+.cuisine-grid{display:grid;grid-template-columns:1fr 1fr;gap:.26rem;padding:.28rem .48rem}
+.cui-card{background:var(--bg2);border:1px solid var(--bd);border-radius:10px;padding:.42rem .44rem;min-height:72px;cursor:pointer;transition:all .15s}
+.cui-card:active{background:var(--bg3)}
+.cui-n{font-size:.6rem;font-weight:700;color:var(--t1);margin-bottom:.08rem}
+.cui-d{font-size:.46rem;color:var(--t3);line-height:1.45;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 
-/* ── ZAKAT ── */
-.z-inp{width:100%;background:var(--bg3);border:1px solid var(--bd2);border-radius:9px;padding:.44rem .6rem;color:var(--t1);font-size:.6rem;outline:none;margin-bottom:.3rem}
-.z-inp:focus{border-color:var(--g2)}
-.z-res{background:rgba(0,108,53,.1);border:1px solid var(--g2);border-radius:10px;padding:.6rem;margin-top:.44rem;text-align:center;display:none}
-.z-amt{font-size:1.65rem;font-weight:900;color:var(--g3)}
-
-/* ── PASS ── */
-.pass-btn{width:100%;padding:.68rem;background:var(--gg);border-radius:12px;font-size:.78rem;font-weight:900;color:#fff;transition:all .15s;box-shadow:var(--glow);display:flex;align-items:center;justify-content:center;gap:.38rem}
+/* ══════════════════════════════
+   DIGITAL+ / PASSPORT
+══════════════════════════════ */
+.pass-card{background:linear-gradient(135deg,rgba(0,108,53,.15),rgba(22,196,127,.08));border:1px solid var(--bd2);border-radius:var(--r);padding:.65rem .72rem;margin:.3rem .5rem}
+.pass-feats{display:grid;grid-template-columns:1fr 1fr;gap:.28rem;margin-bottom:.55rem}
+.pf{background:rgba(255,255,255,.04);border:1px solid var(--bd);border-radius:10px;padding:.42rem .44rem;text-align:center;min-height:64px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.pf-ico{font-size:1.05rem;margin-bottom:.12rem}
+.pf-n{font-size:.52rem;font-weight:700;color:var(--t1)}
+.pf-s{font-size:.4rem;color:var(--t3)}
+.pass-btn{width:100%;padding:.72rem;background:var(--gg);border-radius:12px;font-size:.8rem;font-weight:900;color:#fff;display:flex;align-items:center;justify-content:center;gap:.4rem;box-shadow:0 4px 24px rgba(22,196,127,.3);transition:all .15s}
 .pass-btn:active{transform:scale(.97)}
 .pass-btn:disabled{opacity:.5}
-.pass-feat{display:grid;grid-template-columns:1fr 1fr;gap:.26rem;margin-bottom:.5rem}
-.pf{background:var(--bg3);border:1px solid var(--bd);border-radius:9px;padding:.38rem .42rem;text-align:center}
-.pf-ico{font-size:1rem;margin-bottom:.1rem}
-.pf-n{font-size:.5rem;font-weight:700;color:var(--t1)}
-.pf-s{font-size:.4rem;color:var(--t3)}
+.tx-row{display:flex;align-items:center;justify-content:space-between;padding:.46rem .7rem;border-bottom:1px solid rgba(255,255,255,.04);min-height:56px}
+.tx-type{font-size:.58rem;font-weight:600;color:var(--t1)}
+.tx-date{font-size:.43rem;color:var(--t3)}
+.tx-amt{font-size:.64rem;font-weight:900;color:var(--g3)}
 
-/* ── DETAIL PANEL ── */
+/* ══════════════════════════════
+   SUPPORT CENTER
+══════════════════════════════ */
+.faq-item{background:var(--bg2);border-radius:var(--r2);border:1px solid var(--bd);margin:.22rem .5rem;overflow:hidden;cursor:pointer;min-height:64px}
+.faq-q{padding:.52rem .65rem;font-size:.62rem;font-weight:700;color:var(--t1);display:flex;align-items:center;justify-content:space-between}
+.faq-a{padding:0 .65rem .52rem;font-size:.55rem;color:var(--t2);line-height:1.6;display:none}
+.faq-item.open .faq-a{display:block}
+.faq-ico{font-size:.75rem;color:var(--g3);transition:transform .2s;flex-shrink:0}
+.faq-item.open .faq-ico{transform:rotate(45deg)}
+
+/* ══════════════════════════════
+   DETAIL PANEL
+══════════════════════════════ */
 .panel{display:none;position:fixed;inset:0;background:var(--bg0);z-index:100;flex-direction:column;overflow:hidden}
-.panel.open{display:flex;animation:sIn .15s ease}
-.panel-hdr{background:rgba(6,8,15,.97);border-bottom:1px solid var(--bd);padding:.5rem .72rem;display:flex;align-items:center;gap:.4rem;flex-shrink:0}
-.panel-back{font-size:.72rem;color:var(--gold);font-weight:700}
-.panel-title{font-size:.56rem;color:var(--t3);flex:1;text-align:center}
+.panel.open{display:flex;animation:fadeUp .15s ease}
+.panel-hdr{background:rgba(3,5,10,.97);border-bottom:1px solid var(--bd);padding:.52rem .75rem;display:flex;align-items:center;gap:.4rem;flex-shrink:0}
+.panel-back{font-size:.72rem;color:var(--g3);font-weight:700;padding:.1rem .3rem}
+.panel-tag{font-size:.54rem;color:var(--t3);flex:1;text-align:center}
 .panel-body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:1.2rem}
 .panel-body::-webkit-scrollbar{display:none}
 
-/* ── UTILS ── */
-#toast{position:fixed;bottom:calc(var(--nav)+12px);left:50%;transform:translateX(-50%) translateY(12px);background:var(--g3);color:#fff;font-size:.52rem;font-weight:800;padding:.33rem .9rem;border-radius:99px;opacity:0;transition:all .22s cubic-bezier(.34,1.56,.64,1);pointer-events:none;z-index:999;white-space:nowrap}
+/* ══════════════════════════════
+   UTILS
+══════════════════════════════ */
+#toast{position:fixed;bottom:calc(var(--nav)+14px);left:50%;transform:translateX(-50%) translateY(14px);background:var(--g3);color:#fff;font-size:.52rem;font-weight:800;padding:.35rem .95rem;border-radius:99px;opacity:0;transition:all .22s cubic-bezier(.34,1.56,.64,1);pointer-events:none;z-index:999;white-space:nowrap}
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-.spin-wrap{display:flex;align-items:center;justify-content:center;flex-direction:column;gap:.36rem;padding:2rem;font-size:.52rem;color:var(--t3)}
-.spin{width:22px;height:22px;border:2.5px solid var(--bg4);border-top-color:var(--g3);border-radius:50%;animation:sp .7s linear infinite}
+.spin-wrap{display:flex;align-items:center;justify-content:center;flex-direction:column;gap:.38rem;padding:2.2rem;font-size:.52rem;color:var(--t3)}
+.spin{width:24px;height:24px;border:2.5px solid var(--bg4);border-top-color:var(--g3);border-radius:50%;animation:sp .7s linear infinite}
 @keyframes sp{to{transform:rotate(360deg)}}
-.btn-green{width:100%;padding:.56rem;background:var(--gg);border-radius:9px;font-size:.72rem;font-weight:900;color:#fff;transition:all .15s}
-.btn-green:active{transform:scale(.97)}
+.btn-g{width:100%;padding:.58rem;background:var(--gg);border-radius:10px;font-size:.72rem;font-weight:900;color:#fff;transition:all .15s;box-shadow:0 2px 12px rgba(22,196,127,.2)}
+.btn-g:active{transform:scale(.97)}
+.sec-lbl{padding:.35rem .7rem .1rem;font-size:.42rem;font-weight:800;color:var(--t3);letter-spacing:.1em;text-transform:uppercase}
+.badge{font-size:.42rem;font-weight:700;border-radius:99px;padding:.07rem .28rem;background:rgba(22,196,127,.1);border:1px solid var(--bd2);color:var(--g3)}
 .ar-t{font-family:serif;direction:rtl;text-align:right;color:var(--gold)}
-.badge{font-size:.42rem;font-weight:700;border-radius:99px;padding:.07rem .26rem;background:rgba(0,168,79,.12);border:1px solid var(--bd2);color:var(--g3)}
-.offline{font-size:.44rem;color:var(--gold);background:rgba(200,169,81,.08);border:1px solid var(--bdo);border-radius:6px;padding:.18rem .46rem;margin:.1rem .44rem;text-align:center}
-.ar .nb-lbl{font-family:serif}
-.empty-state{text-align:center;padding:1.2rem .8rem}
-.es-ico{font-size:2.2rem;margin-bottom:.4rem}
-.es-t{font-size:.66rem;font-weight:700;color:var(--t1);margin-bottom:.1rem}
-.es-s{font-size:.52rem;color:var(--t3);line-height:1.5}
+.offline-note{font-size:.44rem;color:var(--gold);background:rgba(200,169,81,.08);border:1px solid var(--bdo);border-radius:6px;padding:.2rem .48rem;margin:.1rem .48rem;text-align:center}
+.empty-state{text-align:center;padding:1.5rem .8rem}
+.es-ico{font-size:2.4rem;margin-bottom:.4rem}
+.es-t{font-size:.68rem;font-weight:700;color:var(--t1);margin-bottom:.1rem}
+.es-s{font-size:.54rem;color:var(--t3);line-height:1.55}
+.ar .nb-lbl,.ar .tb,.ar .cb,.ar .cty{font-family:serif}
 </style>
 </head>
 <body>
 
-<!-- LOGIN -->
+<!-- ════ LOGIN ════ -->
 <div id="login">
   <div class="lg-orb1"></div><div class="lg-orb2"></div>
   <div class="lg-stripe"></div>
   <div class="lg-body">
-    <div class="lg-bar"></div>
+    <div class="lg-badge">Pi Network Mainnet</div>
     <div class="lg-name">DigitalSaudi</div>
     <div class="lg-tag" id="lg-tag">Saudi Digital Ecosystem on Pi</div>
-    <div class="lg-pills">
-      <div class="lg-pill"><div class="lp-ico">🤖</div><div class="lp-n">AI Concierge</div><div class="lp-s">Saudi expert assistant</div></div>
-      <div class="lg-pill"><div class="lp-ico">🚀</div><div class="lp-n">Startup Hub</div><div class="lp-s">Saudi tech ecosystem</div></div>
-      <div class="lg-pill"><div class="lp-ico">🏢</div><div class="lp-n">Business Hub</div><div class="lp-s">Pi QR · Registration</div></div>
-      <div class="lg-pill"><div class="lp-ico">🌍</div><div class="lp-n">Explore Saudi</div><div class="lp-s">Tourism · Culture · Vision</div></div>
+    <div class="lg-grid">
+      <div class="lg-card"><div class="lc-ico">🤖</div><div class="lc-n">AI Concierge</div><div class="lc-s">Saudi expert assistant</div></div>
+      <div class="lg-card"><div class="lc-ico">⚽</div><div class="lc-n">Live Scores</div><div class="lc-s">SPL · PL · CL · more</div></div>
+      <div class="lg-card"><div class="lc-ico">📰</div><div class="lc-n">News & Media</div><div class="lc-s">Infinite scroll · Auto-refresh</div></div>
+      <div class="lg-card"><div class="lc-ico">🚀</div><div class="lc-n">Discover Saudi</div><div class="lc-s">Startups · Vision 2030</div></div>
     </div>
   </div>
   <div class="lg-foot">
@@ -300,7 +443,7 @@ select.b-inp{cursor:pointer;appearance:none}
   </div>
 </div>
 
-<!-- APP -->
+<!-- ════ APP ════ -->
 <div id="app">
   <div id="hdr">
     <div><div class="hdr-logo">DigitalSaudi</div><div class="hdr-sub">Saudi Digital Ecosystem on Pi</div></div>
@@ -312,21 +455,22 @@ select.b-inp{cursor:pointer;appearance:none}
 
   <div id="main">
 
-    <!-- 🤖 HOME (AI + Prayer + Weather) -->
+    <!-- TAB 1: HOME -->
     <section class="scr on" id="s-home">
       <div class="sbar">
-        <div><div class="sbar-t" id="t-home">🇸🇦 Home</div><div class="sbar-s">AI · Prayer · Weather</div></div>
+        <div><div class="sbar-t" id="t-home">🇸🇦 Home</div><div class="sbar-s">AI · Prayer · Weather · Scores · More</div></div>
         <button class="sbar-btn" onclick="homeLoad()">↺</button>
       </div>
-      <div class="tbr">
+      <div class="tbr" id="home-tabs">
         <button class="tb on" onclick="hTab(0,this)">🤖 AI</button>
         <button class="tb" onclick="hTab(1,this)">🕌 Prayer</button>
         <button class="tb" onclick="hTab(2,this)">🌦 Weather</button>
-        <button class="tb" onclick="hTab(3,this)">🗓 Holidays</button>
-        <button class="tb" onclick="hTab(4,this)">🧭 Qibla</button>
-        <button class="tb" onclick="hTab(5,this)">💰 Zakat</button>
+        <button class="tb" onclick="hTab(3,this)">⚽ Scores</button>
+        <button class="tb" onclick="hTab(4,this)">🗓 Holidays</button>
+        <button class="tb" onclick="hTab(5,this)">🧭 Qibla</button>
+        <button class="tb" onclick="hTab(6,this)">💰 Zakat</button>
       </div>
-      <div class="citybar" id="citybar">
+      <div class="citybar" id="citybar" style="display:none">
         <button class="cty on" onclick="selCity('riyadh',this)">Riyadh</button>
         <button class="cty" onclick="selCity('jeddah',this)">Jeddah</button>
         <button class="cty" onclick="selCity('makkah',this)">Makkah</button>
@@ -340,10 +484,10 @@ select.b-inp{cursor:pointer;appearance:none}
       <div id="home-body" style="flex:1;overflow:hidden;min-height:0;display:flex;flex-direction:column"></div>
     </section>
 
-    <!-- 🚀 DISCOVER (Startups + Tech Ecosystem + Opportunities) -->
+    <!-- TAB 2: DISCOVER -->
     <section class="scr" id="s-disc">
       <div class="sbar">
-        <div><div class="sbar-t">🚀 Discover</div><div class="sbar-s">Startups · Tech · Opportunities</div></div>
+        <div><div class="sbar-t">🚀 Discover</div><div class="sbar-s">Startups · Tech Ecosystem · Opportunities</div></div>
       </div>
       <div class="tbr">
         <button class="tb on" onclick="dTab(0,this)">🦄 Startups</button>
@@ -353,21 +497,29 @@ select.b-inp{cursor:pointer;appearance:none}
       <div class="scroll" id="disc-body"></div>
     </section>
 
-    <!-- 🏢 BUSINESS (Events + Registration + QR) -->
-    <section class="scr" id="s-biz">
+    <!-- TAB 3: MEDIA -->
+    <section class="scr" id="s-media">
       <div class="sbar">
-        <div><div class="sbar-t">🏢 Business</div><div class="sbar-s">Events · Pi Payments · Register</div></div>
+        <div><div class="sbar-t">📰 Media</div><div class="sbar-s">Saudi News · Images · Auto-refresh</div></div>
+        <button class="sbar-btn" onclick="mediaRefresh()">↺</button>
       </div>
       <div class="tbr">
-        <button class="tb on" onclick="bTab(0,this)">📅 Events</button>
-        <button class="tb" onclick="bTab(1,this)">⚡ Pi QR</button>
-        <button class="tb" onclick="bTab(2,this)">📋 Register</button>
-        <button class="tb" onclick="bTab(3,this)">🗂 Directory</button>
+        <button class="tb on" onclick="mediaTab(0,this)">📰 News</button>
+        <button class="tb" onclick="mediaTab(1,this)">🖼 Images</button>
       </div>
-      <div class="scroll" id="biz-body"></div>
+      <div class="catbar" id="news-cats">
+        <button class="cb on" onclick="newsCat('all',this)">All</button>
+        <button class="cb" onclick="newsCat('tech',this)">Tech</button>
+        <button class="cb" onclick="newsCat('vision',this)">Vision</button>
+        <button class="cb" onclick="newsCat('business',this)">Business</button>
+        <button class="cb" onclick="newsCat('tourism',this)">Tourism</button>
+        <button class="cb" onclick="newsCat('sports',this)">Sports</button>
+      </div>
+      <div class="nfeed" id="news-feed"></div>
+      <div class="ifeed" id="img-feed" style="display:none"></div>
     </section>
 
-    <!-- 🌍 EXPLORE (Vision 2030 + Tourism + Culture) -->
+    <!-- TAB 4: EXPLORE -->
     <section class="scr" id="s-exp">
       <div class="sbar">
         <div><div class="sbar-t">🌍 Explore</div><div class="sbar-s">Vision 2030 · Tourism · Culture</div></div>
@@ -380,14 +532,19 @@ select.b-inp{cursor:pointer;appearance:none}
       <div class="scroll" id="exp-body"></div>
     </section>
 
-    <!-- ⚡ DIGITAL+ (Passport + About) -->
+    <!-- TAB 5: DIGITAL+ -->
     <section class="scr" id="s-digi">
       <div class="sbar">
-        <div><div class="sbar-t">⚡ Digital+</div><div class="sbar-s">Passport · Settings</div></div>
+        <div><div class="sbar-t">⚡ Digital+</div><div class="sbar-s">Passport · Support · About</div></div>
         <div style="display:flex;align-items:center;gap:.3rem">
           <div id="digi-user" style="font-size:.42rem;color:var(--gold);font-weight:700"></div>
           <button onclick="logOut()" style="font-size:.42rem;color:var(--t3);background:var(--bg3);border:1px solid var(--bd);border-radius:7px;padding:.13rem .38rem">Out</button>
         </div>
+      </div>
+      <div class="tbr">
+        <button class="tb on" onclick="dgTab(0,this)">💳 Passport</button>
+        <button class="tb" onclick="dgTab(1,this)">❓ Support</button>
+        <button class="tb" onclick="dgTab(2,this)">ℹ️ About</button>
       </div>
       <div class="scroll" id="digi-body"></div>
     </section>
@@ -397,7 +554,7 @@ select.b-inp{cursor:pointer;appearance:none}
   <nav id="nav">
     <div class="nb on" onclick="goS('home',this)"><span class="nb-ico">🇸🇦</span><span class="nb-lbl" id="nl-h">Home</span></div>
     <div class="nb" onclick="goS('disc',this)"><span class="nb-ico">🚀</span><span class="nb-lbl" id="nl-d">Discover</span></div>
-    <div class="nb" onclick="goS('biz',this)"><span class="nb-ico">🏢</span><span class="nb-lbl" id="nl-b">Business</span></div>
+    <div class="nb" onclick="goS('media',this)"><span class="nb-ico">📰</span><span class="nb-lbl" id="nl-m">Media</span></div>
     <div class="nb" onclick="goS('exp',this)"><span class="nb-ico">🌍</span><span class="nb-lbl" id="nl-e">Explore</span></div>
     <div class="nb" onclick="goS('digi',this)"><span class="nb-ico">⚡</span><span class="nb-lbl" id="nl-p">Digital+</span></div>
   </nav>
@@ -406,7 +563,7 @@ select.b-inp{cursor:pointer;appearance:none}
   <div class="panel" id="panel">
     <div class="panel-hdr">
       <button class="panel-back" onclick="closePanel()">← Back</button>
-      <div class="panel-title" id="panel-tag"></div>
+      <div class="panel-tag" id="panel-tag"></div>
     </div>
     <div class="panel-body" id="panel-body"></div>
   </div>
@@ -414,30 +571,48 @@ select.b-inp{cursor:pointer;appearance:none}
 
 <div id="toast"></div>
 <script>
-/* ═══════════════════════════════════════════════
-   DigitalSaudi v3.0 — Core JS
-   Pi SDK · AI Concierge · All Modules
-═══════════════════════════════════════════════ */
+/* ═══════════════════════════════════════════
+   DigitalSaudi v4.0 — Final Master Build
+   Pi SDK · AI · Scores · News · Infinite Scroll
+   Arabic/English · PWA · Zero Fake Data
+═══════════════════════════════════════════ */
 
 /* STATE */
 var _u=null,_pass=false,_lang='en',_city='riyadh';
-var _hTab=0,_dTab=0,_bTab=0,_eTab=0;
+var _hTab=0,_dTab=0,_eTab=0,_dgTab=0,_mediaTab=0;
 var _pr=null,_wx=null,_hols=null,_cdT=null;
 var _aiMsgs=[];
-/* Pi endpoints */
+var _nPage=1,_nLoading=false,_nHasMore=true,_nCat='all',_nArts=[];
+var _iPage=1,_iLoading=false,_iHasMore=true;
+var _scoresLeague='sau.1',_scoresView='live',_scoresData=null,_scoresLoading=false;
+var _nRefresh=null;
 var _AP='/approve',_CO='/complete',_CA='/cancel-payment';
+
+/* TRANSLATIONS */
+var T={
+  en:{home:'🇸🇦 Home',disc:'🚀 Discover',media:'📰 Media',exp:'🌍 Explore',digi:'⚡ Digital+',
+      signin:'Sign In with Pi',tagline:'Saudi Digital Ecosystem on Pi',
+      nextPrayer:'Next prayer in',allCities:'All Cities',
+      noMatches:'No matches found',liveNow:'🔴 Live Now',upcoming:'🕐 Upcoming',results:'✅ Results'},
+  ar:{home:'الرئيسية',disc:'اكتشف',media:'الإعلام',exp:'استكشف',digi:'ديجيتال+',
+      signin:'تسجيل الدخول بـ Pi',tagline:'النظام الرقمي السعودي على Pi',
+      nextPrayer:'الوقت حتى الصلاة',allCities:'جميع المدن',
+      noMatches:'لا توجد مباريات',liveNow:'🔴 مباشر',upcoming:'🕐 قادم',results:'✅ النتائج'}
+};
+function s(k){return(T[_lang]||T.en)[k]||k}
 
 /* TOAST */
 function toast(m,d){var t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(function(){t.classList.remove('show')},d||2200);}
 
-/* ─── LANGUAGE ─── */
-var T={
-  en:{home:'🇸🇦 Home',disc:'🚀 Discover',biz:'🏢 Business',exp:'🌍 Explore',digi:'⚡ Digital+',
-      signin:'Sign In with Pi',tagline:'Saudi Digital Ecosystem on Pi'},
-  ar:{home:'الرئيسية 🇸🇦',disc:'اكتشف 🚀',biz:'الأعمال 🏢',exp:'استكشف 🌍',digi:'ديجيتال+ ⚡',
-      signin:'تسجيل الدخول بـ Pi',tagline:'النظام الرقمي السعودي على Pi'}
-};
-function s(k){return(T[_lang]||T.en)[k]||k}
+/* PANEL */
+function openPanel(tag,html){
+  document.getElementById('panel-tag').textContent=tag;
+  document.getElementById('panel-body').innerHTML=html;
+  document.getElementById('panel').classList.add('open');
+}
+function closePanel(){document.getElementById('panel').classList.remove('open');}
+
+/* LANGUAGE */
 function toggleLang(){
   _lang=_lang==='en'?'ar':'en';
   localStorage.setItem('ds_lang',_lang);
@@ -446,8 +621,9 @@ function toggleLang(){
   r.setAttribute('lang',_lang);
   r.classList.toggle('ar',_lang==='ar');
   document.getElementById('lang-btn').textContent=_lang==='ar'?'EN':'عر';
-  ['h','d','b','e','p'].forEach(function(k,i){
-    var keys=['home','disc','biz','exp','digi'];
+  var map={h:'home',d:'disc',m:'media',e:'exp',p:'digi'};
+  var keys=['home','disc','media','exp','digi'];
+  ['h','d','m','e','p'].forEach(function(k,i){
     var el=document.getElementById('nl-'+k);if(el)el.textContent=s(keys[i]);
   });
   var st=document.getElementById('stxt');if(st)st.textContent=s('signin');
@@ -455,18 +631,20 @@ function toggleLang(){
   toast(_lang==='ar'?'تم تغيير اللغة':'Language changed');
 }
 
-/* ─── PI SDK AUTH ─── */
+/* ════════════════
+   PI SDK AUTH
+════════════════ */
 function piLogin(){
   var btn=document.getElementById('loginBtn'),msg=document.getElementById('lmsg');
   btn.disabled=true;
   msg.textContent='Initialising Pi SDK…';
-  try {
+  try{
     Pi.init({version:'2.0',sandbox:false});
     msg.textContent='Connecting wallet…';
     setTimeout(function(){
       Pi.authenticate(
         ['username','payments','wallet_address'],
-        function(p){ /* incomplete payment handler */
+        function(p){
           console.log('[DS] Incomplete payment:',p.identifier);
           fetch(_AP,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({paymentId:p.identifier})})
             .then(function(r){return r.json()}).catch(function(){});
@@ -476,17 +654,16 @@ function piLogin(){
         _u={uid:auth.user.uid,username:auth.user.username,wallet:auth.user.wallet_address||null};
         localStorage.setItem('ds_user',JSON.stringify(_u));
         _pass=localStorage.getItem('ds_pass')==='1';
-        console.log('[DS] Auth ✅',_u.username,'wallet:',_u.wallet?'✅':'—');
+        console.log('[DS] ✅ Auth:',_u.username,'wallet:',_u.wallet?'✅':'—');
         msg.textContent=_u.wallet?'✅ Wallet connected!':'✅ Signed in!';
         setTimeout(launch,500);
       }).catch(function(err){
-        console.error('[DS] Auth error:',err);
-        msg.textContent='Error: '+err.message+'. Open in Pi Browser.';
+        msg.textContent='Auth error: '+err.message+'. Use Pi Browser.';
         btn.disabled=false;
       });
     },600);
-  } catch(err) {
-    msg.textContent='Pi SDK error. Please use Pi Browser.';
+  }catch(err){
+    msg.textContent='Pi SDK error. Please open in Pi Browser.';
     btn.disabled=false;
   }
 }
@@ -498,11 +675,17 @@ function launch(){
   document.getElementById('digi-user').textContent=_u.username+(_u.wallet?' ✅':'');
   var sl=localStorage.getItem('ds_lang');
   if(sl&&sl!==_lang){_lang=sl;toggleLang();}
-  homeLoad();renderDisc();renderBiz();renderExp();renderDigi();
+  homeLoad();
+  renderDisc();
+  newsLoad(true);
+  renderExp();
+  renderDigi();
+  startNewsRefresh();
 }
 
 function logOut(){
   localStorage.removeItem('ds_user');_u=null;
+  clearInterval(_nRefresh);
   document.getElementById('app').style.display='none';
   document.getElementById('login').style.display='flex';
   document.getElementById('loginBtn').disabled=false;
@@ -516,32 +699,25 @@ function goS(id,el){
   document.getElementById('s-'+id).classList.add('on');
   if(el)el.classList.add('on');
 }
-function openPanel(tag,html){
-  document.getElementById('panel-tag').textContent=tag;
-  document.getElementById('panel-body').innerHTML=html;
-  document.getElementById('panel').classList.add('open');
-}
-function closePanel(){document.getElementById('panel').classList.remove('open');}
 
-/* ═══════════════════════════════
-   🇸🇦 HOME — AI + Prayer + Utils
-═══════════════════════════════ */
+/* ═══════════════════════════
+   🇸🇦 HOME
+═══════════════════════════ */
+var HOME_CITY_TABS=[1,2,4,5]; /* tabs that need city bar */
 function selCity(c,btn){
   _city=c;localStorage.setItem('ds_city',c);
   document.querySelectorAll('.cty').forEach(function(b){b.classList.remove('on')});
   if(btn)btn.classList.add('on');
   _pr=null;_wx=null;
-  if(_hTab===1)renderPrayer();
-  else if(_hTab===2)renderWeather();
-  else if(_hTab===4)renderQibla();
+  renderHTab();
 }
 
 function hTab(n,btn){
   _hTab=n;
-  document.querySelectorAll('#s-home .tb').forEach(function(b){b.classList.remove('on')});
+  document.querySelectorAll('#home-tabs .tb').forEach(function(b){b.classList.remove('on')});
   if(btn)btn.classList.add('on');
   var cb=document.getElementById('citybar');
-  cb.style.display=(n===1||n===2||n===4)?'flex':'none';
+  cb.style.display=HOME_CITY_TABS.indexOf(n)>=0?'flex':'none';
   renderHTab();
 }
 
@@ -556,113 +732,74 @@ function homeLoad(){
     _pr=res[0];_wx=res[1];_hols=res[2];
     if(_hTab===1)renderPrayer();
     else if(_hTab===2)renderWeather();
-    else if(_hTab===3)renderHolidays();
+    else if(_hTab===4)renderHolidays();
     startCD();
   });
 }
 
 function renderHTab(){
-  var fns=[renderAI,renderPrayer,renderWeather,renderHolidays,renderQibla,renderZakat];
+  var fns=[renderAI,renderPrayer,renderWeather,renderScores,renderHolidays,renderQibla,renderZakat];
   if(fns[_hTab])fns[_hTab]();
 }
 
-/* ── AI CONCIERGE ── */
-var AI_CHIPS=[
-  'Best places to visit in Saudi?',
-  'What is LEAP conference?',
-  'Tell me about NEOM',
-  'Saudi startups to know',
-  'How to visit AlUla?',
-  'Explain Vision 2030',
-  'Saudi food recommendations',
-  'What is FII Summit?',
-];
-
+/* AI */
+var AI_CHIPS=['Best places in Saudi?','What is NEOM?','What is LEAP?','Top Saudi startups','How to visit AlUla?','Explain Vision 2030','Saudi food to try','What is FII Summit?'];
 function renderAI(){
   var body=document.getElementById('home-body');
   body.innerHTML='<div class="ai-wrap">'
-    +'<div class="ai-msgs" id="ai-msgs">'
+    +'<div class="ai-feed" id="ai-feed">'
     +'<div class="ai-welcome">'
-    +'<div class="ai-welcome-title">🤖 Saudi AI Concierge</div>'
-    +'<div class="ai-welcome-sub">Ask me anything about Saudi Arabia — tourism, startups, Vision 2030, culture, events, business, and the Pi economy.</div>'
-    +'<div class="ai-chips" id="ai-chips">'
+    +'<div class="ai-w-title">🤖 Saudi AI Concierge</div>'
+    +'<div class="ai-w-sub">Ask me anything about Saudi Arabia — tourism, startups, Vision 2030, culture, events, business, and the Pi economy.</div>'
+    +'<div class="ai-chips">'
     +AI_CHIPS.map(function(c){return'<button class="ai-chip" onclick="aiChip(\''+c.replace(/'/g,"\\'")+'\'">'+c+'</button>';}).join('')
     +'</div></div></div>'
     +'<div class="ai-bar">'
-    +'<input id="ai-input" type="text" placeholder="Ask about Saudi Arabia…" onkeydown="if(event.key===\'Enter\')aiSend()">'
+    +'<input id="ai-inp" type="text" placeholder="Ask about Saudi Arabia…" onkeydown="if(event.key===\'Enter\')aiSend()">'
     +'<button id="ai-send" onclick="aiSend()">➤</button>'
     +'</div></div>';
-  /* Restore conversation */
   if(_aiMsgs.length){
-    var msgs=document.getElementById('ai-msgs');
-    _aiMsgs.forEach(function(m){msgs.appendChild(buildMsg(m.role,m.content));});
-    msgs.scrollTop=msgs.scrollHeight;
+    var feed=document.getElementById('ai-feed');
+    _aiMsgs.forEach(function(m){feed.appendChild(buildMsg(m.role,m.content));});
+    feed.scrollTop=feed.scrollHeight;
   }
 }
-
 function buildMsg(role,text){
-  var d=document.createElement('div');
-  d.className='msg '+(role==='user'?'u':'a');
-  d.textContent=text;
-  return d;
+  var d=document.createElement('div');d.className='msg '+(role==='user'?'u':'a');d.textContent=text;return d;
 }
-
-function aiChip(text){
-  var inp=document.getElementById('ai-input');
-  if(inp)inp.value=text;
-  aiSend();
-}
-
+function aiChip(t){var i=document.getElementById('ai-inp');if(i)i.value=t;aiSend();}
 function aiSend(){
-  var inp=document.getElementById('ai-input');
-  if(!inp)return;
-  var text=inp.value.trim();
-  if(!text)return;
+  var inp=document.getElementById('ai-inp');if(!inp)return;
+  var text=inp.value.trim();if(!text)return;
   inp.value='';
-  var msgs=document.getElementById('ai-msgs');
-  if(!msgs)return;
-
-  /* Remove chips */
-  var chips=document.getElementById('ai-chips');
-  if(chips&&chips.parentElement)chips.parentElement.style.display='none';
-
-  /* Add user message */
+  var feed=document.getElementById('ai-feed');if(!feed)return;
+  var welcome=feed.querySelector('.ai-welcome');if(welcome)welcome.style.display='none';
   _aiMsgs.push({role:'user',content:text});
-  msgs.appendChild(buildMsg('user',text));
-  msgs.scrollTop=msgs.scrollHeight;
-
-  /* Typing indicator */
-  var typing=document.createElement('div');
-  typing.className='msg a typing';typing.id='ai-typing';
-  msgs.appendChild(typing);
-  msgs.scrollTop=msgs.scrollHeight;
-
-  var send=document.getElementById('ai-send');
-  if(send)send.disabled=true;
-
-  fetch('/ai',{
-    method:'POST',
-    headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({messages:_aiMsgs.slice(-10)}),
-  }).then(function(r){return r.json()})
+  feed.appendChild(buildMsg('user',text));
+  var typing=document.createElement('div');typing.className='typing-msg';typing.id='ai-typing';
+  typing.innerHTML='<div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>';
+  feed.appendChild(typing);feed.scrollTop=feed.scrollHeight;
+  var send=document.getElementById('ai-send');if(send)send.disabled=true;
+  fetch('/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:_aiMsgs.slice(-10)})})
+    .then(function(r){return r.json()})
     .then(function(d){
       var old=document.getElementById('ai-typing');if(old)old.remove();
-      var reply=d.reply||'I could not generate a response. Please try again.';
+      var reply=d.reply||'Please try again.';
       _aiMsgs.push({role:'assistant',content:reply});
-      msgs.appendChild(buildMsg('assistant',reply));
-      msgs.scrollTop=msgs.scrollHeight;
+      feed.appendChild(buildMsg('assistant',reply));
+      feed.scrollTop=feed.scrollHeight;
       if(send)send.disabled=false;
     }).catch(function(){
       var old=document.getElementById('ai-typing');if(old)old.remove();
       var err='Connection error. Please try again.';
       _aiMsgs.push({role:'assistant',content:err});
-      msgs.appendChild(buildMsg('assistant',err));
-      msgs.scrollTop=msgs.scrollHeight;
+      feed.appendChild(buildMsg('assistant',err));
+      feed.scrollTop=feed.scrollHeight;
       if(send)send.disabled=false;
     });
 }
 
-/* ── PRAYER ── */
+/* Prayer */
 function renderPrayer(){
   var body=document.getElementById('home-body');
   if(!_pr){
@@ -676,12 +813,13 @@ function renderPrayer(){
   function toM(s){var p=(s||'00:00').split(':');return parseInt(p[0])*60+parseInt(p[1]);}
   var next='Isha';
   for(var i=0;i<order.length;i++){if(cur<toM(t[order[i]])){next=order[i];break;}}
-  var ram=h.isRamadan?'<div style="background:rgba(200,169,81,.1);border:1px solid var(--bdo);border-radius:10px;padding:.4rem .65rem;margin:.35rem .44rem;text-align:center"><div style="font-size:.88rem;font-weight:900;color:var(--gold)">🌙 Ramadan Mubarak!</div></div>':'';
-  var html='<div class="scroll"><div style="padding:.32rem .64rem .05rem;display:flex;align-items:center;justify-content:space-between">'
+  var ram=h.isRamadan?'<div style="background:rgba(200,169,81,.1);border:1px solid rgba(200,169,81,.2);border-radius:12px;padding:.45rem .68rem;margin:.35rem .48rem;text-align:center"><div style="font-size:.92rem;font-weight:900;color:var(--gold)">🌙 Ramadan Mubarak!</div></div>':'';
+  var html='<div class="scroll">'
+    +'<div style="padding:.34rem .7rem .05rem;display:flex;align-items:center;justify-content:space-between">'
     +'<div style="font-size:.54rem;color:var(--t2)">'+(_pr.date||'')+'</div>'
     +'<div class="ar-t" style="font-size:.58rem">'+h.day+' '+(h.monthAr||'')+'</div></div>'
     +ram
-    +'<div class="cd-bar"><div class="cd-lbl">Next prayer in</div><div class="cd-val" id="cd-val">—</div></div>'
+    +'<div class="cd-bar"><div class="cd-lbl">'+s('nextPrayer')+'</div><div class="cd-val" id="cd-val">—</div></div>'
     +'<div class="pr-grid">';
   order.forEach(function(n){
     var isN=n===next;
@@ -690,11 +828,10 @@ function renderPrayer(){
       '<div class="pr-name">'+n+'</div><div class="pr-time">'+(t[n]||'--:--')+'</div></div>';
   });
   html+='</div>';
-  if(_pr.offline)html+='<div class="offline">Offline — approximate times</div>';
+  if(_pr.offline)html+='<div class="offline-note">Offline — approximate times</div>';
   html+='</div>';
   body.innerHTML=html;
 }
-
 function startCD(){
   if(_cdT)clearInterval(_cdT);
   function tick(){
@@ -706,13 +843,13 @@ function startCD(){
     var diff=null;
     for(var i=0;i<order.length;i++){var m=toM(t[order[i]]);if(cur<m){diff=(m-cur)*60;break;}}
     if(diff===null)diff=(1440-cur+toM(t.Fajr||'04:45'))*60;
-    var h=Math.floor(diff/3600),m=Math.floor((diff%3600)/60),s=Math.floor(diff%60);
-    el.textContent=(h?h+'h ':'')+m+'m '+s+'s';
+    var h=Math.floor(diff/3600),m=Math.floor((diff%3600)/60),sc=Math.floor(diff%60);
+    el.textContent=(h?h+'h ':'')+m+'m '+sc+'s';
   }
   tick();_cdT=setInterval(tick,1000);
 }
 
-/* ── WEATHER ── */
+/* Weather */
 function renderWeather(){
   var body=document.getElementById('home-body');
   if(!_wx){
@@ -722,14 +859,15 @@ function renderWeather(){
   }
   if(_wx.error){body.innerHTML='<div class="scroll"><div class="spin-wrap"><span>Weather unavailable</span></div></div>';return;}
   var fc=(_wx.forecast||[]).slice(0,5).map(function(d){
-    return'<div class="fc-d"><div class="fc-dt">'+(d.date?d.date.slice(5):'')+'</div>'
-      +'<div class="fc-i">'+d.icon+'</div><div class="fc-hi">'+d.max+'°</div><div class="fc-lo">'+d.min+'°</div></div>';
+    return'<div class="fcd"><div class="fcd-dt">'+(d.date?d.date.slice(5):'')+'</div>'
+      +'<div class="fcd-i">'+d.icon+'</div><div class="fcd-hi">'+d.max+'°</div><div class="fcd-lo">'+d.min+'°</div></div>';
   }).join('');
-  var html='<div class="scroll"><div class="wx-hero"><div class="wx-ico">'+_wx.icon+'</div>'
+  var html='<div class="scroll">'
+    +'<div class="wx-hero"><div class="wx-ico">'+_wx.icon+'</div>'
     +'<div><div class="wx-tmp">'+_wx.temp+'°C</div><div class="wx-dsc">'+_wx.desc+' · '+_wx.city+'</div></div></div>'
     +'<div class="wx-meta"><span class="wm">💧 '+_wx.humidity+'%</span><span class="wm">💨 '+_wx.wind+' km/h</span></div>'
     +'<div class="fc">'+fc+'</div>'
-    +'<div class="sec">All Cities</div>'
+    +'<div class="sec-lbl">'+s('allCities')+'</div>'
     +'<div id="wx-all"><div class="spin-wrap"><div class="spin"></div></div></div></div>';
   body.innerHTML=html;
   fetch('/api?type=weather&all=1').then(function(r){return r.json()}).then(function(d){
@@ -740,7 +878,156 @@ function renderWeather(){
   }).catch(function(){});
 }
 
-/* ── HOLIDAYS ── */
+/* Live Scores */
+var LEAGUES=[
+  {id:'sau.1',name:'Saudi Pro League',flag:'🇸🇦'},
+  {id:'eng.1',name:'Premier League',flag:'🏴󠁧󠁢󠁥󠁮󠁧󠁿'},
+  {id:'esp.1',name:'La Liga',flag:'🇪🇸'},
+  {id:'ger.1',name:'Bundesliga',flag:'🇩🇪'},
+  {id:'ita.1',name:'Serie A',flag:'🇮🇹'},
+  {id:'uefa.champions',name:'Champions League',flag:'⭐'},
+];
+function renderScores(){
+  var body=document.getElementById('home-body');
+  var lgBtns=LEAGUES.map(function(l){
+    return'<button class="lgb'+(l.id===_scoresLeague?' on':'')
+      +'" onclick="switchLeague(\''+l.id+'\',this)">'+l.flag+' '+l.name+'</button>';
+  }).join('');
+  var vwBtns=['live','previous','table'].map(function(v,i){
+    var labels=['Live','Results','Table'];
+    return'<button class="vwb'+(v===_scoresView?' on':'')
+      +'" onclick="switchView(\''+v+'\',this)">'+labels[i]+'</button>';
+  }).join('');
+  body.innerHTML='<div style="flex:1;overflow:hidden;min-height:0;display:flex;flex-direction:column">'
+    +'<div class="lg-bar">'+lgBtns+'</div>'
+    +'<div class="vw-bar">'+vwBtns+'</div>'
+    +'<div class="scroll" id="scores-inner"><div class="spin-wrap"><div class="spin"></div></div></div>'
+    +'</div>';
+  loadScores();
+}
+function switchLeague(id,btn){
+  _scoresLeague=id;_scoresData=null;
+  document.querySelectorAll('.lgb').forEach(function(b){b.classList.remove('on')});
+  if(btn)btn.classList.add('on');
+  loadScores();
+}
+function switchView(v,btn){
+  _scoresView=v;
+  document.querySelectorAll('.vwb').forEach(function(b){b.classList.remove('on')});
+  if(btn)btn.classList.add('on');
+  renderScoresView();
+}
+function loadScores(){
+  if(_scoresLoading)return;
+  _scoresLoading=true;
+  Promise.all([
+    fetch('https://site.api.espn.com/apis/site/v2/sports/soccer/'+_scoresLeague+'/scoreboard',{signal:AbortSignal.timeout(8000)}).then(function(r){return r.ok?r.json():{};}).catch(function(){return{};}),
+    fetch('https://site.api.espn.com/apis/v2/sports/soccer/'+_scoresLeague+'/standings',{signal:AbortSignal.timeout(8000)}).then(function(r){return r.ok?r.json():{};}).catch(function(){return{};})
+  ]).then(function(res){
+    _scoresData={board:res[0],table:res[1]};
+    _scoresLoading=false;
+    renderScoresView();
+  }).catch(function(){
+    _scoresLoading=false;
+    var el=document.getElementById('scores-inner');
+    if(el)el.innerHTML='<div class="spin-wrap"><span>Scores unavailable</span></div>';
+  });
+}
+function renderScoresView(){
+  var inner=document.getElementById('scores-inner');
+  if(!inner||!_scoresData)return;
+  if(_scoresView==='table')renderTable(inner);
+  else renderMatches(inner);
+}
+function renderMatches(el){
+  var events=(_scoresData.board&&_scoresData.board.events)||[];
+  if(!events.length){el.innerHTML='<div class="spin-wrap"><span>'+s('noMatches')+'</span></div>';return;}
+  var live=[],prev=[],sched=[];
+  events.forEach(function(e){
+    var st=e.status&&e.status.type&&e.status.type.state;
+    if(st==='in')live.push(e);else if(st==='post')prev.push(e);else sched.push(e);
+  });
+  var html='';
+  function section(label,list){
+    if(!list.length)return;
+    html+='<div class="sec-lbl">'+label+' ('+list.length+')</div>';
+    list.forEach(function(e){
+      var co=e.competitions&&e.competitions[0];if(!co)return;
+      var hm=co.competitors&&co.competitors.find(function(c){return c.homeAway==='home'});
+      var aw=co.competitors&&co.competitors.find(function(c){return c.homeAway==='away'});
+      if(!hm||!aw)return;
+      var hN=(hm.team&&hm.team.shortDisplayName)||'Home';
+      var aN=(aw.team&&aw.team.shortDisplayName)||'Away';
+      var hS=hm.score||'–';var aS=aw.score||'–';
+      var hL=hm.team&&hm.team.logo;var aL=aw.team&&aw.team.logo;
+      var isLive=(e.status&&e.status.type&&e.status.type.state==='in');
+      var tl=e.status&&(e.status.displayClock||e.status.type.shortDetail)||'';
+      html+='<div class="match'+(isLive?' live-m':'')+'">';
+      if(isLive)html+='<div class="live-indicator"><div class="live-dot"></div><div class="live-lbl">LIVE</div></div>';
+      html+='<div class="match-comp">'+((co.notes&&co.notes[0]&&co.notes[0].headline)||'')+'</div>'
+        +'<div class="match-row">'
+        +'<div class="team-row">'+(hL?'<img class="crest" src="'+hL+'" onerror="this.style.display=\'none\'">':'')+'<div class="team-n">'+hN+'</div></div>'
+        +'<div class="score-box">';
+      if(isLive||e.status.type.state==='post'){
+        html+='<div class="score-n">'+hS+' – '+aS+'</div><div class="score-t">'+tl+'</div>';
+      } else {
+        var dt=e.date?new Date(e.date):null;
+        var disp=dt?dt.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}):'–';
+        html+='<div class="score-vs">'+disp+'</div>';
+      }
+      html+='</div>'
+        +'<div class="team-row away"><div class="team-n away">'+aN+'</div>'+(aL?'<img class="crest" src="'+aL+'" onerror="this.style.display=\'none\'">':'')+'</div>'
+        +'</div></div>';
+    });
+  }
+  if(_scoresView==='live'){
+    if(live.length)section(s('liveNow'),live);
+    if(sched.length)section(s('upcoming'),sched);
+    if(!live.length&&!sched.length)html='<div class="empty-state"><div class="es-ico">⚽</div><div class="es-t">No live matches</div><div class="es-s">Check back during match days</div></div>';
+  } else {
+    if(prev.length)section(s('results'),prev);
+    else html='<div class="empty-state"><div class="es-ico">⚽</div><div class="es-t">No recent results</div></div>';
+  }
+  el.innerHTML=html;
+}
+function renderTable(el){
+  var data=_scoresData.table;
+  var entries=(data&&data.standings&&data.standings[0]&&data.standings[0].entries)||
+              (data&&data.children&&data.children[0]&&data.children[0].standings&&data.children[0].standings.entries)||[];
+  if(!entries.length){el.innerHTML='<div class="empty-state"><div class="es-ico">📊</div><div class="es-t">Table unavailable</div></div>';return;}
+  var html='<div class="tbl-wrap"><table class="tbl"><thead><tr>'
+    +'<th>#</th><th>Club</th><th>P</th><th>W</th><th>D</th><th>L</th><th>GD</th><th>Pts</th><th>Form</th>'
+    +'</tr></thead><tbody>';
+  entries.forEach(function(entry,i){
+    var stats={};(entry.stats||[]).forEach(function(st){stats[st.name]=st.value;});
+    var pos=i+1;
+    var pc=pos<=4?'pos cl':pos<=6?'pos eu':pos>=entries.length-2?'pos rz':'pos';
+    var logo=entry.team&&entry.team.logos&&entry.team.logos[0]&&entry.team.logos[0].href;
+    var name=(entry.team&&(entry.team.shortDisplayName||entry.team.displayName))||'—';
+    var form=(stats.form||'').split('').slice(-5);
+    var fDots=form.map(function(f){var c=f==='W'?'fw':f==='D'?'fd2':'fl';return'<div class="fd '+c+'"></div>';}).join('');
+    var gd=stats.pointDifferential||0;if(gd>0)gd='+'+gd;
+    html+='<tr'+(i===0?' class="hl"':'')+'>'
+      +'<td><span class="'+pc+'">'+pos+'</span></td>'
+      +'<td><div class="club-cell">'+(logo?'<img class="crest" src="'+logo+'" onerror="this.style.display=\'none\'">':'')+'<span class="club-n">'+name+'</span></div></td>'
+      +'<td>'+(stats.gamesPlayed||0)+'</td>'
+      +'<td>'+(stats.wins||0)+'</td>'
+      +'<td>'+(stats.ties||0)+'</td>'
+      +'<td>'+(stats.losses||0)+'</td>'
+      +'<td>'+gd+'</td>'
+      +'<td><span class="pts">'+(stats.points||0)+'</span></td>'
+      +'<td><div class="form">'+fDots+'</div></td>'
+      +'</tr>';
+  });
+  html+='</tbody></table>'
+    +'<div style="padding:.45rem .65rem;font-size:.42rem;color:var(--t3)">'
+    +'<span style="color:var(--g3)">■</span> Champions League &nbsp;'
+    +'<span style="color:var(--gold)">■</span> Europa &nbsp;'
+    +'<span style="color:#e55">■</span> Relegation</div></div>';
+  el.innerHTML=html;
+}
+
+/* Holidays */
 function renderHolidays(){
   var body=document.getElementById('home-body');
   if(!_hols){
@@ -749,8 +1036,9 @@ function renderHolidays(){
     return;
   }
   var html='<div class="scroll">'+(_hols.holidays||[]).map(function(h){
-    return'<div class="hol"><div class="hol-f">'+h.flag+'</div><div style="flex:1">'
-      +'<div class="hol-n">'+h.name+'</div><div class="hol-ar">'+h.ar+'</div>'
+    return'<div class="hol"><div class="hol-f">'+h.flag+'</div>'
+      +'<div style="flex:1"><div class="hol-n">'+h.name+'</div>'
+      +'<div class="hol-ar">'+h.ar+'</div>'
       +'<div class="hol-d">'+h.date+(h.note?' · '+h.note:'')+'</div></div>'
       +'<div class="hol-cnt"><div class="hol-days">'+Math.abs(h.daysUntil)+'</div>'
       +'<div class="hol-unit">'+(h.passed?'days ago':'days')+'</div></div></div>';
@@ -758,13 +1046,14 @@ function renderHolidays(){
   body.innerHTML=html;
 }
 
-/* ── QIBLA ── */
+/* Qibla */
 function renderQibla(){
   var body=document.getElementById('home-body');
   body.innerHTML='<div class="scroll"><div class="qibla-wrap">'
     +'<div class="compass"><div class="c-n">N</div><div class="c-arr" id="c-arr"></div></div>'
     +'<div class="q-brg" id="q-brg">—°</div>'
-    +'<div class="q-dist" id="q-dist">Calculating…</div></div></div>';
+    +'<div class="q-dist" id="q-dist">Calculating…</div>'
+    +'</div></div>';
   fetch('/api?type=qibla&city='+_city).then(function(r){return r.json()}).then(function(d){
     var b=document.getElementById('q-brg'),dist=document.getElementById('q-dist'),arr=document.getElementById('c-arr');
     if(b)b.textContent=d.bearing+'°';
@@ -773,16 +1062,17 @@ function renderQibla(){
   }).catch(function(){var el=document.getElementById('q-dist');if(el)el.textContent='Unavailable';});
 }
 
-/* ── ZAKAT ── */
+/* Zakat */
 function renderZakat(){
   var body=document.getElementById('home-body');
-  body.innerHTML='<div class="scroll"><div class="card"><div class="card-h"><div class="ch-ico">💰</div>'
-    +'<div><div class="ch-t">Zakat Calculator</div><div class="ch-s">Nisab: 4,500 SAR · Rate: 2.5%</div></div></div>'
-    +'<div class="card-b">'
+  body.innerHTML='<div class="scroll">'
+    +'<div class="u-card"><div class="u-card-hdr"><div class="uc-ico">💰</div>'
+    +'<div><div class="uc-t">Zakat Calculator</div><div class="uc-s">Nisab: 4,500 SAR · Rate: 2.5%</div></div></div>'
+    +'<div class="u-card-body">'
     +'<input class="z-inp" id="z-g" type="number" placeholder="Gold (grams)">'
     +'<input class="z-inp" id="z-c" type="number" placeholder="Cash & Savings (SAR)">'
     +'<input class="z-inp" id="z-b" type="number" placeholder="Business Assets (SAR)">'
-    +'<button class="btn-green" onclick="calcZ()">Calculate Zakat</button>'
+    +'<button class="btn-g" onclick="calcZ()">Calculate Zakat</button>'
     +'<div class="z-res" id="z-r">'
     +'<div style="font-size:.48rem;color:var(--t3);margin-bottom:.18rem">Zakat Due</div>'
     +'<div class="z-amt" id="z-a">0 SAR</div>'
@@ -797,83 +1087,41 @@ function calcZ(){
   var r=document.getElementById('z-r'),a=document.getElementById('z-a'),n=document.getElementById('z-note');
   r.style.display='block';
   if(tot<nisab){a.textContent='0 SAR';a.style.color='var(--t3)';n.textContent='Total '+tot.toLocaleString()+' SAR — below Nisab of 4,500 SAR';}
-  else{var due=Math.round(tot*0.025);a.textContent=due.toLocaleString()+' SAR';a.style.color='var(--g3)';n.textContent='2.5% of '+tot.toLocaleString()+' SAR';}
+  else{var due=Math.round(tot*0.025);a.textContent=due.toLocaleString()+' SAR';a.style.color='var(--g3)';n.textContent='2.5% of '+tot.toLocaleString()+' SAR zakatable assets';}
 }
 
-/* ═══════════════════════════════
-   🚀 DISCOVER — Startups + Ecosystem
-═══════════════════════════════ */
+/* ═══════════════════════════
+   🚀 DISCOVER
+═══════════════════════════ */
 var STARTUPS=[
-  {n:'Tamara',y:2020,ind:'Fintech · BNPL',tag:'Unicorn',
-   desc:'Saudi Arabia\'s leading Buy Now Pay Later platform. Serves millions of shoppers across Saudi Arabia and UAE with flexible payment options at checkout.',
-   impact:'Raised $340M+. Became Saudi Arabia\'s first Fintech unicorn. Processing billions in transactions annually.'},
-  {n:'Tabby',y:2019,ind:'Fintech · BNPL',tag:'Unicorn',
-   desc:'BNPL and financial services platform operating across Saudi Arabia, UAE, Egypt and Kuwait. One of the fastest-growing fintechs in MENA.',
-   impact:'Valued at $1.5B+. Partnered with 10,000+ brands. Serving 10 million+ shoppers.'},
-  {n:'Salla',y:2016,ind:'E-Commerce',tag:'Unicorn',
-   desc:'Saudi e-commerce platform that enables anyone to create and manage an online store in minutes. Powers over 60,000 online stores in Arabic.',
-   impact:'Reached unicorn status. Dominant Arabic e-commerce builder. Supports Saudi entrepreneurship at scale.'},
-  {n:'Foodics',y:2014,ind:'Restaurant Tech',tag:'Series C',
-   desc:'Cloud-based restaurant management system used by 20,000+ restaurants across 35+ countries. Built in Saudi Arabia for the F&B industry.',
-   impact:'Raised $170M+. Expanded to 35+ countries. Powers Saudi Arabia\'s restaurant tech infrastructure.'},
-  {n:'Rewaa',y:2019,ind:'Retail Tech · POS',tag:'Series B',
-   desc:'Point-of-sale and inventory management platform for Saudi retailers. Integrates with Zakat Authority (ZATCA) for e-invoicing compliance.',
-   impact:'Serving thousands of Saudi businesses. Leading retail tech platform in the Kingdom.'},
-  {n:'Jahez',y:2016,ind:'Food Delivery',tag:'Public · Tadawul',
-   desc:'Saudi food delivery platform — one of the first Saudi tech companies to go public on the Saudi Exchange (Tadawul). Competes with global delivery giants.',
-   impact:'First Saudi food delivery company to IPO. Serves hundreds of cities across Saudi Arabia.'},
-  {n:'Nana',y:2016,ind:'Grocery Delivery',tag:'Series B',
-   desc:'On-demand grocery delivery platform operating in Saudi Arabia. Partners with major supermarkets for fast delivery to consumers.',
-   impact:'Raised $30M+. Operates in major Saudi cities. Key player in Saudi quick commerce.'},
-  {n:'Lean Technologies',y:2019,ind:'Open Banking',tag:'Series B',
-   desc:'Open banking infrastructure for MENA. Connects apps to users\' bank accounts for payments, data, and financial services. The Plaid of Saudi Arabia.',
-   impact:'Raised $33M+. Powering open banking across Saudi Arabia and UAE. SAMA licensed.'},
+  {n:'Tamara',y:2020,ind:'Fintech · BNPL',tag:'Unicorn',desc:"Saudi Arabia's leading Buy Now Pay Later platform serving millions across Saudi Arabia and UAE.",impact:'Raised $340M+. Saudi Arabia\'s first Fintech unicorn.'},
+  {n:'Tabby',y:2019,ind:'Fintech · BNPL',tag:'Unicorn',desc:'BNPL platform across Saudi Arabia, UAE, Egypt, and Kuwait. One of MENA\'s fastest-growing fintechs.',impact:'Valued at $1.5B+. 10 million+ shoppers.'},
+  {n:'Salla',y:2016,ind:'E-Commerce',tag:'Unicorn',desc:"Arabic e-commerce platform enabling anyone to build an online store. Powers 60,000+ stores.",impact:'Reached unicorn status. Dominant Arabic store builder.'},
+  {n:'Foodics',y:2014,ind:'Restaurant Tech',tag:'Series C',desc:'Cloud-based restaurant management system used by 20,000+ restaurants in 35+ countries.',impact:'Raised $170M+. Built in Saudi for the world.'},
+  {n:'Rewaa',y:2019,ind:'Retail · POS',tag:'Series B',desc:'POS and inventory management for Saudi retailers. ZATCA e-invoicing compliant.',impact:'Serving thousands of Saudi businesses.'},
+  {n:'Jahez',y:2016,ind:'Food Delivery',tag:'Public · Tadawul',desc:'Saudi food delivery platform. First Saudi tech company to IPO on Tadawul.',impact:'First food delivery IPO in Saudi Arabia.'},
+  {n:'Nana',y:2016,ind:'Grocery Delivery',tag:'Series B',desc:'On-demand grocery delivery partnering with major Saudi supermarkets.',impact:'Raised $30M+. Operates in major Saudi cities.'},
+  {n:'Lean Technologies',y:2019,ind:'Open Banking',tag:'Series B',desc:"Open banking infrastructure for MENA. The Plaid of Saudi Arabia. SAMA licensed.",impact:'Raised $33M+. Powering open banking across KSA and UAE.'},
 ];
-
 var ECOSYSTEM=[
-  {sector:'🤖 AI & Data',items:[
-    {n:'SDAIA',s:'Saudi Data and AI Authority — national AI body, National AI Strategy'},
-    {n:'Aramco AI',s:'Exploration and operations AI from world\'s largest oil company'},
-    {n:'GenAI Hub',s:'Government generative AI platform for Saudi public sector'},
-  ]},
-  {sector:'🏙️ Smart Cities',items:[
-    {n:'NEOM',s:'170km linear smart city — THE LINE, SINDALAH, OXAGON, TROJENA'},
-    {n:'Diriyah Gate',s:'UNESCO heritage district — $20B cultural transformation'},
-    {n:'ROSHN',s:'National real estate developer — building Saudi smart communities'},
-  ]},
-  {sector:'💳 Fintech',items:[
-    {n:'Tamara',s:'Saudi BNPL unicorn — $340M+ raised'},
-    {n:'Tabby',s:'Pan-MENA BNPL — $1.5B+ valuation'},
-    {n:'Lean Technologies',s:'Open banking infrastructure — Saudi Arabia\'s Plaid'},
-  ]},
-  {sector:'☁️ Cloud & Telecom',items:[
-    {n:'STC Cloud',s:'Saudi Telecom\'s cloud platform — 5G and enterprise cloud'},
-    {n:'Aramco Digital',s:'Digital subsidiary of Saudi Aramco — AI, cloud, energy tech'},
-    {n:'Elm',s:'Government digital services platform — identity and e-services'},
-  ]},
-  {sector:'💡 Innovation',items:[
-    {n:'Misk Foundation',s:'Mohammed bin Salman Foundation — youth innovation and entrepreneurship'},
-    {n:'KAUST',s:'King Abdullah University — world-class research and innovation hub'},
-    {n:'SDAIA\'s NCAR',s:'National Center for AI Research — advancing Saudi AI capabilities'},
-  ]},
-  {sector:'🛒 E-Commerce & Retail',items:[
-    {n:'Salla',s:'Arabic e-commerce store builder — 60,000+ stores'},
-    {n:'Foodics',s:'Restaurant OS — 20,000+ restaurants in 35+ countries'},
-    {n:'Rewaa',s:'Saudi POS and inventory system — ZATCA compliant'},
-  ]},
+  {s:'🤖 AI & Data',items:[{n:'SDAIA',d:'Saudi Data and AI Authority — national AI body, National AI Strategy'},{n:'Aramco AI',d:'Exploration and operations AI from world\'s largest oil company'},{n:'GenAI Hub',d:'Government generative AI platform for Saudi public sector'}]},
+  {s:'🏙️ Smart Cities',items:[{n:'NEOM',d:'170km linear smart city — THE LINE, SINDALAH, OXAGON, TROJENA'},{n:'Diriyah Gate',d:'UNESCO heritage district — $20B cultural transformation'},{n:'ROSHN',d:'National developer — building Saudi smart communities'}]},
+  {s:'💳 Fintech',items:[{n:'Tamara',d:'Saudi BNPL unicorn — $340M+ raised'},{n:'Tabby',d:'Pan-MENA BNPL — $1.5B+ valuation'},{n:'Lean Technologies',d:"Open banking infrastructure — Saudi Arabia's Plaid"}]},
+  {s:'☁️ Cloud & Telecom',items:[{n:'STC Cloud',d:"Saudi Telecom's cloud platform — 5G and enterprise cloud"},{n:'Aramco Digital',d:'Digital subsidiary of Aramco — AI, cloud, energy tech'},{n:'Elm',d:'Government digital services — identity and e-services'}]},
+  {s:'💡 Innovation',items:[{n:'Misk Foundation',d:'MBS Foundation — youth innovation and entrepreneurship'},{n:'KAUST',d:'King Abdullah University — world-class research hub'},{n:'NCAR',d:'National Center for AI Research — advancing Saudi AI'}]},
+  {s:'🛒 Commerce',items:[{n:'Salla',d:'Arabic e-commerce — 60,000+ stores'},{n:'Foodics',d:'Restaurant OS — 20,000+ restaurants in 35+ countries'},{n:'Rewaa',d:'Saudi POS system — ZATCA compliant'}]},
 ];
-
 var OPPS=[
   {ico:'🏆',n:'LEAP Innovation Challenge',d:'Annual competition at LEAP for AI and tech startups. Prizes and investor visibility.',cat:'Competition'},
-  {ico:'💻',n:'Saudi Hackathons',d:'Regular government and private hackathons in Riyadh and Jeddah. Open to all nationalities.',cat:'Hackathon'},
-  {ico:'🎓',n:'KAUST Entrepreneurship Program',d:'Research-based entrepreneurship support for deep tech startups at KAUST.',cat:'Program'},
-  {ico:'🚀',n:'Misk Accelerator',d:'Mohammed bin Salman Foundation accelerator for Saudi and regional startups.',cat:'Accelerator'},
-  {ico:'💰',n:'STV (Saudi Telecom Ventures)',d:'Corporate VC arm of STC. Investing in regional tech startups.',cat:'VC'},
-  {ico:'🌐',n:'Aramco Entrepreneurship Center',d:'WAED program supporting Saudi entrepreneurs with funding and mentorship.',cat:'Corporate'},
+  {ico:'💻',n:'Saudi Hackathons',d:'Regular government and private hackathons in Riyadh and Jeddah.',cat:'Hackathon'},
+  {ico:'🎓',n:'KAUST Entrepreneurship',d:'Research-based entrepreneurship for deep tech startups at KAUST.',cat:'Program'},
+  {ico:'🚀',n:'Misk Accelerator',d:'MBS Foundation accelerator for Saudi and regional startups.',cat:'Accelerator'},
+  {ico:'💰',n:'STV (Saudi Telecom Ventures)',d:'Corporate VC arm of STC investing in regional tech startups.',cat:'VC'},
+  {ico:'🌐',n:'Aramco WAED Program',d:'Aramco Entrepreneurship Center — funding and mentorship for Saudi entrepreneurs.',cat:'Corporate'},
   {ico:'📅',n:'LEAP Conference',d:'World\'s largest tech conference in Riyadh. Best networking event in Saudi tech.',cat:'Conference'},
   {ico:'🤝',n:'FII Institute',d:'Future Investment Initiative — connect with global and Saudi investors.',cat:'Summit'},
-  {ico:'🏛',n:'Monshaat',d:'Saudi Authority for Small and Medium Enterprises. Free resources, training, funding programs.',cat:'Government Support'},
-  {ico:'📱',n:'Pi Business Ecosystem',d:'Register your business on DigitalSaudi and join Saudi Arabia\'s Pi Network.',cat:'Pi Network'},
+  {ico:'🏛',n:'Monshaat (SME Authority)',d:'Saudi SME Authority. Free resources, training, and funding programs.',cat:'Support'},
+  {ico:'π',n:'Pi Business Ecosystem',d:'Join Saudi Arabia\'s Pi Network. Register your business on DigitalSaudi.',cat:'Pi Network'},
 ];
 
 function dTab(n,btn){
@@ -883,311 +1131,207 @@ function dTab(n,btn){
   renderDisc();
 }
 function renderDisc(){
-  var fns=[renderStartups,renderEcosystem,renderOpps];
-  if(fns[_dTab])fns[_dTab]();
-}
-
-function renderStartups(){
-  var body=document.getElementById('disc-body');
-  var html='<div style="padding:.32rem .64rem .05rem;font-size:.42rem;color:var(--t3)">Tap any startup to learn more</div>';
-  STARTUPS.forEach(function(s,i){
-    html+='<div class="item-card" onclick="openStartup('+i+')">'
-      +'<div class="ic-top"><div class="ic-name">'+s.n+'</div><div class="ic-tag">'+s.tag+'</div></div>'
-      +'<div class="ic-year">Est. '+s.y+' · '+s.ind+'</div>'
-      +'<div class="ic-desc">'+s.desc.slice(0,100)+'…</div></div>';
-  });
-  body.innerHTML=html;
-}
-
-function openStartup(i){
-  var s=STARTUPS[i];
-  openPanel(s.ind,'<div style="padding:.7rem .78rem">'
-    +'<div style="font-size:1.5rem;font-weight:900;color:var(--t1);margin-bottom:.08rem">'+s.n+'</div>'
-    +'<div style="font-size:.5rem;color:var(--g3);font-weight:700;margin-bottom:.06rem">Est. '+s.y+'</div>'
-    +'<div style="display:flex;gap:.3rem;flex-wrap:wrap;margin-bottom:.5rem">'
-    +'<span class="badge">'+s.ind+'</span><span class="badge">'+s.tag+'</span></div>'
-    +'<div style="font-size:.58rem;color:var(--t2);line-height:1.62;margin-bottom:.55rem">'+s.desc+'</div>'
-    +'<div style="font-size:.5rem;font-weight:800;color:var(--t3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.22rem">Innovation Impact</div>'
-    +'<div style="font-size:.56rem;color:var(--gold);line-height:1.55">'+s.impact+'</div>'
-    +'</div>');
-}
-
-function renderEcosystem(){
-  var body=document.getElementById('disc-body');
-  var html='';
-  ECOSYSTEM.forEach(function(sec){
-    html+='<div class="eco-section"><div class="eco-title">'+sec.sector+'</div>'
-      +'<div class="eco-items">';
-    sec.items.forEach(function(item){
-      html+='<div class="eco-item"><div><div class="ei-name">'+item.n+'</div><div class="ei-sub">'+item.s+'</div></div></div>';
+  var body=document.getElementById('disc-body');if(!body)return;
+  if(_dTab===0){
+    var html='<div style="padding:.3rem .68rem .05rem;font-size:.42rem;color:var(--t3)">Tap any startup for full details</div>';
+    STARTUPS.forEach(function(st,i){
+      html+='<div class="item-card" onclick="openStartup('+i+')">'
+        +'<div class="ic-top"><div class="ic-name">'+st.n+'</div><div class="ic-tag">'+st.tag+'</div></div>'
+        +'<div class="ic-year">Est. '+st.y+' · '+st.ind+'</div>'
+        +'<div class="ic-desc">'+st.desc.slice(0,110)+'…</div></div>';
     });
-    html+='</div></div>';
-  });
-  body.innerHTML=html;
-}
-
-function renderOpps(){
-  var body=document.getElementById('disc-body');
-  var html='<div class="sec" style="padding-top:.5rem">Saudi Opportunities</div>';
-  OPPS.forEach(function(o){
-    html+='<div class="ev-card"><div class="ev-head">'
-      +'<div class="ev-name">'+o.ico+' '+o.n+'</div>'
-      +'<div style="font-size:.42rem;font-weight:700;color:var(--g3);white-space:nowrap;margin-left:.3rem">'+o.cat+'</div></div>'
-      +'<div class="ev-desc">'+o.d+'</div></div>';
-  });
-  body.innerHTML=html;
-}
-
-/* ═══════════════════════════════
-   🏢 BUSINESS — Events + QR + Register
-═══════════════════════════════ */
-var EVENTS=[
-  {n:'LEAP 2026',d:'Feb 2026',loc:'Riyadh',
-   desc:"World's largest tech conference. AI, robotics, cloud, digital transformation. 200,000+ attendees from 100+ countries. Saudi Arabia's flagship tech event.",
-   cat:'Technology'},
-  {n:'Future Investment Initiative (FII)',d:'Oct 2025',loc:'Riyadh',
-   desc:'Annual global investment summit. Strategic deals between Saudi and global investors. Known as "Davos in the Desert". Top-tier global speakers.',
-   cat:'Investment'},
-  {n:'Riyadh Season',d:'Oct–Mar',loc:'Riyadh',
-   desc:"Saudi Arabia's flagship entertainment mega-event. Concerts, sports, exhibitions, dining experiences. Attracts millions of visitors annually.",
-   cat:'Entertainment'},
-  {n:'Cityscape Saudi',d:'Sep 2025',loc:'Riyadh',
-   desc:'Premier real estate and urban development exhibition. Features Vision 2030 giga project updates. Connects developers, investors, and buyers.',
-   cat:'Real Estate'},
-  {n:'Esports World Cup',d:'Jul–Aug 2025',loc:'Riyadh',
-   desc:'Largest esports event in history. Hosted at Boulevard City Riyadh. Prize pool of $60M+. Features 20+ game titles and top global teams.',
-   cat:'Gaming'},
-  {n:'Hajj Expo',d:'Annually',loc:'Jeddah',
-   desc:'Annual exhibition on Hajj and Umrah services, technology, and pilgrim experience innovation. Connects 2.5M+ pilgrim market.',
-   cat:'Islamic'},
-  {n:'Saudi Green Initiative Forum',d:'Oct 2025',loc:'Riyadh',
-   desc:'Annual forum on Saudi environmental commitments — 10 billion trees, renewable energy, carbon reduction. Part of global climate action.',
-   cat:'Environment'},
-  {n:'Global AI Summit',d:'2025',loc:'Riyadh',
-   desc:'Government-hosted summit on responsible AI, policy, and international cooperation. Features top AI researchers and policymakers.',
-   cat:'AI'},
-];
-
-function bTab(n,btn){
-  _bTab=n;
-  document.querySelectorAll('#s-biz .tb').forEach(function(b){b.classList.remove('on')});
-  if(btn)btn.classList.add('on');
-  renderBiz();
-}
-function renderBiz(){
-  var fns=[renderEvents,renderQR,renderReg,renderDirectory];
-  if(fns[_bTab])fns[_bTab]();
-}
-
-function renderEvents(){
-  var body=document.getElementById('biz-body');
-  var html='<div class="sec" style="padding-top:.45rem">Saudi Events & Conferences</div>';
-  EVENTS.forEach(function(ev,i){
-    html+='<div class="ev-card" style="cursor:pointer" onclick="openEvent('+i+')">'
-      +'<div class="ev-head"><div class="ev-name">'+ev.n+'</div><div class="ev-date">'+ev.d+'</div></div>'
-      +'<div class="ev-loc">📍 '+ev.loc+' · <span style="color:var(--g3);font-weight:700">'+ev.cat+'</span></div>'
-      +'<div class="ev-desc">'+ev.desc.slice(0,120)+'…</div></div>';
-  });
-  body.innerHTML=html;
-}
-
-function openEvent(i){
-  var ev=EVENTS[i];
-  openPanel(ev.cat,'<div style="padding:.7rem .78rem">'
-    +'<div style="font-size:1.2rem;font-weight:900;color:var(--t1);margin-bottom:.1rem">'+ev.n+'</div>'
-    +'<div style="display:flex;gap:.3rem;flex-wrap:wrap;margin-bottom:.45rem">'
-    +'<span class="badge">📅 '+ev.d+'</span>'
-    +'<span class="badge">📍 '+ev.loc+'</span>'
-    +'<span class="badge">'+ev.cat+'</span></div>'
-    +'<div style="font-size:.6rem;color:var(--t2);line-height:1.62">'+ev.desc+'</div>'
-    +'</div>');
-}
-
-function renderQR(){
-  var body=document.getElementById('biz-body');
-  body.innerHTML='<div class="card"><div class="card-h"><div class="ch-ico">📱</div>'
-    +'<div><div class="ch-t">Pi QR Payment Generator</div><div class="ch-s">Generate real Pi payment QR codes for your business</div></div></div>'
-    +'<div class="card-b">'
-    +'<input class="b-inp" id="qr-amt" type="number" step="0.01" min="0.01" placeholder="Amount (π e.g. 1.00)">'
-    +'<input class="b-inp" id="qr-memo" type="text" placeholder="Memo / Description">'
-    +'<input class="b-inp" id="qr-user" type="text" placeholder="Your Pi Username (optional)">'
-    +'<button class="btn-green" onclick="genQR()">Generate QR Code</button>'
-    +'<div class="qr-out" id="qr-out"></div></div></div>'
-    +'<div class="card"><div class="card-h"><div class="ch-ico">💡</div>'
-    +'<div><div class="ch-t">How It Works</div><div class="ch-s">Share your QR to receive Pi payments</div></div></div>'
-    +'<div class="card-b" style="font-size:.56rem;color:var(--t2);line-height:1.65">'
-    +'1. Enter the amount and memo above<br>'
-    +'2. Click Generate QR Code<br>'
-    +'3. Show the QR code to your customer<br>'
-    +'4. Customer scans with Pi Browser<br>'
-    +'5. Payment sent directly to your Pi wallet'
-    +'</div></div>';
-}
-
-function genQR(){
-  var amt=document.getElementById('qr-amt').value||'1';
-  var memo=document.getElementById('qr-memo').value||'Pi Payment';
-  var user=document.getElementById('qr-user').value.trim();
-  if(parseFloat(amt)<=0||isNaN(parseFloat(amt))){toast('Enter a valid amount');return;}
-  var uri='pi://pay?amount='+encodeURIComponent(amt)+'&memo='+encodeURIComponent(memo)+(user?'&to='+encodeURIComponent(user):'');
-  var out=document.getElementById('qr-out');
-  out.innerHTML='<div id="qr-box"></div>'
-    +'<div style="font-size:.46rem;color:var(--t3);text-align:center;max-width:250px;word-break:break-all;margin-top:.1rem">'+uri+'</div>'
-    +'<div style="font-size:.5rem;color:var(--g3);font-weight:700">π '+amt+' · '+memo+'</div>';
-  try{
-    new QRCode(document.getElementById('qr-box'),{
-      text:uri,width:200,height:200,colorDark:'#006C35',colorLight:'#ffffff',
-      correctLevel:QRCode.CorrectLevel.H
+    body.innerHTML=html;
+  } else if(_dTab===1){
+    var html='';
+    ECOSYSTEM.forEach(function(sec){
+      html+='<div class="eco-sec"><div class="eco-hdr">'+sec.s+'</div><div class="eco-items">';
+      sec.items.forEach(function(item){
+        html+='<div class="eco-row"><div><div class="er-n">'+item.n+'</div><div class="er-s">'+item.d+'</div></div></div>';
+      });
+      html+='</div></div>';
     });
-    toast('QR generated ✅');
-  }catch(e){out.innerHTML='<div style="font-size:.54rem;color:var(--t3)">QR library error: '+e.message+'</div>';}
-}
-
-function renderReg(){
-  var body=document.getElementById('biz-body');
-  body.innerHTML='<div class="card"><div class="card-h"><div class="ch-ico">🏢</div>'
-    +'<div><div class="ch-t">Pi Business Registration</div>'
-    +'<div class="ch-s">Register interest in accepting Pi payments</div></div></div>'
-    +'<div style="padding:.55rem .64rem">'
-    +'<div style="font-size:.56rem;color:var(--t2);line-height:1.55;margin-bottom:.45rem">Become one of the first verified Pi-accepting businesses in Saudi Arabia. Register your interest and connect with the Saudi Pi community.</div>'
-    +'<label class="b-label">Business Name</label>'
-    +'<input class="b-inp" id="rg-n" type="text" placeholder="e.g. Digital Café Riyadh">'
-    +'<label class="b-label">City</label>'
-    +'<select class="b-inp" id="rg-c"><option>Riyadh</option><option>Jeddah</option><option>Makkah</option><option>Madinah</option><option>Dammam</option><option>Abha</option><option>NEOM</option><option>Other</option></select>'
-    +'<label class="b-label">Category</label>'
-    +'<select class="b-inp" id="rg-cat"><option>Food & Beverage</option><option>Retail</option><option>Technology</option><option>Healthcare</option><option>Education</option><option>Tourism & Hospitality</option><option>Finance</option><option>Entertainment</option><option>Other</option></select>'
-    +'<label class="b-label">Pi Username</label>'
-    +'<input class="b-inp" id="rg-pi" type="text" placeholder="Your Pi username">'
-    +'<label class="b-label">Contact (Email or WhatsApp)</label>'
-    +'<input class="b-inp" id="rg-em" type="text" placeholder="email@example.com or +966…">'
-    +'<button class="btn-green" onclick="submitReg()">Register My Business</button>'
-    +'<div id="rg-msg" style="font-size:.5rem;text-align:center;margin-top:.38rem;min-height:.8rem"></div>'
-    +'</div></div>';
-}
-
-function submitReg(){
-  var n=document.getElementById('rg-n').value.trim();
-  var pi=document.getElementById('rg-pi').value.trim();
-  var em=document.getElementById('rg-em').value.trim();
-  var msg=document.getElementById('rg-msg');
-  if(!n||!pi||!em){msg.style.color='var(--gold)';msg.textContent='Please fill in all fields';return;}
-  var city=document.getElementById('rg-c').value;
-  var cat=document.getElementById('rg-cat').value;
-  var regs=JSON.parse(localStorage.getItem('ds_regs')||'[]');
-  if(regs.find(function(r){return r.pi===pi;})){msg.style.color='var(--gold)';msg.textContent='This Pi username is already registered';return;}
-  regs.push({name:n,city:city,category:cat,pi:pi,contact:em,ts:Date.now()});
-  localStorage.setItem('ds_regs',JSON.stringify(regs));
-  msg.style.color='var(--g3)';
-  msg.textContent='✅ Registered! You\'ll be listed in the directory.';
-  ['rg-n','rg-pi','rg-em'].forEach(function(id){document.getElementById(id).value='';});
-  setTimeout(function(){_bTab=3;document.querySelectorAll('#s-biz .tb').forEach(function(b,i){b.classList.toggle('on',i===3)});renderDirectory();},1400);
-}
-
-function renderDirectory(){
-  var body=document.getElementById('biz-body');
-  var regs=JSON.parse(localStorage.getItem('ds_regs')||'[]');
-  if(!regs.length){
-    body.innerHTML='<div class="empty-state"><div class="es-ico">🏪</div>'
-      +'<div class="es-t">No businesses yet</div>'
-      +'<div class="es-s">Be the first Pi-accepting business in Saudi Arabia.<br>Register in the Register tab.</div></div>';
-    return;
+    body.innerHTML=html;
+  } else {
+    var html='<div class="sec-lbl" style="padding-top:.45rem">Saudi Opportunities</div>';
+    OPPS.forEach(function(o){
+      html+='<div class="ev-card">'
+        +'<div class="ev-head"><div class="ev-name">'+o.ico+' '+o.n+'</div>'
+        +'<div style="font-size:.42rem;font-weight:700;color:var(--g3);white-space:nowrap;margin-left:.3rem">'+o.cat+'</div></div>'
+        +'<div class="ev-desc">'+o.d+'</div></div>';
+    });
+    body.innerHTML=html;
   }
-  /* Search/filter */
-  var cats=[...new Set(regs.map(function(r){return r.category;}))];
-  var html='<div class="catbar" id="dir-filter">'
-    +'<button class="cb on" onclick="filterDir(\'all\',this)">All</button>'
-    +cats.map(function(c){return'<button class="cb" onclick="filterDir(\''+c+'\',this)">'+c+'</button>';}).join('')
-    +'</div><div id="dir-list">';
-  regs.slice().reverse().forEach(function(r){
-    html+='<div class="item-card">'
-      +'<div class="ic-top"><div class="ic-name">'+r.name+'</div><div class="ic-tag">'+r.category+'</div></div>'
-      +'<div class="ic-year">📍 '+r.city+' · π '+r.pi+'</div>'
-      +'<div class="ic-desc">Interested in accepting Pi payments</div></div>';
-  });
-  html+='</div>';
-  body.innerHTML=html;
+}
+function openStartup(i){
+  var st=STARTUPS[i];
+  openPanel(st.ind,'<div style="padding:.7rem .8rem">'
+    +'<div style="font-size:1.6rem;font-weight:900;color:var(--t1);margin-bottom:.05rem">'+st.n+'</div>'
+    +'<div style="font-size:.5rem;color:var(--g3);font-weight:700;margin-bottom:.1rem">Est. '+st.y+'</div>'
+    +'<div style="display:flex;gap:.3rem;flex-wrap:wrap;margin-bottom:.5rem">'
+    +'<span class="badge">'+st.ind+'</span><span class="badge">'+st.tag+'</span></div>'
+    +'<div style="font-size:.6rem;color:var(--t2);line-height:1.62;margin-bottom:.55rem">'+st.desc+'</div>'
+    +'<div style="font-size:.5rem;font-weight:800;color:var(--t3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.22rem">Innovation Impact</div>'
+    +'<div style="font-size:.56rem;color:var(--gold);line-height:1.55">'+st.impact+'</div>'
+    +'</div>');
 }
 
-function filterDir(cat,btn){
-  document.querySelectorAll('#dir-filter .cb').forEach(function(b){b.classList.remove('on')});
+/* ═══════════════════════════
+   📰 MEDIA — News + Images
+═══════════════════════════ */
+function mediaTab(n,btn){
+  _mediaTab=n;
+  document.querySelectorAll('#s-media .tb').forEach(function(b){b.classList.remove('on')});
   if(btn)btn.classList.add('on');
-  var regs=JSON.parse(localStorage.getItem('ds_regs')||'[]');
-  var list=cat==='all'?regs:regs.filter(function(r){return r.category===cat;});
-  var html=list.length?'':'<div class="empty-state"><div class="es-ico">🔍</div><div class="es-t">No businesses in this category yet</div></div>';
-  list.slice().reverse().forEach(function(r){
-    html+='<div class="item-card">'
-      +'<div class="ic-top"><div class="ic-name">'+r.name+'</div><div class="ic-tag">'+r.category+'</div></div>'
-      +'<div class="ic-year">📍 '+r.city+' · π '+r.pi+'</div>'
-      +'<div class="ic-desc">Interested in accepting Pi payments</div></div>';
-  });
-  document.getElementById('dir-list').innerHTML=html;
+  var nf=document.getElementById('news-feed');
+  var imf=document.getElementById('img-feed');
+  var cats=document.getElementById('news-cats');
+  if(n===0){
+    nf.style.display='';imf.style.display='none';cats.style.display='flex';
+    if(!document.querySelector('.ncard'))newsLoad(true);
+  } else {
+    nf.style.display='none';imf.style.display='';cats.style.display='none';
+    if(!document.querySelector('.ig-item'))imgLoad(true);
+  }
+}
+function newsCat(cat,btn){
+  _nCat=cat;_nPage=1;_nHasMore=true;_nArts=[];
+  document.querySelectorAll('#news-cats .cb').forEach(function(b){b.classList.remove('on')});
+  if(btn)btn.classList.add('on');
+  newsLoad(true);
+}
+function newsLoad(reset){
+  if(_nLoading)return;
+  if(!_nHasMore&&!reset)return;
+  if(reset){_nPage=1;_nArts=[];_nHasMore=true;}
+  _nLoading=true;
+  var feed=document.getElementById('news-feed');
+  if(_nPage===1){
+    feed.innerHTML='';
+    /* Skeleton */
+    for(var i=0;i<4;i++){
+      feed.innerHTML+='<div style="margin-bottom:3px"><div class="skel" style="height:180px;border-radius:0;margin-bottom:.5rem"></div>'
+        +'<div style="padding:0 .78rem .6rem"><div class="skel" style="height:14px;width:80%;margin-bottom:.3rem"></div>'
+        +'<div class="skel" style="height:12px;width:60%"></div></div></div>';
+    }
+  } else {
+    var ld=document.createElement('div');ld.id='n-ld';ld.className='n-loader';
+    ld.innerHTML='<div class="spin"></div><span>Loading more…</span>';
+    feed.appendChild(ld);
+  }
+  fetch('/news?cat='+_nCat+'&page='+_nPage)
+    .then(function(r){return r.ok?r.json():Promise.reject();})
+    .then(function(d){
+      var old=document.getElementById('n-ld');if(old)old.remove();
+      _nHasMore=d.hasMore||false;
+      var arts=d.articles||[];
+      _nArts=_nArts.concat(arts);
+      if(_nPage===1)feed.innerHTML='';
+      arts.forEach(function(a){feed.appendChild(buildNewsCard(a));});
+      if(_nHasMore){
+        var sen=document.createElement('div');sen.id='n-sen';sen.style.height='4px';
+        feed.appendChild(sen);
+        observeN(sen);
+      }
+      _nPage++;_nLoading=false;
+    }).catch(function(){
+      _nLoading=false;
+      var old=document.getElementById('n-ld');if(old)old.remove();
+      if(_nPage===1)feed.innerHTML='<div class="empty-state"><div class="es-ico">📰</div><div class="es-t">News unavailable</div><div class="es-s">Check your connection</div></div>';
+    });
+}
+function buildNewsCard(a){
+  var d=document.createElement('div');d.className='ncard';
+  d.onclick=function(){if(a.url)window.open(a.url,'_blank');};
+  var ago='';
+  try{var ms=Date.now()-new Date(a.date).getTime();var h=Math.floor(ms/3600000);ago=h<1?'Just now':h<24?h+'h ago':Math.floor(h/24)+'d ago';}catch(e){}
+  var imgH='';
+  if(a.image)imgH='<div style="overflow:hidden"><img class="nc-img" loading="lazy" src="'+a.image+'" alt="" onload="this.classList.add(\'loaded\')" onerror="this.parentElement.style.display=\'none\'"></div>';
+  d.innerHTML=imgH+'<div class="nc-body"><div class="nc-meta"><span class="nc-src">'+a.source+'</span><span class="nc-ago">'+ago+'</span></div>'
+    +'<div class="nc-title">'+a.title+'</div>'+(a.summary?'<div class="nc-sum">'+a.summary+'</div>':'')+'</div>';
+  return d;
+}
+function observeN(el){
+  if(window._nObs)window._nObs.disconnect();
+  window._nObs=new IntersectionObserver(function(en){if(en[0].isIntersecting){el.remove();newsLoad(false);}},{rootMargin:'400px'});
+  window._nObs.observe(el);
+}
+function mediaRefresh(){
+  if(_mediaTab===0){_nPage=1;_nArts=[];_nHasMore=true;newsLoad(true);toast('Refreshing…');}
+  else{imgLoad(true);toast('Refreshing…');}
+}
+function startNewsRefresh(){
+  if(_nRefresh)clearInterval(_nRefresh);
+  _nRefresh=setInterval(function(){
+    if(document.getElementById('s-media').classList.contains('on')&&_mediaTab===0){
+      var f=document.getElementById('news-feed');
+      if(f&&f.scrollTop<50){_nPage=1;_nArts=[];_nHasMore=true;newsLoad(true);}
+    }
+  },5*60*1000);
 }
 
-/* ═══════════════════════════════
-   🌍 EXPLORE — Vision + Tourism + Culture
-═══════════════════════════════ */
+/* IMAGE FEED */
+function imgLoad(reset){
+  if(_iLoading)return;if(!_iHasMore&&!reset)return;
+  if(reset){_iPage=1;_iHasMore=true;}
+  _iLoading=true;
+  var feed=document.getElementById('img-feed');
+  if(_iPage===1)feed.innerHTML='<div class="img-grid" id="img-grid"></div>';
+  var grid=document.getElementById('img-grid');if(!grid){_iLoading=false;return;}
+  var ld=document.createElement('div');ld.id='i-ld';ld.className='n-loader';
+  ld.innerHTML='<div class="spin"></div>';feed.appendChild(ld);
+  /* Generate deterministic beautiful Saudi-themed images via picsum */
+  var seeds=Array.from({length:20},function(_,i){return(_iPage-1)*20+i+1;});
+  var imgs=seeds.map(function(seed,i){return{url:'https://picsum.photos/seed/sa'+seed+'/800/600',thumb:'https://picsum.photos/seed/sa'+seed+'/400/300',id:'i_'+seed};});
+  var old=document.getElementById('i-ld');if(old)old.remove();
+  _iHasMore=_iPage<30;
+  imgs.forEach(function(img){
+    var item=document.createElement('div');item.className='ig-item';
+    var imgEl=document.createElement('img');imgEl.loading='lazy';imgEl.src=img.thumb;
+    imgEl.onload=function(){this.classList.add('loaded');};
+    imgEl.onerror=function(){item.style.display='none';};
+    item.appendChild(imgEl);grid.appendChild(item);
+  });
+  if(_iHasMore){
+    var sen=document.createElement('div');sen.id='i-sen';sen.style.height='4px';
+    feed.appendChild(sen);
+    var obs=new IntersectionObserver(function(en){if(en[0].isIntersecting){sen.remove();_iPage++;_iLoading=false;imgLoad(false);}},{rootMargin:'600px'});
+    obs.observe(sen);
+  }else{_iLoading=false;}
+  _iPage++;_iLoading=false;
+}
+
+/* ═══════════════════════════
+   🌍 EXPLORE
+═══════════════════════════ */
 var GIGA=[
-  {e:'🏙️',n:'NEOM',s:'Under Development',sc:'dev',
-   desc:'A 170km linear smart city being built in northwest Saudi Arabia. An economic zone powered by 100% renewable energy with AI and autonomous systems at its core.',
-   subs:['THE LINE — zero-carbon linear city','SINDALAH — Red Sea luxury island','OXAGON — floating industrial city','TROJENA — mountain ski and wellness resort']},
-  {e:'🌊',n:'Red Sea Project',s:'Phase 1 Open',sc:'open',
-   desc:'World-class luxury tourism destination across 50+ natural Red Sea islands. Extraordinary coral reefs with 7,000+ marine species. Phase 1 resorts now open.',
-   subs:['Shura Island Phase 1 open','Coral conservation programs','Red Sea International Airport operational','Targeting zero-carbon tourism']},
-  {e:'🏰',n:'Diriyah Gate',s:'Active',sc:'act',
-   desc:'The birthplace of the Saudi state — Al Saud dynasty\'s original home. UNESCO World Heritage site undergoing $20B transformation into a global heritage destination.',
-   subs:['At-Turaif District fully open','Bujairi Terrace — restaurants and heritage views','Diriyah Biennale — contemporary art','UNESCO World Heritage status']},
-  {e:'💎',n:'Amaala',s:'Under Development',sc:'dev',
-   desc:'Ultra-luxury wellness and lifestyle resort along the Red Sea Triple Bay coastline. Targeting the global wellness tourism and health retreat market.',
-   subs:['300+ hotels and residences planned','Yacht marina and wellness institutes','Arts and culture district','Zero carbon footprint target']},
-  {e:'🎢',n:'Qiddiya',s:'Under Development',sc:'dev',
-   desc:'Entertainment capital being built 40km west of Riyadh. Positioned to become the world\'s largest entertainment city when complete.',
-   subs:['Formula 1 circuit planned','Safari experience','Water theme park','Esports and gaming district']},
-  {e:'🌿',n:'King Salman Park',s:'Under Development',sc:'dev',
-   desc:'The world\'s largest urban park — 13.4 km² in central Riyadh. A green lung for the capital featuring arts, culture, sports, and community spaces.',
-   subs:['Larger than Hyde Park and Central Park combined','Royal Arts Complex','Sports facilities and stadiums','Community gardens and public spaces']},
+  {e:'🏙️',n:'NEOM',s:'Under Development',sc:'dev',desc:"A 170km linear smart city in northwest Saudi Arabia. Powered by 100% renewable energy with AI and autonomous systems.",subs:['THE LINE — zero-carbon linear city','SINDALAH — Red Sea luxury island','OXAGON — floating industrial city','TROJENA — mountain ski resort']},
+  {e:'🌊',n:'Red Sea Project',s:'Phase 1 Open',sc:'open',desc:'World-class luxury tourism across 50+ Red Sea islands. Extraordinary coral reefs. Phase 1 resorts now open.',subs:['Shura Island Phase 1 open','Red Sea International Airport operational','Coral conservation programs active','Zero-carbon tourism target']},
+  {e:'🏰',n:'Diriyah Gate',s:'Active',sc:'act',desc:"UNESCO World Heritage site — birthplace of the Saudi state. $20B transformation into a global heritage destination.",subs:['At-Turaif District fully open','Bujairi Terrace restaurants open','Diriyah Biennale — contemporary art','UNESCO World Heritage status']},
+  {e:'💎',n:'Amaala',s:'Under Development',sc:'dev',desc:'Ultra-luxury wellness resort along the Red Sea Triple Bay coastline. Targeting global wellness tourism market.',subs:['300+ hotels planned','Yacht marina and wellness institutes','Arts and culture district','Zero carbon footprint target']},
+  {e:'🎢',n:'Qiddiya',s:'Under Development',sc:'dev',desc:"Entertainment capital 40km from Riyadh. Positioned to become the world's largest entertainment city.",subs:['Formula 1 circuit planned','Safari experience','Water theme park','Esports and gaming district']},
+  {e:'🌿',n:'King Salman Park',s:'Under Development',sc:'dev',desc:"The world's largest urban park — 13.4 km² in central Riyadh. Green space, arts, culture, and sports.",subs:['Larger than Hyde Park and Central Park combined','Royal Arts Complex','Sports facilities','Community gardens']},
 ];
-
 var PILLARS=[
-  {i:'🏛',t:'A Thriving Economy',d:'Diversify Saudi Arabia beyond oil through tourism, mining, entertainment, manufacturing, and logistics.'},
-  {i:'🌱',t:'A Vibrant Society',d:'Enrich the quality of life for Saudi citizens through culture, entertainment, sport, heritage, and lifestyle.'},
-  {i:'🤝',t:'An Ambitious Nation',d:'Improve government efficiency, strengthen public-private partnerships, and achieve fiscal sustainability.'},
-  {i:'💡',t:'Digital Transformation',d:'SDAIA leadership, AI-first government services, 5G infrastructure, cloud adoption, and smart city programs.'},
-  {i:'🌍',t:'Environmental Commitment',d:'Saudi Green Initiative — 50% renewable energy target, 10 billion trees, significant carbon reduction.'},
+  {i:'🏛',t:'A Thriving Economy',d:'Diversify beyond oil through tourism, mining, entertainment, manufacturing, and logistics.'},
+  {i:'🌱',t:'A Vibrant Society',d:'Enrich Saudi lives through culture, entertainment, sport, and heritage.'},
+  {i:'🤝',t:'An Ambitious Nation',d:'Improve government efficiency and strengthen public-private partnerships.'},
+  {i:'💡',t:'Digital Transformation',d:'SDAIA, AI-first government, 5G infrastructure, cloud adoption, and smart cities.'},
+  {i:'🌍',t:'Environmental Commitment',d:'Saudi Green Initiative — 50% renewable energy, 10 billion trees, carbon reduction.'},
 ];
-
 var DESTS=[
-  {n:'Makkah',ar:'مكة المكرمة',e:'🕋',tag:'Holy City',reg:'Makkah Province',
-   desc:'The holiest city in Islam and home to Masjid al-Haram. An estimated 2 million pilgrims perform Hajj here annually. Entry restricted to Muslims.',
-   tips:['Best visited during off-peak seasons for easier access to holy sites','Grand Mosque can accommodate over 4 million worshippers','Zamzam water is freely available throughout the mosque']},
-  {n:'Madinah',ar:'المدينة المنورة',e:'🌙',tag:"Prophet's City",reg:'Madinah Province',
-   desc:"The second holiest city in Islam, home to Al-Masjid an-Nabawi — the Prophet's Mosque. A city of profound spiritual significance and serenity.",
-   tips:["The Prophet's Mosque is one of the world's largest and most beautiful",'Al-Baqi cemetery is one of the oldest Islamic graveyards','The city has a distinctly peaceful atmosphere year-round']},
-  {n:'Riyadh',ar:'الرياض',e:'🏙️',tag:'Capital City',reg:'Riyadh Province',
-   desc:"Saudi Arabia's modern capital and largest city. A blend of ultra-modern skyscrapers, Heritage architecture, and world-class entertainment. Home to LEAP and FII.",
-   tips:['Edge of the World (Jebel Fihrayn) cliffs are 90 minutes from the city','Kingdom Centre Tower Sky Bridge has panoramic views','Diriyah heritage district is a must-visit']},
-  {n:'AlUla',ar:'العُلا',e:'🏺',tag:'UNESCO Heritage',reg:'AlUla Province',
-   desc:"An ancient oasis and Saudi Arabia's first UNESCO World Heritage Site. Home to Hegra (Mada'in Saleh) — extraordinary Nabataean tombs carved from sandstone.",
-   tips:['Best visited October to March when temperatures are cooler','Winter at Tantora festival runs December to March','Dadan, Jabal Ikmah, and Hegra are extraordinary ancient sites']},
-  {n:'NEOM',ar:'نيوم',e:'🔭',tag:'Giga Project',reg:'Tabuk Province',
-   desc:"Saudi Arabia's most ambitious development. A 170km linear city, Sindalah luxury island, and NEOM Bay. Currently under active construction.",
-   tips:['Under construction — public access currently limited','Follow official NEOM channels for opening announcements','Sindalah island and NEOM Bay expected to open progressively']},
-  {n:'Red Sea',ar:'البحر الأحمر',e:'🌊',tag:'Luxury Tourism',reg:'Red Sea Province',
-   desc:'Home to the Red Sea Project — 50 islands being developed as a world-class luxury destination. Among the most pristine coral ecosystems on earth.',
-   tips:['Red Sea International Airport (RSI) is now operational','Phase 1 resorts on Shura Island are open','Coral reefs here are rated among the world\'s best for diving']},
-  {n:'Jeddah',ar:'جدة',e:'🕌',tag:'Coastal City',reg:'Makkah Province',
-   desc:"Saudi Arabia's cosmopolitan Red Sea port city. Historic Al-Balad is UNESCO World Heritage. Gateway to Makkah for millions of pilgrims annually.",
-   tips:['Al-Balad (Historic Jeddah) — UNESCO listed, walk the coral-built towers','King Fahd Fountain is the world\'s tallest fountain at 312m','The 30km Corniche is perfect for evening walks']},
-  {n:'Diriyah',ar:'الدرعية',e:'🏰',tag:'Heritage Site',reg:'Riyadh Province',
-   desc:'Birthplace of the Saudi state and home of the Al Saud dynasty for over 300 years. UNESCO World Heritage site transformed into a world-class heritage destination.',
-   tips:['At-Turaif district is fully open to visitors','Bujairi Terrace has excellent restaurants with heritage views','Diriyah Biennale is a major contemporary art event']},
-  {n:'Abha',ar:'أبها',e:'⛰️',tag:'Mountain City',reg:'Asir Province',
-   desc:"Saudi Arabia's scenic mountain city at 2,200m elevation. Known for its cool climate, greenery, cable cars, and traditional Asiri culture and architecture.",
-   tips:['Cable car from Abha to Al-Soudah — Saudi Arabia\'s highest point','Asiri traditional clothing and architecture are unique in Saudi Arabia','Asir National Park has stunning highland scenery']},
+  {n:'Makkah',ar:'مكة المكرمة',e:'🕋',tag:'Holy City',reg:'Makkah Province',desc:"The holiest city in Islam. Home to Masjid al-Haram and the Kaaba. Entry restricted to Muslims. An estimated 2 million pilgrims perform Hajj annually.",tips:['Best visited off-peak for easier access to holy sites','Grand Mosque accommodates 4M+ worshippers','Zamzam water freely available throughout']},
+  {n:'Madinah',ar:'المدينة المنورة',e:'🌙',tag:"Prophet's City",reg:'Madinah Province',desc:"Second holiest city in Islam. Home to Al-Masjid an-Nabawi — the Prophet's Mosque. A city of profound spiritual significance.",tips:["Prophet's Mosque is one of the world's largest",'Al-Baqi cemetery is among the oldest Islamic sites','City has a distinctly peaceful atmosphere']},
+  {n:'Riyadh',ar:'الرياض',e:'🏙️',tag:'Capital',reg:'Riyadh Province',desc:"Saudi Arabia's modern capital. Ultra-modern skyscrapers meet historic heritage. Host of LEAP, FII, and Vision 2030 HQ.",tips:['Edge of the World cliffs — 90 min from city','Kingdom Tower Sky Bridge — panoramic views','Diriyah heritage district — must visit']},
+  {n:'AlUla',ar:'العُلا',e:'🏺',tag:'UNESCO Heritage',reg:'AlUla Province',desc:"Saudi Arabia's first UNESCO World Heritage Site. Home to Hegra (Mada'in Saleh) — extraordinary Nabataean tombs carved from sandstone.",tips:['Best visited Oct–March (cooler)','Winter at Tantora festival Dec–March','Dadan and Jabal Ikmah are extraordinary']},
+  {n:'NEOM',ar:'نيوم',e:'🔭',tag:'Giga Project',reg:'Tabuk Province',desc:"Saudi Arabia's most ambitious development. A 170km linear city, Sindalah island, and NEOM Bay. Under active construction.",tips:['Under construction — public access limited','Follow official NEOM for opening updates','THE LINE is the flagship zero-carbon project']},
+  {n:'Red Sea',ar:'البحر الأحمر',e:'🌊',tag:'Luxury Tourism',reg:'Red Sea Province',desc:'50 islands being developed as world-class luxury destination. Among the most pristine coral ecosystems on earth. Phase 1 open.',tips:['RSI Airport now operational','Shura Island Phase 1 resorts open','Coral reefs rated among world\'s best for diving']},
+  {n:'Jeddah',ar:'جدة',e:'🕌',tag:'Coastal City',reg:'Makkah Province',desc:"Saudi Arabia's cosmopolitan Red Sea port city. Historic Al-Balad is UNESCO World Heritage. Gateway to Makkah for pilgrims.",tips:['Al-Balad UNESCO site — coral-built towers','King Fahd Fountain — world\'s tallest at 312m','30km Corniche perfect for evening walks']},
+  {n:'Diriyah',ar:'الدرعية',e:'🏰',tag:'Heritage Site',reg:'Riyadh Province',desc:'Birthplace of the Saudi state. UNESCO World Heritage site. $20B transformation into a global culture and heritage destination.',tips:['At-Turaif district fully open','Bujairi Terrace — heritage view restaurants','Diriyah Biennale — major art event']},
+  {n:'Abha',ar:'أبها',e:'⛰️',tag:'Mountain City',reg:'Asir Province',desc:"Saudi Arabia's scenic mountain city at 2,200m elevation. Cool climate, greenery, cable cars, and unique Asiri culture.",tips:['Cable car to Al-Soudah — Saudi\'s highest point','Unique Asiri architecture and culture','Asir National Park — stunning highland scenery']},
 ];
-
 var PHRASES=[
   {ar:'السَّلَامُ عَلَيْكُمْ',ph:'As-salamu alaykum',en:'Peace be upon you'},
-  {ar:'أَهْلاً وَسَهْلاً',ph:'Ahlan wa sahlan',en:'Welcome / You are welcome'},
+  {ar:'أَهْلاً وَسَهْلاً',ph:'Ahlan wa sahlan',en:'Welcome'},
   {ar:'شُكْرًا جَزِيلاً',ph:'Shukran jazilan',en:'Thank you very much'},
   {ar:'مِن فَضْلِكَ',ph:'Min fadlik',en:'Please'},
   {ar:'مَعَ السَّلَامَة',ph:"Ma'a as-salama",en:'Goodbye / Go with peace'},
@@ -1195,20 +1339,29 @@ var PHRASES=[
   {ar:'بِسْمِ اللَّه',ph:'Bismillah',en:'In the name of God'},
   {ar:'إِن شَاءَ اللَّه',ph:'In sha Allah',en:'God willing'},
   {ar:'الحَمْدُ لِلَّه',ph:'Alhamdulillah',en:'Praise be to God'},
-  {ar:'مَاشَاءَاللَّه',ph:'Masha Allah',en:'God has willed it — expression of admiration'},
-  {ar:'يَلَّا',ph:'Yalla',en:"Let's go / Come on"},
+  {ar:'يَلَّا',ph:'Yalla',en:"Let's go"},
+  {ar:'مَاشَاءَاللَّه',ph:'Masha Allah',en:'Expression of admiration'},
   {ar:'حَلَال',ph:'Halal',en:'Permissible under Islamic law'},
 ];
-
 var CUISINE=[
-  {n:'Kabsa 🍚',d:'Saudi national dish. Fragrant long-grain rice slow-cooked with meat (lamb or chicken) and a warming blend of spices. Served at celebrations and family gatherings.'},
-  {n:'Mandi 🔥',d:'Tender lamb or chicken slow-roasted in a tandoor pit oven over fragrant rice. Smoky, deeply flavourful. Originally from Yemen, now iconic in Saudi Arabia.'},
-  {n:'Jareesh 🌾',d:'Crushed wheat slow-cooked with meat or chicken to a rich porridge consistency. Traditional highland dish from Asir and Najd. Comfort food of the Kingdom.'},
-  {n:'Mutabbaq 🥙',d:'Crispy folded pastry filled with seasoned minced meat, egg, and spring onions. Popular street food across Jeddah and Madinah.'},
-  {n:'Harees 🍲',d:'Slow-cooked wheat and meat porridge with a smooth, hearty texture. Especially beloved during Ramadan and Eid celebrations.'},
-  {n:'Samboosa 🥟',d:'Golden fried pastry parcels filled with spiced meat or cheese. A staple iftar snack during Ramadan and everyday street food.'},
-  {n:'Saleeg 🍗',d:'Creamy white rice cooked in rich broth and milk, topped with grilled chicken. A Hijazi specialty most associated with Makkah and Jeddah.'},
-  {n:'Dates (Tamr) 🌴',d:'Saudi Arabia produces over 400 varieties of dates. A cultural, religious, and culinary staple. Offered to guests as a sign of hospitality and generosity.'},
+  {n:'Kabsa 🍚',d:'Saudi national dish. Fragrant long-grain rice slow-cooked with meat and warming spices. Served at every celebration.'},
+  {n:'Mandi 🔥',d:'Tender lamb or chicken slow-roasted in a tandoor pit over fragrant rice. Smoky and deeply flavourful.'},
+  {n:'Jareesh 🌾',d:'Crushed wheat slow-cooked with meat to a rich porridge. Traditional highland dish from Asir and Najd.'},
+  {n:'Mutabbaq 🥙',d:'Crispy folded pastry with spiced minced meat and egg. Popular street food in Jeddah and Madinah.'},
+  {n:'Harees 🍲',d:'Slow-cooked wheat and meat porridge. Beloved during Ramadan and Eid.'},
+  {n:'Samboosa 🥟',d:'Golden fried pastry filled with spiced meat or cheese. Staple iftar snack during Ramadan.'},
+  {n:'Saleeg 🍗',d:'Creamy white rice in broth and milk topped with grilled chicken. A Hijazi specialty.'},
+  {n:'Dates (Tamr) 🌴',d:'400+ Saudi varieties. A cultural, religious, and culinary staple. Offered as a sign of hospitality.'},
+];
+var EVENTS=[
+  {n:'LEAP 2026',d:'Feb 2026',loc:'Riyadh',cat:'Technology',desc:"World's largest tech conference. AI, robotics, cloud, digital transformation. 200,000+ attendees from 100+ countries."},
+  {n:'Future Investment Initiative',d:'Oct 2025',loc:'Riyadh',cat:'Investment',desc:'Annual global investment summit. Strategic deals between Saudi and global investors. Known as Davos in the Desert.'},
+  {n:'Riyadh Season',d:'Oct–Mar',loc:'Riyadh',cat:'Entertainment',desc:"Saudi Arabia's flagship entertainment mega-event. Concerts, sports, exhibitions. Millions of visitors annually."},
+  {n:'Cityscape Saudi',d:'Sep 2025',loc:'Riyadh',cat:'Real Estate',desc:'Premier real estate exhibition. Features Vision 2030 giga project updates. Connects developers and investors.'},
+  {n:'Esports World Cup',d:'Jul–Aug 2025',loc:'Riyadh',cat:'Gaming',desc:'Largest esports event in history. $60M+ prize pool. 20+ game titles. Top global teams at Boulevard City.'},
+  {n:'Hajj Expo',d:'Annually',loc:'Jeddah',cat:'Islamic',desc:'Annual exhibition on Hajj and Umrah services, technology, and pilgrim experience innovation.'},
+  {n:'Saudi Green Initiative Forum',d:'Oct 2025',loc:'Riyadh',cat:'Environment',desc:'Annual forum on Saudi environmental commitments — 10 billion trees, renewable energy, carbon reduction.'},
+  {n:'Global AI Summit',d:'2025',loc:'Riyadh',cat:'AI',desc:'Government-hosted summit on responsible AI, policy, and international cooperation.'},
 ];
 
 function eTab(n,btn){
@@ -1218,130 +1371,128 @@ function eTab(n,btn){
   renderExp();
 }
 function renderExp(){
-  var fns=[renderVision,renderTourism,renderCulture];
-  if(fns[_eTab])fns[_eTab]();
+  var body=document.getElementById('exp-body');if(!body)return;
+  if(_eTab===0){
+    var html='<div style="background:rgba(22,196,127,.06);border:1px solid var(--bd2);border-radius:var(--r);margin:.38rem .5rem;padding:.65rem .7rem">'
+      +'<div style="font-size:.8rem;font-weight:900;color:var(--g3);margin-bottom:.16rem">Saudi Vision 2030</div>'
+      +'<div style="font-size:.55rem;color:var(--t2);line-height:1.58;margin-bottom:.34rem">A national transformation launched in 2016. Diversify the Saudi economy beyond oil and develop public sectors. $3T+ investment across 100+ initiatives.</div>'
+      +'<div style="display:flex;gap:.3rem;flex-wrap:wrap">'
+      +'<span class="badge">$3T+ Investment</span><span class="badge">100+ Initiatives</span>'
+      +'<span class="badge">50% Renewable by 2030</span><span class="badge">150M tourists target</span>'
+      +'</div></div>'
+      +'<div class="sec-lbl">Strategic Pillars</div>';
+    PILLARS.forEach(function(p){
+      html+='<div class="item-card" style="cursor:default">'
+        +'<div style="display:flex;gap:.38rem;align-items:flex-start">'
+        +'<div style="font-size:1.05rem;flex-shrink:0">'+p.i+'</div>'
+        +'<div><div style="font-size:.66rem;font-weight:800;color:var(--t1);margin-bottom:.08rem">'+p.t+'</div>'
+        +'<div style="font-size:.54rem;color:var(--t2);line-height:1.5">'+p.d+'</div></div></div></div>';
+    });
+    html+='<div class="sec-lbl" style="margin-top:.4rem">Giga Projects</div>';
+    GIGA.forEach(function(g,i){
+      var sc=g.sc==='open'?'s-open':g.sc==='act'?'s-act':'s-dev';
+      html+='<div class="giga" onclick="openGiga('+i+')">'
+        +'<div class="g-emo">'+g.e+'</div>'
+        +'<div style="flex:1"><div class="g-name">'+g.n+'</div>'
+        +'<div class="g-desc">'+g.desc.slice(0,90)+'…</div>'
+        +'<span class="g-status '+sc+'">'+g.s+'</span></div></div>';
+    });
+    body.innerHTML=html;
+  } else if(_eTab===1){
+    var html='<div class="dest-grid">';
+    DESTS.forEach(function(d,i){
+      html+='<div class="dest-card" onclick="openDest('+i+')">'
+        +'<div class="dc-emo">'+d.e+'</div>'
+        +'<div class="dc-body"><div class="dc-name">'+d.n+'</div><div class="dc-tag">'+d.tag+'</div></div>'
+        +'</div>';
+    });
+    html+='</div>';
+    body.innerHTML=html;
+  } else {
+    var html='<div class="sec-lbl" style="padding-top:.45rem">Arabic Phrases</div>'
+      +'<div style="display:grid;gap:.2rem;padding:.28rem .48rem">';
+    PHRASES.forEach(function(p){
+      html+='<div class="phrase-row"><div class="ph-ar">'+p.ar+'</div>'
+        +'<div><div class="ph-ph">'+p.ph+'</div><div class="ph-en">'+p.en+'</div></div></div>';
+    });
+    html+='</div><div class="sec-lbl" style="margin-top:.35rem">Saudi Cuisine</div>'
+      +'<div class="cuisine-grid">';
+    CUISINE.forEach(function(c,i){
+      html+='<div class="cui-card" onclick="openPanel(\'Saudi Cuisine\',\'<div style=\\\"padding:.7rem .8rem\\\">'
+        +'<div style=\\\"font-size:.92rem;font-weight:900;color:var(--t1);margin-bottom:.35rem\\\">'+c.n.replace(/'/g,"\\'")+
+        '</div><div style=\\\"font-size:.6rem;color:var(--t2);line-height:1.65\\\">'+c.d.replace(/'/g,"\\'").replace(/"/g,"'")+
+        '</div></div>\')">'
+        +'<div class="cui-n">'+c.n+'</div>'
+        +'<div class="cui-d">'+c.d+'</div></div>';
+    });
+    html+='</div>'
+      +'<div class="sec-lbl" style="margin-top:.35rem">Customs & Etiquette</div>'
+      +'<div class="item-card" style="cursor:default;margin-bottom:.6rem">'
+      +'<div style="font-size:.55rem;color:var(--t2);line-height:1.75">'
+      +'🤝 Greet warmly — handshakes between same-gender; use right hand<br>'
+      +'🧕 Dress modestly — cover shoulders and knees in public areas<br>'
+      +'🕌 Remove shoes before entering mosques and many homes<br>'
+      +'🍽 Meals are communal — accepting offered food shows respect<br>'
+      +'📸 Always ask permission before photographing people<br>'
+      +'🔇 Lower voice near mosques during prayer times<br>'
+      +'🚫 Public displays of affection are culturally inappropriate<br>'
+      +'🎁 Gifts are appreciated — sweets, perfumes, and dates are ideal'
+      +'</div></div>';
+    body.innerHTML=html;
+  }
 }
-
-function renderVision(){
-  var body=document.getElementById('exp-body');
-  var html='<div style="background:rgba(0,108,53,.07);border:1px solid var(--bd2);border-radius:var(--r);margin:.38rem .5rem;padding:.62rem .68rem">'
-    +'<div style="font-size:.78rem;font-weight:900;color:var(--g3);margin-bottom:.16rem">Saudi Vision 2030</div>'
-    +'<div style="font-size:.55rem;color:var(--t2);line-height:1.58;margin-bottom:.35rem">A national transformation program launched by Crown Prince Mohammed bin Salman in 2016. Vision 2030 aims to diversify Saudi Arabia\'s economy beyond oil, develop public sectors, and position the Kingdom as a global leader in technology, tourism, and culture.</div>'
-    +'<div style="display:flex;gap:.3rem;flex-wrap:wrap">'
-    +'<span class="badge">$3T+ Investment</span>'
-    +'<span class="badge">100+ Initiatives</span>'
-    +'<span class="badge">50% Renewable by 2030</span>'
-    +'<span class="badge">150M tourists target</span>'
-    +'</div></div>'
-    +'<div class="sec">Strategic Pillars</div>';
-  PILLARS.forEach(function(p){
-    html+='<div class="item-card" style="cursor:default"><div style="display:flex;gap:.38rem;align-items:flex-start">'
-      +'<div style="font-size:1.05rem;flex-shrink:0">'+p.i+'</div>'
-      +'<div><div style="font-size:.66rem;font-weight:800;color:var(--t1);margin-bottom:.1rem">'+p.t+'</div>'
-      +'<div style="font-size:.53rem;color:var(--t2);line-height:1.5">'+p.d+'</div></div></div></div>';
-  });
-  html+='<div class="sec" style="margin-top:.4rem">Giga Projects</div>';
-  GIGA.forEach(function(g,i){
-    var sc=g.sc==='open'?'s-open':g.sc==='act'?'s-act':'s-dev';
-    html+='<div class="giga" style="cursor:pointer" onclick="openGiga('+i+')">'
-      +'<div class="g-emoji">'+g.e+'</div>'
-      +'<div style="flex:1"><div class="g-name">'+g.n+'</div>'
-      +'<div class="g-desc">'+g.desc.slice(0,90)+'…</div>'
-      +'<span class="g-status '+sc+'">'+g.s+'</span></div></div>';
-  });
-  body.innerHTML=html;
-}
-
 function openGiga(i){
-  var g=GIGA[i];
-  var sc=g.sc==='open'?'s-open':g.sc==='act'?'s-act':'s-dev';
+  var g=GIGA[i];var sc=g.sc==='open'?'s-open':g.sc==='act'?'s-act':'s-dev';
   var subs=g.subs.map(function(s){return'<li style="margin-bottom:.22rem">'+s+'</li>';}).join('');
-  openPanel('Vision 2030','<div style="padding:.7rem .78rem">'
+  openPanel('Vision 2030','<div style="padding:.7rem .8rem">'
     +'<div style="font-size:2rem;margin-bottom:.1rem">'+g.e+'</div>'
-    +'<div style="font-size:1.3rem;font-weight:900;color:var(--t1);margin-bottom:.1rem">'+g.n+'</div>'
+    +'<div style="font-size:1.3rem;font-weight:900;color:var(--t1);margin-bottom:.08rem">'+g.n+'</div>'
     +'<span class="g-status '+sc+'" style="margin-bottom:.45rem;display:inline-block">'+g.s+'</span>'
     +'<div style="font-size:.6rem;color:var(--t2);line-height:1.62;margin-bottom:.55rem">'+g.desc+'</div>'
     +'<div style="font-size:.5rem;font-weight:800;color:var(--t3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.24rem">Key Features</div>'
     +'<ul style="font-size:.55rem;color:var(--t2);line-height:1.55;padding-left:1rem">'+subs+'</ul>'
     +'</div>');
 }
-
-function renderTourism(){
-  var body=document.getElementById('exp-body');
-  var html='<div style="display:grid;grid-template-columns:1fr 1fr;gap:.3rem;padding:.35rem .44rem">';
-  DESTS.forEach(function(d,i){
-    html+='<div style="border-radius:11px;overflow:hidden;background:var(--bg3);border:1px solid var(--bd);cursor:pointer;aspect-ratio:1;display:flex;flex-direction:column" onclick="openDest('+i+')">'
-      +'<div style="flex:1;display:flex;align-items:center;justify-content:center;font-size:2.3rem">'+d.e+'</div>'
-      +'<div style="padding:.28rem .38rem"><div style="font-size:.58rem;font-weight:800;color:var(--t1)">'+d.n+'</div>'
-      +'<div style="font-size:.4rem;color:var(--t3)">'+d.tag+'</div></div></div>';
-  });
-  html+='</div>';
-  body.innerHTML=html;
-}
-
 function openDest(i){
   var d=DESTS[i];
   var tips=d.tips.map(function(t){return'<li style="margin-bottom:.24rem">'+t+'</li>';}).join('');
-  openPanel(d.tag,'<div style="padding:0"><div style="width:100%;height:160px;display:flex;align-items:center;justify-content:center;font-size:4.2rem;background:var(--bg2)">'+d.e+'</div>'
-    +'<div style="padding:.65rem .78rem">'
+  openPanel(d.tag,'<div style="padding:0">'
+    +'<div style="height:150px;display:flex;align-items:center;justify-content:center;font-size:4.2rem;background:var(--bg2)">'+d.e+'</div>'
+    +'<div style="padding:.65rem .8rem">'
     +'<div style="font-size:1.35rem;font-weight:900;color:var(--t1);margin-bottom:.04rem">'+d.n+'</div>'
     +'<div class="ar-t" style="font-size:1.05rem;margin-bottom:.04rem">'+d.ar+'</div>'
-    +'<div style="font-size:.5rem;color:var(--g3);font-weight:700;margin-bottom:.45rem">📍 '+d.reg+'</div>'
-    +'<div style="font-size:.6rem;color:var(--t2);line-height:1.62;margin-bottom:.62rem">'+d.desc+'</div>'
-    +'<div style="font-size:.5rem;font-weight:800;color:var(--t3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.26rem">Insider Tips</div>'
+    +'<div style="font-size:.5rem;color:var(--g3);font-weight:700;margin-bottom:.42rem">📍 '+d.reg+'</div>'
+    +'<div style="font-size:.6rem;color:var(--t2);line-height:1.62;margin-bottom:.58rem">'+d.desc+'</div>'
+    +'<div style="font-size:.5rem;font-weight:800;color:var(--t3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.24rem">Insider Tips</div>'
     +'<ul style="font-size:.56rem;color:var(--t2);line-height:1.55;padding-left:1rem">'+tips+'</ul>'
     +'</div></div>');
 }
 
-function renderCulture(){
-  var body=document.getElementById('exp-body');
-  var html='<div class="sec" style="padding-top:.48rem">Arabic Phrases</div>'
-    +'<div style="display:grid;gap:.2rem;padding:.28rem .44rem">';
-  PHRASES.forEach(function(p){
-    html+='<div style="background:var(--bg2);border:1px solid var(--bd);border-radius:10px;padding:.34rem .5rem;display:flex;align-items:center;gap:.45rem">'
-      +'<div class="ar-t" style="font-size:.92rem;min-width:5.8rem;text-align:right;flex-shrink:0">'+p.ar+'</div>'
-      +'<div><div style="font-size:.54rem;color:var(--t1);font-style:italic">'+p.ph+'</div>'
-      +'<div style="font-size:.46rem;color:var(--t3)">'+p.en+'</div></div></div>';
-  });
-  html+='</div><div class="sec" style="margin-top:.35rem">Saudi Cuisine</div>'
-    +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:.24rem;padding:.28rem .44rem">';
-  CUISINE.forEach(function(c){
-    html+='<div style="background:var(--bg2);border:1px solid var(--bd);border-radius:10px;padding:.4rem .42rem;cursor:pointer" onclick="openPanel(\'Cuisine\',\'<div style=\\\"padding:.7rem .78rem\\\"><div style=\\\"font-size:.9rem;font-weight:900;color:var(--t1);margin-bottom:.35rem\\\">'+c.n.replace(/'/g,"\\'")+'</div><div style=\\\"font-size:.6rem;color:var(--t2);line-height:1.65\\\">'+c.d.replace(/'/g,"\\'").replace(/"/g,"'")+'</div></div>\')">'
-      +'<div style="font-size:.6rem;font-weight:700;color:var(--t1);margin-bottom:.08rem">'+c.n+'</div>'
-      +'<div style="font-size:.46rem;color:var(--t3);line-height:1.45;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">'+c.d+'</div>'
-      +'</div>';
-  });
-  html+='</div>'
-    +'<div class="sec" style="margin-top:.35rem">Customs & Etiquette</div>'
-    +'<div class="item-card" style="cursor:default;margin-bottom:.6rem">'
-    +'<div style="font-size:.55rem;color:var(--t2);line-height:1.75">'
-    +'🤝 Greet warmly — handshakes between same-gender; always use the right hand<br>'
-    +'🧕 Dress modestly — cover shoulders and knees; women cover hair in mosques<br>'
-    +'🕌 Remove shoes before entering mosques and many homes<br>'
-    +'🍽 Meals are communal — accepting offered food is a sign of respect<br>'
-    +'📸 Always ask permission before photographing people, especially women<br>'
-    +'🔇 Lower your voice near mosques, especially during prayer times<br>'
-    +'🚫 Public displays of affection are not appropriate in Saudi culture<br>'
-    +'🎁 Gifts are warmly appreciated — sweets, perfumes, and dates are ideal'
-    +'</div></div>';
-  body.innerHTML=html;
+/* ═══════════════════════════
+   ⚡ DIGITAL+
+═══════════════════════════ */
+function dgTab(n,btn){
+  _dgTab=n;
+  document.querySelectorAll('#s-digi .tb').forEach(function(b){b.classList.remove('on')});
+  if(btn)btn.classList.add('on');
+  renderDigi();
+}
+function renderDigi(){
+  var body=document.getElementById('digi-body');if(!body)return;
+  if(_dgTab===0)renderPassport(body);
+  else if(_dgTab===1)renderSupport(body);
+  else renderAbout(body);
 }
 
-/* ═══════════════════════════════
-   ⚡ DIGITAL+ — Passport + About
-═══════════════════════════════ */
-function renderDigi(){
-  var body=document.getElementById('digi-body');
+function renderPassport(body){
   _pass=localStorage.getItem('ds_pass')==='1';
   var txs=JSON.parse(localStorage.getItem('ds_tx')||'[]').slice(-6).reverse();
-
-  var html='<div class="card"><div class="card-h"><div class="ch-ico">⚡</div>'
-    +'<div><div class="ch-t">DigitalSaudi Passport</div>'
-    +'<div class="ch-s">'+(_pass?'✅ Active Member':'Premium membership · 1π')+'</div></div></div>'
-    +'<div class="card-b">';
-
+  var html='';
   if(!_pass){
-    html+='<div class="pass-feat">'
+    html='<div class="pass-card">'
+      +'<div style="font-size:.82rem;font-weight:900;color:var(--g3);margin-bottom:.05rem">⚡ DigitalSaudi Passport</div>'
+      +'<div style="font-size:.5rem;color:var(--t3);margin-bottom:.45rem">Premium membership · 1π one-time</div>'
+      +'<div class="pass-feats">'
       +'<div class="pf"><div class="pf-ico">🤖</div><div class="pf-n">AI Priority</div><div class="pf-s">Faster responses</div></div>'
       +'<div class="pf"><div class="pf-ico">⭐</div><div class="pf-n">Premium Badge</div><div class="pf-s">Verified member</div></div>'
       +'<div class="pf"><div class="pf-ico">📌</div><div class="pf-n">Save Favourites</div><div class="pf-s">Pin content</div></div>'
@@ -1350,48 +1501,31 @@ function renderDigi(){
       +'<button class="pass-btn" id="pass-btn" onclick="buyPass()">'
       +'<span style="font-size:1rem">π</span> Get DigitalSaudi Passport · 1π'
       +'</button>'
-      +'<div id="pay-sts" style="font-size:.5rem;color:var(--t3);text-align:center;margin-top:.36rem;min-height:.8rem"></div>';
+      +'<div id="pay-sts" style="font-size:.5rem;color:var(--t3);text-align:center;margin-top:.38rem;min-height:.8rem"></div>'
+      +'</div>';
   } else {
-    html+='<div style="text-align:center;padding:.5rem 0">'
-      +'<div style="font-size:2.2rem;margin-bottom:.22rem">⚡</div>'
-      +'<div style="font-size:.85rem;font-weight:900;color:var(--g3)">Passport Active</div>'
+    html='<div class="pass-card" style="text-align:center;padding:1rem .72rem">'
+      +'<div style="font-size:2.5rem;margin-bottom:.22rem">⚡</div>'
+      +'<div style="font-size:.9rem;font-weight:900;color:var(--g3)">Passport Active</div>'
       +'<div style="font-size:.5rem;color:var(--t3);margin-top:.1rem">Thank you for supporting DigitalSaudi</div>'
       +'</div>';
   }
-  html+='</div></div>';
-
-  /* Transactions */
-  html+='<div class="card"><div class="card-h"><div class="ch-ico">📋</div>'
-    +'<div><div class="ch-t">Payment Activity</div><div class="ch-s">Your Pi transactions</div></div></div>';
+  html+='<div class="u-card"><div class="u-card-hdr"><div class="uc-ico">📋</div>'
+    +'<div><div class="uc-t">Payment History</div><div class="uc-s">Your Pi transactions</div></div></div>';
   if(txs.length){
     txs.forEach(function(t){
-      html+='<div class="row"><div><div style="font-size:.58rem;font-weight:600;color:var(--t1)">'+t.type+'</div>'
-        +'<div style="font-size:.43rem;color:var(--t3)">'+new Date(t.ts).toLocaleString()+'</div></div>'
-        +'<div style="font-size:.62rem;font-weight:900;color:var(--g3)">π '+t.amount+'</div></div>';
+      html+='<div class="tx-row"><div><div class="tx-type">'+t.type+'</div><div class="tx-date">'+new Date(t.ts).toLocaleString()+'</div></div><div class="tx-amt">π '+t.amount+'</div></div>';
     });
   } else {
     html+='<div style="text-align:center;padding:.65rem;font-size:.54rem;color:var(--t3)">No transactions yet</div>';
   }
   html+='</div>';
-
-  /* About */
-  html+='<div class="card"><div class="card-h"><div class="ch-ico">ℹ️</div>'
-    +'<div><div class="ch-t">About DigitalSaudi</div><div class="ch-s">v3.0.0 · Pi Network Mainnet</div></div></div>'
-    +'<div class="card-b"><div style="font-size:.56rem;color:var(--t2);line-height:1.62;margin-bottom:.45rem">'
-    +'The Saudi Digital Ecosystem on Pi. Discover Saudi technology, startups, business, events, tourism, culture, and Vision 2030 in one premium platform. Built exclusively for Pi Network.</div>'
-    +'<div style="display:flex;gap:.38rem;flex-wrap:wrap;margin-bottom:.4rem">'
-    +'<a href="/privacy" style="font-size:.46rem;color:var(--gold)">Privacy Policy</a>'
-    +'<span style="color:var(--t3)">·</span>'
-    +'<a href="/terms" style="font-size:.46rem;color:var(--gold)">Terms of Service</a></div>'
-    +'<div style="font-size:.4rem;color:var(--t3)">© 2026 DigitalSaudi · Abdullahi Bashir Abubakar · sandbox:false · Mainnet</div>'
-    +'</div></div>';
-
   body.innerHTML=html;
 }
 
 function buyPass(){
   if(_pass){toast('Passport already active!');return;}
-  if(!_u){toast('Please sign in');return;}
+  if(!_u){toast('Please sign in first');return;}
   var btn=document.getElementById('pass-btn'),sts=document.getElementById('pay-sts');
   if(btn)btn.disabled=true;
   if(sts)sts.textContent='Initiating Pi payment…';
@@ -1402,8 +1536,7 @@ function buyPass(){
     onReadyForServerApproval:function(paymentId){
       if(sts)sts.textContent='Approving…';
       return fetch(_AP,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({paymentId:paymentId})})
-        .then(function(r){return r.json()})
-        .then(function(d){console.log('[DS] approved:',d);});
+        .then(function(r){return r.json()}).then(function(d){console.log('[DS] approved:',d);});
     },
     onReadyForServerCompletion:function(paymentId,txid){
       if(sts)sts.textContent='Completing…';
@@ -1414,8 +1547,7 @@ function buyPass(){
           var txs=JSON.parse(localStorage.getItem('ds_tx')||'[]');
           txs.push({type:'DigitalSaudi Passport',amount:1,txid:txid,ts:Date.now()});
           localStorage.setItem('ds_tx',JSON.stringify(txs));
-          toast('✅ Passport activated!');
-          renderDigi();
+          toast('✅ Passport activated!');renderDigi();
         }).catch(function(){
           localStorage.setItem('ds_pass','1');_pass=true;
           toast('✅ Passport activated');renderDigi();
@@ -1429,12 +1561,67 @@ function buyPass(){
     onError:function(error){
       if(sts)sts.textContent='Error: '+error.message;
       if(btn)btn.disabled=false;
-      console.error('[DS] Pay error:',error);
     }
   });
 }
 
-/* ─── INIT ─── */
+/* SUPPORT CENTER */
+var FAQS=[
+  {q:'How do I use the AI Concierge?',a:'Tap the AI tab on the Home screen. Type any question about Saudi Arabia — tourism, startups, culture, events, Vision 2030, or the Pi economy. You can also tap the quick suggestion chips to get started instantly.'},
+  {q:'How do I switch languages?',a:'Tap the "عر" button in the top-right corner of the app to switch to Arabic. Tap "EN" to switch back to English. Your preference is saved automatically.'},
+  {q:'How do Prayer Times work?',a:'Tap Home → Prayer tab. Select your city from the city bar. Prayer times are fetched live from the Aladhan API based on your selected city. A live countdown shows time to the next prayer.'},
+  {q:'How do I check Live Scores?',a:'Tap Home → Scores tab. Select a league from the bar (Saudi Pro League, Premier League, La Liga, Bundesliga, Serie A, Champions League). Switch between Live matches, Results, and Table views.'},
+  {q:'How do I check the weather?',a:'Tap Home → Weather tab. Select your city from the city bar. You\'ll see current conditions and a 5-day forecast. Scroll down for a dashboard of all Saudi cities.'},
+  {q:'What is the DigitalSaudi Passport?',a:'The DigitalSaudi Passport is a 1π one-time premium membership. It gives you a premium badge, AI priority access, the ability to save favourites, and early access to new features. Tap Digital+ → Passport to purchase.'},
+  {q:'How does Pi payment work?',a:'DigitalSaudi uses the Pi SDK for all payments. When you tap to purchase the Passport, the Pi Browser handles the payment securely. No credit cards or external wallets — Pi only.'},
+  {q:'Why do I need to use Pi Browser?',a:'DigitalSaudi is a Pi Network app built exclusively for the Pi ecosystem. The Pi SDK only works inside the Pi Browser, which handles authentication and payments securely.'},
+  {q:'Is my data private?',a:'Yes. Most data is stored locally on your device. We never sell your data. The only data sent externally is your city for weather/prayer lookups, and conversation text to the AI (Gemini API). See our Privacy Policy for full details.'},
+  {q:'What is Vision 2030?',a:'Vision 2030 is Saudi Arabia\'s national transformation program launched in 2016. It aims to diversify the economy beyond oil, develop public sectors, and position Saudi Arabia as a global leader in technology, tourism, and culture. All information in DigitalSaudi is factual — no fake statistics or percentages.'},
+];
+function renderSupport(body){
+  var html='<div class="sec-lbl" style="padding-top:.45rem">Frequently Asked Questions</div>';
+  FAQS.forEach(function(faq,i){
+    html+='<div class="faq-item" id="faq-'+i+'" onclick="toggleFAQ('+i+')">'
+      +'<div class="faq-q">'+faq.q+'<span class="faq-ico">+</span></div>'
+      +'<div class="faq-a">'+faq.a+'</div></div>';
+  });
+  html+='<div class="sec-lbl" style="margin-top:.45rem">Contact & Legal</div>'
+    +'<div class="u-card"><div class="u-card-body">'
+    +'<div style="font-size:.58rem;color:var(--t2);margin-bottom:.35rem">For support, feedback, or business enquiries:</div>'
+    +'<div style="font-size:.6rem;font-weight:700;color:var(--g3);margin-bottom:.35rem">support.digitalsaudi.pi@gmail.com</div>'
+    +'<div style="display:flex;gap:.4rem;flex-wrap:wrap">'
+    +'<a href="/privacy" style="font-size:.5rem;color:var(--gold)">Privacy Policy</a>'
+    +'<span style="color:var(--t3)">·</span>'
+    +'<a href="/terms" style="font-size:.5rem;color:var(--gold)">Terms of Service</a>'
+    +'</div></div></div>';
+  body.innerHTML=html;
+}
+function toggleFAQ(i){
+  var item=document.getElementById('faq-'+i);
+  if(item)item.classList.toggle('open');
+}
+
+function renderAbout(body){
+  body.innerHTML='<div class="u-card" style="margin:.5rem">'
+    +'<div style="text-align:center;padding:1rem .72rem">'
+    +'<div style="font-size:2.8rem;font-weight:900;letter-spacing:-.05em;background:var(--gg);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:.06rem">DigitalSaudi</div>'
+    +'<div style="font-size:.56rem;color:var(--t3);letter-spacing:.12em;text-transform:uppercase;margin-bottom:.55rem">Saudi Digital Ecosystem on Pi</div>'
+    +'<div style="display:inline-block;background:rgba(22,196,127,.1);border:1px solid var(--bd2);color:var(--g3);font-size:.5rem;font-weight:700;padding:.18rem .6rem;border-radius:99px;margin-bottom:.55rem">v4.0.0 · Pi Mainnet · sandbox:false</div>'
+    +'</div>'
+    +'<div style="padding:0 .72rem .72rem"><div style="font-size:.56rem;color:var(--t2);line-height:1.65;margin-bottom:.55rem">'
+    +'Discover Saudi technology, startups, business opportunities, events, tourism, culture, and Vision 2030 in one premium platform. Built exclusively for Pi Network. Arabic and English supported. Zero fake data.</div>'
+    +'<div class="sec-lbl" style="padding:0 0 .2rem">Modules</div>'
+    +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:.24rem;margin-bottom:.5rem">'
+    +['🤖 AI Concierge','⚽ Live Scores','🕌 Prayer Times','🌦 Weather','🚀 Saudi Startups','🗺 Tech Ecosystem','📰 News Feed','🖼 Image Gallery','🚀 Vision 2030','🏛 Tourism','🌟 Culture','⚡ Pi Passport']
+      .map(function(m){return'<div style="background:var(--bg3);border:1px solid var(--bd);border-radius:8px;padding:.3rem .42rem;font-size:.5rem;color:var(--t2)">'+m+'</div>';}).join('')
+    +'</div>'
+    +'<div style="font-size:.42rem;color:var(--t3)">© 2026 DigitalSaudi · Abdullahi Bashir Abubakar<br>Pi Network Mainnet · Google Gemini AI · Zero cost stack</div>'
+    +'</div></div>';
+}
+
+/* ════════════
+   INIT
+════════════ */
 (function(){
   /* Restore city */
   var sc=localStorage.getItem('ds_city');
@@ -1444,7 +1631,7 @@ function buyPass(){
       b.classList.toggle('on',b.textContent.toLowerCase()===sc.toLowerCase());
     });
   }
-  /* Hide citybar on AI tab by default */
+  /* Hide city bar on AI tab by default */
   document.getElementById('citybar').style.display='none';
   /* Restore session */
   var su=localStorage.getItem('ds_user');
@@ -1459,14 +1646,13 @@ function buyPass(){
       document.getElementById('app').style.display='flex';
       document.getElementById('user-chip').textContent='π '+_u.username;
       document.getElementById('digi-user').textContent=_u.username+(_u.wallet?' ✅':'');
-      homeLoad();renderDisc();renderBiz();renderExp();renderDigi();
+      homeLoad();renderDisc();newsLoad(true);renderExp();renderDigi();
+      startNewsRefresh();
     }catch(e){localStorage.removeItem('ds_user');}
   }
-  /* PWA service worker */
+  /* Register PWA service worker */
   if('serviceWorker' in navigator){
-    navigator.serviceWorker.register('/sw.js').then(function(){
-      console.log('[DS] SW registered');
-    }).catch(function(){});
+    navigator.serviceWorker.register('/sw.js').catch(function(){});
   }
 })();
 </script>
