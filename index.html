@@ -10,15 +10,14 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg0:#03050A;--bg1:#06080F;--bg2:#0D1117;--bg3:#111827;--bg4:#1C2333;
-  --t1:#F0EEE8;--t2:rgba(240,238,232,.75);--t3:rgba(240,238,232,.42);--t4:rgba(240,238,232,.14);
-  --green:#006C35;--g2:#00873F;--g3:#16C47F;
-  --gg:linear-gradient(135deg,#005A2B,#16C47F);
-  --gold:#C8A951;
-  --bd:rgba(22,196,127,.15);--bd2:rgba(22,196,127,.3);--bdo:rgba(200,169,81,.18);
-  --glow:0 0 40px rgba(22,196,127,.2);
-  --nav:72px;--r:16px;--r2:12px;
-  --f:'Inter',system-ui,sans-serif;
+  --bg0:#03050A;--bg1:#07090F;--bg2:#0D1117;--bg3:#121820;--bg4:#1A2230;
+  --t1:#F2F0EA;--t2:rgba(242,240,234,.74);--t3:rgba(242,240,234,.40);--t4:rgba(242,240,234,.14);
+  --g1:#005228;--g2:#00873F;--g3:#16C47F;
+  --gg:linear-gradient(135deg,#005228 0%,#16C47F 100%);
+  --gold:#C8A951;--goldg:linear-gradient(135deg,#C8A951,#E5C26A);
+  --bd:rgba(22,196,127,.14);--bd2:rgba(22,196,127,.28);--bdo:rgba(200,169,81,.18);
+  --glow:0 0 32px rgba(22,196,127,.22);--glow2:0 4px 20px rgba(0,0,0,.5);
+  --nav:78px;--r:16px;--r2:12px;--f:'Inter',system-ui,sans-serif;
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent}
 html,body{height:100%;overflow:hidden;font-family:var(--f)}
@@ -26,426 +25,457 @@ body{background:var(--bg0);color:var(--t1)}
 button{background:none;border:none;cursor:pointer;font-family:var(--f);touch-action:manipulation}
 input,select,textarea{font-family:var(--f);color:var(--t1);background:none;border:none;outline:none}
 a{color:var(--g3);text-decoration:none}
+@keyframes sp{to{transform:rotate(360deg)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@keyframes pulse{0%,100%{opacity:.5;transform:scale(1)}50%{opacity:1;transform:scale(1.06)}}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+@keyframes ldot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.3;transform:scale(1.5)}}
+@keyframes tdot{0%,80%,100%{opacity:.3;transform:scale(.8)}40%{opacity:1;transform:scale(1)}}
+@keyframes slideIn{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:none}}
 
-/* ═══════════════════
-   LOADING SCREEN
-═══════════════════ */
-#loading-screen{
-  position:fixed;inset:0;background:var(--bg0);
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  z-index:9999;transition:opacity .4s ease;
-}
-#loading-screen.hide{opacity:0;pointer-events:none;}
-.ls-orb1{position:absolute;width:350px;height:350px;border-radius:50%;background:radial-gradient(circle,rgba(22,196,127,.12),transparent 70%);top:-80px;right:-80px;pointer-events:none;animation:orbPulse 4s ease-in-out infinite}
-.ls-orb2{position:absolute;width:280px;height:280px;border-radius:50%;background:radial-gradient(circle,rgba(200,169,81,.07),transparent 70%);bottom:-60px;left:-60px;pointer-events:none;animation:orbPulse 5s ease-in-out infinite reverse}
-@keyframes orbPulse{0%,100%{opacity:.5;transform:scale(1)}50%{opacity:1;transform:scale(1.08)}}
-.ls-logo{font-size:3rem;font-weight:900;letter-spacing:-.06em;background:var(--gg);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:.3rem;position:relative;z-index:1}
-.ls-sub{font-size:.58rem;color:var(--t3);letter-spacing:.16em;text-transform:uppercase;margin-bottom:1.8rem;position:relative;z-index:1}
-.ls-spinner{width:36px;height:36px;border:3px solid rgba(22,196,127,.2);border-top-color:var(--g3);border-radius:50%;animation:sp .8s linear infinite;position:relative;z-index:1}
-.ls-status{font-size:.52rem;color:var(--t3);margin-top:.9rem;min-height:.8rem;text-align:center;position:relative;z-index:1;max-width:260px;line-height:1.5}
+/* ══════════ LOADING ══════════ */
+#ls{position:fixed;inset:0;background:var(--bg0);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;transition:opacity .5s ease}
+#ls.hide{opacity:0;pointer-events:none}
+.ls-orb1{position:absolute;width:380px;height:380px;border-radius:50%;background:radial-gradient(circle,rgba(22,196,127,.14),transparent 70%);top:-80px;right:-80px;animation:pulse 4s ease-in-out infinite;pointer-events:none}
+.ls-orb2{position:absolute;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(200,169,81,.08),transparent 70%);bottom:-60px;left:-60px;animation:pulse 5s ease-in-out infinite reverse;pointer-events:none}
+.ls-logo{font-size:3.2rem;font-weight:900;letter-spacing:-.06em;background:var(--gg);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;position:relative;z-index:1;margin-bottom:.35rem}
+.ls-sub{font-size:.56rem;color:var(--t3);letter-spacing:.16em;text-transform:uppercase;position:relative;z-index:1;margin-bottom:2rem}
+.ls-ring{width:44px;height:44px;border:3.5px solid rgba(22,196,127,.18);border-top-color:var(--g3);border-radius:50%;animation:sp .8s linear infinite;position:relative;z-index:1}
+#ls-msg{font-size:.52rem;color:var(--t3);margin-top:1rem;text-align:center;max-width:240px;line-height:1.5;position:relative;z-index:1;min-height:.8rem}
 
-/* ═══════════════════
-   LOGIN
-═══════════════════ */
-#login{
-  position:fixed;inset:0;background:var(--bg0);
-  display:none;flex-direction:column;overflow:hidden;z-index:100;
-}
-.lg-orb1{position:absolute;width:380px;height:380px;border-radius:50%;background:radial-gradient(circle,rgba(22,196,127,.1),transparent 70%);top:-90px;right:-80px;pointer-events:none;animation:orbPulse 4s ease-in-out infinite}
-.lg-orb2{position:absolute;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(200,169,81,.06),transparent 70%);bottom:-50px;left:-70px;pointer-events:none;animation:orbPulse 5s ease-in-out infinite reverse}
-.lg-stripe{height:3px;background:var(--gg);flex-shrink:0}
-.lg-body{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1.5rem;text-align:center;position:relative;z-index:1}
-.lg-badge{background:rgba(22,196,127,.1);border:1px solid var(--bd2);color:var(--g3);font-size:.5rem;font-weight:700;padding:.2rem .62rem;border-radius:99px;letter-spacing:.08em;text-transform:uppercase;margin-bottom:.75rem;display:inline-block}
-.lg-name{font-size:2.9rem;font-weight:900;letter-spacing:-.06em;line-height:1;background:var(--gg);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:.08rem}
-.lg-tag{font-size:.58rem;color:var(--t3);letter-spacing:.14em;text-transform:uppercase;margin-bottom:1.2rem}
-.lg-grid{display:grid;grid-template-columns:1fr 1fr;gap:.3rem;width:100%;max-width:295px;margin-bottom:1.1rem}
-.lg-card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:.5rem .52rem;text-align:left}
-.lc-ico{font-size:1.1rem;margin-bottom:.12rem}
-.lc-n{font-size:.56rem;font-weight:700;color:var(--t1)}
+/* ══════════ LOGIN ══════════ */
+#login{position:fixed;inset:0;background:var(--bg0);display:none;flex-direction:column;overflow:hidden;z-index:100}
+.lg-orb1{position:absolute;width:400px;height:400px;border-radius:50%;background:radial-gradient(circle,rgba(22,196,127,.12),transparent 70%);top:-100px;right:-80px;animation:pulse 4s ease-in-out infinite;pointer-events:none}
+.lg-orb2{position:absolute;width:320px;height:320px;border-radius:50%;background:radial-gradient(circle,rgba(200,169,81,.07),transparent 70%);bottom:-60px;left:-70px;animation:pulse 5s ease-in-out infinite reverse;pointer-events:none}
+.lg-top{height:4px;background:var(--gg);flex-shrink:0}
+.lg-body{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1.5rem;text-align:center;position:relative;z-index:1;gap:.1rem}
+.lg-badge{background:rgba(22,196,127,.1);border:1px solid var(--bd2);color:var(--g3);font-size:.5rem;font-weight:700;padding:.22rem .65rem;border-radius:99px;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.6rem}
+.lg-name{font-size:3rem;font-weight:900;letter-spacing:-.06em;line-height:1;background:var(--gg);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.lg-tag{font-size:.58rem;color:var(--t3);letter-spacing:.12em;text-transform:uppercase;margin-bottom:1.1rem}
+.lg-grid{display:grid;grid-template-columns:1fr 1fr;gap:.32rem;width:100%;max-width:300px;margin-bottom:1.1rem}
+.lg-card{background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.08);border-radius:13px;padding:.52rem .55rem;text-align:left;transition:border-color .2s}
+.lc-ico{font-size:1.2rem;margin-bottom:.14rem}
+.lc-n{font-size:.58rem;font-weight:700;color:var(--t1)}
 .lc-s{font-size:.42rem;color:var(--t3);margin-top:.03rem}
-.lg-foot{padding:.5rem 1.2rem 2.2rem;flex-shrink:0;position:relative;z-index:1}
-.btn-pi{width:100%;padding:.9rem;background:var(--gg);border-radius:var(--r);font-size:.96rem;font-weight:900;color:#fff;display:flex;align-items:center;justify-content:center;gap:.45rem;box-shadow:0 4px 32px rgba(22,196,127,.35);transition:all .15s}
-.btn-pi:active{transform:scale(.97)}
-.btn-pi:disabled{opacity:.5;cursor:not-allowed}
-#lmsg{font-size:.52rem;color:var(--t3);text-align:center;margin-top:.5rem;min-height:.85rem;line-height:1.45;padding:0 .5rem}
-.lg-links{display:flex;gap:.5rem;justify-content:center;margin-top:.7rem}
-.lg-links a{font-size:.46rem;color:rgba(200,169,81,.5);text-decoration:underline;text-underline-offset:3px}
+.lg-foot{padding:.5rem 1.3rem 2.2rem;flex-shrink:0;position:relative;z-index:1}
+.btn-signin{width:100%;padding:.95rem;background:var(--gg);border-radius:var(--r);font-size:1rem;font-weight:900;color:#fff;display:flex;align-items:center;justify-content:center;gap:.48rem;box-shadow:0 4px 32px rgba(22,196,127,.4),var(--glow2);transition:all .15s;letter-spacing:-.01em}
+.btn-signin:active{transform:scale(.97)}
+.btn-signin:disabled{opacity:.5;cursor:not-allowed}
+#lmsg{font-size:.52rem;color:var(--t3);text-align:center;margin-top:.52rem;min-height:.88rem;line-height:1.45}
 
-/* ═══════════════════
-   APP SHELL
-═══════════════════ */
+/* ══════════ APP SHELL ══════════ */
 #app{display:none;flex-direction:column;height:100vh;overflow:hidden}
-#hdr{background:rgba(3,5,10,.96);border-bottom:1px solid var(--bd);padding:.38rem .68rem;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;backdrop-filter:blur(24px);z-index:20}
-.hdr-logo{font-size:1.08rem;font-weight:900;letter-spacing:-.04em;background:var(--gg);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.hdr-sub{font-size:.33rem;color:var(--t3);margin-top:.02rem}
-.hdr-r{display:flex;align-items:center;gap:.3rem}
-#lang-btn{font-size:.48rem;font-weight:700;color:var(--gold);background:rgba(200,169,81,.1);border:1px solid var(--bdo);border-radius:99px;padding:.15rem .42rem;transition:all .15s}
-#user-chip{font-size:.42rem;color:var(--g3);font-weight:700;background:rgba(22,196,127,.1);padding:.1rem .35rem;border-radius:99px;border:1px solid var(--bd)}
+#hdr{background:rgba(3,5,10,.96);border-bottom:1px solid var(--bd);padding:.4rem .7rem;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;backdrop-filter:blur(24px);z-index:20}
+.hdr-logo{font-size:1.12rem;font-weight:900;letter-spacing:-.04em;background:var(--gg);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hdr-sub{font-size:.32rem;color:var(--t3);margin-top:.03rem}
+.hdr-r{display:flex;align-items:center;gap:.32rem}
+#lang-btn{font-size:.5rem;font-weight:700;color:var(--gold);background:rgba(200,169,81,.1);border:1px solid var(--bdo);border-radius:99px;padding:.16rem .44rem;transition:all .15s;cursor:pointer}
+#user-chip{font-size:.44rem;color:var(--g3);font-weight:700;background:rgba(22,196,127,.1);padding:.12rem .38rem;border-radius:99px;border:1px solid var(--bd)}
 
-/* NAV */
-#nav{position:fixed;bottom:0;left:0;right:0;height:var(--nav);background:rgba(3,5,10,.97);border-top:1px solid var(--bd);display:flex;z-index:50;backdrop-filter:blur(24px);padding-bottom:env(safe-area-inset-bottom)}
-.nb{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.1rem;color:var(--t3);cursor:pointer;transition:all .18s;position:relative;padding:.22rem}
+/* ══════════ BOTTOM NAV (ENLARGED) ══════════ */
+#nav{
+  position:fixed;bottom:0;left:0;right:0;
+  height:var(--nav);
+  background:rgba(3,5,10,.98);
+  border-top:2px solid var(--bd2);
+  display:flex;z-index:50;
+  backdrop-filter:blur(28px);
+  padding-bottom:env(safe-area-inset-bottom);
+  box-shadow:0 -4px 24px rgba(0,0,0,.5);
+}
+.nb{
+  flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:.12rem;color:var(--t3);cursor:pointer;transition:all .2s;position:relative;
+  padding:.2rem .1rem;
+}
 .nb.on{color:var(--g3)}
-.nb.on::after{content:'';position:absolute;bottom:0;left:18%;right:18%;height:2px;background:var(--gg);border-radius:3px 3px 0 0}
-.nb-ico{font-size:1.32rem;line-height:1;transition:transform .18s}
-.nb.on .nb-ico{transform:scale(1.1)}
-.nb-lbl{font-size:.44rem;font-weight:700;text-transform:uppercase;letter-spacing:.03em}
+.nb.on::after{
+  content:'';position:absolute;bottom:0;left:10%;right:10%;
+  height:3px;background:var(--gg);border-radius:4px 4px 0 0;
+}
+.nb-ico{font-size:1.65rem;line-height:1;transition:transform .2s}
+.nb.on .nb-ico{transform:scale(1.15)}
+.nb-lbl{font-size:.5rem;font-weight:700;text-transform:uppercase;letter-spacing:.02em;line-height:1}
+.nb-dot{width:6px;height:6px;border-radius:50%;background:var(--g3);position:absolute;top:.22rem;right:calc(50% - 14px);display:none}
+.nb.on .nb-dot{display:block}
 
-/* SCREENS */
+/* ══════════ SCREENS ══════════ */
 #main{flex:1;overflow:hidden;min-height:0;position:relative}
 .scr{display:none;flex-direction:column;height:100%;overflow:hidden;min-height:0}
-.scr.on{display:flex;animation:fadeUp .15s ease}
-@keyframes fadeUp{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
-@keyframes sp{to{transform:rotate(360deg)}}
-
-/* Scroll — Pi Browser fix */
-.scroll{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;min-height:0;height:0;padding-bottom:calc(var(--nav)+.8rem)}
+.scr.on{display:flex;animation:fadeUp .14s ease}
+.scroll{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;min-height:0;height:0;padding-bottom:calc(var(--nav)+1rem)}
 .scroll::-webkit-scrollbar{display:none}
 
-/* Screen headers */
-.sbar{display:flex;align-items:center;justify-content:space-between;padding:.38rem .68rem;background:rgba(3,5,10,.96);border-bottom:1px solid var(--bd);flex-shrink:0;backdrop-filter:blur(20px)}
-.sbar-t{font-size:.9rem;font-weight:900;letter-spacing:-.01em}
-.sbar-s{font-size:.35rem;color:var(--t3);margin-top:.03rem}
-.sbar-btn{font-size:.9rem;color:var(--t3);padding:.18rem .3rem;border-radius:8px;transition:color .15s}
+/* ══════════ SCREEN HEADERS ══════════ */
+.sbar{display:flex;align-items:center;justify-content:space-between;padding:.4rem .7rem;background:rgba(3,5,10,.96);border-bottom:1px solid var(--bd);flex-shrink:0;backdrop-filter:blur(20px)}
+.sbar-t{font-size:.92rem;font-weight:900;letter-spacing:-.01em}
+.sbar-s{font-size:.35rem;color:var(--t3);margin-top:.04rem}
+.sbar-btn{font-size:1rem;color:var(--t3);padding:.18rem .32rem;border-radius:8px;cursor:pointer;transition:color .15s}
 .sbar-btn:active{color:var(--g3)}
 
-/* Tab bars */
-.tbr{display:flex;border-bottom:1px solid var(--bd);flex-shrink:0;background:var(--bg1);overflow-x:auto;scrollbar-width:none}
-.tbr::-webkit-scrollbar{display:none}
-.tb{flex-shrink:0;flex:1;font-size:.52rem;font-weight:700;padding:.44rem .1rem;color:var(--t3);border-bottom:2px solid transparent;cursor:pointer;text-align:center;transition:all .14s;white-space:nowrap;min-width:60px}
-.tb.on{color:var(--g3);border-bottom-color:var(--g3)}
-.catbar{display:flex;gap:.24rem;overflow-x:auto;padding:.28rem .5rem;scrollbar-width:none;border-bottom:1px solid var(--bd);flex-shrink:0}
-.catbar::-webkit-scrollbar{display:none}
-.cb{flex-shrink:0;font-size:.52rem;font-weight:700;padding:.22rem .56rem;background:var(--bg3);border:1px solid var(--bd);border-radius:99px;color:var(--t3);cursor:pointer;white-space:nowrap;transition:all .14s}
-.cb.on{background:var(--gg);border-color:transparent;color:#fff}
-.citybar{display:flex;gap:.22rem;overflow-x:auto;padding:.26rem .48rem;scrollbar-width:none;border-bottom:1px solid var(--bd);flex-shrink:0}
+/* ══════════ HOME TAB PILLS (ENLARGED & OBVIOUS) ══════════ */
+.htabs{
+  display:flex;gap:0;overflow-x:auto;scrollbar-width:none;
+  border-bottom:2px solid var(--bd);flex-shrink:0;
+  background:var(--bg1);
+}
+.htabs::-webkit-scrollbar{display:none}
+.htab{
+  flex-shrink:0;
+  display:flex;flex-direction:column;align-items:center;gap:.1rem;
+  padding:.5rem .6rem;
+  color:var(--t3);cursor:pointer;transition:all .16s;
+  border-bottom:3px solid transparent;
+  min-width:68px;
+}
+.htab.on{color:var(--g3);border-bottom-color:var(--g3);background:rgba(22,196,127,.05)}
+.htab-ico{font-size:1.35rem;line-height:1}
+.htab-lbl{font-size:.44rem;font-weight:700;white-space:nowrap}
+
+/* City bar */
+.citybar{display:flex;gap:.24rem;overflow-x:auto;padding:.3rem .5rem;scrollbar-width:none;border-bottom:1px solid var(--bd);flex-shrink:0}
 .citybar::-webkit-scrollbar{display:none}
-.cty{flex-shrink:0;font-size:.5rem;font-weight:700;padding:.22rem .52rem;background:var(--bg3);border:1px solid var(--bd);border-radius:99px;color:var(--t3);cursor:pointer;white-space:nowrap;transition:all .14s}
+.cty{flex-shrink:0;font-size:.52rem;font-weight:700;padding:.26rem .58rem;background:var(--bg3);border:1px solid var(--bd);border-radius:99px;color:var(--t3);cursor:pointer;white-space:nowrap;transition:all .15s}
 .cty.on{background:var(--gg);border-color:transparent;color:#fff}
 
-/* Cards */
-.card{background:var(--bg2);border-radius:var(--r);border:1px solid var(--bd);overflow:hidden;margin:.28rem .5rem}
-.card-h{padding:.46rem .66rem;border-bottom:1px solid var(--bd);display:flex;align-items:center;gap:.36rem;background:rgba(22,196,127,.05)}
-.ch-ico{font-size:1.1rem;line-height:1}
-.ch-t{font-size:.76rem;font-weight:900;color:var(--t1)}
-.ch-s{font-size:.4rem;color:var(--t3);margin-top:.03rem}
-.card-b{padding:.58rem .66rem}
-.sec-lbl{padding:.34rem .68rem .1rem;font-size:.42rem;font-weight:800;color:var(--t3);letter-spacing:.1em;text-transform:uppercase}
-.badge{font-size:.42rem;font-weight:700;border-radius:99px;padding:.07rem .28rem;background:rgba(22,196,127,.1);border:1px solid var(--bd2);color:var(--g3)}
-
-/* ═══════════════════
-   AI CONCIERGE
-═══════════════════ */
+/* ══════════ AI ══════════ */
 .ai-wrap{display:flex;flex-direction:column;height:100%;min-height:0}
-.ai-feed{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;min-height:0;height:0;padding:.52rem .6rem;display:flex;flex-direction:column;gap:.44rem}
+.ai-feed{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;min-height:0;height:0;padding:.55rem .65rem;display:flex;flex-direction:column;gap:.45rem}
 .ai-feed::-webkit-scrollbar{display:none}
-.ai-welcome{background:linear-gradient(135deg,rgba(22,196,127,.08),rgba(0,108,53,.12));border:1px solid var(--bd2);border-radius:14px;padding:.68rem .72rem}
-.ai-wt{font-size:.82rem;font-weight:900;color:var(--g3);margin-bottom:.18rem}
-.ai-ws{font-size:.55rem;color:var(--t2);line-height:1.58;margin-bottom:.44rem}
+.ai-welcome{background:linear-gradient(135deg,rgba(22,196,127,.09),rgba(0,82,40,.15));border:1px solid var(--bd2);border-radius:16px;padding:.72rem .75rem}
+.ai-wt{font-size:.86rem;font-weight:900;color:var(--g3);margin-bottom:.18rem}
+.ai-ws{font-size:.56rem;color:var(--t2);line-height:1.58;margin-bottom:.45rem}
 .ai-chips{display:flex;flex-wrap:wrap;gap:.22rem}
-.ai-chip{font-size:.5rem;font-weight:600;background:rgba(22,196,127,.1);border:1px solid var(--bd2);color:var(--g3);border-radius:99px;padding:.2rem .52rem;cursor:pointer;transition:all .14s;white-space:nowrap}
-.ai-chip:active{background:rgba(22,196,127,.22);transform:scale(.96)}
-.msg{max-width:86%;padding:.5rem .65rem;border-radius:14px;font-size:.6rem;line-height:1.62;word-break:break-word;animation:fadeUp .15s ease;white-space:pre-wrap}
-.msg.u{background:var(--gg);color:#fff;align-self:flex-end;border-bottom-right-radius:4px;box-shadow:0 2px 12px rgba(22,196,127,.25)}
+.chip{font-size:.52rem;font-weight:600;background:rgba(22,196,127,.1);border:1px solid var(--bd2);color:var(--g3);border-radius:99px;padding:.22rem .55rem;cursor:pointer;transition:all .15s;white-space:nowrap}
+.chip:active{background:rgba(22,196,127,.24);transform:scale(.96)}
+.msg{max-width:88%;padding:.52rem .68rem;border-radius:14px;font-size:.62rem;line-height:1.62;word-break:break-word;animation:fadeUp .15s ease;white-space:pre-wrap}
+.msg.u{background:var(--gg);color:#fff;align-self:flex-end;border-bottom-right-radius:4px;box-shadow:0 2px 14px rgba(22,196,127,.28)}
 .msg.a{background:var(--bg3);border:1px solid var(--bd);color:var(--t1);align-self:flex-start;border-bottom-left-radius:4px}
-.typing-wrap{align-self:flex-start;display:flex;gap:.3rem;align-items:center;background:var(--bg3);border:1px solid var(--bd);padding:.48rem .65rem;border-radius:14px;border-bottom-left-radius:4px}
-.td{width:7px;height:7px;border-radius:50%;background:var(--g3);animation:tdot 1.2s infinite}
+.typing{align-self:flex-start;display:flex;gap:.3rem;align-items:center;background:var(--bg3);border:1px solid var(--bd);padding:.48rem .65rem;border-radius:14px;border-bottom-left-radius:4px}
+.td{width:8px;height:8px;border-radius:50%;background:var(--g3);animation:tdot 1.2s infinite}
 .td:nth-child(2){animation-delay:.2s}.td:nth-child(3){animation-delay:.4s}
-@keyframes tdot{0%,80%,100%{opacity:.3;transform:scale(.8)}40%{opacity:1;transform:scale(1)}}
-.ai-bar{display:flex;gap:.3rem;padding:.4rem .5rem;border-top:1px solid var(--bd);background:var(--bg1);flex-shrink:0;align-items:center}
-#ai-inp{flex:1;background:var(--bg3);border:1px solid var(--bd2);border-radius:99px;padding:.44rem .72rem;font-size:.6rem;color:var(--t1);transition:border-color .15s}
+.ai-bar{display:flex;gap:.32rem;padding:.42rem .52rem;border-top:1px solid var(--bd);background:var(--bg1);flex-shrink:0;align-items:center}
+#ai-inp{flex:1;background:var(--bg3);border:1.5px solid var(--bd2);border-radius:99px;padding:.48rem .75rem;font-size:.62rem;color:var(--t1);transition:border-color .15s}
 #ai-inp:focus{border-color:var(--g3)}
-#ai-send{width:40px;height:40px;background:var(--gg);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.05rem;flex-shrink:0;box-shadow:0 2px 12px rgba(22,196,127,.3);transition:all .14s}
+#ai-send{width:44px;height:44px;background:var(--gg);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.15rem;flex-shrink:0;box-shadow:0 2px 14px rgba(22,196,127,.35);transition:all .15s}
 #ai-send:active{transform:scale(.92)}
 #ai-send:disabled{opacity:.5}
 
-/* ═══════════════════
-   PRAYER
-═══════════════════ */
-.pr-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.28rem;padding:.44rem}
-.pr-cell{background:var(--bg3);border-radius:12px;padding:.46rem .32rem;text-align:center;border:1px solid var(--bd);position:relative;min-height:80px;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:all .2s}
-.pr-cell.next{border-color:var(--g3);background:rgba(22,196,127,.08);box-shadow:0 0 20px rgba(22,196,127,.15)}
-.pr-name{font-size:.46rem;font-weight:700;color:var(--t3);margin-bottom:.1rem}
-.pr-time{font-size:.96rem;font-weight:900;color:var(--t1);line-height:1}
+/* ══════════ PRAYER ══════════ */
+.pr-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.3rem;padding:.46rem}
+.pr-cell{background:var(--bg3);border-radius:13px;border:1.5px solid var(--bd);text-align:center;position:relative;min-height:88px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:.5rem .3rem;transition:all .2s;cursor:default}
+.pr-cell.next{border-color:var(--g3);background:rgba(22,196,127,.08);box-shadow:0 0 22px rgba(22,196,127,.18)}
+.pr-name{font-size:.48rem;font-weight:700;color:var(--t3);margin-bottom:.1rem}
+.pr-time{font-size:.98rem;font-weight:900;color:var(--t1);line-height:1}
 .pr-cell.next .pr-time{color:var(--g3)}
-.next-b{position:absolute;top:.12rem;right:.18rem;font-size:.32rem;background:var(--g3);color:#fff;border-radius:99px;padding:.04rem .22rem;font-weight:700}
-.cd-bar{background:var(--bg3);border:1px solid var(--g3);border-radius:12px;padding:.46rem .62rem;margin:.05rem .46rem .36rem;display:flex;align-items:center;justify-content:space-between;min-height:56px}
-.cd-lbl{font-size:.46rem;color:var(--t3);font-weight:600}
-.cd-val{font-size:.98rem;font-weight:900;color:var(--g3)}
+.next-b{position:absolute;top:.12rem;right:.18rem;font-size:.32rem;background:var(--g3);color:#fff;border-radius:99px;padding:.05rem .22rem;font-weight:700}
+.cd-bar{background:var(--bg3);border:1.5px solid var(--g3);border-radius:12px;padding:.5rem .65rem;margin:.06rem .48rem .38rem;display:flex;align-items:center;justify-content:space-between;min-height:58px}
+.cd-lbl{font-size:.48rem;color:var(--t3);font-weight:600}
+.cd-val{font-size:1rem;font-weight:900;color:var(--g3)}
 
-/* ═══════════════════
-   WEATHER
-═══════════════════ */
-.wx-hero{display:flex;align-items:center;gap:.62rem;padding:.56rem .7rem .28rem;min-height:90px}
-.wx-ico{font-size:2.8rem;line-height:1}
-.wx-tmp{font-size:3rem;font-weight:900;line-height:1}
-.wx-dsc{font-size:.54rem;color:var(--t2);margin-top:.07rem}
-.wx-meta{display:flex;gap:.48rem;padding:.05rem .7rem .44rem}
-.wm{font-size:.48rem;color:var(--t3)}
-.fc{display:grid;grid-template-columns:repeat(5,1fr);gap:.22rem;padding:.05rem .46rem .46rem}
-.fcd{background:var(--bg3);border-radius:10px;padding:.28rem .2rem;text-align:center;border:1px solid var(--bd);min-height:72px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+/* ══════════ WEATHER ══════════ */
+.wx-hero{display:flex;align-items:center;gap:.65rem;padding:.58rem .72rem .3rem;min-height:96px}
+.wx-ico{font-size:3rem}
+.wx-tmp{font-size:3.2rem;font-weight:900;line-height:1}
+.wx-dsc{font-size:.55rem;color:var(--t2);margin-top:.07rem}
+.wx-meta{display:flex;gap:.52rem;padding:.06rem .72rem .45rem}
+.wm{font-size:.5rem;color:var(--t3)}
+.fc{display:grid;grid-template-columns:repeat(5,1fr);gap:.24rem;padding:.05rem .48rem .48rem}
+.fcd{background:var(--bg3);border-radius:10px;padding:.3rem .2rem;text-align:center;border:1px solid var(--bd);min-height:76px;display:flex;flex-direction:column;align-items:center;justify-content:center}
 .fcd-dt{font-size:.36rem;color:var(--t3);margin-bottom:.1rem}
-.fcd-i{font-size:.82rem;margin-bottom:.07rem}
-.fcd-hi{font-size:.54rem;font-weight:800;color:var(--t1)}
+.fcd-i{font-size:.85rem;margin-bottom:.08rem}
+.fcd-hi{font-size:.56rem;font-weight:800;color:var(--t1)}
 .fcd-lo{font-size:.46rem;color:var(--t3)}
-.wx-all{display:grid;grid-template-columns:repeat(3,1fr);gap:.26rem;padding:.4rem .46rem}
-.wag{background:var(--bg3);border-radius:10px;padding:.4rem .3rem;text-align:center;border:1px solid var(--bd);min-height:72px;display:flex;flex-direction:column;align-items:center;justify-content:center}
-.wag-c{font-size:.42rem;color:var(--t3);margin-bottom:.05rem}
-.wag-i{font-size:.98rem;margin-bottom:.06rem}
-.wag-t{font-size:.88rem;font-weight:900;color:var(--t1)}
+.wx-all{display:grid;grid-template-columns:repeat(3,1fr);gap:.28rem;padding:.42rem .48rem}
+.wag{background:var(--bg3);border-radius:10px;padding:.42rem .3rem;text-align:center;border:1px solid var(--bd);min-height:76px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.wag-c{font-size:.44rem;color:var(--t3);margin-bottom:.06rem}
+.wag-i{font-size:1rem;margin-bottom:.07rem}
+.wag-t{font-size:.9rem;font-weight:900;color:var(--t1)}
 
-/* ═══════════════════
-   LIVE SCORES
-═══════════════════ */
-.lg-bar{display:flex;gap:.22rem;overflow-x:auto;padding:.28rem .48rem;scrollbar-width:none;border-bottom:1px solid var(--bd);flex-shrink:0}
+/* ══════════ LIVE SCORES ══════════ */
+.lg-bar{display:flex;gap:.22rem;overflow-x:auto;padding:.3rem .5rem;scrollbar-width:none;border-bottom:1px solid var(--bd);flex-shrink:0}
 .lg-bar::-webkit-scrollbar{display:none}
-.lgb{flex-shrink:0;font-size:.5rem;font-weight:700;padding:.22rem .52rem;background:var(--bg3);border:1px solid var(--bd);border-radius:99px;color:var(--t3);cursor:pointer;white-space:nowrap;transition:all .14s}
+.lgb{flex-shrink:0;font-size:.5rem;font-weight:700;padding:.24rem .55rem;background:var(--bg3);border:1px solid var(--bd);border-radius:99px;color:var(--t3);cursor:pointer;white-space:nowrap;transition:all .15s}
 .lgb.on{background:var(--gg);border-color:transparent;color:#fff}
-.vw-bar{display:flex;gap:.22rem;padding:.26rem .48rem;border-bottom:1px solid var(--bd);flex-shrink:0}
-.vwb{font-size:.52rem;font-weight:700;padding:.22rem .52rem;background:var(--bg3);border:1px solid var(--bd);border-radius:99px;color:var(--t3);cursor:pointer;transition:all .14s}
+.vw-bar{display:flex;gap:.24rem;padding:.28rem .5rem;border-bottom:1px solid var(--bd);flex-shrink:0}
+.vwb{font-size:.54rem;font-weight:700;padding:.24rem .55rem;background:var(--bg3);border:1px solid var(--bd);border-radius:99px;color:var(--t3);cursor:pointer;transition:all .15s}
 .vwb.on{background:rgba(22,196,127,.15);border-color:var(--g3);color:var(--g3)}
-.match{background:var(--bg2);border-radius:12px;border:1px solid var(--bd);padding:.48rem .55rem;margin:.22rem .48rem;min-height:80px;position:relative;overflow:hidden;transition:all .15s}
-.match.live-m{border-color:var(--g3);box-shadow:0 0 16px rgba(22,196,127,.12)}
-.live-ind{position:absolute;top:.36rem;right:.5rem;display:flex;align-items:center;gap:.2rem}
-.live-dot{width:6px;height:6px;border-radius:50%;background:var(--g3);animation:ldot 1.2s infinite}
-@keyframes ldot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(1.5)}}
-.live-lbl{font-size:.4rem;font-weight:800;color:var(--g3)}
-.match-comp{font-size:.4rem;color:var(--t3);margin-bottom:.28rem;font-weight:600}
-.match-row{display:grid;grid-template-columns:1fr auto 1fr;gap:.28rem;align-items:center}
-.team-r{display:flex;align-items:center;gap:.22rem}
+.match{background:var(--bg2);border-radius:14px;border:1.5px solid var(--bd);padding:.52rem .58rem;margin:.24rem .5rem;position:relative;overflow:hidden;transition:all .15s;cursor:pointer;animation:fadeUp .18s ease}
+.match:active{background:var(--bg3)}
+.match.live-m{border-color:var(--g3);box-shadow:0 0 18px rgba(22,196,127,.14)}
+.live-ind{position:absolute;top:.38rem;right:.55rem;display:flex;align-items:center;gap:.22rem}
+.live-dot{width:7px;height:7px;border-radius:50%;background:var(--g3);animation:ldot 1.2s infinite}
+.live-lbl{font-size:.42rem;font-weight:800;color:var(--g3)}
+.match-venue{font-size:.42rem;color:var(--t3);margin-bottom:.28rem;display:flex;align-items:center;gap:.22rem}
+.match-row{display:grid;grid-template-columns:1fr auto 1fr;gap:.3rem;align-items:center;margin-bottom:.18rem}
+.team-r{display:flex;align-items:center;gap:.24rem}
 .team-r.away{justify-content:flex-end}
-.team-n{font-size:.64rem;font-weight:800;color:var(--t1);line-height:1.2}
-.crest{width:20px;height:20px;object-fit:contain;border-radius:3px;flex-shrink:0}
-.score-box{background:var(--bg3);border-radius:9px;padding:.24rem .45rem;text-align:center;min-width:60px;border:1px solid var(--bd)}
-.score-n{font-size:1.2rem;font-weight:900;color:var(--t1);line-height:1}
+.team-n{font-size:.68rem;font-weight:800;color:var(--t1);line-height:1.2}
+.crest{width:22px;height:22px;object-fit:contain;border-radius:3px;flex-shrink:0}
+.score-box{background:var(--bg3);border-radius:10px;padding:.26rem .48px;text-align:center;min-width:64px;border:1px solid var(--bd)}
+.score-n{font-size:1.28rem;font-weight:900;color:var(--t1);line-height:1}
 .score-t{font-size:.38rem;color:var(--t3);margin-top:.04rem}
-.score-vs{font-size:.7rem;color:var(--t3);font-weight:700}
+.score-vs{font-size:.72rem;color:var(--t3);font-weight:700}
+/* Lineup */
+.lineup-wrap{display:grid;grid-template-columns:1fr 1fr;gap:.28rem;padding:.1rem 0 0}
+.lineup-col{background:var(--bg3);border-radius:9px;padding:.32rem .4rem;border:1px solid var(--bd)}
+.lineup-title{font-size:.4rem;font-weight:800;color:var(--g3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.2rem}
+.lineup-player{font-size:.48rem;color:var(--t2);padding:.1rem 0;border-bottom:1px solid rgba(255,255,255,.04);display:flex;align-items:center;gap:.22rem}
+.lineup-player:last-child{border-bottom:none}
+.lineup-num{font-size:.4rem;color:var(--t3);min-width:12px}
 /* Table */
-.tbl-wrap{overflow-x:auto;padding:.4rem .48rem}
-.tbl{width:100%;border-collapse:collapse;font-size:.54rem}
-.tbl th{font-size:.38rem;font-weight:800;color:var(--t3);text-transform:uppercase;letter-spacing:.06em;padding:.28rem .26rem;border-bottom:1px solid var(--bd);text-align:center;white-space:nowrap}
+.tbl-wrap{overflow-x:auto;padding:.42rem .5rem}
+.tbl{width:100%;border-collapse:collapse}
+.tbl th{font-size:.38rem;font-weight:800;color:var(--t3);text-transform:uppercase;letter-spacing:.06em;padding:.3rem .28rem;border-bottom:1px solid var(--bd);text-align:center;white-space:nowrap}
 .tbl th:nth-child(2),.tbl td:nth-child(2){text-align:left;min-width:90px}
-.tbl td{padding:.32rem .26rem;border-bottom:1px solid rgba(255,255,255,.04);text-align:center;vertical-align:middle}
+.tbl td{padding:.35rem .28rem;border-bottom:1px solid rgba(255,255,255,.04);text-align:center;vertical-align:middle}
 .tbl tr.hl td{background:rgba(22,196,127,.06)}
-.pos{font-size:.5rem;font-weight:700;color:var(--t3)}
+.pos{font-size:.52rem;font-weight:700;color:var(--t3)}
 .pos.cl{color:var(--g3)}.pos.eu{color:var(--gold)}.pos.rz{color:#e55}
-.club-c{display:flex;align-items:center;gap:.26rem}
-.club-n{font-size:.56rem;font-weight:700;color:var(--t1)}
-.pts{font-size:.66rem;font-weight:900;color:var(--t1)}
+.club-c{display:flex;align-items:center;gap:.28rem}
+.club-n{font-size:.58rem;font-weight:700;color:var(--t1)}
+.pts{font-size:.7rem;font-weight:900;color:var(--t1)}
 .form-d{display:flex;gap:2px}
-.fd{width:7px;height:7px;border-radius:50%}
-.fw{background:var(--g3)}.fd2{background:var(--t3)}.fl{background:#e55}
+.fd2{width:7px;height:7px;border-radius:50%}
+.fw{background:var(--g3)}.fdraw{background:var(--t3)}.fl{background:#e55}
 
-/* ═══════════════════
-   WALLET
-═══════════════════ */
-.wallet-card{background:linear-gradient(135deg,rgba(0,108,53,.2),rgba(22,196,127,.08));border:1px solid var(--bd2);border-radius:var(--r);margin:.3rem .5rem;padding:.7rem .7rem;position:relative;overflow:hidden}
-.wallet-card::before{content:'';position:absolute;top:-40px;right:-40px;width:120px;height:120px;border-radius:50%;background:rgba(22,196,127,.06);pointer-events:none}
-.wc-label{font-size:.44rem;color:var(--g3);font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:.08rem}
-.wc-addr{font-size:.48rem;color:var(--t2);font-family:monospace;margin-bottom:.55rem;word-break:break-all;line-height:1.45}
-.wc-btns{display:grid;grid-template-columns:1fr 1fr;gap:.4rem}
-.wc-btn{padding:.55rem;border-radius:10px;font-size:.62rem;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:.3rem;transition:all .15s;min-height:52px}
-.wc-btn.send{background:var(--gg);color:#fff;box-shadow:0 2px 12px rgba(22,196,127,.25)}
-.wc-btn.req{background:rgba(22,196,127,.1);border:1px solid var(--bd2);color:var(--g3)}
-.wc-btn:active{transform:scale(.97)}
-.wc-btn:disabled{opacity:.5;cursor:not-allowed}
-.w-inp{width:100%;background:var(--bg3);border:1px solid var(--bd2);border-radius:10px;padding:.46rem .6rem;color:var(--t1);font-size:.62rem;margin-bottom:.3rem;min-height:50px}
-.w-inp:focus{border-color:var(--g3)}
+/* ══════════ WALLET ══════════ */
+.wallet-hero{background:linear-gradient(135deg,rgba(0,82,40,.25),rgba(22,196,127,.1));border:1.5px solid var(--bd2);border-radius:var(--r);margin:.32rem .5rem;padding:.75rem .72rem;position:relative;overflow:hidden}
+.wallet-hero::after{content:'';position:absolute;top:-50px;right:-50px;width:150px;height:150px;border-radius:50%;background:rgba(22,196,127,.07);pointer-events:none}
+.wh-label{font-size:.44rem;color:var(--g3);font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:.08rem}
+.wh-addr{font-size:.5rem;color:var(--t2);font-family:monospace;margin-bottom:.6rem;word-break:break-all;line-height:1.45}
+.wallet-btns{display:grid;grid-template-columns:1fr 1fr;gap:.45rem}
+.wbtn{
+  padding:.7rem .5rem;
+  border-radius:13px;
+  font-size:.68rem;font-weight:900;
+  cursor:pointer;
+  display:flex;align-items:center;justify-content:center;gap:.35rem;
+  transition:all .15s;min-height:58px;
+  touch-action:manipulation;
+}
+.wbtn.send{background:var(--gg);color:#fff;box-shadow:0 3px 16px rgba(22,196,127,.35)}
+.wbtn.req{background:rgba(22,196,127,.12);border:1.5px solid var(--bd2);color:var(--g3)}
+.wbtn:active{transform:scale(.96)}
+.wbtn:disabled{opacity:.45;cursor:not-allowed}
+.wbtn-ico{font-size:1.1rem}
+/* Wallet inputs */
+.w-label{font-size:.5rem;font-weight:700;color:var(--t3);margin-bottom:.15rem;display:block}
+.w-inp{
+  width:100%;background:var(--bg3);
+  border:1.5px solid var(--bd2);border-radius:11px;
+  padding:.5rem .65rem;color:var(--t1);
+  font-size:.62rem;margin-bottom:.32rem;min-height:52px;
+  display:block;
+}
+.w-inp:focus{border-color:var(--g3);outline:none}
+.w-btn{
+  width:100%;padding:.65rem;
+  background:var(--gg);border-radius:12px;
+  font-size:.76rem;font-weight:900;color:#fff;
+  display:flex;align-items:center;justify-content:center;gap:.38rem;
+  box-shadow:0 3px 16px rgba(22,196,127,.3);
+  transition:all .15s;min-height:54px;cursor:pointer;touch-action:manipulation;
+}
+.w-btn:active{transform:scale(.97)}
+.w-btn:disabled{opacity:.5}
 
-/* ═══════════════════
-   HOLIDAYS / QIBLA / ZAKAT
-═══════════════════ */
-.hol{display:flex;align-items:center;gap:.48rem;padding:.5rem .68rem;border-bottom:1px solid rgba(255,255,255,.04);min-height:72px}
-.hol-f{font-size:1.3rem;flex-shrink:0}
-.hol-n{font-size:.62rem;font-weight:700;color:var(--t1)}
-.hol-ar{font-family:serif;font-size:.66rem;color:var(--gold);direction:rtl}
+/* ══════════ HOLIDAYS ══════════ */
+.hol{display:flex;align-items:center;gap:.5rem;padding:.52rem .7rem;border-bottom:1px solid rgba(255,255,255,.04);min-height:76px}
+.hol-f{font-size:1.4rem;flex-shrink:0}
+.hol-n{font-size:.64rem;font-weight:700;color:var(--t1)}
+.hol-ar{font-family:serif;font-size:.7rem;color:var(--gold);direction:rtl}
 .hol-d{font-size:.44rem;color:var(--t3)}
 .hol-cnt{text-align:right;flex-shrink:0}
-.hol-days{font-size:1.05rem;font-weight:900;color:var(--g3)}
+.hol-days{font-size:1.1rem;font-weight:900;color:var(--g3)}
 .hol-unit{font-size:.36rem;color:var(--t3)}
-.qibla-wrap{display:flex;flex-direction:column;align-items:center;padding:1.1rem .7rem}
-.compass{width:196px;height:196px;border-radius:50%;border:2px solid var(--bd2);background:var(--bg3);box-shadow:var(--glow);position:relative;display:flex;align-items:center;justify-content:center;margin-bottom:.7rem}
-.c-n{position:absolute;top:.44rem;font-size:.62rem;font-weight:900;color:var(--t3)}
-.c-arr{width:3px;height:76px;background:linear-gradient(180deg,var(--g3),transparent);border-radius:99px;transform-origin:bottom center;position:absolute;bottom:50%;left:calc(50% - 1.5px);transition:transform .65s cubic-bezier(.34,1.56,.64,1)}
-.q-brg{font-size:1.9rem;font-weight:900;color:var(--g3)}
-.q-dist{font-size:.53rem;color:var(--t3);margin-top:.07rem}
-.z-inp{width:100%;background:var(--bg3);border:1px solid var(--bd2);border-radius:10px;padding:.48rem .62rem;color:var(--t1);font-size:.6rem;margin-bottom:.3rem;min-height:50px}
-.z-inp:focus{border-color:var(--g3)}
-.z-res{background:rgba(22,196,127,.08);border:1px solid var(--g3);border-radius:12px;padding:.62rem;margin-top:.46rem;text-align:center;display:none}
-.z-amt{font-size:1.7rem;font-weight:900;color:var(--g3)}
 
-/* ═══════════════════
-   NEWS FEED
-═══════════════════ */
+/* ══════════ QIBLA ══════════ */
+.qibla-wrap{display:flex;flex-direction:column;align-items:center;padding:1.2rem .7rem}
+.compass{width:200px;height:200px;border-radius:50%;border:2px solid var(--bd2);background:var(--bg3);box-shadow:var(--glow);position:relative;display:flex;align-items:center;justify-content:center;margin-bottom:.72rem}
+.c-n{position:absolute;top:.45rem;font-size:.65rem;font-weight:900;color:var(--t3)}
+.c-arr{width:3px;height:78px;background:linear-gradient(180deg,var(--g3),transparent);border-radius:99px;transform-origin:bottom center;position:absolute;bottom:50%;left:calc(50% - 1.5px);transition:transform .65s cubic-bezier(.34,1.56,.64,1)}
+.q-brg{font-size:2rem;font-weight:900;color:var(--g3)}
+.q-dist{font-size:.54rem;color:var(--t3);margin-top:.08rem}
+
+/* ══════════ ZAKAT ══════════ */
+.z-inp{width:100%;background:var(--bg3);border:1.5px solid var(--bd2);border-radius:11px;padding:.5rem .65rem;color:var(--t1);font-size:.62rem;margin-bottom:.32rem;min-height:52px;display:block}
+.z-inp:focus{border-color:var(--g3);outline:none}
+.z-res{background:rgba(22,196,127,.08);border:1.5px solid var(--g3);border-radius:12px;padding:.65rem;margin-top:.48rem;text-align:center;display:none}
+.z-amt{font-size:1.75rem;font-weight:900;color:var(--g3)}
+
+/* ══════════ NEWS FEED ══════════ */
 .nfeed{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;min-height:0;height:0;padding-bottom:calc(var(--nav)+.8rem)}
 .nfeed::-webkit-scrollbar{display:none}
 .ncard{background:var(--bg1);border-bottom:3px solid var(--bg0);cursor:pointer;animation:fadeUp .18s ease}
 .ncard:active{opacity:.88}
-.nc-img{width:100%;height:220px;object-fit:cover;display:block;background:var(--bg3);opacity:0;transition:opacity .3s}
+.nc-img{width:100%;height:225px;object-fit:cover;display:block;background:var(--bg3);opacity:0;transition:opacity .3s}
 .nc-img.loaded{opacity:1}
-.nc-body{padding:.55rem .76rem .62rem}
-.nc-meta{display:flex;align-items:center;justify-content:space-between;margin-bottom:.18rem}
+.nc-body{padding:.56rem .8rem .66rem}
+.nc-meta{display:flex;align-items:center;justify-content:space-between;margin-bottom:.2rem}
 .nc-src{font-size:.44rem;font-weight:700;color:var(--g3);text-transform:uppercase;letter-spacing:.05em}
 .nc-ago{font-size:.44rem;color:var(--t3)}
-.nc-title{font-size:.98rem;font-weight:800;line-height:1.3;color:var(--t1);margin-bottom:.2rem;letter-spacing:-.01em}
-.nc-sum{font-size:.57rem;color:var(--t2);line-height:1.55;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.nc-title{font-size:1rem;font-weight:800;line-height:1.3;color:var(--t1);margin-bottom:.2rem;letter-spacing:-.01em}
+.nc-sum{font-size:.58rem;color:var(--t2);line-height:1.55;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .skel{background:linear-gradient(90deg,var(--bg3) 25%,var(--bg4) 50%,var(--bg3) 75%);background-size:200% 100%;animation:shimmer 1.4s infinite;border-radius:6px}
-@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.catbar{display:flex;gap:.24rem;overflow-x:auto;padding:.3rem .5rem;scrollbar-width:none;border-bottom:1px solid var(--bd);flex-shrink:0}
+.catbar::-webkit-scrollbar{display:none}
+.cb{flex-shrink:0;font-size:.54rem;font-weight:700;padding:.24rem .58rem;background:var(--bg3);border:1px solid var(--bd);border-radius:99px;color:var(--t3);cursor:pointer;white-space:nowrap;transition:all .15s}
+.cb.on{background:var(--gg);border-color:transparent;color:#fff}
 
-/* ═══════════════════
-   IMAGE FEED
-═══════════════════ */
+/* ══════════ IMAGE FEED ══════════ */
 .ifeed{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;min-height:0;height:0;padding-bottom:calc(var(--nav)+.8rem)}
 .ifeed::-webkit-scrollbar{display:none}
 .img-grid{display:grid;grid-template-columns:1fr 1fr;gap:3px;padding:3px}
 .ig-item{overflow:hidden;border-radius:9px;background:var(--bg3);cursor:pointer;aspect-ratio:4/3;position:relative}
-.ig-item img{width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .3s;display:block}
+.ig-item img{width:100%;height:100%;object-fit:cover;display:block;opacity:0;transition:opacity .3s}
 .ig-item img.loaded{opacity:1}
 .ig-item:nth-child(7n+1){grid-column:span 2;aspect-ratio:16/9}
-.ig-item:nth-child(5n+3){aspect-ratio:3/4}
 
-/* ═══════════════════
-   DISCOVER
-═══════════════════ */
-.item-card{background:var(--bg2);border-radius:var(--r2);border:1px solid var(--bd);padding:.52rem .62rem;margin:.2rem .5rem;cursor:pointer;transition:all .15s;min-height:80px}
+/* ══════════ DISCOVER ══════════ */
+.tbr{display:flex;border-bottom:1px solid var(--bd);flex-shrink:0;background:var(--bg1)}
+.tb{flex:1;font-size:.54rem;font-weight:700;padding:.45rem .1rem;color:var(--t3);border-bottom:2.5px solid transparent;cursor:pointer;text-align:center;transition:all .15s;white-space:nowrap}
+.tb.on{color:var(--g3);border-bottom-color:var(--g3)}
+.item-card{background:var(--bg2);border-radius:var(--r2);border:1px solid var(--bd);padding:.55rem .65rem;margin:.22rem .5rem;cursor:pointer;transition:all .15s;min-height:82px;animation:fadeUp .18s ease}
 .item-card:active{background:var(--bg3);border-color:var(--g3)}
-.ic-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:.1rem}
-.ic-name{font-size:.68rem;font-weight:800;color:var(--t1)}
+.ic-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:.12rem}
+.ic-name{font-size:.7rem;font-weight:800;color:var(--t1)}
 .ic-tag{font-size:.42rem;font-weight:700;color:var(--g3);background:rgba(22,196,127,.1);border:1px solid var(--bd2);border-radius:99px;padding:.07rem .28rem;white-space:nowrap;flex-shrink:0;margin-left:.3rem}
 .ic-year{font-size:.42rem;color:var(--t3);margin-bottom:.1rem}
-.ic-desc{font-size:.54rem;color:var(--t2);line-height:1.52}
+.ic-desc{font-size:.55rem;color:var(--t2);line-height:1.52}
 .eco-sec{margin:.26rem .5rem}
-.eco-hdr{font-size:.62rem;font-weight:800;color:var(--t1);padding:.36rem .62rem .12rem;background:var(--bg2);border-radius:var(--r2) var(--r2) 0 0;border:1px solid var(--bd);border-bottom:none;display:flex;align-items:center;gap:.3rem}
+.eco-hdr{font-size:.62rem;font-weight:800;color:var(--t1);padding:.38rem .65rem .14rem;background:var(--bg2);border-radius:var(--r2) var(--r2) 0 0;border:1px solid var(--bd);border-bottom:none;display:flex;align-items:center;gap:.3rem}
 .eco-items{background:var(--bg2);border:1px solid var(--bd);border-top:1px solid rgba(22,196,127,.1);border-radius:0 0 var(--r2) var(--r2);overflow:hidden}
-.eco-row{padding:.4rem .62rem;border-bottom:1px solid rgba(255,255,255,.04);display:flex;align-items:center;justify-content:space-between;min-height:56px}
+.eco-row{padding:.42rem .65rem;border-bottom:1px solid rgba(255,255,255,.04);display:flex;align-items:center;min-height:58px}
 .eco-row:last-child{border-bottom:none}
-.er-n{font-size:.6rem;font-weight:700;color:var(--t1)}
+.er-n{font-size:.62rem;font-weight:700;color:var(--t1)}
 .er-s{font-size:.44rem;color:var(--t3);margin-top:.04rem}
 
-/* ═══════════════════
-   EXPLORE
-═══════════════════ */
-.ev-card{background:var(--bg2);border-radius:var(--r2);border:1px solid var(--bd);padding:.52rem .62rem;margin:.2rem .5rem;position:relative;overflow:hidden;cursor:pointer;min-height:80px;transition:all .15s}
+/* ══════════ EXPLORE ══════════ */
+.ev-card{background:var(--bg2);border-radius:var(--r2);border:1px solid var(--bd);padding:.55rem .65rem;margin:.22rem .5rem;position:relative;overflow:hidden;cursor:pointer;min-height:82px;transition:all .15s}
 .ev-card:active{background:var(--bg3)}
 .ev-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--gg)}
-.ev-name{font-size:.66rem;font-weight:800;color:var(--t1);margin-bottom:.1rem}
-.ev-date{font-size:.44rem;font-weight:700;color:var(--gold)}
-.ev-loc{font-size:.44rem;color:var(--t3);margin-bottom:.1rem}
-.ev-desc{font-size:.53rem;color:var(--t2);line-height:1.52}
-.giga{background:var(--bg2);border-radius:var(--r2);border:1px solid var(--bd);padding:.52rem .62rem;margin:.2rem .5rem;display:flex;gap:.38rem;align-items:flex-start;cursor:pointer;min-height:80px;transition:all .15s}
+.ev-name{font-size:.68rem;font-weight:800;color:var(--t1);margin-bottom:.1rem}
+.ev-date{font-size:.44rem;color:var(--gold);font-weight:700}
+.ev-loc{font-size:.44rem;color:var(--t3);margin-bottom:.12rem}
+.ev-desc{font-size:.54rem;color:var(--t2);line-height:1.52}
+.giga{background:var(--bg2);border-radius:var(--r2);border:1px solid var(--bd);padding:.55rem .65rem;margin:.22rem .5rem;display:flex;gap:.4rem;align-items:flex-start;cursor:pointer;min-height:82px;transition:all .15s}
 .giga:active{background:var(--bg3)}
-.g-emo{font-size:1.28rem;flex-shrink:0;margin-top:.04rem}
-.g-name{font-size:.66rem;font-weight:800;color:var(--t1);margin-bottom:.07rem}
-.g-desc{font-size:.52rem;color:var(--t2);line-height:1.5}
-.g-st{font-size:.4rem;font-weight:800;border-radius:99px;padding:.06rem .28rem;display:inline-block;margin-top:.1rem}
-.s-dev{color:var(--gold);background:rgba(200,169,81,.1);border:1px solid rgba(200,169,81,.2)}
+.g-emo{font-size:1.3rem;flex-shrink:0;margin-top:.04rem}
+.g-name{font-size:.68rem;font-weight:800;color:var(--t1);margin-bottom:.07rem}
+.g-desc{font-size:.53rem;color:var(--t2);line-height:1.5}
+.g-st{font-size:.42rem;font-weight:800;border-radius:99px;padding:.07rem .3rem;display:inline-block;margin-top:.12rem}
+.s-dev{color:var(--gold);background:rgba(200,169,81,.1);border:1px solid rgba(200,169,81,.22)}
 .s-open{color:var(--g3);background:rgba(22,196,127,.1);border:1px solid var(--bd2)}
 .s-act{color:var(--g3);background:rgba(22,196,127,.1);border:1px solid var(--bd2)}
-.dest-grid{display:grid;grid-template-columns:1fr 1fr;gap:.3rem;padding:.35rem .46rem}
-.dest-card{border-radius:14px;overflow:hidden;background:var(--bg3);border:1px solid var(--bd);cursor:pointer;min-height:130px;display:flex;flex-direction:column;transition:all .15s}
+.dest-grid{display:grid;grid-template-columns:1fr 1fr;gap:.32rem;padding:.38rem .48rem}
+.dest-card{border-radius:14px;overflow:hidden;background:var(--bg3);border:1px solid var(--bd);cursor:pointer;min-height:135px;display:flex;flex-direction:column;transition:all .15s}
 .dest-card:active{transform:scale(.97);border-color:var(--g3)}
-.dc-emo{flex:1;display:flex;align-items:center;justify-content:center;font-size:2.4rem;background:rgba(22,196,127,.04)}
-.dc-body{padding:.28rem .38rem}
-.dc-name{font-size:.58rem;font-weight:800;color:var(--t1)}
+.dc-emo{flex:1;display:flex;align-items:center;justify-content:center;font-size:2.5rem;background:rgba(22,196,127,.04)}
+.dc-body{padding:.3rem .4rem}
+.dc-name{font-size:.6rem;font-weight:800;color:var(--t1)}
 .dc-tag{font-size:.4rem;color:var(--t3)}
-.phrase-row{background:var(--bg2);border:1px solid var(--bd);border-radius:10px;padding:.36rem .5rem;display:flex;align-items:center;gap:.44rem;min-height:56px}
-.ph-ar{font-family:serif;font-size:.92rem;color:var(--gold);direction:rtl;min-width:5.5rem;text-align:right;flex-shrink:0}
-.ph-ph{font-size:.53rem;color:var(--t1);font-style:italic}
-.ph-en{font-size:.45rem;color:var(--t3)}
+.phrase-row{background:var(--bg2);border:1px solid var(--bd);border-radius:10px;padding:.38rem .52rem;display:flex;align-items:center;gap:.45rem;min-height:58px}
+.ph-ar{font-family:serif;font-size:.95rem;color:var(--gold);direction:rtl;min-width:5.8rem;text-align:right;flex-shrink:0}
+.ph-ph{font-size:.55rem;color:var(--t1);font-style:italic}
+.ph-en{font-size:.46rem;color:var(--t3)}
 
-/* ═══════════════════
-   DIGITAL+
-═══════════════════ */
-.pass-card{background:linear-gradient(135deg,rgba(0,108,53,.18),rgba(22,196,127,.07));border:1px solid var(--bd2);border-radius:var(--r);padding:.65rem .7rem;margin:.3rem .5rem}
-.pass-feats{display:grid;grid-template-columns:1fr 1fr;gap:.26rem;margin-bottom:.52rem}
-.pf{background:rgba(255,255,255,.04);border:1px solid var(--bd);border-radius:10px;padding:.4rem .42rem;text-align:center;min-height:64px;display:flex;flex-direction:column;align-items:center;justify-content:center}
-.pf-ico{font-size:1rem;margin-bottom:.1rem}
-.pf-n{font-size:.5rem;font-weight:700;color:var(--t1)}
+/* ══════════ DIGITAL+ ══════════ */
+.pass-card{background:linear-gradient(135deg,rgba(0,82,40,.2),rgba(22,196,127,.08));border:1.5px solid var(--bd2);border-radius:var(--r);padding:.7rem .72rem;margin:.32rem .5rem}
+.pass-feats{display:grid;grid-template-columns:1fr 1fr;gap:.28rem;margin-bottom:.55rem}
+.pf{background:rgba(255,255,255,.04);border:1px solid var(--bd);border-radius:11px;padding:.42rem .44rem;text-align:center;min-height:68px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.pf-ico{font-size:1.1rem;margin-bottom:.12rem}
+.pf-n{font-size:.52rem;font-weight:700;color:var(--t1)}
 .pf-s{font-size:.4rem;color:var(--t3)}
-.pass-btn{width:100%;padding:.7rem;background:var(--gg);border-radius:12px;font-size:.78rem;font-weight:900;color:#fff;display:flex;align-items:center;justify-content:center;gap:.38rem;box-shadow:0 4px 24px rgba(22,196,127,.3);transition:all .15s}
+.pass-btn{width:100%;padding:.72rem;background:var(--gg);border-radius:13px;font-size:.8rem;font-weight:900;color:#fff;display:flex;align-items:center;justify-content:center;gap:.4rem;box-shadow:0 4px 24px rgba(22,196,127,.32);transition:all .15s;cursor:pointer}
 .pass-btn:active{transform:scale(.97)}
 .pass-btn:disabled{opacity:.5}
-.tx-row{display:flex;align-items:center;justify-content:space-between;padding:.44rem .68rem;border-bottom:1px solid rgba(255,255,255,.04);min-height:56px}
-.tx-type{font-size:.56rem;font-weight:600;color:var(--t1)}
+.tx-row{display:flex;align-items:center;justify-content:space-between;padding:.46rem .7rem;border-bottom:1px solid rgba(255,255,255,.04);min-height:58px}
+.tx-type{font-size:.58rem;font-weight:600;color:var(--t1)}
 .tx-date{font-size:.42rem;color:var(--t3)}
-.tx-amt{font-size:.62rem;font-weight:900;color:var(--g3)}
-.faq-item{background:var(--bg2);border-radius:var(--r2);border:1px solid var(--bd);margin:.2rem .5rem;overflow:hidden;cursor:pointer;min-height:58px}
-.faq-q{padding:.5rem .62rem;font-size:.6rem;font-weight:700;color:var(--t1);display:flex;align-items:center;justify-content:space-between}
-.faq-a{padding:0 .62rem .5rem;font-size:.54rem;color:var(--t2);line-height:1.6;display:none}
+.tx-amt{font-size:.64rem;font-weight:900;color:var(--g3)}
+.faq-item{background:var(--bg2);border-radius:var(--r2);border:1px solid var(--bd);margin:.22rem .5rem;overflow:hidden;cursor:pointer;min-height:60px}
+.faq-q{padding:.52rem .65rem;font-size:.62rem;font-weight:700;color:var(--t1);display:flex;align-items:center;justify-content:space-between}
+.faq-a{padding:0 .65rem .52rem;font-size:.55rem;color:var(--t2);line-height:1.62;display:none}
 .faq-item.open .faq-a{display:block}
-.faq-ico{font-size:.72rem;color:var(--g3);transition:transform .2s;flex-shrink:0}
+.faq-ico{font-size:.75rem;color:var(--g3);transition:transform .2s;flex-shrink:0}
 .faq-item.open .faq-ico{transform:rotate(45deg)}
 
-/* ═══════════════════
-   DETAIL PANEL
-═══════════════════ */
-.panel{display:none;position:fixed;inset:0;background:var(--bg0);z-index:100;flex-direction:column;overflow:hidden}
-.panel.open{display:flex;animation:fadeUp .15s ease}
-.panel-hdr{background:rgba(3,5,10,.97);border-bottom:1px solid var(--bd);padding:.5rem .72rem;display:flex;align-items:center;gap:.4rem;flex-shrink:0}
-.panel-back{font-size:.7rem;color:var(--g3);font-weight:700;padding:.1rem .28rem}
-.panel-tag{font-size:.52rem;color:var(--t3);flex:1;text-align:center}
-.panel-body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:1.2rem}
+/* ══════════ DETAIL PANEL ══════════ */
+.panel{display:none;position:fixed;inset:0;background:var(--bg0);z-index:200;flex-direction:column;overflow:hidden}
+.panel.open{display:flex;animation:slideIn .16s ease}
+.panel-hdr{background:rgba(3,5,10,.97);border-bottom:1px solid var(--bd);padding:.52rem .75rem;display:flex;align-items:center;gap:.42rem;flex-shrink:0}
+.panel-back{font-size:.72rem;color:var(--g3);font-weight:700;padding:.1rem .28rem;cursor:pointer}
+.panel-tag{font-size:.54rem;color:var(--t3);flex:1;text-align:center}
+.panel-body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:1.5rem}
 .panel-body::-webkit-scrollbar{display:none}
 
-/* UTILS */
-#toast{position:fixed;bottom:calc(var(--nav)+14px);left:50%;transform:translateX(-50%) translateY(14px);background:var(--g3);color:#fff;font-size:.52rem;font-weight:800;padding:.33rem .9rem;border-radius:99px;opacity:0;transition:all .22s cubic-bezier(.34,1.56,.64,1);pointer-events:none;z-index:999;white-space:nowrap}
+/* ══════════ UTILS ══════════ */
+#toast{position:fixed;bottom:calc(var(--nav)+16px);left:50%;transform:translateX(-50%) translateY(14px);background:var(--g3);color:#fff;font-size:.54rem;font-weight:800;padding:.36rem .95rem;border-radius:99px;opacity:0;transition:all .22s cubic-bezier(.34,1.56,.64,1);pointer-events:none;z-index:999;white-space:nowrap;box-shadow:0 2px 14px rgba(22,196,127,.4)}
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-.spin-wrap{display:flex;align-items:center;justify-content:center;flex-direction:column;gap:.36rem;padding:2.2rem;font-size:.52rem;color:var(--t3)}
-.spin{width:22px;height:22px;border:2.5px solid var(--bg4);border-top-color:var(--g3);border-radius:50%;animation:sp .7s linear infinite}
-.btn-g{width:100%;padding:.56rem;background:var(--gg);border-radius:10px;font-size:.72rem;font-weight:900;color:#fff;transition:all .15s;box-shadow:0 2px 12px rgba(22,196,127,.2);min-height:52px}
-.btn-g:active{transform:scale(.97)}
+.spin-wrap{display:flex;align-items:center;justify-content:center;flex-direction:column;gap:.38rem;padding:2.2rem;font-size:.54rem;color:var(--t3)}
+.spin{width:24px;height:24px;border:2.5px solid var(--bg4);border-top-color:var(--g3);border-radius:50%;animation:sp .7s linear infinite}
+.card{background:var(--bg2);border-radius:var(--r);border:1px solid var(--bd);overflow:hidden;margin:.28rem .5rem}
+.card-h{padding:.46rem .68rem;border-bottom:1px solid var(--bd);display:flex;align-items:center;gap:.38rem;background:rgba(22,196,127,.05)}
+.ch-ico{font-size:1.1rem}
+.ch-t{font-size:.78rem;font-weight:900;color:var(--t1)}
+.ch-s{font-size:.42rem;color:var(--t3);margin-top:.03rem}
+.card-b{padding:.6rem .68rem}
+.sec-lbl{padding:.35rem .7rem .12rem;font-size:.42rem;font-weight:800;color:var(--t3);letter-spacing:.1em;text-transform:uppercase}
+.badge{font-size:.42rem;font-weight:700;border-radius:99px;padding:.07rem .28rem;background:rgba(22,196,127,.1);border:1px solid var(--bd2);color:var(--g3)}
 .ar-t{font-family:serif;direction:rtl;text-align:right;color:var(--gold)}
-.offline-note{font-size:.44rem;color:var(--gold);background:rgba(200,169,81,.08);border:1px solid rgba(200,169,81,.18);border-radius:6px;padding:.18rem .46rem;margin:.1rem .46rem;text-align:center}
-.empty-state{text-align:center;padding:1.5rem .8rem}
-.es-ico{font-size:2.4rem;margin-bottom:.38rem}
-.es-t{font-size:.68rem;font-weight:700;color:var(--t1);margin-bottom:.1rem}
-.es-s{font-size:.54rem;color:var(--t3);line-height:1.55}
-.ar .nb-lbl,.ar .tb{font-family:serif}
+.offline-note{font-size:.44rem;color:var(--gold);background:rgba(200,169,81,.08);border:1px solid var(--bdo);border-radius:7px;padding:.2rem .48rem;margin:.1rem .48rem;text-align:center}
+.empty-state{text-align:center;padding:1.6rem .8rem}
+.es-ico{font-size:2.6rem;margin-bottom:.4rem}
+.es-t{font-size:.7rem;font-weight:700;color:var(--t1);margin-bottom:.1rem}
+.es-s{font-size:.55rem;color:var(--t3);line-height:1.55}
+.ar .nb-lbl,.ar .tb,.ar .htab-lbl{font-family:serif}
 </style>
 </head>
 <body>
 
-<!-- ════ LOADING SCREEN ════ -->
-<div id="loading-screen">
-  <div class="ls-orb1"></div>
-  <div class="ls-orb2"></div>
+<!-- LOADING -->
+<div id="ls">
+  <div class="ls-orb1"></div><div class="ls-orb2"></div>
   <div class="ls-logo">DigitalSaudi</div>
   <div class="ls-sub">Saudi Digital Ecosystem on Pi</div>
-  <div class="ls-spinner"></div>
-  <div class="ls-status" id="ls-status">Loading Pi SDK…</div>
+  <div class="ls-ring"></div>
+  <div id="ls-msg">Starting up…</div>
 </div>
 
-<!-- ════ LOGIN ════ -->
+<!-- LOGIN -->
 <div id="login">
   <div class="lg-orb1"></div><div class="lg-orb2"></div>
-  <div class="lg-stripe"></div>
+  <div class="lg-top"></div>
   <div class="lg-body">
-    <div class="lg-badge">Pi Network · Mainnet</div>
+    <div class="lg-badge">Pi Network · Mainnet · sandbox:false</div>
     <div class="lg-name">DigitalSaudi</div>
     <div class="lg-tag" id="lg-tag">Saudi Digital Ecosystem on Pi</div>
     <div class="lg-grid">
-      <div class="lg-card"><div class="lc-ico">🤖</div><div class="lc-n">AI Concierge</div><div class="lc-s">Saudi expert AI assistant</div></div>
-      <div class="lg-card"><div class="lc-ico">⚽</div><div class="lc-n">Live Scores</div><div class="lc-s">6 leagues · Live · Table</div></div>
-      <div class="lg-card"><div class="lc-ico">📰</div><div class="lc-n">News & Media</div><div class="lc-s">Infinite scroll · Auto-refresh</div></div>
+      <div class="lg-card"><div class="lc-ico">🤖</div><div class="lc-n">AI Concierge</div><div class="lc-s">Saudi expert assistant</div></div>
+      <div class="lg-card"><div class="lc-ico">⚽</div><div class="lc-n">Live Scores</div><div class="lc-s">6 leagues · Lineup · Table</div></div>
+      <div class="lg-card"><div class="lc-ico">💳</div><div class="lc-n">Pi Wallet</div><div class="lc-s">Send &amp; Request Pi</div></div>
       <div class="lg-card"><div class="lc-ico">🇸🇦</div><div class="lc-n">Saudi Hub</div><div class="lc-s">Prayer · Vision 2030 · More</div></div>
     </div>
   </div>
   <div class="lg-foot">
-    <button class="btn-pi" id="loginBtn" onclick="piLogin()">
-      <span style="font-size:1.05rem">π</span>
+    <button class="btn-signin" id="loginBtn" onclick="piLogin()">
+      <span style="font-size:1.1rem">π</span>
       <span id="stxt">Sign In with Pi</span>
     </button>
     <div id="lmsg"></div>
     <div style="font-size:.42rem;color:var(--t3);text-align:center;margin-top:.42rem">
-      Pi Network Mainnet · sandbox:false · Wallet Required
+      Pi Network Mainnet · Wallet Required · Open in Pi Browser
     </div>
-    <div class="lg-links">
-      <a href="/privacy">Privacy</a><span style="color:var(--t3)">·</span><a href="/terms">Terms</a>
+    <div style="display:flex;gap:.5rem;justify-content:center;margin-top:.65rem">
+      <a href="/privacy" style="font-size:.46rem;color:rgba(200,169,81,.5);text-decoration:underline">Privacy</a>
+      <span style="color:var(--t3)">·</span>
+      <a href="/terms" style="font-size:.46rem;color:rgba(200,169,81,.5);text-decoration:underline">Terms</a>
     </div>
   </div>
 </div>
 
-<!-- ════ APP ════ -->
+<!-- APP -->
 <div id="app">
   <div id="hdr">
     <div>
@@ -460,22 +490,22 @@ a{color:var(--g3);text-decoration:none}
 
   <div id="main">
 
-    <!-- TAB 1: HOME -->
+    <!-- HOME -->
     <section class="scr on" id="s-home">
       <div class="sbar">
         <div><div class="sbar-t" id="t-home">🇸🇦 Home</div>
-          <div class="sbar-s">AI · Prayer · Weather · Scores · Wallet</div></div>
+          <div class="sbar-s">AI · Prayer · Weather · Scores · Wallet · More</div></div>
         <button class="sbar-btn" onclick="homeLoad()">↺</button>
       </div>
-      <div class="tbr" id="home-tabs">
-        <button class="tb on" onclick="hTab(0,this)">🤖 AI</button>
-        <button class="tb" onclick="hTab(1,this)">🕌 Prayer</button>
-        <button class="tb" onclick="hTab(2,this)">🌦 Weather</button>
-        <button class="tb" onclick="hTab(3,this)">⚽ Scores</button>
-        <button class="tb" onclick="hTab(4,this)">💳 Wallet</button>
-        <button class="tb" onclick="hTab(5,this)">🗓 Holidays</button>
-        <button class="tb" onclick="hTab(6,this)">🧭 Qibla</button>
-        <button class="tb" onclick="hTab(7,this)">💰 Zakat</button>
+      <div class="htabs" id="htabs">
+        <div class="htab on" onclick="hTab(0,this)"><span class="htab-ico">🤖</span><span class="htab-lbl">AI</span></div>
+        <div class="htab" onclick="hTab(1,this)"><span class="htab-ico">🕌</span><span class="htab-lbl">Prayer</span></div>
+        <div class="htab" onclick="hTab(2,this)"><span class="htab-ico">🌦</span><span class="htab-lbl">Weather</span></div>
+        <div class="htab" onclick="hTab(3,this)"><span class="htab-ico">⚽</span><span class="htab-lbl">Scores</span></div>
+        <div class="htab" onclick="hTab(4,this)"><span class="htab-ico">💳</span><span class="htab-lbl">Wallet</span></div>
+        <div class="htab" onclick="hTab(5,this)"><span class="htab-ico">🗓</span><span class="htab-lbl">Holidays</span></div>
+        <div class="htab" onclick="hTab(6,this)"><span class="htab-ico">🧭</span><span class="htab-lbl">Qibla</span></div>
+        <div class="htab" onclick="hTab(7,this)"><span class="htab-ico">💰</span><span class="htab-lbl">Zakat</span></div>
       </div>
       <div class="citybar" id="citybar" style="display:none">
         <button class="cty on" onclick="selCity('riyadh',this)">Riyadh</button>
@@ -491,11 +521,9 @@ a{color:var(--g3);text-decoration:none}
       <div id="home-body" style="flex:1;overflow:hidden;min-height:0;display:flex;flex-direction:column"></div>
     </section>
 
-    <!-- TAB 2: DISCOVER -->
+    <!-- DISCOVER -->
     <section class="scr" id="s-disc">
-      <div class="sbar">
-        <div><div class="sbar-t">🚀 Discover</div><div class="sbar-s">Startups · Tech · Opportunities</div></div>
-      </div>
+      <div class="sbar"><div><div class="sbar-t">🚀 Discover</div><div class="sbar-s">Startups · Tech · Opportunities</div></div></div>
       <div class="tbr">
         <button class="tb on" onclick="dTab(0,this)">🦄 Startups</button>
         <button class="tb" onclick="dTab(1,this)">🗺 Ecosystem</button>
@@ -504,7 +532,7 @@ a{color:var(--g3);text-decoration:none}
       <div class="scroll" id="disc-body"></div>
     </section>
 
-    <!-- TAB 3: MEDIA -->
+    <!-- MEDIA -->
     <section class="scr" id="s-media">
       <div class="sbar">
         <div><div class="sbar-t">📰 Media</div><div class="sbar-s">News · Images · Auto-refresh</div></div>
@@ -526,11 +554,9 @@ a{color:var(--g3);text-decoration:none}
       <div class="ifeed" id="img-feed" style="display:none"></div>
     </section>
 
-    <!-- TAB 4: EXPLORE -->
+    <!-- EXPLORE -->
     <section class="scr" id="s-exp">
-      <div class="sbar">
-        <div><div class="sbar-t">🌍 Explore</div><div class="sbar-s">Vision 2030 · Tourism · Culture</div></div>
-      </div>
+      <div class="sbar"><div><div class="sbar-t">🌍 Explore</div><div class="sbar-s">Vision 2030 · Tourism · Culture</div></div></div>
       <div class="tbr">
         <button class="tb on" onclick="eTab(0,this)">🚀 Vision</button>
         <button class="tb" onclick="eTab(1,this)">🏛 Tourism</button>
@@ -539,13 +565,13 @@ a{color:var(--g3);text-decoration:none}
       <div class="scroll" id="exp-body"></div>
     </section>
 
-    <!-- TAB 5: DIGITAL+ -->
+    <!-- DIGITAL+ -->
     <section class="scr" id="s-digi">
       <div class="sbar">
         <div><div class="sbar-t">⚡ Digital+</div><div class="sbar-s">Passport · Support · About</div></div>
         <div style="display:flex;align-items:center;gap:.3rem">
           <div id="digi-user" style="font-size:.42rem;color:var(--gold);font-weight:700"></div>
-          <button onclick="logOut()" style="font-size:.42rem;color:var(--t3);background:var(--bg3);border:1px solid var(--bd);border-radius:7px;padding:.13rem .38rem">Out</button>
+          <button onclick="logOut()" style="font-size:.44rem;color:var(--t3);background:var(--bg3);border:1px solid var(--bd);border-radius:7px;padding:.14rem .4rem;cursor:pointer">Out</button>
         </div>
       </div>
       <div class="tbr">
@@ -558,14 +584,31 @@ a{color:var(--g3);text-decoration:none}
 
   </div>
 
+  <!-- BOTTOM NAV — ENLARGED -->
   <nav id="nav">
-    <div class="nb on" onclick="goS('home',this)"><span class="nb-ico">🇸🇦</span><span class="nb-lbl" id="nl-h">Home</span></div>
-    <div class="nb" onclick="goS('disc',this)"><span class="nb-ico">🚀</span><span class="nb-lbl" id="nl-d">Discover</span></div>
-    <div class="nb" onclick="goS('media',this)"><span class="nb-ico">📰</span><span class="nb-lbl" id="nl-m">Media</span></div>
-    <div class="nb" onclick="goS('exp',this)"><span class="nb-ico">🌍</span><span class="nb-lbl" id="nl-e">Explore</span></div>
-    <div class="nb" onclick="goS('digi',this)"><span class="nb-ico">⚡</span><span class="nb-lbl" id="nl-p">Digital+</span></div>
+    <div class="nb on" onclick="goS('home',this)">
+      <span class="nb-ico">🇸🇦</span>
+      <span class="nb-lbl" id="nl-h">Home</span>
+    </div>
+    <div class="nb" onclick="goS('disc',this)">
+      <span class="nb-ico">🚀</span>
+      <span class="nb-lbl" id="nl-d">Discover</span>
+    </div>
+    <div class="nb" onclick="goS('media',this)">
+      <span class="nb-ico">📰</span>
+      <span class="nb-lbl" id="nl-m">Media</span>
+    </div>
+    <div class="nb" onclick="goS('exp',this)">
+      <span class="nb-ico">🌍</span>
+      <span class="nb-lbl" id="nl-e">Explore</span>
+    </div>
+    <div class="nb" onclick="goS('digi',this)">
+      <span class="nb-ico">⚡</span>
+      <span class="nb-lbl" id="nl-p">Digital+</span>
+    </div>
   </nav>
 
+  <!-- PANEL -->
   <div class="panel" id="panel">
     <div class="panel-hdr">
       <button class="panel-back" onclick="closePanel()">← Back</button>
@@ -573,17 +616,22 @@ a{color:var(--g3);text-decoration:none}
     </div>
     <div class="panel-body" id="panel-body"></div>
   </div>
+
 </div>
 
 <div id="toast"></div>
 <script>
-/* ═══════════════════════════════════════════════════
-   DigitalSaudi v5.0
-   FIXED: Loading screen · Pi SDK Auth · Live Scores
-          Wallet Send/Request · AI Concierge
-═══════════════════════════════════════════════════ */
+/* ═══════════════════════════════════════════
+   DigitalSaudi v6.0 — FULLY FIXED
+   ✅ Loading screen
+   ✅ Pi SDK Auth + Wallet
+   ✅ AI Concierge (Gemini)
+   ✅ Live Scores + Lineup + Stadium + Table
+   ✅ Send Pi + Request Pi (working)
+   ✅ Enlarged nav + obvious tabs
+   ✅ Arabic / English full support
+═══════════════════════════════════════════ */
 
-/* STATE */
 var _u=null,_pass=false,_lang='en',_city='riyadh';
 var _hTab=0,_dTab=0,_eTab=0,_dgTab=0,_mTab=0;
 var _pr=null,_wx=null,_hols=null,_cdT=null;
@@ -591,15 +639,14 @@ var _aiMsgs=[];
 var _nPage=1,_nLoad=false,_nMore=true,_nCat='all',_nArts=[];
 var _iPage=1,_iLoad=false,_iMore=true;
 var _sLeague='sau.1',_sView='live',_sData=null,_sLoad=false;
-var _nTimer=null;
-var _sdkReady=false;
+var _nTimer=null,_sdkOK=false;
 var _AP='/approve',_CO='/complete',_CA='/cancel-payment';
 
 /* ─── TOAST ─── */
 function toast(m,d){
   var t=document.getElementById('toast');
   t.textContent=m;t.classList.add('show');
-  setTimeout(function(){t.classList.remove('show')},d||2300);
+  setTimeout(function(){t.classList.remove('show')},d||2400);
 }
 
 /* ─── PANEL ─── */
@@ -610,28 +657,25 @@ function openPanel(tag,html){
 }
 function closePanel(){document.getElementById('panel').classList.remove('open');}
 
-/* ─── LOADING STATUS ─── */
-function lsStatus(msg){
-  var el=document.getElementById('ls-status');
-  if(el)el.textContent=msg;
-}
-
-/* ─── HIDE LOADING ─── */
+/* ─── LOADING ─── */
+function lsMsg(m){var el=document.getElementById('ls-msg');if(el)el.textContent=m;}
 function hideLoading(){
-  var ls=document.getElementById('loading-screen');
-  if(ls){ls.classList.add('hide');setTimeout(function(){ls.style.display='none';},400);}
+  var ls=document.getElementById('ls');
+  if(!ls)return;
+  ls.classList.add('hide');
+  setTimeout(function(){ls.style.display='none';},500);
 }
 
 /* ─── LANGUAGE ─── */
-var T={
-  en:{home:'🇸🇦 Home',disc:'🚀 Discover',media:'📰 Media',exp:'🌍 Explore',digi:'⚡ Digital+',
-      signin:'Sign In with Pi',tagline:'Saudi Digital Ecosystem on Pi',
-      nextPrayer:'Next prayer in',allCities:'All Cities'},
-  ar:{home:'الرئيسية',disc:'اكتشف',media:'الإعلام',exp:'استكشف',digi:'ديجيتال+',
-      signin:'تسجيل الدخول بـ Pi',tagline:'النظام الرقمي السعودي على Pi',
-      nextPrayer:'الوقت حتى الصلاة',allCities:'جميع المدن'}
+var TR={
+  en:{h:'🇸🇦 Home',d:'🚀 Discover',m:'📰 Media',e:'🌍 Explore',p:'⚡ Digital+',
+      signin:'Sign In with Pi',tag:'Saudi Digital Ecosystem on Pi',
+      np:'Next prayer in',allc:'All Cities'},
+  ar:{h:'الرئيسية',d:'اكتشف',m:'الإعلام',e:'استكشف',p:'ديجيتال+',
+      signin:'تسجيل الدخول بـ Pi',tag:'النظام الرقمي السعودي على Pi',
+      np:'الوقت حتى الصلاة',allc:'جميع المدن'}
 };
-function s(k){return(T[_lang]||T.en)[k]||k}
+function s(k){return(TR[_lang]||TR.en)[k]||k}
 
 function toggleLang(){
   _lang=_lang==='en'?'ar':'en';
@@ -641,70 +685,46 @@ function toggleLang(){
   r.setAttribute('lang',_lang);
   r.classList.toggle('ar',_lang==='ar');
   document.getElementById('lang-btn').textContent=_lang==='ar'?'EN':'عر';
-  var nlMap={h:'home',d:'disc',m:'media',e:'exp',p:'digi'};
-  var keys=['home','disc','media','exp','digi'];
-  ['h','d','m','e','p'].forEach(function(k,i){
-    var el=document.getElementById('nl-'+k);if(el)el.textContent=s(keys[i]);
-  });
+  var map=[['nl-h','h'],['nl-d','d'],['nl-m','m'],['nl-e','e'],['nl-p','p']];
+  map.forEach(function(x){var el=document.getElementById(x[0]);if(el)el.textContent=s(x[1]);});
   var st=document.getElementById('stxt');if(st)st.textContent=s('signin');
-  var lg=document.getElementById('lg-tag');if(lg)lg.textContent=s('tagline');
+  var lt=document.getElementById('lg-tag');if(lt)lt.textContent=s('tag');
   toast(_lang==='ar'?'تم تغيير اللغة':'Language changed');
 }
 
-/* ═══════════════════════════════════════
-   PI SDK — FIXED AUTHENTICATION
-   Loading screen → Login → App
-═══════════════════════════════════════ */
+/* ═══════════════════════
+   PI SDK — FIXED AUTH
+═══════════════════════ */
 function initSDK(){
-  lsStatus('Loading Pi SDK…');
-  /* Wait for Pi SDK script to load */
-  var attempts=0;
-  function tryInit(){
-    attempts++;
+  lsMsg('Loading Pi SDK…');
+  var tries=0;
+  function check(){
+    tries++;
     if(typeof Pi==='undefined'){
-      if(attempts<20){
-        lsStatus('Loading Pi SDK… ('+attempts+')');
-        setTimeout(tryInit,500);
-      } else {
-        lsStatus('Pi SDK failed to load. Please use Pi Browser.');
-        hideLoading();
-        showLogin();
-      }
+      if(tries<25){lsMsg('Loading Pi SDK… ('+tries+')');setTimeout(check,500);}
+      else{lsMsg('Pi SDK failed. Open in Pi Browser.');hideLoading();showLogin();}
       return;
     }
-    /* SDK loaded */
-    lsStatus('Pi SDK ready. Checking session…');
-    _sdkReady=true;
-    try{
-      Pi.init({version:'2.0',sandbox:false});
-    }catch(e){
-      console.log('[DS] Pi.init error (non-fatal):', e.message);
-    }
-    /* Check for saved session */
+    lsMsg('Pi SDK ready ✅');
+    _sdkOK=true;
+    try{Pi.init({version:'2.0',sandbox:false});}catch(e){console.log('[DS] init:',e.message);}
+    /* Check saved session */
     var saved=localStorage.getItem('ds_user');
     if(saved){
       try{
         _u=JSON.parse(saved);
         _pass=localStorage.getItem('ds_pass')==='1';
-        lsStatus('Restoring session for '+_u.username+'…');
-        setTimeout(function(){
-          hideLoading();
-          launchApp();
-        },600);
+        lsMsg('Welcome back, '+_u.username+' 👋');
+        setTimeout(function(){hideLoading();launchApp();},700);
       }catch(e){
         localStorage.removeItem('ds_user');
-        hideLoading();
-        showLogin();
+        hideLoading();showLogin();
       }
     } else {
-      /* No session — show login */
-      setTimeout(function(){
-        hideLoading();
-        showLogin();
-      },500);
+      setTimeout(function(){hideLoading();showLogin();},400);
     }
   }
-  setTimeout(tryInit,800);
+  setTimeout(check,800);
 }
 
 function showLogin(){
@@ -712,74 +732,51 @@ function showLogin(){
 }
 
 function piLogin(){
-  if(!_sdkReady){
-    document.getElementById('lmsg').textContent='Pi SDK not ready. Please use Pi Browser.';
+  if(!_sdkOK){
+    document.getElementById('lmsg').textContent='Please open in Pi Browser.';
     return;
   }
   var btn=document.getElementById('loginBtn');
   var msg=document.getElementById('lmsg');
   btn.disabled=true;
-  msg.textContent='Initialising wallet connection…';
-
+  msg.textContent='Opening Pi wallet…';
   try{
-    /* Re-init SDK before authenticate */
     try{Pi.init({version:'2.0',sandbox:false});}catch(e){}
-
-    msg.textContent='Opening Pi wallet… Please approve in Pi Browser.';
-
     Pi.authenticate(
       ['username','payments','wallet_address'],
-      /* Handle incomplete payments from previous sessions */
-      function onIncomplete(payment){
-        console.log('[DS] Incomplete payment found, re-approving:', payment.identifier);
-        fetch(_AP,{
-          method:'POST',
-          headers:{'Content-Type':'application/json'},
-          body:JSON.stringify({paymentId:payment.identifier})
-        }).then(function(r){return r.json()})
-          .catch(function(){});
+      function onIncomplete(p){
+        console.log('[DS] Re-approving incomplete payment:',p.identifier);
+        fetch(_AP,{method:'POST',headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({paymentId:p.identifier})})
+          .then(function(r){return r.json()}).catch(function(){});
       }
     ).then(function(auth){
-      if(!auth){throw new Error('Authentication returned null');}
-      if(!auth.user){throw new Error('No user in auth response');}
-
-      /* Store user with wallet info */
+      if(!auth||!auth.user) throw new Error('No user returned');
       _u={
-        uid:      auth.user.uid        || '',
-        username: auth.user.username   || 'Pioneer',
-        wallet:   auth.user.wallet_address || null,
-        token:    auth.accessToken     || null,
+        uid:auth.user.uid||'',
+        username:auth.user.username||'Pioneer',
+        wallet:auth.user.wallet_address||null,
+        token:auth.accessToken||null,
       };
       localStorage.setItem('ds_user',JSON.stringify(_u));
       _pass=localStorage.getItem('ds_pass')==='1';
-
-      var walletStatus=_u.wallet
-        ?'✅ Wallet: '+_u.wallet.slice(0,10)+'…'
-        :'✅ Signed in (wallet pending KYC)';
-
-      msg.textContent=walletStatus;
-
+      var ws=_u.wallet?'✅ Wallet: '+_u.wallet.slice(0,12)+'…':'✅ Signed in (wallet pending KYC)';
+      msg.textContent=ws;
       setTimeout(function(){
         document.getElementById('login').style.display='none';
         launchApp();
       },600);
-
     }).catch(function(err){
-      console.error('[DS] Auth error:', err);
-      var errMsg=err.message||'Unknown error';
-      if(errMsg.indexOf('cancelled')>=0||errMsg.indexOf('cancel')>=0){
-        msg.textContent='Cancelled. Tap Sign In to try again.';
-      } else if(errMsg.indexOf('network')>=0||errMsg.indexOf('Network')>=0){
-        msg.textContent='Network error. Check your connection.';
-      } else {
-        msg.textContent='Error: '+errMsg+'. Please try again.';
-      }
+      console.error('[DS] Auth:',err);
+      var em=err.message||'Unknown';
+      if(em.indexOf('cancel')>=0||em.indexOf('Cancel')>=0)
+        msg.textContent='Cancelled — tap Sign In to try again.';
+      else
+        msg.textContent='Error: '+em;
       btn.disabled=false;
     });
-
   }catch(err){
-    console.error('[DS] SDK error:', err);
-    msg.textContent='Pi SDK error: '+err.message+'. Use Pi Browser.';
+    msg.textContent='SDK error: '+err.message;
     btn.disabled=false;
   }
 }
@@ -797,7 +794,6 @@ function launchApp(){
   document.getElementById('app').style.display='flex';
   document.getElementById('user-chip').textContent='π '+_u.username+(_u.wallet?' ✅':'');
   document.getElementById('digi-user').textContent=_u.username+(_u.wallet?' ✅':'');
-  /* Load all tabs */
   homeLoad();
   renderDisc();
   newsLoad(true);
@@ -809,8 +805,7 @@ function launchApp(){
 function logOut(){
   localStorage.removeItem('ds_user');
   _u=null;_aiMsgs=[];
-  clearInterval(_nTimer);
-  if(_cdT)clearInterval(_cdT);
+  clearInterval(_nTimer);if(_cdT)clearInterval(_cdT);
   document.getElementById('app').style.display='none';
   document.getElementById('login').style.display='flex';
   document.getElementById('loginBtn').disabled=false;
@@ -825,24 +820,22 @@ function goS(id,el){
   if(el)el.classList.add('on');
 }
 
-/* ═══════════════════════════
-   🇸🇦 HOME TAB
-═══════════════════════════ */
-var CITY_TABS=[1,2,6]; /* tabs showing city bar */
+/* ═══════════════════════
+   HOME TABS
+═══════════════════════ */
+var CTABS=[1,2,6];
 function selCity(c,btn){
   _city=c;localStorage.setItem('ds_city',c);
   document.querySelectorAll('.cty').forEach(function(b){b.classList.remove('on')});
   if(btn)btn.classList.add('on');
-  _pr=null;_wx=null;
-  renderHTab();
+  _pr=null;_wx=null;renderHTab();
 }
 
-function hTab(n,btn){
+function hTab(n,el){
   _hTab=n;
-  document.querySelectorAll('#home-tabs .tb').forEach(function(b){b.classList.remove('on')});
-  if(btn)btn.classList.add('on');
-  var cb=document.getElementById('citybar');
-  cb.style.display=CITY_TABS.indexOf(n)>=0?'flex':'none';
+  document.querySelectorAll('.htab').forEach(function(b){b.classList.remove('on')});
+  if(el)el.classList.add('on');
+  document.getElementById('citybar').style.display=CTABS.indexOf(n)>=0?'flex':'none';
   renderHTab();
 }
 
@@ -866,17 +859,8 @@ function renderHTab(){
   if(fns[_hTab])fns[_hTab]();
 }
 
-/* ── AI CONCIERGE (FIXED) ── */
-var AI_CHIPS=[
-  'Best places in Saudi?',
-  'What is NEOM?',
-  'Explain Vision 2030',
-  'Top Saudi startups',
-  'How to visit AlUla?',
-  'What is LEAP conference?',
-  'Saudi food to try',
-  'Tell me about FII Summit',
-];
+/* ── AI CONCIERGE — FIXED ── */
+var CHIPS=['Best places in Saudi?','What is NEOM?','Explain Vision 2030','Top Saudi startups','How to visit AlUla?','What is LEAP?','Saudi food to try','Tell me about FII'];
 
 function renderAI(){
   var body=document.getElementById('home-body');
@@ -884,96 +868,69 @@ function renderAI(){
     +'<div class="ai-feed" id="ai-feed">'
     +'<div class="ai-welcome">'
     +'<div class="ai-wt">🤖 Saudi AI Concierge</div>'
-    +'<div class="ai-ws">Ask me anything about Saudi Arabia — tourism, startups, Vision 2030, culture, events, and the Pi economy.</div>'
+    +'<div class="ai-ws">Ask me anything about Saudi Arabia — tourism, startups, Vision 2030, culture, events, business, and the Pi economy. I respond in English or Arabic.</div>'
     +'<div class="ai-chips">'
-    +AI_CHIPS.map(function(c){
-      return'<button class="ai-chip" onclick="aiChip(\''+c.replace(/'/g,"\\'")+'\'">'+c+'</button>';
-    }).join('')
+    +CHIPS.map(function(c){return'<div class="chip" onclick="aiChip(\''+c.replace(/'/g,"\\'")+'\'">'+c+'</div>';}).join('')
     +'</div></div></div>'
     +'<div class="ai-bar">'
     +'<input id="ai-inp" type="text" placeholder="Ask about Saudi Arabia…" onkeydown="if(event.key===\'Enter\'&&!event.shiftKey){event.preventDefault();aiSend();}">'
     +'<button id="ai-send" onclick="aiSend()">➤</button>'
     +'</div></div>';
-
-  /* Restore conversation */
   if(_aiMsgs.length){
     var feed=document.getElementById('ai-feed');
-    var welcome=feed.querySelector('.ai-welcome');
-    if(welcome)welcome.style.display='none';
-    _aiMsgs.forEach(function(m){feed.appendChild(buildMsg(m.role,m.content));});
+    var w=feed.querySelector('.ai-welcome');if(w)w.style.display='none';
+    _aiMsgs.forEach(function(m){feed.appendChild(mkMsg(m.role,m.content));});
     setTimeout(function(){feed.scrollTop=feed.scrollHeight;},50);
   }
 }
 
-function buildMsg(role,text){
+function mkMsg(role,text){
   var d=document.createElement('div');
   d.className='msg '+(role==='user'?'u':'a');
-  d.textContent=text;
-  return d;
+  d.textContent=text;return d;
 }
 
-function aiChip(text){
-  var inp=document.getElementById('ai-inp');
-  if(inp)inp.value=text;
-  aiSend();
+function aiChip(t){
+  var i=document.getElementById('ai-inp');if(i)i.value=t;aiSend();
 }
 
 function aiSend(){
-  var inp=document.getElementById('ai-inp');
-  if(!inp)return;
-  var text=inp.value.trim();
-  if(!text)return;
+  var inp=document.getElementById('ai-inp');if(!inp)return;
+  var text=inp.value.trim();if(!text)return;
   inp.value='';
-
-  var feed=document.getElementById('ai-feed');
-  if(!feed)return;
-
-  /* Hide welcome on first message */
-  var welcome=feed.querySelector('.ai-welcome');
-  if(welcome)welcome.style.display='none';
-
-  /* Add user message */
+  var feed=document.getElementById('ai-feed');if(!feed)return;
+  var w=feed.querySelector('.ai-welcome');if(w)w.style.display='none';
   _aiMsgs.push({role:'user',content:text});
-  feed.appendChild(buildMsg('user',text));
-
-  /* Typing indicator */
-  var typing=document.createElement('div');
-  typing.className='typing-wrap';typing.id='ai-typing';
-  typing.innerHTML='<div class="td"></div><div class="td"></div><div class="td"></div>';
-  feed.appendChild(typing);
-  feed.scrollTop=feed.scrollHeight;
-
-  var send=document.getElementById('ai-send');
-  if(send)send.disabled=true;
-
-  /* Call AI endpoint */
+  feed.appendChild(mkMsg('user',text));
+  var ty=document.createElement('div');ty.className='typing';ty.id='ai-ty';
+  ty.innerHTML='<div class="td"></div><div class="td"></div><div class="td"></div>';
+  feed.appendChild(ty);feed.scrollTop=feed.scrollHeight;
+  var snd=document.getElementById('ai-send');if(snd)snd.disabled=true;
   fetch('/ai',{
     method:'POST',
     headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({
-      messages:_aiMsgs.slice(-10),
-    }),
+    body:JSON.stringify({messages:_aiMsgs.slice(-10)}),
   })
   .then(function(r){
     if(!r.ok)throw new Error('HTTP '+r.status);
     return r.json();
   })
-  .then(function(data){
-    var old=document.getElementById('ai-typing');if(old)old.remove();
-    var reply=data.reply||'I could not generate a response. Please try again.';
+  .then(function(d){
+    var old=document.getElementById('ai-ty');if(old)old.remove();
+    var reply=d.reply||'Please try again.';
     _aiMsgs.push({role:'assistant',content:reply});
-    feed.appendChild(buildMsg('assistant',reply));
+    feed.appendChild(mkMsg('assistant',reply));
     feed.scrollTop=feed.scrollHeight;
-    if(send)send.disabled=false;
+    if(snd)snd.disabled=false;
   })
   .catch(function(err){
-    var old=document.getElementById('ai-typing');if(old)old.remove();
-    var errMsg='Connection error. Please check your internet and try again.';
-    _aiMsgs.push({role:'assistant',content:errMsg});
-    feed.appendChild(buildMsg('assistant',errMsg));
+    var old=document.getElementById('ai-ty');if(old)old.remove();
+    var er='Connection error. Check your internet and try again.';
+    _aiMsgs.push({role:'assistant',content:er});
+    feed.appendChild(mkMsg('assistant',er));
     feed.scrollTop=feed.scrollHeight;
-    if(send)send.disabled=false;
-    console.error('[DS/ai]', err.message);
+    if(snd)snd.disabled=false;
+    console.error('[DS/ai]',err.message);
   });
 }
 
@@ -982,27 +939,23 @@ function renderPrayer(){
   var body=document.getElementById('home-body');
   if(!_pr){
     body.innerHTML='<div class="scroll"><div class="spin-wrap"><div class="spin"></div><span>Loading prayer times…</span></div></div>';
-    fetch('/api?type=prayer&city='+_city)
-      .then(function(r){return r.json()})
+    fetch('/api?type=prayer&city='+_city).then(function(r){return r.json()})
       .then(function(d){_pr=d;renderPrayer();startCD();})
-      .catch(function(){
-        body.innerHTML='<div class="scroll"><div class="offline-note">Prayer times unavailable. Check connection.</div></div>';
-      });
+      .catch(function(){body.innerHTML='<div class="scroll"><div class="offline-note">Prayer times unavailable</div></div>';});
     return;
   }
   var t=_pr.timings||{},h=_pr.hijri||{};
   var order=['Fajr','Sunrise','Dhuhr','Asr','Maghrib','Isha'];
   var now=new Date(),cur=now.getHours()*60+now.getMinutes();
-  function toM(str){var p=(str||'00:00').split(':');return parseInt(p[0])*60+parseInt(p[1]);}
+  function toM(s){var p=(s||'00:00').split(':');return parseInt(p[0])*60+parseInt(p[1]);}
   var next='Isha';
   for(var i=0;i<order.length;i++){if(cur<toM(t[order[i]])){next=order[i];break;}}
-  var ram=h.isRamadan?'<div style="background:rgba(200,169,81,.1);border:1px solid rgba(200,169,81,.2);border-radius:11px;padding:.42rem .65rem;margin:.35rem .46rem;text-align:center"><div style="font-size:.9rem;font-weight:900;color:var(--gold)">🌙 Ramadan Mubarak!</div></div>':'';
-  var html='<div class="scroll">'
-    +'<div style="padding:.32rem .68rem .05rem;display:flex;align-items:center;justify-content:space-between">'
+  var ram=h.isRamadan?'<div style="background:rgba(200,169,81,.1);border:1px solid rgba(200,169,81,.2);border-radius:12px;padding:.44rem .68rem;margin:.35rem .48rem;text-align:center"><div style="font-size:.92rem;font-weight:900;color:var(--gold)">🌙 Ramadan Mubarak!</div></div>':'';
+  var html='<div class="scroll"><div style="padding:.34rem .7rem .06rem;display:flex;align-items:center;justify-content:space-between">'
     +'<div style="font-size:.54rem;color:var(--t2)">'+(_pr.date||'')+'</div>'
     +'<div class="ar-t" style="font-size:.58rem">'+h.day+' '+(h.monthAr||'')+'</div></div>'
     +ram
-    +'<div class="cd-bar"><div class="cd-lbl">'+s('nextPrayer')+'</div><div class="cd-val" id="cd-val">—</div></div>'
+    +'<div class="cd-bar"><div class="cd-lbl">'+s('np')+'</div><div class="cd-val" id="cd-val">—</div></div>'
     +'<div class="pr-grid">';
   order.forEach(function(n){
     var isN=n===next;
@@ -1010,7 +963,7 @@ function renderPrayer(){
       (isN?'<div class="next-b">NEXT</div>':'')+
       '<div class="pr-name">'+n+'</div><div class="pr-time">'+(t[n]||'--:--')+'</div></div>';
   });
-  html+='</div>'+((_pr.offline)?'<div class="offline-note">Offline — approximate times for '+_pr.city+'</div>':'')+'</div>';
+  html+='</div>'+(_pr.offline?'<div class="offline-note">Offline — approximate times</div>':'')+'</div>';
   body.innerHTML=html;
 }
 
@@ -1036,13 +989,11 @@ function renderWeather(){
   var body=document.getElementById('home-body');
   if(!_wx){
     body.innerHTML='<div class="scroll"><div class="spin-wrap"><div class="spin"></div><span>Loading weather…</span></div></div>';
-    fetch('/api?type=weather&city='+_city)
-      .then(function(r){return r.json()})
-      .then(function(d){_wx=d;renderWeather();})
-      .catch(function(){body.innerHTML='<div class="scroll"><div class="offline-note">Weather unavailable</div></div>';});
+    fetch('/api?type=weather&city='+_city).then(function(r){return r.json()})
+      .then(function(d){_wx=d;renderWeather();}).catch(function(){});
     return;
   }
-  if(_wx.error){body.innerHTML='<div class="scroll"><div class="offline-note">Weather unavailable: '+_wx.error+'</div></div>';return;}
+  if(_wx.error){body.innerHTML='<div class="scroll"><div class="offline-note">Weather unavailable</div></div>';return;}
   var fc=(_wx.forecast||[]).slice(0,5).map(function(d){
     return'<div class="fcd"><div class="fcd-dt">'+(d.date?d.date.slice(5):'')+'</div>'
       +'<div class="fcd-i">'+d.icon+'</div><div class="fcd-hi">'+d.max+'°</div><div class="fcd-lo">'+d.min+'°</div></div>';
@@ -1051,22 +1002,20 @@ function renderWeather(){
     +'<div><div class="wx-tmp">'+_wx.temp+'°C</div><div class="wx-dsc">'+_wx.desc+' · '+_wx.city+'</div></div></div>'
     +'<div class="wx-meta"><span class="wm">💧 '+_wx.humidity+'%</span><span class="wm">💨 '+_wx.wind+' km/h</span></div>'
     +'<div class="fc">'+fc+'</div>'
-    +'<div class="sec-lbl">'+s('allCities')+'</div>'
+    +'<div class="sec-lbl">'+s('allc')+'</div>'
     +'<div id="wx-all"><div class="spin-wrap"><div class="spin"></div></div></div></div>';
   body.innerHTML=html;
-  fetch('/api?type=weather&all=1')
-    .then(function(r){return r.json()})
-    .then(function(d){
-      var el=document.getElementById('wx-all');if(!el)return;
-      el.innerHTML='<div class="wx-all">'+(d.cities||[]).map(function(c){
-        return'<div class="wag"><div class="wag-c">'+c.name+'</div><div class="wag-i">'+c.icon+'</div><div class="wag-t">'+c.temp+'°</div></div>';
-      }).join('')+'</div>';
-    }).catch(function(){});
+  fetch('/api?type=weather&all=1').then(function(r){return r.json()}).then(function(d){
+    var el=document.getElementById('wx-all');if(!el)return;
+    el.innerHTML='<div class="wx-all">'+(d.cities||[]).map(function(c){
+      return'<div class="wag"><div class="wag-c">'+c.name+'</div><div class="wag-i">'+c.icon+'</div><div class="wag-t">'+c.temp+'°</div></div>';
+    }).join('')+'</div>';
+  }).catch(function(){});
 }
 
-/* ── LIVE SCORES (FIXED — dual source) ── */
+/* ── LIVE SCORES — FIXED ── */
 var LEAGUES=[
-  {id:'sau.1',n:'Saudi Pro League',f:'🇸🇦'},
+  {id:'sau.1',n:'Saudi Pro',f:'🇸🇦'},
   {id:'eng.1',n:'Premier League',f:'🏴󠁧󠁢󠁥󠁮󠁧󠁿'},
   {id:'esp.1',n:'La Liga',f:'🇪🇸'},
   {id:'ger.1',n:'Bundesliga',f:'🇩🇪'},
@@ -1078,28 +1027,28 @@ var LEAGUES=[
 function renderScores(){
   var body=document.getElementById('home-body');
   var lgBtns=LEAGUES.map(function(l){
-    return'<button class="lgb'+(l.id===_sLeague?' on':'')+'" onclick="switchLeague(\''+l.id+'\',this)">'+l.f+' '+l.n+'</button>';
+    return'<button class="lgb'+(l.id===_sLeague?' on':'')+'" onclick="swLg(\''+l.id+'\',this)">'+l.f+' '+l.n+'</button>';
   }).join('');
   var vwBtns=[['live','🔴 Live'],['previous','✅ Results'],['table','📊 Table']].map(function(v){
-    return'<button class="vwb'+(_sView===v[0]?' on':'')+'" onclick="switchView(\''+v[0]+'\',this)">'+v[1]+'</button>';
+    return'<button class="vwb'+(_sView===v[0]?' on':'')+'" onclick="swVw(\''+v[0]+'\',this)">'+v[1]+'</button>';
   }).join('');
   body.innerHTML='<div style="flex:1;overflow:hidden;min-height:0;display:flex;flex-direction:column">'
     +'<div class="lg-bar">'+lgBtns+'</div>'
     +'<div class="vw-bar">'+vwBtns+'</div>'
-    +'<div class="scroll" id="sc-inner"><div class="spin-wrap"><div class="spin"></div><span>Loading scores…</span></div></div>'
+    +'<div class="scroll" id="sc-in"><div class="spin-wrap"><div class="spin"></div><span>Loading scores…</span></div></div>'
     +'</div>';
   loadScores();
 }
 
-function switchLeague(id,btn){
+function swLg(id,btn){
   _sLeague=id;_sData=null;
   document.querySelectorAll('.lgb').forEach(function(b){b.classList.remove('on')});
   if(btn)btn.classList.add('on');
-  var inner=document.getElementById('sc-inner');
-  if(inner)inner.innerHTML='<div class="spin-wrap"><div class="spin"></div><span>Loading…</span></div>';
+  var el=document.getElementById('sc-in');
+  if(el)el.innerHTML='<div class="spin-wrap"><div class="spin"></div><span>Loading…</span></div>';
   loadScores();
 }
-function switchView(v,btn){
+function swVw(v,btn){
   _sView=v;
   document.querySelectorAll('.vwb').forEach(function(b){b.classList.remove('on')});
   if(btn)btn.classList.add('on');
@@ -1109,31 +1058,31 @@ function switchView(v,btn){
 function loadScores(){
   if(_sLoad)return;
   _sLoad=true;
-  /* Use /scores Cloudflare function which calls football-data.org + ESPN */
   Promise.all([
-    fetch('/scores?league='+_sLeague+'&type=scores',{signal:AbortSignal.timeout(10000)})
-      .then(function(r){return r.ok?r.json():{matches:[]}})
-      .catch(function(){return{matches:[]};}),
-    fetch('/scores?league='+_sLeague+'&type=table',{signal:AbortSignal.timeout(10000)})
-      .then(function(r){return r.ok?r.json():{table:[]}})
-      .catch(function(){return{table:[]};})
+    fetch('/scores?league='+_sLeague+'&type='+(_sView==='previous'?'previous':'live'),{signal:AbortSignal.timeout(12000)})
+      .then(function(r){return r.ok?r.json():{matches:[]}}).catch(function(){return{matches:[]};}),
+    fetch('/scores?league='+_sLeague+'&type=table',{signal:AbortSignal.timeout(12000)})
+      .then(function(r){return r.ok?r.json():{table:[]}}).catch(function(){return{table:[]};})
   ]).then(function(res){
     _sData={matches:res[0].matches||[],table:res[1].table||[]};
     _sLoad=false;
     renderScoresView();
   }).catch(function(){
     _sLoad=false;
-    var el=document.getElementById('sc-inner');
-    if(el)el.innerHTML='<div class="empty-state"><div class="es-ico">⚽</div><div class="es-t">Scores unavailable</div><div class="es-s">Check connection or try another league</div></div>';
+    var el=document.getElementById('sc-in');
+    if(el)el.innerHTML='<div class="empty-state"><div class="es-ico">⚽</div><div class="es-t">Scores unavailable</div><div class="es-s">Check your connection or try another league</div></div>';
   });
 }
 
 function renderScoresView(){
-  var inner=document.getElementById('sc-inner');
+  var inner=document.getElementById('sc-in');
   if(!inner||!_sData)return;
   if(_sView==='table'){renderTable(inner);return;}
-
   var all=_sData.matches||[];
+  if(!all.length){
+    inner.innerHTML='<div class="empty-state"><div class="es-ico">⚽</div><div class="es-t">No matches found</div><div class="es-s">Try another league or check back later</div></div>';
+    return;
+  }
   var live=[],prev=[],sched=[];
   all.forEach(function(m){
     var st=m.status||'';
@@ -1141,12 +1090,6 @@ function renderScoresView(){
     else if(st==='FINISHED')prev.push(m);
     else sched.push(m);
   });
-
-  if(!all.length){
-    inner.innerHTML='<div class="empty-state"><div class="es-ico">⚽</div><div class="es-t">No matches found</div><div class="es-s">Try a different league or check back on match days</div></div>';
-    return;
-  }
-
   var html='';
   function section(label,list){
     if(!list.length)return;
@@ -1154,32 +1097,43 @@ function renderScoresView(){
     list.forEach(function(m){
       var isLive=(m.status==='LIVE'||m.status==='IN_PLAY');
       var isDone=m.status==='FINISHED';
-      var timeLabel=isLive?(m.minute?m.minute+"'":"LIVE"):isDone?'FT':'';
-      if(!isLive&&!isDone&&m.date){
-        try{var dt=new Date(m.date);timeLabel=dt.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});}catch(e){}
+      var timeLabel='';
+      if(isLive)timeLabel=m.minute?m.minute+"'":'LIVE';
+      else if(isDone)timeLabel='FT';
+      else if(m.date){try{var dt=new Date(m.date);timeLabel=dt.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});}catch(e){}}
+      var venue=m.venue||(m.city?m.city+' Stadium':'');
+      /* Build lineup if available */
+      var lineupHtml='';
+      if((isLive||isDone)&&(m.hmLineup&&m.hmLineup.length||m.awLineup&&m.awLineup.length)){
+        var hm=(m.hmLineup||[]).slice(0,11);var aw=(m.awLineup||[]).slice(0,11);
+        lineupHtml='<div class="lineup-wrap">'
+          +'<div class="lineup-col"><div class="lineup-title">'+m.home+' XI</div>'
+          +hm.map(function(p,i){return'<div class="lineup-player"><span class="lineup-num">'+(i+1)+'</span>'+p+'</div>';}).join('')
+          +'</div>'
+          +'<div class="lineup-col"><div class="lineup-title">'+m.away+' XI</div>'
+          +aw.map(function(p,i){return'<div class="lineup-player"><span class="lineup-num">'+(i+1)+'</span>'+p+'</div>';}).join('')
+          +'</div></div>';
       }
       html+='<div class="match'+(isLive?' live-m':'')+'">';
       if(isLive)html+='<div class="live-ind"><div class="live-dot"></div><div class="live-lbl">LIVE</div></div>';
-      html+='<div class="match-comp">'+m.competition+'</div>'
+      html+='<div class="match-venue">🏟 '+venue+'<span style="margin-left:auto;font-size:.4rem;color:var(--g3)">'+m.competition+'</span></div>'
         +'<div class="match-row">'
-        +'<div class="team-r">'+(m.homeLogo?'<img class="crest" src="'+m.homeLogo+'" onerror="this.style.display=\'none\'">'+'':'')+'<div class="team-n">'+m.home+'</div></div>'
+        +'<div class="team-r">'+(m.homeLogo?'<img class="crest" src="'+m.homeLogo+'" onerror="this.style.display=\'none\'">':'')+'<div class="team-n">'+m.home+'</div></div>'
         +'<div class="score-box">';
       if(isLive||isDone){
-        html+='<div class="score-n">'+(m.homeScore??'0')+' – '+(m.awayScore??'0')+'</div>'
-          +'<div class="score-t">'+timeLabel+'</div>';
+        html+='<div class="score-n">'+(m.homeScore??'0')+' – '+(m.awayScore??'0')+'</div><div class="score-t">'+timeLabel+'</div>';
       } else {
         html+='<div class="score-vs">'+timeLabel+'</div>';
       }
       html+='</div>'
         +'<div class="team-r away"><div class="team-n">'+m.away+'</div>'+(m.awayLogo?'<img class="crest" src="'+m.awayLogo+'" onerror="this.style.display=\'none\'">':'')+'</div>'
-        +'</div></div>';
+        +'</div>'+lineupHtml+'</div>';
     });
   }
-
   if(_sView==='live'){
     if(live.length)section('🔴 Live Now',live);
     if(sched.length)section('🕐 Upcoming',sched);
-    if(!live.length&&!sched.length)html='<div class="empty-state"><div class="es-ico">⚽</div><div class="es-t">No live matches right now</div><div class="es-s">Check back during match days</div></div>';
+    if(!live.length&&!sched.length)html='<div class="empty-state"><div class="es-ico">⚽</div><div class="es-t">No live matches</div><div class="es-s">Check back on match days</div></div>';
   } else {
     if(prev.length)section('✅ Results',prev);
     else html='<div class="empty-state"><div class="es-ico">⚽</div><div class="es-t">No recent results</div></div>';
@@ -1189,163 +1143,197 @@ function renderScoresView(){
 
 function renderTable(el){
   var rows=_sData.table||[];
-  if(!rows.length){
-    el.innerHTML='<div class="empty-state"><div class="es-ico">📊</div><div class="es-t">Table unavailable</div><div class="es-s">Try another league</div></div>';
-    return;
-  }
+  if(!rows.length){el.innerHTML='<div class="empty-state"><div class="es-ico">📊</div><div class="es-t">Table unavailable</div><div class="es-s">Try another league</div></div>';return;}
   var html='<div class="tbl-wrap"><table class="tbl"><thead><tr>'
-    +'<th>#</th><th>Club</th><th>P</th><th>W</th><th>D</th><th>L</th><th>GD</th><th>Pts</th><th>Form</th>'
+    +'<th>#</th><th>Club</th><th>P</th><th>W</th><th>D</th><th>L</th><th>GF</th><th>GA</th><th>GD</th><th>Pts</th><th>Form</th>'
     +'</tr></thead><tbody>';
   rows.forEach(function(r,i){
-    var pos=r.pos;
-    var pc=pos<=4?'pos cl':pos<=6?'pos eu':pos>=rows.length-2?'pos rz':'pos';
+    var pc=r.pos<=4?'pos cl':r.pos<=6?'pos eu':r.pos>=rows.length-2?'pos rz':'pos';
     var gd=r.gd>0?'+'+r.gd:r.gd;
     var fDots=(r.form||[]).map(function(f){
-      var c=f==='W'?'fw':f==='D'?'fd2':'fl';
-      return'<div class="fd '+c+'"></div>';
+      var c=f==='W'?'fw':f==='D'?'fdraw':'fl';
+      return'<div class="fd2 '+c+'"></div>';
     }).join('');
     html+='<tr'+(i===0?' class="hl"':'')+'>'
-      +'<td><span class="'+pc+'">'+pos+'</span></td>'
+      +'<td><span class="'+pc+'">'+r.pos+'</span></td>'
       +'<td><div class="club-c">'+(r.logo?'<img class="crest" src="'+r.logo+'" onerror="this.style.display=\'none\'">':'')+'<span class="club-n">'+r.name+'</span></div></td>'
       +'<td>'+r.played+'</td><td>'+r.won+'</td><td>'+r.drawn+'</td><td>'+r.lost+'</td>'
-      +'<td>'+gd+'</td><td><span class="pts">'+r.points+'</span></td>'
+      +'<td>'+r.gf+'</td><td>'+r.ga+'</td><td>'+gd+'</td>'
+      +'<td><span class="pts">'+r.points+'</span></td>'
       +'<td><div class="form-d">'+fDots+'</div></td>'
       +'</tr>';
   });
   html+='</tbody></table>'
-    +'<div style="padding:.44rem .62rem;font-size:.42rem;color:var(--t3)">'
-    +'<span style="color:var(--g3)">■</span> UCL &nbsp;<span style="color:var(--gold)">■</span> Europa &nbsp;<span style="color:#e55">■</span> Relegation</div>'
-    +'</div>';
+    +'<div style="padding:.44rem .65rem;font-size:.42rem;color:var(--t3)">'
+    +'<span style="color:var(--g3)">■</span> UCL &nbsp;<span style="color:var(--gold)">■</span> Europa &nbsp;<span style="color:#e55">■</span> Relegation</div></div>';
   el.innerHTML=html;
 }
 
-/* ── WALLET (Send + Request) ── */
+/* ── WALLET — FIXED SEND + REQUEST ── */
 function renderWallet(){
   var body=document.getElementById('home-body');
   var hasWallet=_u&&_u.wallet;
-  var walletDisplay=hasWallet?_u.wallet:'No wallet connected yet';
-  var walletNote=!hasWallet?'<div class="offline-note" style="margin:.1rem .5rem .5rem">Wallet connects after KYC verification on Pi Network</div>':'';
+  var addrDisplay=hasWallet?_u.wallet:'No wallet address yet';
 
-  var html='<div class="scroll">'
-    +'<div class="wallet-card">'
-    +'<div class="wc-label">Pi Wallet</div>'
-    +'<div class="wc-addr">'+walletDisplay+'</div>'
-    +'<div class="wc-btns">'
-    +'<button class="wc-btn send" onclick="openSendPi()" '+(hasWallet?'':'disabled')+'>'
-    +'<span style="font-size:1rem">↑</span> Send Pi'
+  body.innerHTML='<div class="scroll">'
+    +'<div class="wallet-hero">'
+    +'<div class="wh-label">π Pi Wallet</div>'
+    +'<div class="wh-addr">'+addrDisplay+'</div>'
+    +'<div class="wallet-btns">'
+    +'<button class="wbtn send" id="wbtn-send" onclick="openSend()">'
+    +'<span class="wbtn-ico">↑</span> Send Pi'
     +'</button>'
-    +'<button class="wc-btn req" onclick="openRequestPi()">'
-    +'<span style="font-size:1rem">↓</span> Request Pi'
+    +'<button class="wbtn req" onclick="openRequest()">'
+    +'<span class="wbtn-ico">↓</span> Request Pi'
     +'</button>'
     +'</div></div>'
-    +walletNote
-    /* Recent transactions */
+    +(!hasWallet?'<div class="offline-note" style="margin:.3rem .5rem">Wallet connects after KYC verification on Pi Network</div>':'')
     +'<div class="sec-lbl">Recent Transactions</div>';
 
   var txs=JSON.parse(localStorage.getItem('ds_tx')||'[]').slice(-8).reverse();
   if(txs.length){
     txs.forEach(function(tx){
-      html+='<div class="tx-row"><div><div class="tx-type">'+tx.type+'</div>'
+      body.innerHTML+='<div class="tx-row">'
+        +'<div><div class="tx-type">'+tx.type+'</div>'
         +'<div class="tx-date">'+new Date(tx.ts).toLocaleString()+'</div></div>'
         +'<div class="tx-amt">π '+tx.amount+'</div></div>';
     });
   } else {
-    html+='<div style="text-align:center;padding:.8rem;font-size:.54rem;color:var(--t3)">No transactions yet</div>';
+    body.innerHTML+='<div style="text-align:center;padding:.8rem;font-size:.55rem;color:var(--t3)">No transactions yet</div>';
   }
-  html+='</div>';
-  body.innerHTML=html;
+  body.innerHTML+='</div>';
 }
 
-function openSendPi(){
-  openPanel('Send Pi','<div style="padding:.7rem .78rem">'
-    +'<div style="font-size:.82rem;font-weight:900;color:var(--g3);margin-bottom:.05rem">↑ Send Pi</div>'
-    +'<div style="font-size:.52rem;color:var(--t3);margin-bottom:.55rem">Send Pi to another user via Pi payment</div>'
-    +'<label style="font-size:.5rem;font-weight:700;color:var(--t3);margin-bottom:.14rem;display:block">Recipient Pi Username</label>'
-    +'<input class="w-inp" id="send-to" type="text" placeholder="e.g. abdullahi">'
-    +'<label style="font-size:.5rem;font-weight:700;color:var(--t3);margin-bottom:.14rem;display:block">Amount (π)</label>'
-    +'<input class="w-inp" id="send-amt" type="number" step="0.01" min="0.01" placeholder="1.00">'
-    +'<label style="font-size:.5rem;font-weight:700;color:var(--t3);margin-bottom:.14rem;display:block">Memo</label>'
-    +'<input class="w-inp" id="send-memo" type="text" placeholder="e.g. Payment for service">'
-    +'<button class="btn-g" style="margin-top:.4rem" onclick="doSendPi()">Send π</button>'
-    +'<div id="send-status" style="font-size:.5rem;color:var(--t3);text-align:center;margin-top:.38rem;min-height:.8rem"></div>'
-    +'</div>');
+/* SEND PI — opens panel, functional Pi payment */
+function openSend(){
+  openPanel('Send Pi',
+    '<div style="padding:.75rem .8rem">'
+    +'<div style="font-size:.9rem;font-weight:900;color:var(--g3);margin-bottom:.06rem">↑ Send Pi</div>'
+    +'<div style="font-size:.54rem;color:var(--t3);margin-bottom:.58rem">Send Pi to another user via Pi Network</div>'
+    +'<label class="w-label">Recipient Pi Username</label>'
+    +'<input class="w-inp" id="sd-to" type="text" placeholder="e.g. abdullahi" autocomplete="off">'
+    +'<label class="w-label">Amount (π)</label>'
+    +'<input class="w-inp" id="sd-amt" type="number" step="0.01" min="0.01" placeholder="1.00">'
+    +'<label class="w-label">Memo</label>'
+    +'<input class="w-inp" id="sd-memo" type="text" placeholder="e.g. Payment for coffee">'
+    +'<button class="w-btn" id="sd-btn" onclick="doSend()">'
+    +'<span style="font-size:1rem">π</span> Send Pi'
+    +'</button>'
+    +'<div id="sd-sts" style="font-size:.52rem;color:var(--t3);text-align:center;margin-top:.42rem;min-height:.9rem"></div>'
+    +'</div>'
+  );
+  /* Focus input after panel opens */
+  setTimeout(function(){var el=document.getElementById('sd-to');if(el)el.focus();},200);
 }
 
-function doSendPi(){
-  var to=document.getElementById('send-to').value.trim();
-  var amt=parseFloat(document.getElementById('send-amt').value||0);
-  var memo=document.getElementById('send-memo').value.trim()||'Pi Payment';
-  var sts=document.getElementById('send-status');
-  if(!to||!amt||amt<=0){sts.style.color='var(--gold)';sts.textContent='Please fill recipient and amount';return;}
-  sts.style.color='var(--t3)';sts.textContent='Initiating Pi payment…';
-
+function doSend(){
+  var to=document.getElementById('sd-to');
+  var amtEl=document.getElementById('sd-amt');
+  var memoEl=document.getElementById('sd-memo');
+  var btn=document.getElementById('sd-btn');
+  var sts=document.getElementById('sd-sts');
+  if(!to||!amtEl||!sts)return;
+  var toVal=to.value.trim();
+  var amt=parseFloat(amtEl.value||0);
+  var memo=memoEl?memoEl.value.trim()||'Pi Payment':'Pi Payment';
+  if(!toVal){sts.style.color='var(--gold)';sts.textContent='Enter recipient username';return;}
+  if(!amt||amt<=0){sts.style.color='var(--gold)';sts.textContent='Enter a valid amount';return;}
+  if(!_u){sts.style.color='var(--gold)';sts.textContent='Please sign in first';return;}
+  btn.disabled=true;
+  sts.style.color='var(--t3)';sts.textContent='Opening Pi payment…';
   Pi.createPayment({
     amount:amt,
-    memo:memo,
-    metadata:{app:'digitalsaudi',type:'send',to:to},
+    memo:'Send to '+toVal+': '+memo,
+    metadata:{app:'digitalsaudi',type:'send',to:toVal},
   },{
     onReadyForServerApproval:function(paymentId){
-      sts.textContent='Approving payment…';
-      return fetch(_AP,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({paymentId:paymentId})})
+      sts.textContent='Approving…';
+      return fetch(_AP,{method:'POST',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({paymentId:paymentId})})
         .then(function(r){return r.json()})
-        .then(function(d){console.log('[DS] send approved:',d);});
+        .then(function(d){console.log('[DS/send] approved',d);});
     },
     onReadyForServerCompletion:function(paymentId,txid){
       sts.textContent='Completing…';
-      fetch(_CO,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({paymentId:paymentId,txid:txid})})
+      fetch(_CO,{method:'POST',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({paymentId:paymentId,txid:txid})})
         .then(function(r){return r.json()})
         .then(function(){
           var txs=JSON.parse(localStorage.getItem('ds_tx')||'[]');
-          txs.push({type:'Sent to '+to,amount:amt,txid:txid,ts:Date.now()});
+          txs.push({type:'Sent '+amt+'π to '+toVal,amount:amt,txid:txid,ts:Date.now()});
           localStorage.setItem('ds_tx',JSON.stringify(txs));
           sts.style.color='var(--g3)';
-          sts.textContent='✅ Sent '+amt+'π to '+to;
-          toast('✅ Sent '+amt+'π to '+to);
+          sts.textContent='✅ Sent '+amt+'π to '+toVal+'!';
+          btn.disabled=false;
+          toast('✅ '+amt+'π sent to '+toVal);
         }).catch(function(){
-          sts.style.color='var(--g3)';sts.textContent='✅ Payment completed';toast('✅ Payment sent');
+          sts.style.color='var(--g3)';sts.textContent='✅ Payment completed';btn.disabled=false;
         });
     },
     onCancel:function(paymentId){
-      sts.textContent='Payment cancelled';
-      fetch(_CA,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({paymentId:paymentId})}).catch(function(){});
+      sts.style.color='var(--t3)';sts.textContent='Payment cancelled';btn.disabled=false;
+      fetch(_CA,{method:'POST',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({paymentId:paymentId})}).catch(function(){});
     },
     onError:function(error){
-      sts.style.color='var(--gold)';
-      sts.textContent='Error: '+error.message;
-      console.error('[DS] send error:',error);
+      sts.style.color='var(--gold)';sts.textContent='Error: '+error.message;btn.disabled=false;
+      console.error('[DS/send]',error);
     }
   });
 }
 
-function openRequestPi(){
-  openPanel('Request Pi','<div style="padding:.7rem .78rem">'
-    +'<div style="font-size:.82rem;font-weight:900;color:var(--g3);margin-bottom:.05rem">↓ Request Pi</div>'
-    +'<div style="font-size:.52rem;color:var(--t3);margin-bottom:.55rem">Generate a Pi payment request QR code to share</div>'
-    +'<label style="font-size:.5rem;font-weight:700;color:var(--t3);margin-bottom:.14rem;display:block">Amount (π)</label>'
-    +'<input class="w-inp" id="req-amt" type="number" step="0.01" min="0.01" placeholder="1.00">'
-    +'<label style="font-size:.5rem;font-weight:700;color:var(--t3);margin-bottom:.14rem;display:block">Memo / Reason</label>'
-    +'<input class="w-inp" id="req-memo" type="text" placeholder="e.g. Coffee at Digital Café">'
-    +'<button class="btn-g" style="margin-top:.4rem" onclick="genReqQR()">Generate Payment QR</button>'
-    +'<div id="req-qr" style="display:flex;flex-direction:column;align-items:center;gap:.3rem;margin-top:.55rem"></div>'
-    +'</div>');
+/* REQUEST PI — generates shareable payment link */
+function openRequest(){
+  openPanel('Request Pi',
+    '<div style="padding:.75rem .8rem">'
+    +'<div style="font-size:.9rem;font-weight:900;color:var(--g3);margin-bottom:.06rem">↓ Request Pi</div>'
+    +'<div style="font-size:.54rem;color:var(--t3);margin-bottom:.58rem">Generate a Pi payment request to share</div>'
+    +'<label class="w-label">Amount to Request (π)</label>'
+    +'<input class="w-inp" id="rq-amt" type="number" step="0.01" min="0.01" placeholder="1.00">'
+    +'<label class="w-label">Reason / Memo</label>'
+    +'<input class="w-inp" id="rq-memo" type="text" placeholder="e.g. Coffee at my café">'
+    +'<button class="w-btn" onclick="genRequest()">'
+    +'<span style="font-size:1rem">↓</span> Generate Payment Link'
+    +'</button>'
+    +'<div id="rq-out" style="margin-top:.62rem"></div>'
+    +'</div>'
+  );
 }
 
-function genReqQR(){
-  var amt=document.getElementById('req-amt').value||'1';
-  var memo=document.getElementById('req-memo').value||'Pi Request';
+function genRequest(){
+  var amtEl=document.getElementById('rq-amt');
+  var memoEl=document.getElementById('rq-memo');
+  var out=document.getElementById('rq-out');
+  var amt=parseFloat(amtEl?amtEl.value||0:0);
+  var memo=memoEl?memoEl.value.trim()||'Pi Request':'Pi Request';
+  if(!amt||amt<=0){toast('Enter a valid amount');return;}
   var user=_u?_u.username:'';
-  if(parseFloat(amt)<=0||isNaN(parseFloat(amt))){toast('Enter a valid amount');return;}
-  var uri='pi://pay?amount='+encodeURIComponent(amt)+'&memo='+encodeURIComponent(memo)+(user?'&to='+encodeURIComponent(user):'');
-  var out=document.getElementById('req-qr');
-  /* Use QR code via canvas approach */
-  out.innerHTML='<div style="background:#fff;padding:12px;border-radius:12px;text-align:center">'
-    +'<div style="font-size:.55rem;color:#006C35;font-weight:700;margin-bottom:.3rem">π '+parseFloat(amt).toFixed(2)+'</div>'
-    +'<div style="font-size:.46rem;color:#333;margin-bottom:.3rem">'+memo+'</div>'
-    +'<div style="font-size:.38rem;color:#666;word-break:break-all;max-width:220px">'+uri+'</div>'
+  var uri='pi://pay?amount='+encodeURIComponent(amt.toFixed(2))
+    +'&memo='+encodeURIComponent(memo)
+    +(user?'&to='+encodeURIComponent(user):'');
+  if(!out)return;
+  out.innerHTML='<div style="background:var(--bg3);border:1.5px solid var(--bd2);border-radius:13px;padding:.65rem;text-align:center;margin-bottom:.4rem">'
+    +'<div style="font-size:.46rem;color:var(--t3);margin-bottom:.28rem;text-transform:uppercase;letter-spacing:.08em">Payment Request</div>'
+    +'<div style="font-size:1.8rem;font-weight:900;color:var(--g3);margin-bottom:.1rem">π '+amt.toFixed(2)+'</div>'
+    +'<div style="font-size:.56rem;color:var(--t2);margin-bottom:.35rem">'+memo+'</div>'
+    +(user?'<div style="font-size:.48rem;color:var(--t3)">To: '+user+'</div>':'')
     +'</div>'
-    +'<div style="font-size:.5rem;color:var(--t3);text-align:center">Share this link to receive payment:</div>'
-    +'<div style="background:var(--bg3);border:1px solid var(--bd);border-radius:9px;padding:.4rem .55rem;font-size:.48rem;color:var(--g3);word-break:break-all;max-width:300px;text-align:center">'+uri+'</div>';
-  toast('QR generated ✅');
+    +'<div style="font-size:.5rem;color:var(--t3);margin-bottom:.28rem;text-align:center">Share this payment link:</div>'
+    +'<div style="background:var(--bg3);border:1px solid var(--bd);border-radius:10px;padding:.45rem .55rem;font-size:.48rem;color:var(--g3);word-break:break-all;line-height:1.5;cursor:pointer" onclick="copyURI(\''+uri+'\')">'
+    +uri
+    +'</div>'
+    +'<button style="width:100%;padding:.52rem;background:rgba(22,196,127,.12);border:1.5px solid var(--bd2);border-radius:10px;color:var(--g3);font-size:.65rem;font-weight:700;margin-top:.38rem;cursor:pointer" onclick="copyURI(\''+uri+'\')">'
+    +'📋 Copy Payment Link'
+    +'</button>';
+  toast('Payment link generated ✅');
+}
+
+function copyURI(uri){
+  if(navigator.clipboard){
+    navigator.clipboard.writeText(uri).then(function(){toast('Copied ✅');}).catch(function(){toast('Tap and hold to copy');});
+  } else {
+    toast('Tap and hold the link to copy');
+  }
 }
 
 /* ── HOLIDAYS ── */
@@ -1374,16 +1362,14 @@ function renderQibla(){
     +'<div class="compass"><div class="c-n">N</div><div class="c-arr" id="c-arr"></div></div>'
     +'<div class="q-brg" id="q-brg">—°</div>'
     +'<div class="q-dist" id="q-dist">Calculating…</div></div></div>';
-  fetch('/api?type=qibla&city='+_city)
-    .then(function(r){return r.json()})
-    .then(function(d){
-      var b=document.getElementById('q-brg');
-      var dist=document.getElementById('q-dist');
-      var arr=document.getElementById('c-arr');
-      if(b)b.textContent=d.bearing+'°';
-      if(dist)dist.textContent=d.distance.toLocaleString()+' km to Masjid al-Haram';
-      if(arr)arr.style.transform='rotate('+(d.bearing-180)+'deg)';
-    }).catch(function(){var el=document.getElementById('q-dist');if(el)el.textContent='Unavailable';});
+  fetch('/api?type=qibla&city='+_city).then(function(r){return r.json()}).then(function(d){
+    var b=document.getElementById('q-brg');
+    var dt=document.getElementById('q-dist');
+    var ar=document.getElementById('c-arr');
+    if(b)b.textContent=d.bearing+'°';
+    if(dt)dt.textContent=d.distance.toLocaleString()+' km to Masjid al-Haram';
+    if(ar)ar.style.transform='rotate('+(d.bearing-180)+'deg)';
+  }).catch(function(){var el=document.getElementById('q-dist');if(el)el.textContent='Unavailable';});
 }
 
 /* ── ZAKAT ── */
@@ -1396,11 +1382,11 @@ function renderZakat(){
     +'<input class="z-inp" id="z-g" type="number" placeholder="Gold (grams)">'
     +'<input class="z-inp" id="z-c" type="number" placeholder="Cash & Savings (SAR)">'
     +'<input class="z-inp" id="z-b" type="number" placeholder="Business Assets (SAR)">'
-    +'<button class="btn-g" onclick="calcZ()">Calculate Zakat</button>'
+    +'<button class="w-btn" onclick="calcZ()" style="margin-top:.1rem">Calculate Zakat</button>'
     +'<div class="z-res" id="z-r">'
-    +'<div style="font-size:.48rem;color:var(--t3);margin-bottom:.18rem">Zakat Due</div>'
+    +'<div style="font-size:.5rem;color:var(--t3);margin-bottom:.2rem">Zakat Due</div>'
     +'<div class="z-amt" id="z-a">0 SAR</div>'
-    +'<div id="z-note" style="font-size:.44rem;color:var(--t3);margin-top:.14rem"></div>'
+    +'<div id="z-note" style="font-size:.44rem;color:var(--t3);margin-top:.15rem"></div>'
     +'</div></div></div></div>';
 }
 function calcZ(){
@@ -1410,81 +1396,52 @@ function calcZ(){
   var tot=g*225+c+b,nisab=4500;
   var r=document.getElementById('z-r'),a=document.getElementById('z-a'),n=document.getElementById('z-note');
   r.style.display='block';
-  if(tot<nisab){
-    a.textContent='0 SAR';a.style.color='var(--t3)';
-    n.textContent='Total '+tot.toLocaleString()+' SAR — below Nisab of 4,500 SAR';
-  } else {
-    var due=Math.round(tot*0.025);
-    a.textContent=due.toLocaleString()+' SAR';a.style.color='var(--g3)';
-    n.textContent='2.5% of '+tot.toLocaleString()+' SAR zakatable assets';
-  }
+  if(tot<nisab){a.textContent='0 SAR';a.style.color='var(--t3)';n.textContent='Total '+tot.toLocaleString()+' SAR — below Nisab';}
+  else{var due=Math.round(tot*.025);a.textContent=due.toLocaleString()+' SAR';a.style.color='var(--g3)';n.textContent='2.5% of '+tot.toLocaleString()+' SAR';}
 }
 
-/* ═══════════════════════════
-   🚀 DISCOVER
-═══════════════════════════ */
+/* ═══ DISCOVER ═══ */
 var STARTUPS=[
-  {n:'Tamara',y:2020,ind:'Fintech · BNPL',tag:'Unicorn',
-   desc:"Saudi Arabia's leading Buy Now Pay Later platform serving millions across KSA and UAE with flexible payment options at checkout.",
-   impact:"Raised $340M+. Saudi Arabia's first Fintech unicorn. Processing billions in transactions annually."},
-  {n:'Tabby',y:2019,ind:'Fintech · BNPL',tag:'Unicorn',
-   desc:'BNPL and financial services platform across Saudi Arabia, UAE, Egypt, and Kuwait. One of the fastest-growing fintechs in MENA.',
-   impact:'Valued at $1.5B+. Partnered with 10,000+ brands. 10 million+ shoppers.'},
-  {n:'Salla',y:2016,ind:'E-Commerce',tag:'Unicorn',
-   desc:"Saudi e-commerce platform enabling anyone to build and run an Arabic online store in minutes. Powers 60,000+ stores.",
-   impact:'Reached unicorn status. Dominant Arabic store builder in MENA.'},
-  {n:'Foodics',y:2014,ind:'Restaurant Tech',tag:'Series C',
-   desc:'Cloud-based restaurant management system used by 20,000+ restaurants in 35+ countries. Built in Saudi Arabia.',
-   impact:'Raised $170M+. Expanded to 35+ countries from Riyadh.'},
-  {n:'Rewaa',y:2019,ind:'Retail · POS',tag:'Series B',
-   desc:'POS and inventory management platform for Saudi retailers. ZATCA e-invoicing compliant.',
-   impact:'Serving thousands of Saudi retailers. Leading retail OS in the Kingdom.'},
-  {n:'Jahez',y:2016,ind:'Food Delivery',tag:'Public · Tadawul',
-   desc:'Saudi food delivery platform. First Saudi tech company to IPO on Tadawul (Saudi Exchange).',
-   impact:'First Saudi food delivery IPO. Serves hundreds of Saudi cities.'},
-  {n:'Nana',y:2016,ind:'Grocery Delivery',tag:'Series B',
-   desc:'On-demand grocery delivery partnering with major Saudi supermarkets for fast home delivery.',
-   impact:'Raised $30M+. Active in major Saudi cities.'},
-  {n:'Lean Technologies',y:2019,ind:'Open Banking',tag:'Series B',
-   desc:"Open banking infrastructure for MENA. Connects apps to bank accounts for payments and data. The Plaid of Saudi Arabia. SAMA licensed.",
-   impact:'Raised $33M+. Powering Saudi and UAE open banking.'},
+  {n:'Tamara',y:2020,ind:'Fintech · BNPL',tag:'Unicorn',desc:"Saudi Arabia's leading BNPL platform serving millions across KSA and UAE.",impact:'Raised $340M+. Saudi Arabia\'s first Fintech unicorn.'},
+  {n:'Tabby',y:2019,ind:'Fintech · BNPL',tag:'Unicorn',desc:'BNPL across Saudi Arabia, UAE, Egypt, Kuwait. One of MENA\'s fastest-growing fintechs.',impact:'Valued at $1.5B+. 10 million+ shoppers.'},
+  {n:'Salla',y:2016,ind:'E-Commerce',tag:'Unicorn',desc:"Arabic e-commerce platform powering 60,000+ online stores.",impact:'Unicorn status. Dominant Arabic store builder.'},
+  {n:'Foodics',y:2014,ind:'Restaurant Tech',tag:'Series C',desc:'Restaurant management used by 20,000+ restaurants in 35+ countries.',impact:'Raised $170M+. Built in Saudi for the world.'},
+  {n:'Rewaa',y:2019,ind:'Retail · POS',tag:'Series B',desc:'POS and inventory for Saudi retailers. ZATCA e-invoicing compliant.',impact:'Leading retail OS in Saudi Arabia.'},
+  {n:'Jahez',y:2016,ind:'Food Delivery',tag:'Public · Tadawul',desc:'Saudi food delivery. First Saudi tech company to IPO on Tadawul.',impact:'First Saudi food delivery IPO.'},
+  {n:'Nana',y:2016,ind:'Grocery Delivery',tag:'Series B',desc:'On-demand grocery delivery from major Saudi supermarkets.',impact:'Raised $30M+. Active in major Saudi cities.'},
+  {n:'Lean Technologies',y:2019,ind:'Open Banking',tag:'Series B',desc:"Open banking infrastructure for MENA. SAMA licensed. The Plaid of Saudi Arabia.",impact:'Raised $33M+. Powering Saudi open banking.'},
 ];
 var ECOSYSTEM=[
-  {s:'🤖 AI & Data',items:[{n:'SDAIA',d:'Saudi Data and AI Authority — national AI body and strategy'},{n:'Aramco AI',d:"AI for energy exploration and operations at world's largest oil company"},{n:'GenAI Hub',d:'National generative AI platform for Saudi public sector'}]},
-  {s:'🏙️ Smart Cities',items:[{n:'NEOM',d:'170km linear smart city — THE LINE, SINDALAH, OXAGON, TROJENA'},{n:'Diriyah Gate',d:'UNESCO heritage district — $20B cultural transformation near Riyadh'},{n:'ROSHN',d:'National developer building Saudi smart communities'}]},
-  {s:'💳 Fintech',items:[{n:'Tamara',d:'BNPL unicorn — $340M+ raised, millions of Saudi users'},{n:'Tabby',d:'Pan-MENA BNPL — $1.5B+ valuation'},{n:'Lean Technologies',d:"Open banking infrastructure — Saudi Arabia's Plaid"}]},
-  {s:'☁️ Cloud & Telecom',items:[{n:'STC Cloud',d:"Saudi Telecom's cloud platform — 5G and enterprise cloud"},{n:'Aramco Digital',d:'Digital subsidiary of Aramco — AI, cloud, energy tech'},{n:'Elm',d:'Government digital services — identity and e-services'}]},
-  {s:'💡 Innovation',items:[{n:'Misk Foundation',d:'MBS Foundation — youth innovation and entrepreneurship programs'},{n:'KAUST',d:'King Abdullah University — world-class research and innovation hub'},{n:'NCAR',d:'National Centre for AI Research — advancing Saudi AI capabilities'}]},
-  {s:'🛒 Commerce',items:[{n:'Salla',d:'Arabic e-commerce — 60,000+ online stores'},{n:'Foodics',d:'Restaurant OS — 20,000+ restaurants in 35+ countries'},{n:'Rewaa',d:'Saudi POS system — ZATCA compliant retail OS'}]},
+  {s:'🤖 AI & Data',items:[{n:'SDAIA',d:'Saudi Data and AI Authority — national AI body'},{n:'Aramco AI',d:"AI for energy operations at world's largest oil company"},{n:'GenAI Hub',d:'National generative AI platform for Saudi government'}]},
+  {s:'🏙️ Smart Cities',items:[{n:'NEOM',d:'170km linear smart city — THE LINE, SINDALAH, OXAGON'},{n:'Diriyah Gate',d:'$20B UNESCO heritage transformation near Riyadh'},{n:'ROSHN',d:'National developer building Saudi smart communities'}]},
+  {s:'💳 Fintech',items:[{n:'Tamara',d:'BNPL unicorn — $340M+ raised'},{n:'Tabby',d:'Pan-MENA BNPL — $1.5B+ valuation'},{n:'Lean Technologies',d:"Open banking — Saudi Arabia's Plaid"}]},
+  {s:'☁️ Cloud & Telecom',items:[{n:'STC Cloud',d:"Saudi Telecom's cloud platform — 5G enterprise"},{n:'Aramco Digital',d:'Digital subsidiary — AI, cloud, energy tech'},{n:'Elm',d:'Government digital services — identity and e-services'}]},
+  {s:'💡 Innovation',items:[{n:'Misk Foundation',d:'MBS Foundation — youth innovation and entrepreneurship'},{n:'KAUST',d:'King Abdullah University — world-class research hub'},{n:'NCAR',d:'National Centre for AI Research'}]},
 ];
 var OPPS=[
-  {ico:'🏆',n:'LEAP Innovation Challenge',d:'Annual competition at LEAP for AI and tech startups. Prizes and investor exposure.',cat:'Competition'},
-  {ico:'💻',n:'Saudi Hackathons',d:'Regular government and private hackathons in Riyadh and Jeddah. Open to all.',cat:'Hackathon'},
-  {ico:'🎓',n:'KAUST Entrepreneurship',d:'Research-based entrepreneurship support for deep tech startups.',cat:'Program'},
-  {ico:'🚀',n:'Misk Accelerator',d:'MBS Foundation accelerator for Saudi and regional startups.',cat:'Accelerator'},
-  {ico:'💰',n:'STV (STC Ventures)',d:'Corporate VC of STC investing in regional tech startups.',cat:'VC'},
-  {ico:'🌐',n:'Aramco WAED Program',d:'Aramco Entrepreneurship Centre — funding and mentorship for Saudi founders.',cat:'Corporate'},
-  {ico:'📅',n:'LEAP Conference',d:"World's largest tech conference in Riyadh. Best Saudi networking event.",cat:'Conference'},
-  {ico:'🤝',n:'FII Institute',d:'Future Investment Initiative — global and Saudi investor connections.',cat:'Summit'},
-  {ico:'🏛',n:'Monshaat (SME Authority)',d:'Saudi SME Authority. Free resources, training, and funding programs.',cat:'Support'},
-  {ico:'π',n:'Pi Business Ecosystem',d:'Join Saudi Arabia\'s Pi economy. Be part of the Pi Network in Saudi Arabia.',cat:'Pi Network'},
+  {ico:'🏆',n:'LEAP Innovation Challenge',d:'Annual competition at LEAP for AI and tech startups.',cat:'Competition'},
+  {ico:'💻',n:'Saudi Hackathons',d:'Regular government and private hackathons in Riyadh and Jeddah.',cat:'Hackathon'},
+  {ico:'🚀',n:'Misk Accelerator',d:'MBS Foundation accelerator for Saudi startups.',cat:'Accelerator'},
+  {ico:'💰',n:'STV (STC Ventures)',d:'Corporate VC of STC investing in regional startups.',cat:'VC'},
+  {ico:'🌐',n:'Aramco WAED Program',d:'Aramco Entrepreneurship Centre — funding and mentorship.',cat:'Corporate'},
+  {ico:'📅',n:'LEAP Conference',d:"World's largest tech conference in Riyadh.",cat:'Conference'},
+  {ico:'🤝',n:'FII Institute',d:'Future Investment Initiative — global investor connections.',cat:'Summit'},
+  {ico:'🏛',n:'Monshaat (SME)',d:'Saudi SME Authority. Free resources and funding programs.',cat:'Support'},
+  {ico:'π',n:'Pi Business Ecosystem',d:'Join Saudi Arabia\'s Pi economy. Build on Pi Network.',cat:'Pi Network'},
 ];
 
 function dTab(n,btn){
-  _dTab=n;
-  document.querySelectorAll('#s-disc .tb').forEach(function(b){b.classList.remove('on')});
-  if(btn)btn.classList.add('on');
-  renderDisc();
+  _dTab=n;document.querySelectorAll('#s-disc .tb').forEach(function(b){b.classList.remove('on')});if(btn)btn.classList.add('on');renderDisc();
 }
 function renderDisc(){
   var body=document.getElementById('disc-body');if(!body)return;
   if(_dTab===0){
-    var html='<div style="padding:.28rem .68rem .05rem;font-size:.42rem;color:var(--t3)">Tap any startup for full details</div>';
+    var html='<div style="padding:.28rem .7rem .05rem;font-size:.42rem;color:var(--t3)">Tap any startup for full details</div>';
     STARTUPS.forEach(function(st,i){
       html+='<div class="item-card" onclick="openStartup('+i+')">'
         +'<div class="ic-top"><div class="ic-name">'+st.n+'</div><div class="ic-tag">'+st.tag+'</div></div>'
         +'<div class="ic-year">Est. '+st.y+' · '+st.ind+'</div>'
-        +'<div class="ic-desc">'+st.desc.slice(0,105)+'…</div></div>';
+        +'<div class="ic-desc">'+st.desc+'</div></div>';
     });
     body.innerHTML=html;
   } else if(_dTab===1){
@@ -1510,7 +1467,7 @@ function renderDisc(){
 }
 function openStartup(i){
   var st=STARTUPS[i];
-  openPanel(st.ind,'<div style="padding:.7rem .8rem">'
+  openPanel(st.ind,'<div style="padding:.75rem .82rem">'
     +'<div style="font-size:1.6rem;font-weight:900;color:var(--t1);margin-bottom:.04rem">'+st.n+'</div>'
     +'<div style="font-size:.5rem;color:var(--g3);font-weight:700;margin-bottom:.1rem">Est. '+st.y+'</div>'
     +'<div style="display:flex;gap:.3rem;flex-wrap:wrap;margin-bottom:.5rem">'
@@ -1520,130 +1477,72 @@ function openStartup(i){
     +'<div style="font-size:.56rem;color:var(--gold);line-height:1.55">'+st.impact+'</div></div>');
 }
 
-/* ═══════════════════════════
-   📰 MEDIA
-═══════════════════════════ */
+/* ═══ MEDIA ═══ */
 function mTab(n,btn){
-  _mTab=n;
-  document.querySelectorAll('#s-media .tb').forEach(function(b){b.classList.remove('on')});
-  if(btn)btn.classList.add('on');
-  var nf=document.getElementById('news-feed');
-  var imf=document.getElementById('img-feed');
-  var cats=document.getElementById('news-cats');
-  if(n===0){
-    nf.style.display='';imf.style.display='none';cats.style.display='flex';
-    if(!document.querySelector('.ncard'))newsLoad(true);
-  } else {
-    nf.style.display='none';imf.style.display='';cats.style.display='none';
-    if(!document.querySelector('.ig-item'))imgLoad(true);
-  }
+  _mTab=n;document.querySelectorAll('#s-media .tb').forEach(function(b){b.classList.remove('on')});if(btn)btn.classList.add('on');
+  var nf=document.getElementById('news-feed'),imf=document.getElementById('img-feed'),cats=document.getElementById('news-cats');
+  if(n===0){nf.style.display='';imf.style.display='none';cats.style.display='flex';if(!document.querySelector('.ncard'))newsLoad(true);}
+  else{nf.style.display='none';imf.style.display='';cats.style.display='none';if(!document.querySelector('.ig-item'))imgLoad(true);}
 }
-
 function newsCat(cat,btn){
   _nCat=cat;_nPage=1;_nMore=true;_nArts=[];
-  document.querySelectorAll('#news-cats .cb').forEach(function(b){b.classList.remove('on')});
-  if(btn)btn.classList.add('on');
+  document.querySelectorAll('#news-cats .cb').forEach(function(b){b.classList.remove('on')});if(btn)btn.classList.add('on');
   newsLoad(true);
 }
-
 function newsLoad(reset){
-  if(_nLoad)return;
-  if(!_nMore&&!reset)return;
+  if(_nLoad)return;if(!_nMore&&!reset)return;
   if(reset){_nPage=1;_nArts=[];_nMore=true;}
   _nLoad=true;
   var feed=document.getElementById('news-feed');
   if(_nPage===1){
-    /* Skeleton loading */
     feed.innerHTML='';
-    for(var i=0;i<4;i++){
-      feed.innerHTML+='<div style="margin-bottom:3px">'
-        +'<div class="skel" style="height:185px;border-radius:0;margin-bottom:.45rem"></div>'
-        +'<div style="padding:0 .78rem .55rem">'
-        +'<div class="skel" style="height:13px;width:75%;margin-bottom:.28rem;border-radius:4px"></div>'
-        +'<div class="skel" style="height:11px;width:55%;border-radius:4px"></div>'
-        +'</div></div>';
-    }
+    for(var i=0;i<4;i++)feed.innerHTML+='<div style="margin-bottom:3px"><div class="skel" style="height:180px;border-radius:0;margin-bottom:.45rem"></div><div style="padding:0 .8rem .55rem"><div class="skel" style="height:13px;width:72%;margin-bottom:.28rem;border-radius:4px"></div><div class="skel" style="height:11px;width:52%;border-radius:4px"></div></div></div>';
   } else {
-    var ld=document.createElement('div');ld.id='n-ld';ld.className='spin-wrap';
-    ld.innerHTML='<div class="spin"></div><span>Loading more…</span>';
-    feed.appendChild(ld);
+    var ld=document.createElement('div');ld.id='n-ld';ld.className='spin-wrap';ld.innerHTML='<div class="spin"></div><span>Loading more…</span>';feed.appendChild(ld);
   }
   fetch('/news?cat='+_nCat+'&page='+_nPage)
     .then(function(r){return r.ok?r.json():Promise.reject('HTTP '+r.status);})
     .then(function(d){
       var old=document.getElementById('n-ld');if(old)old.remove();
       _nMore=d.hasMore||false;
-      var arts=d.articles||[];
-      _nArts=_nArts.concat(arts);
+      var arts=d.articles||[];_nArts=_nArts.concat(arts);
       if(_nPage===1)feed.innerHTML='';
-      arts.forEach(function(a){feed.appendChild(buildNewsCard(a));});
-      if(_nMore){
-        var sen=document.createElement('div');sen.id='n-sen';sen.style.height='4px';
-        feed.appendChild(sen);
-        observeNews(sen);
-      }
+      arts.forEach(function(a){feed.appendChild(buildNCard(a));});
+      if(_nMore){var sen=document.createElement('div');sen.id='n-sen';sen.style.height='4px';feed.appendChild(sen);obsNews(sen);}
       _nPage++;_nLoad=false;
     }).catch(function(err){
-      _nLoad=false;
-      var old=document.getElementById('n-ld');if(old)old.remove();
-      if(_nPage===1){
-        feed.innerHTML='<div class="empty-state"><div class="es-ico">📰</div>'
-          +'<div class="es-t">News unavailable</div>'
-          +'<div class="es-s">Check your connection</div></div>';
-      }
-      console.error('[DS/news]', err);
+      _nLoad=false;var old=document.getElementById('n-ld');if(old)old.remove();
+      if(_nPage===1)feed.innerHTML='<div class="empty-state"><div class="es-ico">📰</div><div class="es-t">News unavailable</div><div class="es-s">Check your connection</div></div>';
+      console.error('[DS/news]',err);
     });
 }
-
-function buildNewsCard(a){
+function buildNCard(a){
   var d=document.createElement('div');d.className='ncard';
   d.onclick=function(){if(a.url)window.open(a.url,'_blank');};
   var ago='';
-  try{
-    var ms=Date.now()-new Date(a.date).getTime();
-    var h=Math.floor(ms/3600000);
-    ago=h<1?'Just now':h<24?h+'h ago':Math.floor(h/24)+'d ago';
-  }catch(e){}
-  var imgH='';
-  if(a.image){
-    imgH='<div style="overflow:hidden">'
-      +'<img class="nc-img" loading="lazy" src="'+a.image+'" alt="" '
-      +'onload="this.classList.add(\'loaded\')" '
-      +'onerror="this.parentElement.style.display=\'none\'"></div>';
-  }
-  d.innerHTML=imgH
-    +'<div class="nc-body">'
-    +'<div class="nc-meta"><span class="nc-src">'+a.source+'</span><span class="nc-ago">'+ago+'</span></div>'
-    +'<div class="nc-title">'+a.title+'</div>'
-    +(a.summary?'<div class="nc-sum">'+a.summary+'</div>':'')
-    +'</div>';
+  try{var ms=Date.now()-new Date(a.date).getTime();var h=Math.floor(ms/3600000);ago=h<1?'Just now':h<24?h+'h ago':Math.floor(h/24)+'d ago';}catch(e){}
+  var imgH=a.image?'<div style="overflow:hidden"><img class="nc-img" loading="lazy" src="'+a.image+'" alt="" onload="this.classList.add(\'loaded\')" onerror="this.parentElement.style.display=\'none\'"></div>':'';
+  d.innerHTML=imgH+'<div class="nc-body"><div class="nc-meta"><span class="nc-src">'+a.source+'</span><span class="nc-ago">'+ago+'</span></div>'
+    +'<div class="nc-title">'+a.title+'</div>'+(a.summary?'<div class="nc-sum">'+a.summary+'</div>':'')+'</div>';
   return d;
 }
-
-function observeNews(el){
+function obsNews(el){
   if(window._nObs)window._nObs.disconnect();
-  window._nObs=new IntersectionObserver(function(en){
-    if(en[0].isIntersecting){el.remove();newsLoad(false);}
-  },{rootMargin:'400px'});
+  window._nObs=new IntersectionObserver(function(en){if(en[0].isIntersecting){el.remove();newsLoad(false);}},{rootMargin:'400px'});
   window._nObs.observe(el);
 }
-
 function mediaRefresh(){
-  if(_mTab===0){_nPage=1;_nArts=[];_nMore=true;newsLoad(true);toast('Refreshing news…');}
-  else{_iPage=1;_iMore=true;imgLoad(true);toast('Refreshing images…');}
+  if(_mTab===0){_nPage=1;_nArts=[];_nMore=true;newsLoad(true);toast('Refreshing…');}
+  else{_iPage=1;_iMore=true;imgLoad(true);toast('Refreshing…');}
 }
-
 function startNewsRefresh(){
   if(_nTimer)clearInterval(_nTimer);
   _nTimer=setInterval(function(){
     if(document.getElementById('s-media').classList.contains('on')&&_mTab===0){
-      var f=document.getElementById('news-feed');
-      if(f&&f.scrollTop<60){_nPage=1;_nArts=[];_nMore=true;newsLoad(true);}
+      var f=document.getElementById('news-feed');if(f&&f.scrollTop<60){_nPage=1;_nArts=[];_nMore=true;newsLoad(true);}
     }
   },5*60*1000);
 }
-
-/* IMAGE FEED */
 function imgLoad(reset){
   if(_iLoad)return;if(!_iMore&&!reset)return;
   if(reset){_iPage=1;_iMore=true;}
@@ -1651,154 +1550,92 @@ function imgLoad(reset){
   var feed=document.getElementById('img-feed');
   if(_iPage===1)feed.innerHTML='<div class="img-grid" id="img-grid"></div>';
   var grid=document.getElementById('img-grid');if(!grid){_iLoad=false;return;}
-  var ld=document.createElement('div');ld.id='i-ld';ld.className='spin-wrap';
-  ld.innerHTML='<div class="spin"></div>';feed.appendChild(ld);
+  var ld=document.createElement('div');ld.id='i-ld';ld.className='spin-wrap';ld.innerHTML='<div class="spin"></div>';feed.appendChild(ld);
   var seeds=Array.from({length:20},function(_,i){return(_iPage-1)*20+i+1;});
-  var imgs=seeds.map(function(seed){
-    return{thumb:'https://picsum.photos/seed/sa'+seed+'/400/300'};
-  });
   var old=document.getElementById('i-ld');if(old)old.remove();
   _iMore=_iPage<30;
-  imgs.forEach(function(img){
+  seeds.forEach(function(seed){
     var item=document.createElement('div');item.className='ig-item';
-    var imgEl=document.createElement('img');
-    imgEl.loading='lazy';imgEl.src=img.thumb;
-    imgEl.onload=function(){this.classList.add('loaded');};
-    imgEl.onerror=function(){item.style.display='none';};
-    item.appendChild(imgEl);grid.appendChild(item);
+    var img=document.createElement('img');img.loading='lazy';img.src='https://picsum.photos/seed/sa'+seed+'/400/300';
+    img.onload=function(){this.classList.add('loaded');};
+    img.onerror=function(){item.style.display='none';};
+    item.appendChild(img);grid.appendChild(item);
   });
   if(_iMore){
-    var sen=document.createElement('div');sen.id='i-sen';sen.style.height='4px';
-    feed.appendChild(sen);
-    var obs=new IntersectionObserver(function(en){
-      if(en[0].isIntersecting){sen.remove();_iPage++;_iLoad=false;imgLoad(false);}
-    },{rootMargin:'600px'});
+    var sen=document.createElement('div');sen.id='i-sen';sen.style.height='4px';feed.appendChild(sen);
+    var obs=new IntersectionObserver(function(en){if(en[0].isIntersecting){sen.remove();_iPage++;_iLoad=false;imgLoad(false);}},{rootMargin:'600px'});
     obs.observe(sen);
   }
   _iLoad=false;_iPage++;
 }
 
-/* ═══════════════════════════
-   🌍 EXPLORE
-═══════════════════════════ */
+/* ═══ EXPLORE ═══ */
 var GIGA=[
-  {e:'🏙️',n:'NEOM',s:'Under Development',sc:'dev',
-   desc:'170km linear smart city in northwest Saudi Arabia. Powered by 100% renewable energy.',
-   subs:['THE LINE — zero-carbon linear city','SINDALAH — Red Sea luxury island','OXAGON — floating industrial city','TROJENA — mountain ski resort']},
-  {e:'🌊',n:'Red Sea Project',s:'Phase 1 Open',sc:'open',
-   desc:'World-class luxury tourism across 50+ Red Sea islands. Phase 1 resorts now open.',
-   subs:['Shura Island Phase 1 open','RSI Airport now operational','Coral conservation active','Zero-carbon tourism target']},
-  {e:'🏰',n:'Diriyah Gate',s:'Active',sc:'act',
-   desc:"UNESCO World Heritage site — birthplace of Saudi state. $20B transformation.",
-   subs:['At-Turaif District fully open','Bujairi Terrace restaurants open','Diriyah Biennale — art','UNESCO Heritage status']},
-  {e:'💎',n:'Amaala',s:'Under Development',sc:'dev',
-   desc:'Ultra-luxury wellness resort along the Red Sea Triple Bay. Targeting global wellness tourism.',
-   subs:['300+ hotels planned','Yacht marina and wellness institutes','Arts and culture district','Zero carbon target']},
-  {e:'🎢',n:'Qiddiya',s:'Under Development',sc:'dev',
-   desc:"Entertainment capital 40km from Riyadh. Positioned to be the world's largest entertainment city.",
-   subs:['Formula 1 circuit planned','Safari experience','Water theme park','Esports district']},
-  {e:'🌿',n:'King Salman Park',s:'Under Development',sc:'dev',
-   desc:"The world's largest urban park — 13.4 km² in central Riyadh.",
-   subs:['Larger than Hyde Park and Central Park combined','Royal Arts Complex','Sports facilities','Community gardens']},
+  {e:'🏙️',n:'NEOM',s:'Under Development',sc:'dev',desc:'170km linear smart city in northwest Saudi Arabia. 100% renewable energy.',subs:['THE LINE — zero-carbon linear city','SINDALAH — Red Sea luxury island','OXAGON — floating industrial city','TROJENA — mountain ski resort']},
+  {e:'🌊',n:'Red Sea Project',s:'Phase 1 Open',sc:'open',desc:'50+ Red Sea islands. World-class luxury tourism. Phase 1 now open.',subs:['Shura Island Phase 1 open','RSI Airport operational','Coral conservation active','Zero-carbon target']},
+  {e:'🏰',n:'Diriyah Gate',s:'Active',sc:'act',desc:'UNESCO World Heritage birthplace of Saudi state. $20B transformation.',subs:['At-Turaif District open','Bujairi Terrace restaurants','Diriyah Biennale — art','UNESCO Heritage status']},
+  {e:'💎',n:'Amaala',s:'Under Development',sc:'dev',desc:'Ultra-luxury wellness resort on Red Sea Triple Bay.',subs:['300+ hotels planned','Yacht marina','Arts and culture district','Zero carbon target']},
+  {e:'🎢',n:'Qiddiya',s:'Under Development',sc:'dev',desc:"Entertainment capital 40km from Riyadh. World's largest entertainment city when complete.",subs:['Formula 1 circuit planned','Safari experience','Water theme park','Esports district']},
+  {e:'🌿',n:'King Salman Park',s:'Under Development',sc:'dev',desc:"World's largest urban park — 13.4 km² in central Riyadh.",subs:['Larger than Hyde Park + Central Park','Royal Arts Complex','Sports facilities','Community gardens']},
 ];
 var PILLARS=[
-  {i:'🏛',t:'A Thriving Economy',d:'Diversify beyond oil through tourism, mining, entertainment, and logistics.'},
+  {i:'🏛',t:'A Thriving Economy',d:'Diversify beyond oil through tourism, mining, entertainment, manufacturing.'},
   {i:'🌱',t:'A Vibrant Society',d:'Enrich Saudi lives through culture, entertainment, sport, and heritage.'},
-  {i:'🤝',t:'An Ambitious Nation',d:'Improve government efficiency and strengthen public-private partnerships.'},
-  {i:'💡',t:'Digital Transformation',d:'SDAIA, AI-first government, 5G infrastructure, cloud adoption, smart cities.'},
-  {i:'🌍',t:'Environmental Commitment',d:'Saudi Green Initiative — 50% renewable energy, 10 billion trees, carbon reduction.'},
+  {i:'🤝',t:'An Ambitious Nation',d:'Improve government efficiency and public-private partnerships.'},
+  {i:'💡',t:'Digital Transformation',d:'SDAIA, AI-first government, 5G nationwide, cloud, smart cities.'},
+  {i:'🌍',t:'Environmental Commitment',d:'Saudi Green Initiative — 50% renewable, 10 billion trees, carbon reduction.'},
 ];
 var DESTS=[
-  {n:'Makkah',ar:'مكة المكرمة',e:'🕋',tag:'Holy City',reg:'Makkah Province',
-   desc:'The holiest city in Islam. Home to Masjid al-Haram. Entry restricted to Muslims. 2M+ Hajj pilgrims annually.',
-   tips:['Best visited off-peak for easier access','Grand Mosque accommodates 4M+ worshippers','Zamzam water freely available']},
-  {n:'Madinah',ar:'المدينة المنورة',e:'🌙',tag:"Prophet's City",reg:'Madinah Province',
-   desc:"Second holiest city in Islam. Home to Al-Masjid an-Nabawi — the Prophet's Mosque.",
-   tips:["Prophet's Mosque is among the world's largest",'Al-Baqi cemetery nearby','Distinctly peaceful atmosphere']},
-  {n:'Riyadh',ar:'الرياض',e:'🏙️',tag:'Capital',reg:'Riyadh Province',
-   desc:"Saudi Arabia's modern capital. Ultra-modern skyscrapers meet historic heritage. Host of LEAP, FII, Vision 2030 HQ.",
-   tips:['Edge of the World cliffs — 90 min drive','Kingdom Tower — panoramic views','Diriyah — heritage district']},
-  {n:'AlUla',ar:'العُلا',e:'🏺',tag:'UNESCO Heritage',reg:'AlUla Province',
-   desc:"Saudi Arabia's first UNESCO World Heritage Site. Nabataean tombs carved from sandstone.",
-   tips:['Best Oct–March (cooler)','Winter at Tantora festival Dec–March','Hegra, Dadan, Jabal Ikmah']},
-  {n:'NEOM',ar:'نيوم',e:'🔭',tag:'Giga Project',reg:'Tabuk Province',
-   desc:'170km linear smart city and NEOM Bay. Under active construction.',
-   tips:['Under construction — access limited','Follow official NEOM for updates','THE LINE is the flagship project']},
-  {n:'Red Sea',ar:'البحر الأحمر',e:'🌊',tag:'Luxury Tourism',reg:'Red Sea Province',
-   desc:'50+ islands being developed as luxury destination. Phase 1 open. Pristine coral reefs.',
-   tips:['RSI Airport operational','Shura Island Phase 1 open','World-class diving and snorkeling']},
-  {n:'Jeddah',ar:'جدة',e:'🕌',tag:'Coastal City',reg:'Makkah Province',
-   desc:"Saudi Arabia's cosmopolitan Red Sea city. Al-Balad is UNESCO World Heritage.",
-   tips:['Al-Balad — UNESCO site, coral-built towers','King Fahd Fountain — world\'s tallest at 312m','30km Corniche promenade']},
-  {n:'Diriyah',ar:'الدرعية',e:'🏰',tag:'Heritage Site',reg:'Riyadh Province',
-   desc:'Birthplace of the Saudi state. UNESCO Heritage. $20B cultural transformation.',
-   tips:['At-Turaif district fully open','Bujairi Terrace — heritage view dining','Diriyah Biennale — art event']},
-  {n:'Abha',ar:'أبها',e:'⛰️',tag:'Mountain City',reg:'Asir Province',
-   desc:'Saudi mountain city at 2,200m. Cool climate, greenery, cable cars, Asiri culture.',
-   tips:['Cable car to Al-Soudah — highest point','Unique Asiri architecture','Asir National Park scenery']},
+  {n:'Makkah',ar:'مكة المكرمة',e:'🕋',tag:'Holy City',reg:'Makkah Province',desc:'The holiest city in Islam. Home to Masjid al-Haram. Entry restricted to Muslims. 2M+ Hajj pilgrims annually.',tips:['Best visited off-peak for easier access','Grand Mosque accommodates 4M+','Zamzam water freely available']},
+  {n:'Madinah',ar:'المدينة المنورة',e:'🌙',tag:"Prophet's City",reg:'Madinah Province',desc:"Second holiest city. Home to Al-Masjid an-Nabawi — the Prophet's Mosque.",tips:["Prophet's Mosque among world's largest",'Al-Baqi cemetery nearby','Distinctly peaceful atmosphere']},
+  {n:'Riyadh',ar:'الرياض',e:'🏙️',tag:'Capital',reg:'Riyadh Province',desc:"Saudi Arabia's modern capital. Host of LEAP, FII, Vision 2030 HQ.",tips:['Edge of the World cliffs — 90 min','Kingdom Tower — panoramic views','Diriyah — heritage district']},
+  {n:'AlUla',ar:'العُلا',e:'🏺',tag:'UNESCO Heritage',reg:'AlUla Province',desc:"Saudi Arabia's first UNESCO Heritage Site. Nabataean tombs carved from sandstone.",tips:['Best Oct–March (cooler)','Tantora festival Dec–March','Hegra, Dadan, Jabal Ikmah']},
+  {n:'NEOM',ar:'نيوم',e:'🔭',tag:'Giga Project',reg:'Tabuk Province',desc:'170km linear smart city under active construction.',tips:['Under construction — limited access','Follow official NEOM for updates','THE LINE is the flagship project']},
+  {n:'Red Sea',ar:'البحر الأحمر',e:'🌊',tag:'Luxury Tourism',reg:'Red Sea Province',desc:'50+ islands. Phase 1 open. Pristine coral reefs with 7,000+ marine species.',tips:['RSI Airport operational','Shura Island Phase 1 open','World-class diving and snorkeling']},
+  {n:'Jeddah',ar:'جدة',e:'🕌',tag:'Coastal City',reg:'Makkah Province',desc:"Saudi Arabia's cosmopolitan Red Sea city. Al-Balad is UNESCO Heritage.",tips:['Al-Balad UNESCO site','King Fahd Fountain — world\'s tallest 312m','30km Corniche promenade']},
+  {n:'Diriyah',ar:'الدرعية',e:'🏰',tag:'Heritage Site',reg:'Riyadh Province',desc:'Birthplace of Saudi state. UNESCO Heritage. $20B transformation.',tips:['At-Turaif district fully open','Bujairi Terrace dining','Diriyah Biennale art event']},
+  {n:'Abha',ar:'أبها',e:'⛰️',tag:'Mountain City',reg:'Asir Province',desc:'Mountain city at 2,200m. Cool climate, greenery, cable cars, Asiri culture.',tips:['Cable car to Al-Soudah — highest point','Unique Asiri architecture','Asir National Park scenery']},
 ];
 var PHRASES=[
   {ar:'السَّلَامُ عَلَيْكُمْ',ph:'As-salamu alaykum',en:'Peace be upon you'},
   {ar:'أَهْلاً وَسَهْلاً',ph:'Ahlan wa sahlan',en:'Welcome'},
   {ar:'شُكْرًا جَزِيلاً',ph:'Shukran jazilan',en:'Thank you very much'},
   {ar:'مِن فَضْلِكَ',ph:'Min fadlik',en:'Please'},
-  {ar:'مَعَ السَّلَامَة',ph:"Ma'a as-salama",en:'Goodbye / Go with peace'},
+  {ar:'مَعَ السَّلَامَة',ph:"Ma'a as-salama",en:'Goodbye'},
   {ar:'كَيْفَ حَالُك؟',ph:'Kayfa haluk?',en:'How are you?'},
   {ar:'بِسْمِ اللَّه',ph:'Bismillah',en:'In the name of God'},
   {ar:'إِن شَاءَ اللَّه',ph:'In sha Allah',en:'God willing'},
   {ar:'الحَمْدُ لِلَّه',ph:'Alhamdulillah',en:'Praise be to God'},
-  {ar:'يَلَّا',ph:'Yalla',en:"Let's go / Come on"},
+  {ar:'يَلَّا',ph:'Yalla',en:"Let's go"},
   {ar:'مَاشَاءَاللَّه',ph:'Masha Allah',en:'Expression of admiration'},
   {ar:'حَلَال',ph:'Halal',en:'Permissible under Islamic law'},
 ];
 var CUISINE=[
-  {n:'Kabsa 🍚',d:'Saudi national dish. Fragrant rice slow-cooked with meat and spices. Served at every celebration.'},
-  {n:'Mandi 🔥',d:'Tender lamb or chicken slow-roasted in a tandoor pit over fragrant rice. Smoky and deeply flavourful.'},
-  {n:'Jareesh 🌾',d:'Crushed wheat slow-cooked with meat to a rich porridge. Traditional highland dish from Asir.'},
-  {n:'Mutabbaq 🥙',d:'Crispy folded pastry with spiced meat, egg, and onion. Popular street food.'},
-  {n:'Harees 🍲',d:'Slow-cooked wheat and meat porridge. Beloved during Ramadan and Eid.'},
-  {n:'Samboosa 🥟',d:'Golden fried pastry filled with spiced meat or cheese. Iftar favourite.'},
-  {n:'Saleeg 🍗',d:'Creamy white rice in broth and milk, topped with grilled chicken. A Hijazi specialty.'},
-  {n:'Dates (Tamr) 🌴',d:'400+ Saudi varieties. A cultural staple offered as a sign of hospitality.'},
-];
-var EVENTS=[
-  {n:'LEAP 2026',d:'Feb 2026',loc:'Riyadh',cat:'Technology',
-   desc:"World's largest tech conference. AI, robotics, cloud, digital transformation. 200,000+ attendees from 100+ countries."},
-  {n:'Future Investment Initiative',d:'Oct 2025',loc:'Riyadh',cat:'Investment',
-   desc:'Annual global investment summit. Strategic deals between Saudi and global investors. Known as Davos in the Desert.'},
-  {n:'Riyadh Season',d:'Oct–Mar',loc:'Riyadh',cat:'Entertainment',
-   desc:"Saudi Arabia's flagship entertainment mega-event. Concerts, sports, exhibitions. Millions of visitors."},
-  {n:'Cityscape Saudi',d:'Sep 2025',loc:'Riyadh',cat:'Real Estate',
-   desc:'Premier real estate exhibition. Features Vision 2030 giga project updates.'},
-  {n:'Esports World Cup',d:'Jul–Aug 2025',loc:'Riyadh',cat:'Gaming',
-   desc:'Largest esports event in history. $60M+ prize pool. 20+ game titles at Boulevard City.'},
-  {n:'Hajj Expo',d:'Annually',loc:'Jeddah',cat:'Islamic',
-   desc:'Annual exhibition on Hajj and Umrah services, technology, and pilgrim experience.'},
-  {n:'Saudi Green Initiative Forum',d:'Oct 2025',loc:'Riyadh',cat:'Environment',
-   desc:'Annual forum on Saudi environmental commitments — 10B trees, renewable energy, carbon reduction.'},
-  {n:'Global AI Summit',d:'2025',loc:'Riyadh',cat:'AI',
-   desc:'Government-hosted summit on responsible AI, policy, and international cooperation.'},
+  {n:'Kabsa 🍚',d:'Saudi national dish. Fragrant rice with slow-cooked meat and spices.'},
+  {n:'Mandi 🔥',d:'Tender lamb slow-roasted in a tandoor pit over fragrant rice.'},
+  {n:'Jareesh 🌾',d:'Crushed wheat porridge. Traditional Asir and Najd highland dish.'},
+  {n:'Mutabbaq 🥙',d:'Crispy pastry with spiced meat and egg. Popular street food.'},
+  {n:'Harees 🍲',d:'Slow-cooked wheat and meat porridge. Beloved during Ramadan.'},
+  {n:'Samboosa 🥟',d:'Fried pastry filled with meat or cheese. Iftar favourite.'},
+  {n:'Saleeg 🍗',d:'Creamy rice in broth and milk topped with chicken. Hijazi specialty.'},
+  {n:'Dates (Tamr) 🌴',d:'400+ Saudi varieties. Cultural staple — offered as a sign of hospitality.'},
 ];
 
 function eTab(n,btn){
-  _eTab=n;
-  document.querySelectorAll('#s-exp .tb').forEach(function(b){b.classList.remove('on')});
-  if(btn)btn.classList.add('on');
-  renderExp();
+  _eTab=n;document.querySelectorAll('#s-exp .tb').forEach(function(b){b.classList.remove('on')});if(btn)btn.classList.add('on');renderExp();
 }
 function renderExp(){
   var body=document.getElementById('exp-body');if(!body)return;
   if(_eTab===0){
-    var html='<div style="background:rgba(22,196,127,.06);border:1px solid var(--bd2);border-radius:var(--r);margin:.38rem .5rem;padding:.62rem .7rem">'
-      +'<div style="font-size:.8rem;font-weight:900;color:var(--g3);margin-bottom:.15rem">Saudi Vision 2030</div>'
-      +'<div style="font-size:.55rem;color:var(--t2);line-height:1.58;margin-bottom:.32rem">A national transformation program launched in 2016 to diversify Saudi Arabia\'s economy beyond oil. $3T+ investment, 100+ initiatives, factual information only — no fake percentages.</div>'
+    var html='<div style="background:rgba(22,196,127,.06);border:1px solid var(--bd2);border-radius:var(--r);margin:.38rem .5rem;padding:.65rem .72rem">'
+      +'<div style="font-size:.82rem;font-weight:900;color:var(--g3);margin-bottom:.16rem">Saudi Vision 2030</div>'
+      +'<div style="font-size:.56rem;color:var(--t2);line-height:1.58;margin-bottom:.34rem">National transformation program launched 2016. Diversify economy beyond oil. $3T+ investment, 100+ initiatives. All information factual — no fake percentages.</div>'
       +'<div style="display:flex;gap:.28rem;flex-wrap:wrap">'
       +'<span class="badge">$3T+ Investment</span><span class="badge">100+ Initiatives</span><span class="badge">50% Renewable by 2030</span>'
-      +'</div></div>'
-      +'<div class="sec-lbl">Strategic Pillars</div>';
+      +'</div></div><div class="sec-lbl">Strategic Pillars</div>';
     PILLARS.forEach(function(p){
-      html+='<div class="ev-card" style="cursor:default"><div style="display:flex;gap:.36rem;align-items:flex-start">'
-        +'<div style="font-size:1.05rem;flex-shrink:0">'+p.i+'</div>'
+      html+='<div class="ev-card" style="cursor:default"><div style="display:flex;gap:.38rem;align-items:flex-start">'
+        +'<div style="font-size:1.1rem;flex-shrink:0">'+p.i+'</div>'
         +'<div><div class="ev-name" style="margin-bottom:.08rem">'+p.t+'</div><div class="ev-desc">'+p.d+'</div></div></div></div>';
     });
     html+='<div class="sec-lbl" style="margin-top:.4rem">Giga Projects</div>';
@@ -1810,98 +1647,51 @@ function renderExp(){
         +'<div class="g-desc">'+g.desc+'</div>'
         +'<span class="g-st '+sc+'">'+g.s+'</span></div></div>';
     });
-    html+='<div class="sec-lbl" style="margin-top:.4rem">Saudi Events & Conferences</div>';
-    EVENTS.forEach(function(ev,i){
-      html+='<div class="ev-card" onclick="openEvent('+i+')">'
-        +'<div class="ev-name">'+ev.n+'</div>'
-        +'<div class="ev-date">'+ev.d+' · 📍 '+ev.loc+'</div>'
-        +'<div class="ev-loc">'+ev.cat+'</div>'
-        +'<div class="ev-desc">'+ev.desc.slice(0,100)+'…</div></div>';
-    });
     body.innerHTML=html;
   } else if(_eTab===1){
     var html='<div class="dest-grid">';
-    DESTS.forEach(function(d,i){
-      html+='<div class="dest-card" onclick="openDest('+i+')">'
-        +'<div class="dc-emo">'+d.e+'</div>'
-        +'<div class="dc-body"><div class="dc-name">'+d.n+'</div><div class="dc-tag">'+d.tag+'</div></div></div>';
-    });
-    html+='</div>';
-    body.innerHTML=html;
+    DESTS.forEach(function(d,i){html+='<div class="dest-card" onclick="openDest('+i+')">'+'<div class="dc-emo">'+d.e+'</div><div class="dc-body"><div class="dc-name">'+d.n+'</div><div class="dc-tag">'+d.tag+'</div></div></div>';});
+    body.innerHTML=html+'</div>';
   } else {
-    var html='<div class="sec-lbl" style="padding-top:.45rem">Arabic Phrases</div>'
-      +'<div style="display:grid;gap:.2rem;padding:.28rem .46rem">';
-    PHRASES.forEach(function(p){
-      html+='<div class="phrase-row"><div class="ph-ar">'+p.ar+'</div>'
-        +'<div><div class="ph-ph">'+p.ph+'</div><div class="ph-en">'+p.en+'</div></div></div>';
-    });
-    html+='</div><div class="sec-lbl" style="margin-top:.35rem">Saudi Cuisine</div>'
-      +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:.24rem;padding:.28rem .46rem">';
-    CUISINE.forEach(function(c){
-      html+='<div style="background:var(--bg2);border:1px solid var(--bd);border-radius:10px;padding:.4rem .42rem;cursor:pointer;min-height:72px">'
-        +'<div style="font-size:.6rem;font-weight:700;color:var(--t1);margin-bottom:.08rem">'+c.n+'</div>'
-        +'<div style="font-size:.46rem;color:var(--t3);line-height:1.45;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">'+c.d+'</div></div>';
-    });
-    html+='</div>'
-      +'<div class="sec-lbl" style="margin-top:.35rem">Customs & Etiquette</div>'
-      +'<div class="ev-card" style="cursor:default;margin-bottom:.6rem">'
-      +'<div class="ev-desc" style="line-height:1.75">'
-      +'🤝 Greet warmly — handshakes between same-gender; use right hand<br>'
-      +'🧕 Dress modestly — cover shoulders and knees in public<br>'
-      +'🕌 Remove shoes before entering mosques<br>'
-      +'🍽 Meals are communal — accepting food shows respect<br>'
-      +'📸 Always ask before photographing people<br>'
-      +'🔇 Lower voice near mosques during prayer times<br>'
-      +'🚫 Public displays of affection culturally inappropriate<br>'
-      +'🎁 Gifts appreciated — sweets, perfumes, dates are ideal'
+    var html='<div class="sec-lbl" style="padding-top:.45rem">Arabic Phrases</div><div style="display:grid;gap:.2rem;padding:.28rem .48rem">';
+    PHRASES.forEach(function(p){html+='<div class="phrase-row"><div class="ph-ar">'+p.ar+'</div><div><div class="ph-ph">'+p.ph+'</div><div class="ph-en">'+p.en+'</div></div></div>';});
+    html+='</div><div class="sec-lbl" style="margin-top:.35rem">Saudi Cuisine</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:.26rem;padding:.28rem .48rem">';
+    CUISINE.forEach(function(c){html+='<div style="background:var(--bg2);border:1px solid var(--bd);border-radius:10px;padding:.42rem .44rem;min-height:74px"><div style="font-size:.62rem;font-weight:700;color:var(--t1);margin-bottom:.09rem">'+c.n+'</div><div style="font-size:.47rem;color:var(--t3);line-height:1.45;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">'+c.d+'</div></div>';});
+    html+='</div><div class="sec-lbl" style="margin-top:.35rem">Customs & Etiquette</div>'
+      +'<div class="ev-card" style="cursor:default;margin-bottom:.6rem"><div class="ev-desc" style="line-height:1.8">'
+      +'🤝 Greet warmly — handshakes between same-gender; use right hand<br>🧕 Dress modestly — cover shoulders and knees in public<br>'
+      +'🕌 Remove shoes before entering mosques<br>🍽 Meals are communal — accepting food shows respect<br>'
+      +'📸 Always ask before photographing people<br>🔇 Lower voice near mosques during prayer times<br>'
+      +'🚫 Public displays of affection culturally inappropriate<br>🎁 Gifts appreciated — sweets, perfumes, dates'
       +'</div></div>';
     body.innerHTML=html;
   }
 }
-
 function openGiga(i){
-  var g=GIGA[i];
-  var sc=g.sc==='open'?'s-open':g.sc==='act'?'s-act':'s-dev';
-  var subs=g.subs.map(function(s){return'<li style="margin-bottom:.22rem">'+s+'</li>';}).join('');
-  openPanel('Vision 2030','<div style="padding:.7rem .8rem">'
-    +'<div style="font-size:2rem;margin-bottom:.1rem">'+g.e+'</div>'
+  var g=GIGA[i];var sc=g.sc==='open'?'s-open':g.sc==='act'?'s-act':'s-dev';
+  var subs=g.subs.map(function(s){return'<li style="margin-bottom:.24rem">'+s+'</li>';}).join('');
+  openPanel('Vision 2030','<div style="padding:.75rem .82rem"><div style="font-size:2rem;margin-bottom:.1rem">'+g.e+'</div>'
     +'<div style="font-size:1.3rem;font-weight:900;color:var(--t1);margin-bottom:.08rem">'+g.n+'</div>'
-    +'<span class="g-st '+sc+'" style="margin-bottom:.42rem;display:inline-block">'+g.s+'</span>'
+    +'<span class="g-st '+sc+'" style="margin-bottom:.44rem;display:inline-block">'+g.s+'</span>'
     +'<div style="font-size:.6rem;color:var(--t2);line-height:1.62;margin-bottom:.52rem">'+g.desc+'</div>'
-    +'<div style="font-size:.5rem;font-weight:800;color:var(--t3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.22rem">Key Features</div>'
-    +'<ul style="font-size:.55rem;color:var(--t2);line-height:1.55;padding-left:1rem">'+subs+'</ul></div>');
-}
-function openEvent(i){
-  var ev=EVENTS[i];
-  openPanel(ev.cat,'<div style="padding:.7rem .8rem">'
-    +'<div style="font-size:1.2rem;font-weight:900;color:var(--t1);margin-bottom:.1rem">'+ev.n+'</div>'
-    +'<div style="display:flex;gap:.28rem;flex-wrap:wrap;margin-bottom:.42rem">'
-    +'<span class="badge">📅 '+ev.d+'</span><span class="badge">📍 '+ev.loc+'</span><span class="badge">'+ev.cat+'</span></div>'
-    +'<div style="font-size:.6rem;color:var(--t2);line-height:1.62">'+ev.desc+'</div></div>');
+    +'<div style="font-size:.5rem;font-weight:800;color:var(--t3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.24rem">Key Features</div>'
+    +'<ul style="font-size:.56rem;color:var(--t2);line-height:1.55;padding-left:1rem">'+subs+'</ul></div>');
 }
 function openDest(i){
-  var d=DESTS[i];
-  var tips=d.tips.map(function(t){return'<li style="margin-bottom:.22rem">'+t+'</li>';}).join('');
-  openPanel(d.tag,'<div>'
-    +'<div style="height:150px;display:flex;align-items:center;justify-content:center;font-size:4.5rem;background:var(--bg2)">'+d.e+'</div>'
-    +'<div style="padding:.65rem .8rem">'
+  var d=DESTS[i];var tips=d.tips.map(function(t){return'<li style="margin-bottom:.24rem">'+t+'</li>';}).join('');
+  openPanel(d.tag,'<div><div style="height:155px;display:flex;align-items:center;justify-content:center;font-size:4.5rem;background:var(--bg2)">'+d.e+'</div>'
+    +'<div style="padding:.68rem .82rem">'
     +'<div style="font-size:1.35rem;font-weight:900;color:var(--t1);margin-bottom:.04rem">'+d.n+'</div>'
     +'<div style="font-family:serif;direction:rtl;text-align:right;color:var(--gold);font-size:1.05rem;margin-bottom:.04rem">'+d.ar+'</div>'
-    +'<div style="font-size:.5rem;color:var(--g3);font-weight:700;margin-bottom:.42rem">📍 '+d.reg+'</div>'
-    +'<div style="font-size:.6rem;color:var(--t2);line-height:1.62;margin-bottom:.58rem">'+d.desc+'</div>'
-    +'<div style="font-size:.5rem;font-weight:800;color:var(--t3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.22rem">Insider Tips</div>'
-    +'<ul style="font-size:.55rem;color:var(--t2);line-height:1.55;padding-left:1rem">'+tips+'</ul>'
-    +'</div></div>');
+    +'<div style="font-size:.5rem;color:var(--g3);font-weight:700;margin-bottom:.44rem">📍 '+d.reg+'</div>'
+    +'<div style="font-size:.6rem;color:var(--t2);line-height:1.62;margin-bottom:.6rem">'+d.desc+'</div>'
+    +'<div style="font-size:.5rem;font-weight:800;color:var(--t3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.24rem">Insider Tips</div>'
+    +'<ul style="font-size:.56rem;color:var(--t2);line-height:1.55;padding-left:1rem">'+tips+'</ul></div></div>');
 }
 
-/* ═══════════════════════════
-   ⚡ DIGITAL+
-═══════════════════════════ */
+/* ═══ DIGITAL+ ═══ */
 function dgTab(n,btn){
-  _dgTab=n;
-  document.querySelectorAll('#s-digi .tb').forEach(function(b){b.classList.remove('on')});
-  if(btn)btn.classList.add('on');
-  renderDigi();
+  _dgTab=n;document.querySelectorAll('#s-digi .tb').forEach(function(b){b.classList.remove('on')});if(btn)btn.classList.add('on');renderDigi();
 }
 function renderDigi(){
   var body=document.getElementById('digi-body');if(!body)return;
@@ -1909,63 +1699,37 @@ function renderDigi(){
   else if(_dgTab===1)renderSupport(body);
   else renderAbout(body);
 }
-
 function renderPassport(body){
   _pass=localStorage.getItem('ds_pass')==='1';
   var txs=JSON.parse(localStorage.getItem('ds_tx')||'[]').slice(-5).reverse();
-  var html='';
-  if(!_pass){
-    html='<div class="pass-card">'
-      +'<div style="font-size:.84rem;font-weight:900;color:var(--g3);margin-bottom:.04rem">⚡ DigitalSaudi Passport</div>'
+  var html=_pass
+    ?'<div class="pass-card" style="text-align:center;padding:1rem .72rem"><div style="font-size:2.4rem;margin-bottom:.2rem">⚡</div><div style="font-size:.9rem;font-weight:900;color:var(--g3)">Passport Active</div><div style="font-size:.5rem;color:var(--t3);margin-top:.1rem">Thank you for supporting DigitalSaudi</div></div>'
+    :'<div class="pass-card"><div style="font-size:.86rem;font-weight:900;color:var(--g3);margin-bottom:.04rem">⚡ DigitalSaudi Passport</div>'
       +'<div style="font-size:.5rem;color:var(--t3);margin-bottom:.44rem">Premium membership · 1π one-time</div>'
       +'<div class="pass-feats">'
       +'<div class="pf"><div class="pf-ico">🤖</div><div class="pf-n">AI Priority</div><div class="pf-s">Faster responses</div></div>'
       +'<div class="pf"><div class="pf-ico">⭐</div><div class="pf-n">Premium Badge</div><div class="pf-s">Verified member</div></div>'
-      +'<div class="pf"><div class="pf-ico">📌</div><div class="pf-n">Save Favourites</div><div class="pf-s">Pin content</div></div>'
+      +'<div class="pf"><div class="pf-ico">📌</div><div class="pf-n">Favourites</div><div class="pf-s">Save content</div></div>'
       +'<div class="pf"><div class="pf-ico">🚀</div><div class="pf-n">Early Access</div><div class="pf-s">New features first</div></div>'
       +'</div>'
-      +'<button class="pass-btn" id="pass-btn" onclick="buyPass()">'
-      +'<span style="font-size:1rem">π</span> Get DigitalSaudi Passport · 1π'
-      +'</button>'
-      +'<div id="pay-sts" style="font-size:.5rem;color:var(--t3);text-align:center;margin-top:.36rem;min-height:.8rem"></div>'
-      +'</div>';
-  } else {
-    html='<div class="pass-card" style="text-align:center;padding:1rem .72rem">'
-      +'<div style="font-size:2.4rem;margin-bottom:.22rem">⚡</div>'
-      +'<div style="font-size:.88rem;font-weight:900;color:var(--g3)">Passport Active</div>'
-      +'<div style="font-size:.5rem;color:var(--t3);margin-top:.1rem">Thank you for supporting DigitalSaudi</div>'
-      +'</div>';
-  }
-  html+='<div class="card"><div class="card-h"><div class="ch-ico">📋</div>'
-    +'<div><div class="ch-t">Payment History</div><div class="ch-s">Your Pi transactions</div></div></div>';
-  if(txs.length){
-    txs.forEach(function(tx){
-      html+='<div class="tx-row"><div><div class="tx-type">'+tx.type+'</div>'
-        +'<div class="tx-date">'+new Date(tx.ts).toLocaleString()+'</div></div>'
-        +'<div class="tx-amt">π '+tx.amount+'</div></div>';
-    });
-  } else {
-    html+='<div style="text-align:center;padding:.65rem;font-size:.54rem;color:var(--t3)">No transactions yet</div>';
-  }
+      +'<button class="pass-btn" id="pass-btn" onclick="buyPass()"><span style="font-size:1rem">π</span> Get DigitalSaudi Passport · 1π</button>'
+      +'<div id="pay-sts" style="font-size:.5rem;color:var(--t3);text-align:center;margin-top:.36rem;min-height:.8rem"></div></div>';
+  html+='<div class="card"><div class="card-h"><div class="ch-ico">📋</div><div><div class="ch-t">Payment History</div><div class="ch-s">Your Pi transactions</div></div></div>';
+  if(txs.length)txs.forEach(function(tx){html+='<div class="tx-row"><div><div class="tx-type">'+tx.type+'</div><div class="tx-date">'+new Date(tx.ts).toLocaleString()+'</div></div><div class="tx-amt">π '+tx.amount+'</div></div>';});
+  else html+='<div style="text-align:center;padding:.65rem;font-size:.55rem;color:var(--t3)">No transactions yet</div>';
   html+='</div>';
   body.innerHTML=html;
 }
-
 function buyPass(){
   if(_pass){toast('Passport already active!');return;}
   if(!_u){toast('Please sign in first');return;}
   var btn=document.getElementById('pass-btn'),sts=document.getElementById('pay-sts');
-  if(btn)btn.disabled=true;
-  if(sts)sts.textContent='Initiating Pi payment…';
-  Pi.createPayment({
-    amount:1,memo:'DigitalSaudi Passport',
-    metadata:{app:'digitalsaudi',user:_u.username,type:'passport'},
-  },{
+  if(btn)btn.disabled=true;if(sts)sts.textContent='Initiating Pi payment…';
+  Pi.createPayment({amount:1,memo:'DigitalSaudi Passport',metadata:{app:'digitalsaudi',user:_u.username,type:'passport'}},{
     onReadyForServerApproval:function(paymentId){
       if(sts)sts.textContent='Approving…';
       return fetch(_AP,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({paymentId:paymentId})})
-        .then(function(r){return r.json()})
-        .then(function(d){console.log('[DS] approved:',d);});
+        .then(function(r){return r.json()}).then(function(d){console.log('[DS] approved:',d);});
     },
     onReadyForServerCompletion:function(paymentId,txid){
       if(sts)sts.textContent='Completing…';
@@ -1977,34 +1741,23 @@ function buyPass(){
           txs.push({type:'DigitalSaudi Passport',amount:1,txid:txid,ts:Date.now()});
           localStorage.setItem('ds_tx',JSON.stringify(txs));
           toast('✅ Passport activated!');renderDigi();
-        }).catch(function(){
-          localStorage.setItem('ds_pass','1');_pass=true;
-          toast('✅ Passport activated');renderDigi();
-        });
+        }).catch(function(){localStorage.setItem('ds_pass','1');_pass=true;toast('✅ Passport activated');renderDigi();});
     },
-    onCancel:function(paymentId){
-      if(sts)sts.textContent='Payment cancelled';if(btn)btn.disabled=false;
-      fetch(_CA,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({paymentId:paymentId})}).catch(function(){});
-    },
-    onError:function(error){
-      if(sts)sts.textContent='Error: '+error.message;if(btn)btn.disabled=false;
-    }
+    onCancel:function(paymentId){if(sts)sts.textContent='Cancelled';if(btn)btn.disabled=false;
+      fetch(_CA,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({paymentId:paymentId})}).catch(function(){});},
+    onError:function(error){if(sts)sts.textContent='Error: '+error.message;if(btn)btn.disabled=false;}
   });
 }
-
 var FAQS=[
-  {q:'How do I use the AI Concierge?',a:'Tap Home → AI tab. Type any question about Saudi Arabia — tourism, startups, Vision 2030, culture, events, or the Pi economy. Or tap a suggestion chip to start instantly.'},
-  {q:'Why is AI not responding?',a:'Make sure GEMINI_API_KEY is set in Cloudflare Environment Variables. Visit /ai in your browser — if it returns JSON, the endpoint is live. Check Cloudflare Real-time Logs for error details.'},
-  {q:'How do I check Live Scores?',a:'Tap Home → Scores tab. Select a league bar at the top. Switch between Live, Results, and Table views. Data comes from football-data.org and ESPN.'},
-  {q:'Live scores not showing?',a:'Make sure FD_API_KEY is set in Cloudflare if using football-data.org. Saudi Pro League uses ESPN (no key needed). Other leagues use both sources with ESPN as fallback.'},
-  {q:'How does the Wallet work?',a:'Tap Home → Wallet tab. Send Pi sends a Pi payment to another user. Request Pi generates a payment link/QR to share. All payments use the Pi SDK.'},
-  {q:'How do Prayer Times work?',a:'Tap Home → Prayer. Select your city from the bar above. Times come from Aladhan API live. A countdown updates every second.'},
-  {q:'How do I switch to Arabic?',a:'Tap the "عر" button in the top-right corner. The app switches to Arabic with full RTL layout. Tap "EN" to switch back. Saved automatically.'},
-  {q:'What is the DigitalSaudi Passport?',a:'A 1π one-time premium membership giving you a premium badge, AI priority, Save Favourites, and early access to new features. Tap Digital+ → Passport.'},
-  {q:'Is my data private?',a:'Yes. All preferences are stored locally on your device. We never sell data. Only city coordinates are sent to weather/prayer APIs. AI conversations go to Gemini API only.'},
-  {q:'Why use Pi Browser?',a:'DigitalSaudi is built exclusively for Pi Network. The Pi SDK only works inside Pi Browser for authentication and payments. Use the Pi Browser app to open DigitalSaudi.'},
+  {q:'AI not responding — how to fix?',a:'Make sure GEMINI_API_KEY is set in Cloudflare Environment Variables (name must be exactly GEMINI_API_KEY). Then visit digitalsaudi.pages.dev/ai — should return {"status":"ok"}. If not, re-deploy after adding the key.'},
+  {q:'Scores not showing — how to fix?',a:'Saudi Pro League uses ESPN (no key needed). Other leagues need FD_API_KEY from football-data.org. Check that FD_API_KEY is set in Cloudflare env vars. Saudi Pro League should always work.'},
+  {q:'How do I use the AI Concierge?',a:'Tap Home → AI tab. Type any question or tap a suggestion chip. AI responds in English or Arabic. Topics: tourism, startups, Vision 2030, culture, events, Pi economy.'},
+  {q:'How do I Send or Request Pi?',a:'Tap Home → Wallet tab. Send Pi opens a payment to another user. Request Pi generates a shareable payment link. All payments use Pi SDK — no external wallets.'},
+  {q:'How do Prayer Times work?',a:'Tap Home → Prayer. Select your city. Times come live from Aladhan API. Countdown timer updates every second. Works offline with approximate times.'},
+  {q:'How do I switch to Arabic?',a:'Tap "عر" in the top-right corner. Full Arabic RTL layout applies. Tap "EN" to switch back. Saved automatically.'},
+  {q:'What is the DigitalSaudi Passport?',a:'1π one-time premium membership. Gives AI priority, premium badge, favourites, and early access to new features.'},
+  {q:'Why use Pi Browser?',a:'DigitalSaudi is built exclusively for Pi Network. Pi SDK for authentication and payments only works inside Pi Browser.'},
 ];
-
 function renderSupport(body){
   var html='<div class="sec-lbl" style="padding-top:.45rem">Frequently Asked Questions</div>';
   FAQS.forEach(function(faq,i){
@@ -2012,49 +1765,30 @@ function renderSupport(body){
       +'<div class="faq-q">'+faq.q+'<span class="faq-ico">+</span></div>'
       +'<div class="faq-a">'+faq.a+'</div></div>';
   });
-  html+='<div class="sec-lbl" style="margin-top:.45rem">Contact & Legal</div>'
-    +'<div class="card"><div class="card-b">'
-    +'<div style="font-size:.56rem;color:var(--t2);margin-bottom:.32rem">For support, feedback, or enquiries:</div>'
-    +'<div style="font-size:.6rem;font-weight:700;color:var(--g3);margin-bottom:.35rem">support.digitalsaudi.pi@gmail.com</div>'
-    +'<div style="display:flex;gap:.38rem;flex-wrap:wrap">'
-    +'<a href="/privacy" style="font-size:.5rem;color:var(--gold)">Privacy Policy</a>'
-    +'<span style="color:var(--t3)">·</span>'
-    +'<a href="/terms" style="font-size:.5rem;color:var(--gold)">Terms of Service</a>'
-    +'</div></div></div>';
+  html+='<div class="card" style="margin:.32rem .5rem"><div class="card-b"><div style="font-size:.56rem;color:var(--t2);margin-bottom:.32rem">For support or feedback:</div>'
+    +'<div style="font-size:.62rem;font-weight:700;color:var(--g3);margin-bottom:.35rem">support.digitalsaudi.pi@gmail.com</div>'
+    +'<div style="display:flex;gap:.38rem"><a href="/privacy" style="font-size:.5rem;color:var(--gold)">Privacy Policy</a>'
+    +'<span style="color:var(--t3)">·</span><a href="/terms" style="font-size:.5rem;color:var(--gold)">Terms</a></div></div></div>';
   body.innerHTML=html;
 }
-
-function toggleFAQ(i){
-  var item=document.getElementById('faq-'+i);
-  if(item)item.classList.toggle('open');
-}
-
+function toggleFAQ(i){var el=document.getElementById('faq-'+i);if(el)el.classList.toggle('open');}
 function renderAbout(body){
-  body.innerHTML='<div class="card" style="margin:.5rem">'
-    +'<div style="text-align:center;padding:1rem .72rem">'
-    +'<div style="font-size:2.8rem;font-weight:900;letter-spacing:-.05em;background:var(--gg);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:.06rem">DigitalSaudi</div>'
-    +'<div style="font-size:.54rem;color:var(--t3);letter-spacing:.12em;text-transform:uppercase;margin-bottom:.48rem">Saudi Digital Ecosystem on Pi</div>'
-    +'<div style="display:inline-block;background:rgba(22,196,127,.1);border:1px solid var(--bd2);color:var(--g3);font-size:.5rem;font-weight:700;padding:.18rem .6rem;border-radius:99px;margin-bottom:.52rem">v5.0.0 · Pi Mainnet · sandbox:false</div>'
-    +'</div>'
-    +'<div style="padding:0 .72rem .72rem"><div style="font-size:.55rem;color:var(--t2);line-height:1.65;margin-bottom:.5rem">'
-    +'Discover Saudi technology, startups, business, events, tourism, culture and Vision 2030. Built exclusively for Pi Network. Arabic and English. Zero fake data.</div>'
-    +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:.22rem;margin-bottom:.5rem">'
-    +['🤖 AI Concierge','⚽ Live Scores','💳 Wallet','🕌 Prayer Times','🌦 Weather','🚀 Saudi Startups','🗺 Tech Ecosystem','📰 News Feed','🖼 Image Gallery','🚀 Vision 2030','🏛 Tourism','🌟 Culture']
-      .map(function(m){return'<div style="background:var(--bg3);border:1px solid var(--bd);border-radius:8px;padding:.28rem .4rem;font-size:.5rem;color:var(--t2)">'+m+'</div>';}).join('')
-    +'</div>'
-    +'<div style="font-size:.4rem;color:var(--t3)">© 2026 DigitalSaudi · Abdullahi Bashir Abubakar<br>Gemini AI · football-data.org · ESPN · Aladhan · Open-Meteo</div>'
+  body.innerHTML='<div class="card" style="margin:.5rem"><div style="text-align:center;padding:1.1rem .72rem">'
+    +'<div style="font-size:2.9rem;font-weight:900;letter-spacing:-.06em;background:var(--gg);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:.06rem">DigitalSaudi</div>'
+    +'<div style="font-size:.54rem;color:var(--t3);letter-spacing:.12em;text-transform:uppercase;margin-bottom:.5rem">Saudi Digital Ecosystem on Pi</div>'
+    +'<div style="display:inline-block;background:rgba(22,196,127,.1);border:1px solid var(--bd2);color:var(--g3);font-size:.52rem;font-weight:700;padding:.2rem .65rem;border-radius:99px;margin-bottom:.55rem">v6.0.0 · Pi Mainnet · sandbox:false</div>'
+    +'</div><div style="padding:0 .72rem .75rem"><div style="font-size:.55rem;color:var(--t2);line-height:1.65;margin-bottom:.5rem">'
+    +'Discover Saudi technology, startups, business, events, tourism, culture, Vision 2030, and the Pi economy. Built exclusively for Pi Network. Zero fake data.</div>'
+    +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:.24rem;margin-bottom:.5rem">'
+    +['🤖 AI Concierge','⚽ Live Scores','💳 Pi Wallet','🕌 Prayer Times','🌦 Weather','🚀 Saudi Startups','🗺 Tech Ecosystem','📰 News Feed','🖼 Images','🚀 Vision 2030','🏛 Tourism','🌟 Culture']
+      .map(function(m){return'<div style="background:var(--bg3);border:1px solid var(--bd);border-radius:8px;padding:.3rem .42rem;font-size:.5rem;color:var(--t2)">'+m+'</div>';}).join('')
+    +'</div><div style="font-size:.4rem;color:var(--t3)">© 2026 DigitalSaudi · Abdullahi Bashir Abubakar<br>Gemini AI · football-data.org · ESPN · Aladhan · Open-Meteo</div>'
     +'</div></div>';
 }
 
-/* ════════════
-   INIT
-════════════ */
+/* ═══ INIT ═══ */
 (function(){
-  /* Register service worker */
-  if('serviceWorker' in navigator){
-    navigator.serviceWorker.register('/sw.js').catch(function(){});
-  }
-  /* Start SDK init sequence with loading screen */
+  if('serviceWorker' in navigator)navigator.serviceWorker.register('/sw.js').catch(function(){});
   initSDK();
 })();
 </script>
