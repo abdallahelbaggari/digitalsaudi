@@ -1,5 +1,0 @@
-{
-  "version": 1,
-  "include": ["/approve", "/complete", "/cancel-payment", "/api", "/news", "/images", "/privacy", "/terms"],
-  "exclude": []
-}
