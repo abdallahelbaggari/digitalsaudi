@@ -1,6 +1,6 @@
 {
   "name": "digitalsaudi",
-  "version": "4.0.0",
+  "version": "6.0.0",
   "description": "DigitalSaudi — Saudi Digital Ecosystem on Pi",
   "scripts": {
     "deploy": "npx wrangler pages deploy . --project-name digitalsaudi"
