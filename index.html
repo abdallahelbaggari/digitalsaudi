@@ -37,8 +37,8 @@ a{color:var(--g3);text-decoration:none}
 @keyframes scaleIn{from{opacity:0;transform:scale(.94)}to{opacity:1;transform:scale(1)}}
 
 /* ══ LOADING ══ */
-#ls{position:fixed;inset:0;background:var(--bg0);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;transition:opacity .5s}
-#ls.hide{opacity:0;pointer-events:none}
+#ls{position:fixed;inset:0;background:var(--bg0);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;transition:opacity .3s ease}
+#ls.hide{opacity:0;pointer-events:none;visibility:hidden}
 .ls-o1{position:absolute;width:380px;height:380px;border-radius:50%;background:radial-gradient(circle,rgba(22,196,127,.13),transparent 70%);top:-80px;right:-80px;animation:pulse 4s ease-in-out infinite;pointer-events:none}
 .ls-o2{position:absolute;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(200,169,81,.07),transparent 70%);bottom:-60px;left:-60px;animation:pulse 5s ease-in-out infinite reverse;pointer-events:none}
 .ls-logo{font-size:3.2rem;font-weight:900;letter-spacing:-.06em;background:var(--gg);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;position:relative;z-index:1;margin-bottom:.3rem}
@@ -634,8 +634,7 @@ function openPanel(tag,html){
 function closePanel(){document.getElementById('panel').classList.remove('open');}
 function lsMsg(m){var el=document.getElementById('ls-msg');if(el)el.textContent=m;}
 function hideLoading(){
-  var ls=document.getElementById('ls');if(!ls)return;
-  ls.classList.add('hide');setTimeout(function(){ls.style.display='none';},500);
+  forceHideLoading();
 }
 
 /* ════════════════════════════════════════
@@ -686,85 +685,91 @@ function toggleLang(){
    PI SDK INIT (Copa pattern exactly)
 ════════════════════════════════════════ */
 function initSDK(){
-  /* ════════════════════════════════════════════════
-     FIXED INIT — handles 3 cases:
-     1. Pi SDK loads normally → proceed
-     2. Pi SDK slow → wait up to 15s (30 tries × 500ms)
-     3. Pi SDK fails completely → show login anyway
-     Loading screen ALWAYS hides — never stuck
-  ════════════════════════════════════════════════ */
-  lsMsg('Starting DigitalSaudi…');
-  var tries = 0;
-  var MAX_TRIES = 30; /* 15 seconds max wait */
+  /* ─────────────────────────────────────────────
+     BULLETPROOF INIT — loading ALWAYS hides
+     Uses multiple safety mechanisms
+  ───────────────────────────────────────────── */
+  lsMsg('Starting…');
 
+  /* FORCE hide loading after 3 seconds no matter what */
+  var forced = false;
+  var forceTimer = setTimeout(function(){
+    if(!forced){
+      forced = true;
+      console.warn('[DS] Force showing login after 3s');
+      forceHideLoading();
+      showLogin();
+    }
+  }, 3000);
+
+  function done(fn){
+    if(forced) return;
+    forced = true;
+    clearTimeout(forceTimer);
+    forceHideLoading();
+    if(fn) fn();
+  }
+
+  var tries = 0;
   function check(){
     tries++;
-
-    /* Update status every 3 tries */
-    if(tries===1)  lsMsg('Loading Pi SDK…');
-    if(tries===5)  lsMsg('Connecting to Pi Network…');
-    if(tries===10) lsMsg('Still loading… ('+tries+')');
-    if(tries===20) lsMsg('Almost ready…');
+    if(tries===1) lsMsg('Loading Pi SDK…');
+    if(tries===4) lsMsg('Connecting…');
 
     if(typeof Pi === 'undefined'){
-      if(tries < MAX_TRIES){
-        setTimeout(check, 500);
+      if(tries < 20){
+        setTimeout(check, 300);
       } else {
-        /* SDK never loaded — show login anyway so app is usable */
-        console.warn('[DS] Pi SDK timeout — showing login');
-        lsMsg('Open in Pi Browser for full access');
-        hideLoading();
-        showLogin();
+        console.warn('[DS] Pi SDK not found — showing login');
+        done(showLogin);
       }
       return;
     }
 
-    /* Pi SDK is available */
-    console.log('[DS] Pi SDK ready after', tries, 'attempts');
-    lsMsg('Pi SDK ready ✅');
+    /* SDK found */
+    console.log('[DS] Pi SDK ready, tries:', tries);
+    lsMsg('Pi ready ✅');
     _sdkOK = true;
 
-    /* Try Pi.init — non-fatal if it fails */
-    try {
-      Pi.init({ version: '2.0', sandbox: false });
-    } catch(e) {
-      console.log('[DS] Pi.init warning (non-fatal):', e.message);
-    }
+    try{ Pi.init({version:'2.0',sandbox:false}); }catch(e){ console.log('[DS] init:',e.message); }
 
-    /* Check saved session */
     var saved = localStorage.getItem('ds_user');
     if(saved){
       try{
         piUser = JSON.parse(saved);
-        isPass = localStorage.getItem('ds_pass') === '1';
-        txLog  = JSON.parse(localStorage.getItem('ds_tx') || '[]');
-        lsMsg('Welcome back, @' + piUser.username + ' 👋');
-        setTimeout(function(){ hideLoading(); launchApp(); }, 700);
-      } catch(e){
-        console.error('[DS] Session restore failed:', e);
+        isPass = localStorage.getItem('ds_pass')==='1';
+        txLog  = JSON.parse(localStorage.getItem('ds_tx')||'[]');
+        lsMsg('Welcome @'+piUser.username+' 👋');
+        done(launchApp);
+      }catch(e){
         localStorage.removeItem('ds_user');
-        hideLoading();
-        showLogin();
+        done(showLogin);
       }
     } else {
-      setTimeout(function(){ hideLoading(); showLogin(); }, 300);
+      done(showLogin);
     }
   }
 
-  /* Start first check after 600ms — lets SDK script load */
-  setTimeout(check, 600);
-
-  /* Safety net: ALWAYS hide loading after 18 seconds no matter what */
-  setTimeout(function(){
-    var ls = document.getElementById('ls');
-    if(ls && !ls.classList.contains('hide')){
-      console.warn('[DS] Safety net triggered — forcing login screen');
-      hideLoading();
-      showLogin();
-    }
-  }, 18000);
+  setTimeout(check, 400);
 }
-function showLogin(){document.getElementById('login').style.display='flex';}
+
+function forceHideLoading(){
+  var ls=document.getElementById('ls');
+  if(!ls) return;
+  ls.style.opacity='0';
+  ls.style.pointerEvents='none';
+  ls.style.visibility='hidden';
+  ls.style.display='none';
+}
+
+
+function showLogin(){
+  var lg=document.getElementById('login');
+  if(!lg) return;
+  lg.style.display='flex';
+  lg.style.flexDirection='column';
+  lg.style.zIndex='100';
+}
 
 /* ════════════════════════════════════════
    piLogin — EXACT COPA PATTERN
@@ -843,16 +848,19 @@ function onIncompletePayment(payment) {
 }
 
 function launchApp(){
+  /* Always hide loading first */
+  forceHideLoading();
   /* Hide login */
   var loginEl=document.getElementById('login');
-  if(loginEl) loginEl.style.display='none';
+  if(loginEl){ loginEl.style.display='none'; loginEl.style.zIndex='0'; }
   /* Show app */
   var appEl=document.getElementById('app');
-  if(!appEl){console.error('[DS] #app not found');return;}
+  if(!appEl){ console.error('[DS] #app not found'); return; }
   appEl.style.display='flex';
   appEl.style.flexDirection='column';
   appEl.style.height='100vh';
   appEl.style.overflow='hidden';
+  appEl.style.zIndex='10';
   var sl=localStorage.getItem('ds_lang');if(sl&&sl!==_lang){_lang=sl;toggleLang();}
   var sc=localStorage.getItem('ds_city');if(sc){_city=sc;document.querySelectorAll('.cty').forEach(function(b){b.classList.toggle('on',b.textContent.toLowerCase()===sc.toLowerCase());});}
   var u=piUser?('@'+(piUser.username||'Pioneer')):'';
