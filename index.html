@@ -686,30 +686,83 @@ function toggleLang(){
    PI SDK INIT (Copa pattern exactly)
 ════════════════════════════════════════ */
 function initSDK(){
-  lsMsg('Loading Pi SDK…');
-  var tries=0;
+  /* ════════════════════════════════════════════════
+     FIXED INIT — handles 3 cases:
+     1. Pi SDK loads normally → proceed
+     2. Pi SDK slow → wait up to 15s (30 tries × 500ms)
+     3. Pi SDK fails completely → show login anyway
+     Loading screen ALWAYS hides — never stuck
+  ════════════════════════════════════════════════ */
+  lsMsg('Starting DigitalSaudi…');
+  var tries = 0;
+  var MAX_TRIES = 30; /* 15 seconds max wait */
+
   function check(){
     tries++;
-    if(typeof Pi==='undefined'){
-      if(tries<25){lsMsg('Loading Pi SDK… ('+tries+')');setTimeout(check,500);}
-      else{lsMsg('Pi SDK failed. Open in Pi Browser.');hideLoading();showLogin();}
+
+    /* Update status every 3 tries */
+    if(tries===1)  lsMsg('Loading Pi SDK…');
+    if(tries===5)  lsMsg('Connecting to Pi Network…');
+    if(tries===10) lsMsg('Still loading… ('+tries+')');
+    if(tries===20) lsMsg('Almost ready…');
+
+    if(typeof Pi === 'undefined'){
+      if(tries < MAX_TRIES){
+        setTimeout(check, 500);
+      } else {
+        /* SDK never loaded — show login anyway so app is usable */
+        console.warn('[DS] Pi SDK timeout — showing login');
+        lsMsg('Open in Pi Browser for full access');
+        hideLoading();
+        showLogin();
+      }
       return;
     }
-    lsMsg('Pi SDK ready ✅');_sdkOK=true;
-    var saved=localStorage.getItem('ds_user');
+
+    /* Pi SDK is available */
+    console.log('[DS] Pi SDK ready after', tries, 'attempts');
+    lsMsg('Pi SDK ready ✅');
+    _sdkOK = true;
+
+    /* Try Pi.init — non-fatal if it fails */
+    try {
+      Pi.init({ version: '2.0', sandbox: false });
+    } catch(e) {
+      console.log('[DS] Pi.init warning (non-fatal):', e.message);
+    }
+
+    /* Check saved session */
+    var saved = localStorage.getItem('ds_user');
     if(saved){
       try{
-        piUser=JSON.parse(saved);
-        isPass=localStorage.getItem('ds_pass')==='1';
-        txLog=JSON.parse(localStorage.getItem('ds_tx')||'[]');
-        lsMsg('Welcome back, @'+piUser.username+' 👋');
-        setTimeout(function(){hideLoading();launchApp();},700);
-      }catch(e){localStorage.removeItem('ds_user');hideLoading();showLogin();}
+        piUser = JSON.parse(saved);
+        isPass = localStorage.getItem('ds_pass') === '1';
+        txLog  = JSON.parse(localStorage.getItem('ds_tx') || '[]');
+        lsMsg('Welcome back, @' + piUser.username + ' 👋');
+        setTimeout(function(){ hideLoading(); launchApp(); }, 700);
+      } catch(e){
+        console.error('[DS] Session restore failed:', e);
+        localStorage.removeItem('ds_user');
+        hideLoading();
+        showLogin();
+      }
     } else {
-      setTimeout(function(){hideLoading();showLogin();},400);
+      setTimeout(function(){ hideLoading(); showLogin(); }, 300);
     }
   }
-  setTimeout(check,800);
+
+  /* Start first check after 600ms — lets SDK script load */
+  setTimeout(check, 600);
+
+  /* Safety net: ALWAYS hide loading after 18 seconds no matter what */
+  setTimeout(function(){
+    var ls = document.getElementById('ls');
+    if(ls && !ls.classList.contains('hide')){
+      console.warn('[DS] Safety net triggered — forcing login screen');
+      hideLoading();
+      showLogin();
+    }
+  }, 18000);
 }
 function showLogin(){document.getElementById('login').style.display='flex';}
 
@@ -717,30 +770,58 @@ function showLogin(){document.getElementById('login').style.display='flex';}
    piLogin — EXACT COPA PATTERN
 ════════════════════════════════════════ */
 function piLogin(){
-  if(!_sdkOK){document.getElementById('lmsg').textContent='Open in Pi Browser.';return;}
   var btn     = document.getElementById('loginBtn');
   var btnText = document.getElementById('stxt');
   var lmsg    = document.getElementById('lmsg');
+
+  /* If SDK still not loaded, try to init it now */
+  if(typeof Pi === 'undefined'){
+    if(lmsg) lmsg.textContent='Pi SDK not loaded. Make sure you are using Pi Browser.';
+    return;
+  }
+
   if(btn){btn.disabled=true;btn.style.opacity='.7';}
   if(btnText) btnText.textContent='Connecting…';
-  if(lmsg)    lmsg.textContent='Connecting to Pi Network…';
+  if(lmsg)    lmsg.textContent='Opening Pi wallet…';
 
-  /* EXACT Copa init sequence */
-  Pi.init({ version: '2.0', sandbox: false });
+  /* ═══════════════════════════════════════
+     EXACT COPA PAYMENT INIT SEQUENCE
+     Pi.init then Pi.authenticate
+     No async/await — pure .then() chain
+  ═══════════════════════════════════════ */
+  try {
+    Pi.init({ version: '2.0', sandbox: false });
+  } catch(e) {
+    console.log('[DS] Pi.init warning:', e.message);
+  }
+
   Pi.authenticate(['username', 'payments', 'wallet_address'], onIncompletePayment)
     .then(function(auth) {
+      if(!auth || !auth.user) throw new Error('No user in auth response');
       piUser = auth.user;
       piUser.wallet = auth.user.wallet_address || null;
       localStorage.setItem('ds_user', JSON.stringify(piUser));
-      isPass=localStorage.getItem('ds_pass')==='1';
-      txLog=JSON.parse(localStorage.getItem('ds_tx')||'[]');
-      launchApp();
+      isPass = localStorage.getItem('ds_pass') === '1';
+      txLog  = JSON.parse(localStorage.getItem('ds_tx') || '[]');
+      _sdkOK = true;
+      if(lmsg) lmsg.textContent = piUser.wallet
+        ? '✅ Wallet: ' + piUser.wallet.slice(0,12) + '…'
+        : '✅ Signed in (wallet pending KYC)';
+      setTimeout(function(){ launchApp(); }, 400);
     })
     .catch(function(err) {
       console.error('[DS] Auth error:', err);
+      var msg = err && err.message ? err.message : String(err);
       if(btn){btn.disabled=false;btn.style.opacity='1';}
       if(btnText) btnText.textContent='Sign In with Pi';
-      if(lmsg)    lmsg.textContent='Try again';
+      if(lmsg){
+        if(msg.indexOf('cancel')>=0||msg.indexOf('Cancel')>=0)
+          lmsg.textContent='Cancelled — tap Sign In to try again';
+        else if(msg.indexOf('network')>=0||msg.indexOf('Network')>=0)
+          lmsg.textContent='Network error — check your connection';
+        else
+          lmsg.textContent='Error: ' + msg.slice(0,60);
+      }
     });
 }
 
@@ -762,9 +843,16 @@ function onIncompletePayment(payment) {
 }
 
 function launchApp(){
-  document.getElementById('login').style.display='none';
+  /* Hide login */
+  var loginEl=document.getElementById('login');
+  if(loginEl) loginEl.style.display='none';
+  /* Show app */
   var appEl=document.getElementById('app');
-  appEl.style.display='flex';appEl.style.flexDirection='column';appEl.style.height='100vh';
+  if(!appEl){console.error('[DS] #app not found');return;}
+  appEl.style.display='flex';
+  appEl.style.flexDirection='column';
+  appEl.style.height='100vh';
+  appEl.style.overflow='hidden';
   var sl=localStorage.getItem('ds_lang');if(sl&&sl!==_lang){_lang=sl;toggleLang();}
   var sc=localStorage.getItem('ds_city');if(sc){_city=sc;document.querySelectorAll('.cty').forEach(function(b){b.classList.toggle('on',b.textContent.toLowerCase()===sc.toLowerCase());});}
   var u=piUser?('@'+(piUser.username||'Pioneer')):'';
