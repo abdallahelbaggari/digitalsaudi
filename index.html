@@ -37,8 +37,7 @@ a{color:var(--g3);text-decoration:none}
 @keyframes scaleIn{from{opacity:0;transform:scale(.94)}to{opacity:1;transform:scale(1)}}
 
 /* ══ LOADING ══ */
-#ls{position:fixed;inset:0;background:var(--bg0);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;transition:opacity .3s ease}
-#ls.hide{opacity:0;pointer-events:none;visibility:hidden}
+#ls{position:fixed;inset:0;background:var(--bg0);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999}
 .ls-o1{position:absolute;width:380px;height:380px;border-radius:50%;background:radial-gradient(circle,rgba(22,196,127,.13),transparent 70%);top:-80px;right:-80px;animation:pulse 4s ease-in-out infinite;pointer-events:none}
 .ls-o2{position:absolute;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(200,169,81,.07),transparent 70%);bottom:-60px;left:-60px;animation:pulse 5s ease-in-out infinite reverse;pointer-events:none}
 .ls-logo{font-size:3.2rem;font-weight:900;letter-spacing:-.06em;background:var(--gg);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;position:relative;z-index:1;margin-bottom:.3rem}
@@ -700,7 +699,7 @@ function initSDK(){
       forceHideLoading();
       showLogin();
     }
-  }, 3000);
+  }, 1500); /* Show login after max 1.5s */
 
   function done(fn){
     if(forced) return;
@@ -718,7 +717,7 @@ function initSDK(){
 
     if(typeof Pi === 'undefined'){
       if(tries < 20){
-        setTimeout(check, 300);
+        setTimeout(check, 200);
       } else {
         console.warn('[DS] Pi SDK not found — showing login');
         done(showLogin);
@@ -750,16 +749,14 @@ function initSDK(){
     }
   }
 
-  setTimeout(check, 400);
+  setTimeout(check, 100);
 }
 
 function forceHideLoading(){
   var ls=document.getElementById('ls');
   if(!ls) return;
-  ls.style.opacity='0';
-  ls.style.pointerEvents='none';
-  ls.style.visibility='hidden';
-  ls.style.display='none';
+  /* Remove from DOM entirely — instant, no transition */
+  ls.parentNode.removeChild(ls);
 }
 
 
@@ -1776,7 +1773,9 @@ function renderAbout(body){
 
 /* ══ INIT ══ */
 (function(){
-  if('serviceWorker' in navigator)navigator.serviceWorker.register('/sw.js').catch(function(){});
+  if('serviceWorker' in navigator){
+    navigator.serviceWorker.register('/sw.js').catch(function(){});
+  }
   initSDK();
 })();
 </script>
