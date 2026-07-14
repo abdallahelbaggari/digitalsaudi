@@ -1038,20 +1038,48 @@ function renderHTab(){
 var CHIPS=['Best places in Saudi?','What is NEOM?','Explain Vision 2030','Top Saudi startups','How to visit AlUla?','What is LEAP?','Saudi food to try','Tell me about Pi economy'];
 function renderAI(){
   var body=document.getElementById('home-body');
-  body.innerHTML='<div class="ai-wrap"><div class="ai-feed" id="ai-feed">'
-    +'<div class="ai-welcome"><div class="ai-wt">🤖 AI Concierge</div>'
-    +'<div class="ai-ws">Ask me anything about Saudi Arabia — tourism, Vision 2030, startups, culture, events, and the Pi economy. I respond in English or Arabic.</div>'
-    +'<div class="ai-chips">'+CHIPS.map(function(c){return'<div class="chip" onclick="aiChip(\''+c.replace(/'/g,"\\'")+'\'">'+c+'</div>';}).join('')+'</div>'
-    +'</div></div>'
-    +'<div class="ai-bar"><input id="ai-inp" type="text" placeholder="Ask about Saudi Arabia…" onkeydown="if(event.key===\'Enter\'&&!event.shiftKey){event.preventDefault();aiSend();}">'
-    +'<button id="ai-send" onclick="aiSend()">➤</button></div></div>';
+  /* Build using DOM — avoids all quote escaping issues */
+  var wrap=document.createElement('div');wrap.className='ai-wrap';
+  /* Feed */
+  var feed=document.createElement('div');feed.className='ai-feed';feed.id='ai-feed';
+  /* Welcome box */
+  var welcome=document.createElement('div');welcome.className='ai-welcome';
+  var wt=document.createElement('div');wt.className='ai-wt';wt.textContent='🤖 AI Concierge';
+  var ws=document.createElement('div');ws.className='ai-ws';
+  ws.textContent='Ask me anything about Saudi Arabia — tourism, Vision 2030, startups, culture, events, and the Pi economy. I respond in English or Arabic.';
+  var chipsDiv=document.createElement('div');chipsDiv.className='ai-chips';
+  CHIPS.forEach(function(c){
+    var chip=document.createElement('div');chip.className='chip';chip.textContent=c;
+    chip.onclick=function(){aiChip(c);};
+    chipsDiv.appendChild(chip);
+  });
+  welcome.appendChild(wt);welcome.appendChild(ws);welcome.appendChild(chipsDiv);
+  feed.appendChild(welcome);
+  /* Restore messages */
   if(_aiMsgs.length){
-    var feed=document.getElementById('ai-feed');
-    var w=feed.querySelector('.ai-welcome');if(w)w.style.display='none';
+    welcome.style.display='none';
     _aiMsgs.forEach(function(m){feed.appendChild(mkMsg(m.role,m.content));});
+  }
+  wrap.appendChild(feed);
+  /* Input bar */
+  var bar=document.createElement('div');bar.className='ai-bar';
+  var inp=document.createElement('input');
+  inp.id='ai-inp';inp.type='text';inp.placeholder='Ask about Saudi Arabia…';
+  inp.addEventListener('keydown',function(e){
+    if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();aiSend();}
+  });
+  var sendBtn=document.createElement('button');
+  sendBtn.id='ai-send';sendBtn.textContent='➤';
+  sendBtn.onclick=function(){aiSend();};
+  bar.appendChild(inp);bar.appendChild(sendBtn);
+  wrap.appendChild(bar);
+  body.innerHTML='';body.appendChild(wrap);
+  if(_aiMsgs.length){
     setTimeout(function(){feed.scrollTop=feed.scrollHeight;},50);
   }
 }
+
+
 function mkMsg(role,text){var d=document.createElement('div');d.className='msg '+(role==='user'?'u':'a');d.textContent=text;return d;}
 function aiChip(t){var i=document.getElementById('ai-inp');if(i)i.value=t;aiSend();}
 function aiSend(){
@@ -1243,21 +1271,26 @@ function buildMatch(m){
   var isLive=m.status==='LIVE'||m.status==='IN_PLAY';
   var isDone=m.status==='FINISHED';
   var tl='';
-  if(isLive) tl=m.minute?m.minute+"'":'LIVE';
+  if(isLive) tl=m.minute?(m.minute+"'"):'LIVE';
   else if(isDone) tl='FT';
   else if(m.date){try{tl=new Date(m.date).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});}catch(e){}}
-  var venue=m.venue||(m.city?m.city:'');
+  var venue=m.venue||(m.city||'');
+  var ERR='this.style.display="none"';
+  var HL=m.homeLogo?('<img class="ls-crest" src="'+m.homeLogo+'" onerror="'+ERR+'">'):('<div class="ls-crest-ph"></div>');
+  var AL=m.awayLogo?('<img class="ls-crest" src="'+m.awayLogo+'" onerror="'+ERR+'">'):('<div class="ls-crest-ph"></div>');
+  var SC_H=m.homeScore!=null?('<span class="ls-score'+(isLive?' ls-live-sc':'')+'">'+m.homeScore+'</span>'):'';
+  var SC_A=m.awayScore!=null?('<span class="ls-score">'+m.awayScore+'</span>'):'';
+  var TIME_HTML='';
+  if(isLive) TIME_HTML='<span class="ls-live-lbl">'+tl+'</span>';
+  else TIME_HTML='<span class="ls-time-txt'+(isDone?' ls-ft':'')+'">'+tl+'</span>';
   var html='<div class="ls-match'+(isLive?' ls-live':isDone?' ls-done':'')+'">';
-  if(isLive)html+='<div class="ls-live-dot"></div>';
-  html+='<div class="ls-time">';
-  if(isLive) html+='<span class="ls-live-lbl">'+tl+'</span>';
-  else html+='<span class="ls-time-txt'+(isDone?' ls-ft':'')+'">'+tl+'</span>';
-  html+='</div>';
+  if(isLive) html+='<div class="ls-live-dot"></div>';
+  html+='<div class="ls-time">'+TIME_HTML+'</div>';
   html+='<div class="ls-teams">';
-  html+='<div class="ls-team">'+(m.homeLogo?'<img class="ls-crest" src="'+m.homeLogo+'" onerror="this.style.display='none'">'  :'<div class="ls-crest-ph"></div>')+'<span class="ls-tname'+(isLive?' ls-bold':'')+'">'+m.home+'</span>'+(isLive||isDone?'<span class="ls-score'+(isLive?' ls-live-sc':'')+'">'+m.homeScore+'</span>':'')+'</div>';
-  html+='<div class="ls-team">'+(m.awayLogo?'<img class="ls-crest" src="'+m.awayLogo+'" onerror="this.style.display='none'">'  :'<div class="ls-crest-ph"></div>')+'<span class="ls-tname">'+m.away+'</span>'+(isLive||isDone?'<span class="ls-score">'+m.awayScore+'</span>':'')+'</div>';
+  html+='<div class="ls-team">'+HL+'<span class="ls-tname'+(isLive?' ls-bold':'')+'">'+m.home+'</span>'+SC_H+'</div>';
+  html+='<div class="ls-team">'+AL+'<span class="ls-tname">'+m.away+'</span>'+SC_A+'</div>';
   html+='</div>';
-  if(venue)html+='<div class="ls-venue">🏟 '+venue+'</div>';
+  if(venue) html+='<div class="ls-venue">'+venue+'</div>';
   html+='</div>';
   return html;
 }
