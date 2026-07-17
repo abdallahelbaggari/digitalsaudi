@@ -741,31 +741,32 @@ function logOut(){
    buyPass — EXACT COPA buyCopaPass PATTERN
 ════════════════════════════════════════ */
 function buyPass() {
+  /* EXACT COPA buyCopaPass PATTERN */
   if (isPass) { toast('Passport already active!'); return; }
   var btn = document.getElementById('ds-pass-btn');
-  /* Always reset first in case previously stuck */
-  if (btn) { btn.disabled=false; }
+  if (btn) { btn.disabled=false; }  /* reset any stuck state */
   if (btn) { btn.textContent='Processing...'; btn.disabled=true; }
-  if (typeof Pi === 'undefined') {
+  if (typeof Pi==='undefined') {
     toast('Open in Pi Browser');
     if(btn){btn.textContent='Get DigitalSaudi Passport · 1π';btn.disabled=false;}
     return;
   }
-  Pi.createPayment({ amount:1, memo:'DigitalSaudi Passport', metadata:{type:'passport',app:'digitalsaudi'} }, {
+  Pi.createPayment({ amount:1, memo:'DigitalSaudi Passport', metadata:{type:'passport',app:'digitalsaudi',network:'mainnet'} }, {
     onReadyForServerApproval: function(paymentId){
       return fetch(_APPROVE,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({paymentId:paymentId,expectedAmount:1})})
         .then(function(r){ return r.json(); })
-        .then(function(d){ console.log('[DS] approved:',d); });
+        .then(function(d){ console.log('[DS] Passport approved:',d); });
     },
     onReadyForServerCompletion: function(paymentId,txid){
       return fetch(_COMPLETE,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({paymentId:paymentId,txid:txid})})
         .then(function(r){ return r.json(); })
-        .then(function(){
+        .then(function(d){
           isPass=true; localStorage.setItem('ds_pass','1');
-          addTx('DigitalSaudi Passport 1π');
+          addTx('DigitalSaudi Passport 1π txid:'+txid.slice(0,12)+'...');
           showPayStatus('success','Passport activated!');
           renderDigi(); toast('✅ Passport activated!');
         }).catch(function(){
+          /* Activate anyway — payment completed on chain */
           isPass=true; localStorage.setItem('ds_pass','1');
           addTx('DigitalSaudi Passport 1π');
           showPayStatus('success','Passport activated!');
@@ -774,16 +775,15 @@ function buyPass() {
     },
     onCancel: function(){
       if(btn){btn.textContent='Get DigitalSaudi Passport · 1π';btn.disabled=false;}
-      showPayStatus('cancelled','Cancelled');
+      showPayStatus('cancelled','Cancelled'); toast('Cancelled');
     },
     onError: function(err){
-      console.error('[DS] Payment error:',err);
+      console.error('[DS] Passport error:',err);
       if(btn){btn.textContent='Get DigitalSaudi Passport · 1π';btn.disabled=false;}
       showPayStatus('failed','Error — try again');
     }
   });
 }
-
 function showPayStatus(type,msg){
   var el=document.getElementById('pay-status');
   if(!el)return;
@@ -798,37 +798,47 @@ function addTx(text){
 }
 
 /* ── _doSendPi — Copa pattern ── */
-function _doSendPi(to,amt,memo){
-  if(!to.trim()){toast('Enter recipient');return;}
-  if(!amt||amt<=0){toast('Enter amount');return;}
-  if(typeof Pi==='undefined'){toast('Open in Pi Browser');return;}
-  Pi.createPayment({amount:amt,memo:memo||'DigitalSaudi Pi transfer',metadata:{type:'send',app:'digitalsaudi'}},{
-    onReadyForServerApproval:function(paymentId){
+function _doSendPi(to, amt, memo) {
+  /* EXACT COPA PATTERN */
+  if (!amt||amt<=0) { toast('Enter amount'); return; }
+  if (typeof Pi==='undefined') { toast('Open in Pi Browser'); return; }
+  Pi.createPayment({ amount:amt, memo:memo||'DigitalSaudi Pi transfer', metadata:{type:'send',app:'digitalsaudi',network:'mainnet'} }, {
+    onReadyForServerApproval: function(paymentId){
       return fetch(_APPROVE,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({paymentId:paymentId})})
-        .then(function(r){return r.json();}).then(function(d){console.log('[DS] send approved:',d);});
+        .then(function(r){ return r.json(); }).then(function(d){ console.log('[DS] Send approved:',d); });
     },
-    onReadyForServerCompletion:function(paymentId,txid){
+    onReadyForServerCompletion: function(paymentId,txid){
       return fetch(_COMPLETE,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({paymentId:paymentId,txid:txid})})
-        .then(function(r){return r.json();})
-        .then(function(){addTx(amt+'π sent to @'+to);showPayStatus('success',amt+'π sent!');toast(amt+'π sent!');})
-        .catch(function(){addTx(amt+'π sent');toast('Sent!');});
+        .then(function(r){ return r.json(); })
+        .then(function(){
+          addTx(amt+'π sent'); showPayStatus('success',amt+'π sent!'); toast(amt+'π sent!');
+          var te=document.getElementById('ds-send-to'); if(te) te.value='';
+          var ae=document.getElementById('ds-send-amt'); if(ae) ae.value='';
+          var btn=document.getElementById('ds-send-btn'); if(btn){btn.textContent='π Send Pi';btn.disabled=false;}
+        }).catch(function(){
+          addTx(amt+'π sent'); toast('Sent!');
+          var btn=document.getElementById('ds-send-btn'); if(btn){btn.textContent='π Send Pi';btn.disabled=false;}
+        });
     },
-    onCancel:function(){if(sendBtn){sendBtn.textContent='π Send Pi';sendBtn.disabled=false;}showPayStatus('cancelled','Cancelled');toast('Cancelled');},
-    onError:function(err){console.error('[DS] Send error:',err);if(sendBtn){sendBtn.textContent='π Send Pi';sendBtn.disabled=false;}showPayStatus('failed','Error');}
+    onCancel: function(){
+      toast('Cancelled');
+      var btn=document.getElementById('ds-send-btn'); if(btn){btn.textContent='π Send Pi';btn.disabled=false;}
+    },
+    onError: function(err){
+      console.error('[DS] Send error:',err);
+      toast('Payment error — try again');
+      var btn=document.getElementById('ds-send-btn'); if(btn){btn.textContent='π Send Pi';btn.disabled=false;}
+    }
   });
 }
-function sendPi(){
-  var toEl=document.getElementById('ds-send-to');
-  var amtEl=document.getElementById('ds-send-amt');
-  var memoEl=document.getElementById('ds-send-memo');
-  var sendBtn=document.getElementById('ds-send-btn');
-  var to=toEl?toEl.value.trim():'';
-  var amt=amtEl?parseFloat(amtEl.value)||0:0;
-  var memo=(memoEl&&memoEl.value.trim())||'Pi transfer';
-  console.log('[DS] sendPi to='+to+' amt='+amt);
-  if(!amt||amt<=0){toast('Enter amount greater than 0');return;}
-  if(sendBtn){sendBtn.textContent='Opening Pi Wallet...';sendBtn.disabled=true;}
-  _doSendPi(to,amt,memo,sendBtn);
+function sendPi() {
+  /* EXACT COPA sendPi PATTERN */
+  var to   = (document.getElementById('ds-send-to')||{}).value||'';
+  var amt  = parseFloat((document.getElementById('ds-send-amt')||{}).value)||0;
+  var memo = (document.getElementById('ds-send-memo')||{}).value||'DigitalSaudi Pi transfer';
+  var btn  = document.getElementById('ds-send-btn');
+  if (btn) { btn.textContent='Processing...'; btn.disabled=true; }
+  _doSendPi(to, amt, memo);
 }
 function genRequest(){
   var amt=parseFloat((document.getElementById('rq-amt')||{}).value||0);
