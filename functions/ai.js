@@ -12,7 +12,9 @@ Rules: short mobile-friendly answers (3-5 sentences max). No fake stats. Reply i
 const MODELS = [
   'gemini-2.0-flash-lite',
   'gemini-2.0-flash',
+  'gemini-1.5-flash-8b',
   'gemini-1.5-flash-latest',
+  'gemini-1.5-pro-latest',
 ];
 
 async function callGemini(key, model, contents) {
@@ -86,7 +88,7 @@ export async function onRequestPost(context) {
     }
   }
 
-  return new Response(JSON.stringify({ reply: 'AI is temporarily busy. Please try again in a moment.' }), { status: 200, headers: CORS });
+  return new Response(JSON.stringify({ reply: 'AI is busy right now — all models rate-limited. Please wait 30 seconds and try again.' }), { status: 200, headers: CORS });
 }
 
 export async function onRequestOptions() {
