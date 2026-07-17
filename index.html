@@ -1071,25 +1071,35 @@ function renderScoresView(){
   var inner=document.getElementById('sc-in');if(!inner||!_sData)return;
   if(_sView==='table'){renderTable(inner);return;}
   var html='';
-  if(_sView==='live'){
-    var live=_sData.live||[];
-    if(live.length){html+='<div class="ls-comp-hdr" style="color:var(--red)">🔴 LIVE NOW ('+live.length+')</div>';live.forEach(function(m){html+=buildMatch(m);});}
-    else html='<div class="empty-state"><div class="es-ico">⚽</div><div class="es-t">No live matches</div><div class="es-s">Check back on match days</div></div>';
-  } else if(_sView==='previous'){
-    var prev=_sData.finished||[];
-    if(prev.length){prev.forEach(function(m){html+=buildMatch(m);});}
-    else html='<div class="empty-state"><div class="es-ico">⚽</div><div class="es-t">No recent results</div></div>';
+  /* ALL view: live at top with red pill, then all matches grouped by date/competition */
+  var live=_sData.live||[];
+  var grp=_sData.grouped||[];
+  /* Live section pinned at top */
+  if(live.length){
+    html+='<div class="ls-date-hdr"><span class="ls-date-pill" style="background:var(--red);color:#fff;border-color:var(--red)">🔴 LIVE NOW · '+live.length+' match'+(live.length>1?'es':'')+'</span></div>';
+    var liveComps={};
+    live.forEach(function(m){
+      var c=m.competition||'Live';
+      if(!liveComps[c])liveComps[c]=[];
+      liveComps[c].push(m);
+    });
+    Object.keys(liveComps).forEach(function(comp){
+      html+='<div class="ls-comp-hdr" style="color:var(--red);border-left:3px solid var(--red)">'+comp+'</div>';
+      liveComps[comp].forEach(function(m){html+=buildMatch(m);});
+    });
+  }
+  /* All matches grouped by date then competition */
+  if(!grp.length&&!live.length){
+    html='<div class="empty-state"><div class="es-ico">⚽</div><div class="es-t">No matches found</div><div class="es-s">Try another league or check back later</div></div>';
   } else {
-    var grp=_sData.grouped||[];
-    if(!grp.length){html='<div class="empty-state"><div class="es-ico">⚽</div><div class="es-t">No matches found</div><div class="es-s">Try another league</div></div>';}
-    else{grp.forEach(function(day){
+    grp.forEach(function(day){
       html+='<div class="ls-date-hdr"><span class="ls-date-pill">'+day.dayLabel+'</span></div>';
       var comps=day.competitions||{};
       Object.keys(comps).forEach(function(comp){
         html+='<div class="ls-comp-hdr">'+comp+'</div>';
         (comps[comp]||[]).forEach(function(m){html+=buildMatch(m);});
       });
-    });}
+    });
   }
   inner.innerHTML=html;
 }
@@ -1110,7 +1120,7 @@ function renderTable(el){
 function renderWallet(){
   var body=document.getElementById('home-body');
   var addr=piUser&&piUser.wallet_address?piUser.wallet_address:(piUser&&piUser.wallet?piUser.wallet:'No wallet — KYC required');
-  body.innerHTML='<div class="scroll"><div class="wallet-hero"><div class="wh-label">π Pi Wallet</div><div class="wh-addr">'+addr+'</div><div class="wallet-btns"><button class="wbtn send" onclick="openSend()"><span>↑</span> Send Pi</button><button class="wbtn req" onclick="openRequest()"><span>↓</span> Request Pi</button></div></div><div id="pay-status" class="pay-status"></div><div class="sec-lbl">Recent Transactions</div>';
+  body.innerHTML='<div class="scroll"><div class="wallet-hero"><div class="wh-label">π Pi Wallet</div><div class="wh-addr">'+addr+'</div><div class="wallet-btns"><button class="wbtn send" onclick="openSend()" ontouchstart="" style="-webkit-tap-highlight-color:transparent"><span>↑</span> Send Pi</button><button class="wbtn req" onclick="openRequest()" ontouchstart="" style="-webkit-tap-highlight-color:transparent"><span>↓</span> Request Pi</button></div></div><div id="pay-status" class="pay-status"></div><div class="sec-lbl">Recent Transactions</div>';
   var txs=JSON.parse(localStorage.getItem('ds_tx')||'[]').slice(0,8);
   if(txs.length){txs.forEach(function(tx){body.innerHTML+='<div class="tx-row"><div><div class="tx-type">'+(tx.t||'Transaction')+'</div><div class="tx-date">'+(tx.d||'')+'</div></div></div>';});}
   else{body.innerHTML+='<div style="text-align:center;padding:.8rem;font-size:.56rem;color:var(--t3)">No transactions yet</div>';}
@@ -1216,7 +1226,7 @@ function newsLoad(reset){
 }
 function buildNCard(a){
   var d=document.createElement('div');d.className='ncard';
-  d.onclick=function(){if(a.url)window.open(a.url,'_blank');};
+  d.onclick=function(){if(a.url)window.location.href=a.url;};
   var ago='';try{var ms=Date.now()-new Date(a.date).getTime(),h=Math.floor(ms/3600000);ago=h<1?'Just now':h<24?h+'h ago':Math.floor(h/24)+'d ago';}catch(e){}
   d.innerHTML=(a.image?'<div style="overflow:hidden"><img class="nc-img" loading="lazy" src="'+a.image+'" alt="" onload="this.classList.add(\'loaded\')" onerror="this.parentElement.style.display=\'none\'"></div>':'')+'<div class="nc-body"><div class="nc-meta"><span class="nc-src">'+a.source+'</span><span class="nc-ago">'+ago+'</span></div><div class="nc-title">'+a.title+'</div>'+(a.summary?'<div class="nc-sum">'+a.summary+'</div>':'')+'</div>';
   return d;
@@ -1292,7 +1302,7 @@ function renderPassport(body){
   var txs=JSON.parse(localStorage.getItem('ds_tx')||'[]').slice(0,5);
   var html='';
   if(isPass){html='<div class="pass-card" style="text-align:center;padding:1rem"><div style="font-size:2.4rem">⚡</div><div style="font-size:.92rem;font-weight:900;color:var(--g3)">Passport Active</div><div style="font-size:.5rem;color:var(--t3);margin-top:.1rem">Thank you for supporting DigitalSaudi</div></div>';}
-  else{html='<div class="pass-card"><div style="font-size:.88rem;font-weight:900;color:var(--g3);margin-bottom:.04rem">⚡ DigitalSaudi Passport</div><div style="font-size:.5rem;color:var(--t3);margin-bottom:.46rem">Premium membership · 1π one-time</div><div class="pass-feats"><div class="pf"><div class="pf-ico">🤖</div><div class="pf-n">AI Priority</div></div><div class="pf"><div class="pf-ico">⭐</div><div class="pf-n">Premium Badge</div></div><div class="pf"><div class="pf-ico">📌</div><div class="pf-n">Favourites</div></div><div class="pf"><div class="pf-ico">🚀</div><div class="pf-n">Early Access</div></div></div><button class="pi-pay-btn" id="ds-pass-btn" onclick="buyPass()"><span style="font-size:1rem">π</span> Get DigitalSaudi Passport · 1π</button><div id="pay-status" class="pay-status"></div></div>';}
+  else{html='<div class="pass-card"><div style="font-size:.88rem;font-weight:900;color:var(--g3);margin-bottom:.04rem">⚡ DigitalSaudi Passport</div><div style="font-size:.5rem;color:var(--t3);margin-bottom:.46rem">Premium membership · 1π one-time</div><div class="pass-feats"><div class="pf"><div class="pf-ico">🤖</div><div class="pf-n">AI Priority</div></div><div class="pf"><div class="pf-ico">⭐</div><div class="pf-n">Premium Badge</div></div><div class="pf"><div class="pf-ico">📌</div><div class="pf-n">Favourites</div></div><div class="pf"><div class="pf-ico">🚀</div><div class="pf-n">Early Access</div></div></div><button class="pi-pay-btn" id="ds-pass-btn" onclick="buyPass()" ontouchstart="" style="-webkit-tap-highlight-color:transparent"><span style="font-size:1rem">π</span> Get DigitalSaudi Passport · 1π</button><div id="pay-status" class="pay-status"></div></div>';}
   html+='<div class="sec-lbl">Payment History</div>';
   if(txs.length)txs.forEach(function(tx){html+='<div class="tx-row"><div><div class="tx-type">'+(tx.t||'Transaction')+'</div><div class="tx-date">'+(tx.d||'')+'</div></div></div>';});
   else html+='<div style="text-align:center;padding:.65rem;font-size:.56rem;color:var(--t3)">No transactions yet</div>';
