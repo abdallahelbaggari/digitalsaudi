@@ -1,0 +1,1381 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" id="root">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#03050A">
+<title>DigitalSaudi</title>
+<link rel="manifest" href="/manifest.json">
+<script src="https://sdk.minepi.com/pi-sdk.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg0:#03050A;--bg1:#07090F;--bg2:#0D1117;--bg3:#121820;--bg4:#1A2230;
+  --t1:#F2F0EA;--t2:rgba(242,240,234,.74);--t3:rgba(242,240,234,.40);
+  --g1:#005228;--g2:#00873F;--g3:#16C47F;
+  --gg:linear-gradient(135deg,#005228,#16C47F);
+  --gold:#C8A951;--red:#E55555;
+  --bd:rgba(22,196,127,.14);--bd2:rgba(22,196,127,.28);--bdo:rgba(200,169,81,.2);
+  --glow:0 0 32px rgba(22,196,127,.22);
+  --nav:80px;--r:16px;--r2:12px;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;overflow:hidden;font-family:'Inter',system-ui,sans-serif}
+body{background:var(--bg0);color:var(--t1)}
+button{background:none;border:none;cursor:pointer;font-family:inherit;touch-action:manipulation}
+input,select,textarea{font-family:inherit;color:var(--t1);background:none;border:none;outline:none}
+a{color:var(--g3);text-decoration:none}
+
+@keyframes sp{to{transform:rotate(360deg)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes pulse{0%,100%{opacity:.5;transform:scale(1)}50%{opacity:1;transform:scale(1.06)}}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+@keyframes ldot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.3;transform:scale(1.6)}}
+@keyframes tdot{0%,80%,100%{opacity:.3;transform:scale(.8)}40%{opacity:1;transform:scale(1)}}
+@keyframes slideIn{from{opacity:0;transform:translateX(30px)}to{opacity:1;transform:none}}
+@keyframes scaleIn{from{opacity:0;transform:scale(.94)}to{opacity:1;transform:scale(1)}}
+
+/* ══ LOADING — removed, using Copa pattern ══ */
+
+/* ══ LOGIN ══ */
+#login{position:fixed;inset:0;background:var(--bg0);display:flex;flex-direction:column;overflow:hidden;z-index:100}
+.lg-o1{position:absolute;width:400px;height:400px;border-radius:50%;background:radial-gradient(circle,rgba(22,196,127,.11),transparent 70%);top:-100px;right:-80px;animation:pulse 4s ease-in-out infinite;pointer-events:none}
+.lg-o2{position:absolute;width:320px;height:320px;border-radius:50%;background:radial-gradient(circle,rgba(200,169,81,.06),transparent 70%);bottom:-60px;left:-70px;animation:pulse 5s ease-in-out infinite reverse;pointer-events:none}
+.lg-top{height:4px;background:var(--gg);flex-shrink:0}
+.lg-body{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1.5rem;text-align:center;position:relative;z-index:1}
+.lg-badge{background:rgba(22,196,127,.1);border:1px solid var(--bd2);color:var(--g3);font-size:.5rem;font-weight:700;padding:.22rem .65rem;border-radius:99px;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.7rem}
+.lg-name{font-size:3rem;font-weight:900;letter-spacing:-.06em;line-height:1;background:var(--gg);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:.08rem}
+.lg-tag{font-size:.58rem;color:var(--t3);letter-spacing:.12em;text-transform:uppercase;margin-bottom:1.1rem}
+.lg-grid{display:grid;grid-template-columns:1fr 1fr;gap:.3rem;width:100%;max-width:300px;margin-bottom:1rem}
+.lg-card{background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.08);border-radius:13px;padding:.54rem .56rem;text-align:left}
+.lc-ico{font-size:1.3rem;margin-bottom:.14rem}
+.lc-n{font-size:.58rem;font-weight:700;color:var(--t1)}
+.lc-s{font-size:.42rem;color:var(--t3);margin-top:.03rem}
+.lg-foot{padding:.5rem 1.3rem 2.2rem;flex-shrink:0;position:relative;z-index:1}
+.btn-signin{width:100%;padding:1rem;background:var(--gg);border-radius:var(--r);font-size:1rem;font-weight:900;color:#fff;display:flex;align-items:center;justify-content:center;gap:.5rem;box-shadow:0 4px 32px rgba(22,196,127,.4);transition:all .15s}
+.btn-signin:active{transform:scale(.97)}
+.btn-signin:disabled{opacity:.5;cursor:not-allowed}
+#lmsg{font-size:.52rem;color:var(--t3);text-align:center;margin-top:.52rem;min-height:.88rem;line-height:1.45}
+
+/* ══ APP ══ */
+#app{display:none;flex-direction:column;height:100vh;overflow:hidden}
+#hdr{background:rgba(3,5,10,.96);border-bottom:1px solid var(--bd);padding:.42rem .72rem;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;backdrop-filter:blur(24px);z-index:20}
+.hdr-logo{font-size:1.12rem;font-weight:900;letter-spacing:-.04em;background:var(--gg);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hdr-sub{font-size:.3rem;color:var(--t3);margin-top:.02rem}
+.hdr-r{display:flex;align-items:center;gap:.32rem}
+#lang-btn{font-size:.5rem;font-weight:700;color:var(--gold);background:rgba(200,169,81,.1);border:1px solid var(--bdo);border-radius:99px;padding:.18rem .46rem;cursor:pointer;transition:all .15s}
+#user-chip{font-size:.44rem;color:var(--g3);font-weight:700;background:rgba(22,196,127,.1);padding:.12rem .4rem;border-radius:99px;border:1px solid var(--bd)}
+
+/* ══ NAV (enlarged) ══ */
+#nav{position:fixed;bottom:0;left:0;right:0;height:var(--nav);background:rgba(3,5,10,.98);border-top:2px solid var(--bd2);display:flex;z-index:50;backdrop-filter:blur(28px);padding-bottom:env(safe-area-inset-bottom);box-shadow:0 -4px 24px rgba(0,0,0,.5)}
+.nb{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.12rem;color:var(--t3);cursor:pointer;transition:all .2s;position:relative;padding:.2rem .08rem}
+.nb.on{color:var(--g3)}
+.nb.on::after{content:'';position:absolute;bottom:0;left:10%;right:10%;height:3px;background:var(--gg);border-radius:4px 4px 0 0}
+.nb-ico{font-size:1.7rem;line-height:1;transition:transform .2s}
+.nb.on .nb-ico{transform:scale(1.14)}
+.nb-lbl{font-size:.5rem;font-weight:700;text-transform:uppercase;letter-spacing:.02em}
+
+/* ══ SCREENS ══ */
+#main{flex:1;overflow:hidden;min-height:0;position:relative}
+.scr{display:none;flex-direction:column;height:100%;overflow:hidden;min-height:0}
+.scr.on{display:flex;animation:fadeUp .14s ease}
+.scroll{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;min-height:0;height:0;padding-bottom:calc(var(--nav)+1rem)}
+.scroll::-webkit-scrollbar{display:none}
+
+/* Screen headers */
+.sbar{display:flex;align-items:center;justify-content:space-between;padding:.42rem .72rem;background:rgba(3,5,10,.96);border-bottom:1px solid var(--bd);flex-shrink:0;backdrop-filter:blur(20px)}
+.sbar-t{font-size:.94rem;font-weight:900;letter-spacing:-.01em}
+.sbar-s{font-size:.34rem;color:var(--t3);margin-top:.04rem}
+.sbar-btn{font-size:1rem;color:var(--t3);padding:.2rem .34rem;border-radius:8px;cursor:pointer;transition:color .15s}
+.sbar-btn:active{color:var(--g3)}
+
+/* ══ HOME TABS (large, obvious) ══ */
+.htabs{display:flex;overflow-x:auto;scrollbar-width:none;border-bottom:2px solid var(--bd);flex-shrink:0;background:var(--bg1)}
+.htabs::-webkit-scrollbar{display:none}
+.htab{flex-shrink:0;display:flex;flex-direction:column;align-items:center;gap:.1rem;padding:.52rem .62rem;color:var(--t3);cursor:pointer;transition:all .16s;border-bottom:3px solid transparent;min-width:68px}
+.htab.on{color:var(--g3);border-bottom-color:var(--g3);background:rgba(22,196,127,.05)}
+.htab-ico{font-size:1.42rem;line-height:1}
+.htab-lbl{font-size:.45rem;font-weight:700;white-space:nowrap}
+
+/* City bar */
+.citybar{display:flex;gap:.24rem;overflow-x:auto;padding:.3rem .5rem;scrollbar-width:none;border-bottom:1px solid var(--bd);flex-shrink:0}
+.citybar::-webkit-scrollbar{display:none}
+.cty{flex-shrink:0;font-size:.52rem;font-weight:700;padding:.28rem .6rem;background:var(--bg3);border:1px solid var(--bd);border-radius:99px;color:var(--t3);cursor:pointer;white-space:nowrap;transition:all .15s}
+.cty.on{background:var(--gg);border-color:transparent;color:#fff}
+
+/* ══ TAB BAR (discover/explore/digital+) ══ */
+.tbr{display:flex;border-bottom:1px solid var(--bd);flex-shrink:0;background:var(--bg1)}
+.tb{flex:1;font-size:.54rem;font-weight:700;padding:.46rem .1rem;color:var(--t3);border-bottom:2.5px solid transparent;cursor:pointer;text-align:center;transition:all .15s;white-space:nowrap}
+.tb.on{color:var(--g3);border-bottom-color:var(--g3)}
+
+/* ══ AI CONCIERGE ══ */
+.ai-wrap{display:flex;flex-direction:column;height:100%;min-height:0}
+.ai-feed{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;min-height:0;height:0;padding:.55rem .65rem;display:flex;flex-direction:column;gap:.46rem}
+.ai-feed::-webkit-scrollbar{display:none}
+.ai-welcome{background:linear-gradient(135deg,rgba(22,196,127,.09),rgba(0,82,40,.15));border:1px solid var(--bd2);border-radius:16px;padding:.75rem .78rem}
+.ai-wt{font-size:.88rem;font-weight:900;color:var(--g3);margin-bottom:.18rem}
+.ai-ws{font-size:.56rem;color:var(--t2);line-height:1.6;margin-bottom:.46rem}
+.ai-chips{display:flex;flex-wrap:wrap;gap:.22rem}
+.chip{font-size:.52rem;font-weight:600;background:rgba(22,196,127,.1);border:1px solid var(--bd2);color:var(--g3);border-radius:99px;padding:.24rem .56rem;cursor:pointer;transition:all .15s;white-space:nowrap}
+.chip:active{background:rgba(22,196,127,.24);transform:scale(.96)}
+.msg{max-width:88%;padding:.54rem .7rem;border-radius:14px;font-size:.62rem;line-height:1.64;word-break:break-word;animation:fadeUp .15s ease;white-space:pre-wrap}
+.msg.u{background:var(--gg);color:#fff;align-self:flex-end;border-bottom-right-radius:4px;box-shadow:0 2px 14px rgba(22,196,127,.28)}
+.msg.a{background:var(--bg3);border:1px solid var(--bd);color:var(--t1);align-self:flex-start;border-bottom-left-radius:4px}
+.typing{align-self:flex-start;display:flex;gap:.3rem;align-items:center;background:var(--bg3);border:1px solid var(--bd);padding:.5rem .66rem;border-radius:14px;border-bottom-left-radius:4px}
+.td{width:8px;height:8px;border-radius:50%;background:var(--g3);animation:tdot 1.2s infinite}
+.td:nth-child(2){animation-delay:.2s}.td:nth-child(3){animation-delay:.4s}
+.ai-bar{display:flex;gap:.32rem;padding:.44rem .54rem;border-top:1px solid var(--bd);background:var(--bg1);flex-shrink:0;align-items:center}
+#ai-inp{flex:1;background:var(--bg3);border:1.5px solid var(--bd2);border-radius:99px;padding:.5rem .78rem;font-size:.62rem;color:var(--t1);transition:border-color .15s}
+#ai-inp:focus{border-color:var(--g3);outline:none}
+#ai-send{width:46px;height:46px;background:var(--gg);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.15rem;flex-shrink:0;box-shadow:0 2px 14px rgba(22,196,127,.35);transition:all .15s}
+#ai-send:active{transform:scale(.92)}
+#ai-send:disabled{opacity:.5}
+
+/* ══ PRAYER ══ */
+.pr-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.32rem;padding:.48rem}
+.pr-cell{background:var(--bg3);border-radius:13px;border:1.5px solid var(--bd);text-align:center;position:relative;min-height:92px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:.52rem .3rem;transition:all .2s}
+.pr-cell.next{border-color:var(--g3);background:rgba(22,196,127,.08);box-shadow:0 0 22px rgba(22,196,127,.16)}
+.pr-name{font-size:.48rem;font-weight:700;color:var(--t3);margin-bottom:.1rem}
+.pr-time{font-size:1.02rem;font-weight:900;color:var(--t1);line-height:1}
+.pr-cell.next .pr-time{color:var(--g3)}
+.next-b{position:absolute;top:.12rem;right:.18rem;font-size:.32rem;background:var(--g3);color:#fff;border-radius:99px;padding:.05rem .22rem;font-weight:700}
+.cd-bar{background:var(--bg3);border:1.5px solid var(--g3);border-radius:12px;padding:.52rem .68rem;margin:.06rem .48rem .4rem;display:flex;align-items:center;justify-content:space-between;min-height:60px}
+.cd-lbl{font-size:.48rem;color:var(--t3);font-weight:600}
+.cd-val{font-size:1.05rem;font-weight:900;color:var(--g3)}
+
+/* ══ ISLAMIC CALENDAR ══ */
+.ic-card{background:linear-gradient(135deg,rgba(0,82,40,.18),rgba(22,196,127,.08));border:1.5px solid var(--bd2);border-radius:var(--r);margin:.32rem .5rem;padding:.68rem .72rem}
+.ic-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:.38rem}
+.ic-hijri{font-size:1.3rem;font-weight:900;color:var(--g3);line-height:1}
+.ic-hijri-ar{font-family:serif;direction:rtl;font-size:.82rem;color:var(--gold);margin-top:.06rem}
+.ic-greg{font-size:.54rem;color:var(--t2);margin-top:.04rem}
+.ic-occasion{background:rgba(200,169,81,.12);border:1px solid var(--bdo);border-radius:8px;padding:.22rem .48rem;font-size:.5rem;color:var(--gold);font-weight:700;margin-top:.32rem;text-align:center}
+
+/* ══ WEATHER ══ */
+.wx-hero{display:flex;align-items:center;gap:.68rem;padding:.6rem .74rem .3rem;min-height:100px}
+.wx-ico{font-size:3.2rem}
+.wx-tmp{font-size:3.4rem;font-weight:900;line-height:1}
+.wx-dsc{font-size:.55rem;color:var(--t2);margin-top:.07rem}
+.wx-meta{display:flex;gap:.54rem;padding:.06rem .74rem .46rem}
+.wm{font-size:.5rem;color:var(--t3)}
+.fc{display:grid;grid-template-columns:repeat(5,1fr);gap:.24rem;padding:.05rem .48rem .48rem}
+.fcd{background:var(--bg3);border-radius:10px;padding:.3rem .2rem;text-align:center;border:1px solid var(--bd);min-height:78px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.fcd-dt{font-size:.36rem;color:var(--t3);margin-bottom:.1rem}
+.fcd-i{font-size:.88rem;margin-bottom:.08rem}
+.fcd-hi{font-size:.58rem;font-weight:800;color:var(--t1)}
+.fcd-lo{font-size:.46rem;color:var(--t3)}
+.wx-all{display:grid;grid-template-columns:repeat(3,1fr);gap:.28rem;padding:.42rem .48rem}
+.wag{background:var(--bg3);border-radius:10px;padding:.44rem .3rem;text-align:center;border:1px solid var(--bd);min-height:78px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.wag-c{font-size:.44rem;color:var(--t3);margin-bottom:.06rem}
+.wag-i{font-size:1rem;margin-bottom:.07rem}
+.wag-t{font-size:.92rem;font-weight:900;color:var(--t1)}
+
+/* ══ SCORES ══ */
+.lg-bar{display:flex;gap:.22rem;overflow-x:auto;padding:.3rem .5rem;scrollbar-width:none;border-bottom:1px solid var(--bd);flex-shrink:0}
+.lg-bar::-webkit-scrollbar{display:none}
+.lgb{flex-shrink:0;font-size:.5rem;font-weight:700;padding:.24rem .55rem;background:var(--bg3);border:1px solid var(--bd);border-radius:99px;color:var(--t3);cursor:pointer;white-space:nowrap;transition:all .15s}
+.lgb.on{background:var(--gg);border-color:transparent;color:#fff}
+.vw-bar{display:flex;gap:.24rem;padding:.28rem .5rem;border-bottom:1px solid var(--bd);flex-shrink:0}
+.vwb{font-size:.54rem;font-weight:700;padding:.24rem .55rem;background:var(--bg3);border:1px solid var(--bd);border-radius:99px;color:var(--t3);cursor:pointer;transition:all .15s}
+.vwb.on{background:rgba(22,196,127,.15);border-color:var(--g3);color:var(--g3)}
+.match{background:var(--bg2);border-radius:14px;border:1.5px solid var(--bd);padding:.54rem .6rem;margin:.24rem .5rem;position:relative;overflow:hidden;transition:all .15s;cursor:pointer;animation:fadeUp .18s ease;min-height:88px}
+.match.live-m{border-color:var(--g3);box-shadow:0 0 18px rgba(22,196,127,.14)}
+.live-ind{position:absolute;top:.38rem;right:.55rem;display:flex;align-items:center;gap:.22rem}
+.live-dot{width:7px;height:7px;border-radius:50%;background:var(--g3);animation:ldot 1.2s infinite}
+.live-lbl{font-size:.42rem;font-weight:800;color:var(--g3)}
+.match-venue{font-size:.42rem;color:var(--t3);margin-bottom:.28rem;display:flex;align-items:center;gap:.22rem}
+.match-row{display:grid;grid-template-columns:1fr auto 1fr;gap:.3rem;align-items:center}
+.team-r{display:flex;align-items:center;gap:.24rem}
+.team-r.away{justify-content:flex-end}
+.team-n{font-size:.68rem;font-weight:800;color:var(--t1);line-height:1.2}
+.crest{width:22px;height:22px;object-fit:contain;border-radius:3px;flex-shrink:0}
+.score-box{background:var(--bg3);border-radius:10px;padding:.28rem .5rem;text-align:center;min-width:66px;border:1px solid var(--bd)}
+.score-n{font-size:1.32rem;font-weight:900;color:var(--t1);line-height:1}
+.score-t{font-size:.38rem;color:var(--t3);margin-top:.04rem}
+.score-vs{font-size:.74rem;color:var(--t3);font-weight:700}
+.tbl-wrap{overflow-x:auto;padding:.42rem .5rem}
+.tbl{width:100%;border-collapse:collapse}
+.tbl th{font-size:.38rem;font-weight:800;color:var(--t3);text-transform:uppercase;letter-spacing:.06em;padding:.3rem .28rem;border-bottom:1px solid var(--bd);text-align:center;white-space:nowrap}
+.tbl th:nth-child(2),.tbl td:nth-child(2){text-align:left;min-width:90px}
+.tbl td{padding:.35rem .28rem;border-bottom:1px solid rgba(255,255,255,.04);text-align:center;vertical-align:middle}
+.tbl tr.hl td{background:rgba(22,196,127,.06)}
+.pos{font-size:.52rem;font-weight:700;color:var(--t3)}
+.pos.cl{color:var(--g3)}.pos.eu{color:var(--gold)}.pos.rz{color:var(--red)}
+.club-c{display:flex;align-items:center;gap:.28rem}
+.club-n{font-size:.58rem;font-weight:700;color:var(--t1)}
+.pts{font-size:.72rem;font-weight:900;color:var(--t1)}
+.form-d{display:flex;gap:2px}
+.fd2{width:7px;height:7px;border-radius:50%}
+.fw{background:var(--g3)}.fdraw{background:var(--t3)}.fl{background:var(--red)}
+
+/* ══ WALLET / PAYMENT ══ */
+.wallet-hero{background:linear-gradient(135deg,rgba(0,82,40,.25),rgba(22,196,127,.1));border:1.5px solid var(--bd2);border-radius:var(--r);margin:.32rem .5rem;padding:.78rem .74rem;position:relative;overflow:hidden}
+.wh-label{font-size:.44rem;color:var(--g3);font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:.08rem}
+.wh-addr{font-size:.5rem;color:var(--t2);font-family:monospace;margin-bottom:.62rem;word-break:break-all;line-height:1.45}
+.wallet-btns{display:grid;grid-template-columns:1fr 1fr;gap:.46rem}
+.wbtn{padding:.74rem .5rem;border-radius:13px;font-size:.72rem;font-weight:900;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:.35rem;transition:all .15s;min-height:60px;touch-action:manipulation}
+.wbtn.send{background:var(--gg);color:#fff;box-shadow:0 3px 16px rgba(22,196,127,.35)}
+.wbtn.req{background:rgba(22,196,127,.12);border:1.5px solid var(--bd2);color:var(--g3)}
+.wbtn:active{transform:scale(.96)}
+.wbtn:disabled{opacity:.45;cursor:not-allowed}
+/* Payment status — Copa pattern */
+.pay-status{font-size:.54rem;padding:.38rem .65rem;border-radius:9px;margin:.3rem .5rem;text-align:center;display:none}
+.pay-status.success{background:rgba(22,196,127,.1);border:1px solid var(--bd2);color:var(--g3);display:block}
+.pay-status.failed{background:rgba(229,85,85,.1);border:1px solid rgba(229,85,85,.3);color:var(--red);display:block}
+.pay-status.cancelled{background:rgba(200,169,81,.1);border:1px solid var(--bdo);color:var(--gold);display:block}
+
+/* ══ HOLIDAYS ══ */
+.hol{display:flex;align-items:center;gap:.52rem;padding:.54rem .72rem;border-bottom:1px solid rgba(255,255,255,.04);min-height:78px}
+.hol-f{font-size:1.5rem;flex-shrink:0}
+.hol-n{font-size:.66rem;font-weight:700;color:var(--t1)}
+.hol-ar{font-family:serif;font-size:.72rem;color:var(--gold);direction:rtl}
+.hol-d{font-size:.44rem;color:var(--t3)}
+.hol-cnt{text-align:right;flex-shrink:0}
+.hol-days{font-size:1.15rem;font-weight:900;color:var(--g3)}
+.hol-unit{font-size:.36rem;color:var(--t3)}
+
+/* ══ QIBLA ══ */
+.qibla-wrap{display:flex;flex-direction:column;align-items:center;padding:1.2rem .7rem}
+.compass{width:206px;height:206px;border-radius:50%;border:2px solid var(--bd2);background:var(--bg3);box-shadow:var(--glow);position:relative;display:flex;align-items:center;justify-content:center;margin-bottom:.74rem}
+.c-n{position:absolute;top:.46rem;font-size:.66rem;font-weight:900;color:var(--t3)}
+.c-arr{width:3px;height:80px;background:linear-gradient(180deg,var(--g3),transparent);border-radius:99px;transform-origin:bottom center;position:absolute;bottom:50%;left:calc(50% - 1.5px);transition:transform .65s cubic-bezier(.34,1.56,.64,1)}
+.q-brg{font-size:2.1rem;font-weight:900;color:var(--g3)}
+.q-dist{font-size:.54rem;color:var(--t3);margin-top:.08rem}
+
+/* ══ ZAKAT ══ */
+.z-inp{width:100%;background:var(--bg3);border:1.5px solid var(--bd2);border-radius:11px;padding:.52rem .68rem;color:var(--t1);font-size:.64rem;margin-bottom:.34rem;min-height:54px;display:block}
+.z-inp:focus{border-color:var(--g3);outline:none}
+.z-res{background:rgba(22,196,127,.08);border:1.5px solid var(--g3);border-radius:12px;padding:.68rem;margin-top:.5rem;text-align:center;display:none}
+.z-amt{font-size:1.8rem;font-weight:900;color:var(--g3)}
+
+/* ══ NEWS ══ */
+.nfeed{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;min-height:0;height:0;padding-bottom:calc(var(--nav)+.8rem)}
+.nfeed::-webkit-scrollbar{display:none}
+.catbar{display:flex;gap:.24rem;overflow-x:auto;padding:.3rem .5rem;scrollbar-width:none;border-bottom:1px solid var(--bd);flex-shrink:0}
+.catbar::-webkit-scrollbar{display:none}
+.cb{flex-shrink:0;font-size:.54rem;font-weight:700;padding:.26rem .6rem;background:var(--bg3);border:1px solid var(--bd);border-radius:99px;color:var(--t3);cursor:pointer;white-space:nowrap;transition:all .15s}
+.cb.on{background:var(--gg);border-color:transparent;color:#fff}
+.ncard{background:var(--bg1);border-bottom:3px solid var(--bg0);cursor:pointer;animation:fadeUp .18s ease}
+.ncard:active{opacity:.88}
+.nc-img{width:100%;height:230px;object-fit:cover;display:block;background:var(--bg3);opacity:0;transition:opacity .3s}
+.nc-img.loaded{opacity:1}
+.nc-body{padding:.58rem .82rem .68rem}
+.nc-meta{display:flex;align-items:center;justify-content:space-between;margin-bottom:.2rem}
+.nc-src{font-size:.44rem;font-weight:700;color:var(--g3);text-transform:uppercase;letter-spacing:.05em}
+.nc-ago{font-size:.44rem;color:var(--t3)}
+.nc-title{font-size:1.02rem;font-weight:800;line-height:1.3;color:var(--t1);margin-bottom:.22rem;letter-spacing:-.01em}
+.nc-sum{font-size:.58rem;color:var(--t2);line-height:1.55;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.skel{background:linear-gradient(90deg,var(--bg3) 25%,var(--bg4) 50%,var(--bg3) 75%);background-size:200% 100%;animation:shimmer 1.4s infinite;border-radius:6px}
+
+/* ══ IMAGES ══ */
+.ifeed{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;min-height:0;height:0;padding-bottom:calc(var(--nav)+.8rem)}
+.ifeed::-webkit-scrollbar{display:none}
+.img-grid{display:grid;grid-template-columns:1fr 1fr;gap:3px;padding:3px}
+.ig-item{overflow:hidden;border-radius:9px;background:var(--bg3);cursor:pointer;aspect-ratio:4/3;position:relative}
+.ig-item img{width:100%;height:100%;object-fit:cover;display:block;opacity:0;transition:opacity .3s}
+.ig-item img.loaded{opacity:1}
+.ig-item:nth-child(7n+1){grid-column:span 2;aspect-ratio:16/9}
+/* Full screen image viewer */
+#img-viewer{display:none;position:fixed;inset:0;background:rgba(0,0,0,.96);z-index:300;flex-direction:column;align-items:center;justify-content:center}
+#img-viewer.open{display:flex;animation:fadeIn .2s ease}
+#img-viewer img{max-width:100%;max-height:85vh;object-fit:contain;border-radius:8px}
+#img-viewer .iv-close{position:absolute;top:1rem;right:1rem;font-size:1.4rem;color:rgba(255,255,255,.8);cursor:pointer;background:rgba(0,0,0,.4);border-radius:50%;width:42px;height:42px;display:flex;align-items:center;justify-content:center}
+
+/* ══ DISCOVER ══ */
+.item-card{background:var(--bg2);border-radius:var(--r2);border:1px solid var(--bd);padding:.58rem .68rem;margin:.24rem .5rem;cursor:pointer;transition:all .15s;min-height:84px;animation:fadeUp .18s ease}
+.item-card:active{background:var(--bg3);border-color:var(--g3)}
+.ic-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:.12rem}
+.ic-name{font-size:.72rem;font-weight:800;color:var(--t1)}
+.ic-tag{font-size:.42rem;font-weight:700;color:var(--g3);background:rgba(22,196,127,.1);border:1px solid var(--bd2);border-radius:99px;padding:.07rem .28rem;white-space:nowrap;flex-shrink:0;margin-left:.3rem}
+.ic-year{font-size:.42rem;color:var(--t3);margin-bottom:.1rem}
+.ic-desc{font-size:.56rem;color:var(--t2);line-height:1.52}
+.eco-sec{margin:.28rem .5rem}
+.eco-hdr{font-size:.64rem;font-weight:800;color:var(--t1);padding:.38rem .66rem .14rem;background:var(--bg2);border-radius:var(--r2) var(--r2) 0 0;border:1px solid var(--bd);border-bottom:none}
+.eco-items{background:var(--bg2);border:1px solid var(--bd);border-radius:0 0 var(--r2) var(--r2);overflow:hidden}
+.eco-row{padding:.44rem .66rem;border-bottom:1px solid rgba(255,255,255,.04);display:flex;align-items:center;min-height:60px}
+.eco-row:last-child{border-bottom:none}
+.er-n{font-size:.64rem;font-weight:700;color:var(--t1)}
+.er-s{font-size:.44rem;color:var(--t3);margin-top:.04rem}
+
+/* ══ EXPLORE ══ */
+.ev-card{background:var(--bg2);border-radius:var(--r2);border:1px solid var(--bd);padding:.58rem .68rem;margin:.24rem .5rem;position:relative;overflow:hidden;cursor:pointer;min-height:84px;transition:all .15s}
+.ev-card:active{background:var(--bg3)}
+.ev-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--gg)}
+.ev-name{font-size:.7rem;font-weight:800;color:var(--t1);margin-bottom:.1rem}
+.ev-desc{font-size:.55rem;color:var(--t2);line-height:1.52}
+.giga{background:var(--bg2);border-radius:var(--r2);border:1px solid var(--bd);padding:.58rem .68rem;margin:.24rem .5rem;display:flex;gap:.42rem;align-items:flex-start;cursor:pointer;min-height:84px;transition:all .15s}
+.giga:active{background:var(--bg3)}
+.g-emo{font-size:1.35rem;flex-shrink:0;margin-top:.04rem}
+.g-name{font-size:.7rem;font-weight:800;color:var(--t1);margin-bottom:.07rem}
+.g-desc{font-size:.54rem;color:var(--t2);line-height:1.5}
+.g-st{font-size:.42rem;font-weight:800;border-radius:99px;padding:.07rem .3rem;display:inline-block;margin-top:.12rem}
+.s-dev{color:var(--gold);background:rgba(200,169,81,.1);border:1px solid rgba(200,169,81,.22)}
+.s-open{color:var(--g3);background:rgba(22,196,127,.1);border:1px solid var(--bd2)}
+.s-act{color:var(--g3);background:rgba(22,196,127,.1);border:1px solid var(--bd2)}
+.dest-grid{display:grid;grid-template-columns:1fr 1fr;gap:.32rem;padding:.38rem .5rem}
+.dest-card{border-radius:14px;overflow:hidden;background:var(--bg3);border:1px solid var(--bd);cursor:pointer;min-height:138px;display:flex;flex-direction:column;transition:all .15s}
+.dest-card:active{transform:scale(.97);border-color:var(--g3)}
+.dc-emo{flex:1;display:flex;align-items:center;justify-content:center;font-size:2.6rem;background:rgba(22,196,127,.04)}
+.dc-body{padding:.3rem .4rem}
+.dc-name{font-size:.62rem;font-weight:800;color:var(--t1)}
+.dc-tag{font-size:.4rem;color:var(--t3)}
+.phrase-row{background:var(--bg2);border:1px solid var(--bd);border-radius:10px;padding:.4rem .54rem;display:flex;align-items:center;gap:.45rem;min-height:60px}
+.ph-ar{font-family:serif;font-size:.98rem;color:var(--gold);direction:rtl;min-width:6rem;text-align:right;flex-shrink:0}
+.ph-ph{font-size:.56rem;color:var(--t1);font-style:italic}
+.ph-en{font-size:.46rem;color:var(--t3)}
+
+/* ══ DIGITAL+ ══ */
+.pass-card{background:linear-gradient(135deg,rgba(0,82,40,.2),rgba(22,196,127,.08));border:1.5px solid var(--bd2);border-radius:var(--r);padding:.72rem .74rem;margin:.32rem .5rem}
+.pass-feats{display:grid;grid-template-columns:1fr 1fr;gap:.28rem;margin-bottom:.56rem}
+.pf{background:rgba(255,255,255,.04);border:1px solid var(--bd);border-radius:11px;padding:.44rem .46rem;text-align:center;min-height:70px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.pf-ico{font-size:1.15rem;margin-bottom:.12rem}
+.pf-n{font-size:.54rem;font-weight:700;color:var(--t1)}
+.pf-s{font-size:.4rem;color:var(--t3)}
+/* ── EXACT COPA pi-pay-btn CLASS ── */
+.pi-pay-btn{width:100%;padding:.74rem;background:var(--gg);border-radius:13px;font-size:.82rem;font-weight:900;color:#fff;display:flex;align-items:center;justify-content:center;gap:.42rem;box-shadow:0 4px 24px rgba(22,196,127,.32);transition:all .15s;cursor:pointer;touch-action:manipulation}
+.pi-pay-btn:active{transform:scale(.97)}
+.pi-pay-btn:disabled{opacity:.5;cursor:not-allowed}
+.tx-row{display:flex;align-items:center;justify-content:space-between;padding:.48rem .72rem;border-bottom:1px solid rgba(255,255,255,.04);min-height:60px}
+.tx-type{font-size:.6rem;font-weight:600;color:var(--t1)}
+.tx-date{font-size:.42rem;color:var(--t3)}
+.tx-amt{font-size:.66rem;font-weight:900;color:var(--g3)}
+.faq-item{background:var(--bg2);border-radius:var(--r2);border:1px solid var(--bd);margin:.22rem .5rem;overflow:hidden;cursor:pointer;min-height:62px}
+.faq-q{padding:.54rem .68rem;font-size:.62rem;font-weight:700;color:var(--t1);display:flex;align-items:center;justify-content:space-between}
+.faq-a{padding:0 .68rem .54rem;font-size:.56rem;color:var(--t2);line-height:1.62;display:none}
+.faq-item.open .faq-a{display:block}
+.faq-ico{font-size:.78rem;color:var(--g3);transition:transform .2s;flex-shrink:0}
+.faq-item.open .faq-ico{transform:rotate(45deg)}
+
+/* ══ PANEL ══ */
+.panel{display:none;position:fixed;inset:0;background:var(--bg0);z-index:200;flex-direction:column;overflow:hidden}
+.panel.open{display:flex;animation:slideIn .16s ease}
+.panel-hdr{background:rgba(3,5,10,.97);border-bottom:1px solid var(--bd);padding:.54rem .78rem;display:flex;align-items:center;gap:.44rem;flex-shrink:0}
+.panel-back{font-size:.74rem;color:var(--g3);font-weight:700;cursor:pointer;padding:.1rem .28rem}
+.panel-tag{font-size:.54rem;color:var(--t3);flex:1;text-align:center}
+.panel-body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:1.5rem}
+.panel-body::-webkit-scrollbar{display:none}
+.w-label{font-size:.5rem;font-weight:700;color:var(--t3);margin-bottom:.15rem;display:block}
+.w-inp{width:100%;background:var(--bg3);border:1.5px solid var(--bd2);border-radius:11px;padding:.52rem .68rem;color:var(--t1);font-size:.64rem;margin-bottom:.34rem;min-height:54px;display:block}
+.w-inp:focus{border-color:var(--g3);outline:none}
+.w-btn{width:100%;padding:.68rem;background:var(--gg);border-radius:12px;font-size:.78rem;font-weight:900;color:#fff;display:flex;align-items:center;justify-content:center;gap:.38rem;box-shadow:0 3px 16px rgba(22,196,127,.3);transition:all .15s;min-height:56px;cursor:pointer;touch-action:manipulation}
+.w-btn:active{transform:scale(.97)}
+.w-btn:disabled{opacity:.5}
+
+/* ══ UTILS ══ */
+#toast{position:fixed;bottom:calc(var(--nav)+16px);left:50%;transform:translateX(-50%) translateY(14px);background:var(--g3);color:#fff;font-size:.56rem;font-weight:800;padding:.38rem 1rem;border-radius:99px;opacity:0;transition:all .22s cubic-bezier(.34,1.56,.64,1);pointer-events:none;z-index:999;white-space:nowrap;box-shadow:0 2px 14px rgba(22,196,127,.4)}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.spin-wrap{display:flex;align-items:center;justify-content:center;flex-direction:column;gap:.38rem;padding:2.4rem;font-size:.56rem;color:var(--t3)}
+.spin{width:26px;height:26px;border:2.5px solid var(--bg4);border-top-color:var(--g3);border-radius:50%;animation:sp .7s linear infinite}
+.card{background:var(--bg2);border-radius:var(--r);border:1px solid var(--bd);overflow:hidden;margin:.3rem .5rem}
+.card-h{padding:.48rem .7rem;border-bottom:1px solid var(--bd);display:flex;align-items:center;gap:.38rem;background:rgba(22,196,127,.05)}
+.ch-ico{font-size:1.15rem}
+.ch-t{font-size:.8rem;font-weight:900;color:var(--t1)}
+.ch-s{font-size:.42rem;color:var(--t3);margin-top:.03rem}
+.card-b{padding:.62rem .7rem}
+.sec-lbl{padding:.36rem .72rem .12rem;font-size:.42rem;font-weight:800;color:var(--t3);letter-spacing:.1em;text-transform:uppercase}
+.badge{font-size:.42rem;font-weight:700;border-radius:99px;padding:.07rem .28rem;background:rgba(22,196,127,.1);border:1px solid var(--bd2);color:var(--g3)}
+.ar-t{font-family:serif;direction:rtl;text-align:right;color:var(--gold)}
+.offline-note{font-size:.44rem;color:var(--gold);background:rgba(200,169,81,.08);border:1px solid var(--bdo);border-radius:7px;padding:.2rem .5rem;margin:.1rem .5rem;text-align:center}
+.empty-state{text-align:center;padding:1.8rem .8rem}
+.es-ico{font-size:2.8rem;margin-bottom:.42rem}
+.es-t{font-size:.72rem;font-weight:700;color:var(--t1);margin-bottom:.12rem}
+.es-s{font-size:.56rem;color:var(--t3);line-height:1.55}
+
+/* ══ LIVESCORE-STYLE MATCH DISPLAY ══ */
+/* Date header */
+.ls-date-hdr{padding:.28rem .5rem .1rem;display:flex;align-items:center;gap:.4rem;margin-top:.1rem}
+.ls-date-pill{font-size:.48rem;font-weight:800;color:var(--t1);background:var(--bg3);border:1px solid var(--bd);border-radius:6px;padding:.12rem .36rem;letter-spacing:.06em}
+
+/* Competition header — like LiveScore grey bar */
+.ls-comp-hdr{
+  background:var(--bg3);border-top:1px solid var(--bd);border-bottom:1px solid var(--bd);
+  padding:.32rem .5rem;font-size:.46rem;font-weight:700;color:var(--t3);
+  display:flex;align-items:center;gap:.3rem;letter-spacing:.04em;text-transform:uppercase;
+}
+
+/* Match row — clean livescore style */
+.ls-match{
+  background:var(--bg2);border-bottom:1px solid rgba(255,255,255,.04);
+  padding:.38rem .5rem;display:flex;align-items:center;gap:.32rem;
+  min-height:72px;cursor:pointer;transition:background .14s;position:relative;
+}
+.ls-match:active{background:var(--bg3)}
+.ls-match.ls-live{border-left:3px solid var(--g3);background:rgba(22,196,127,.04)}
+.ls-match.ls-done{opacity:.9}
+
+/* Live pulse dot */
+.ls-live-dot{
+  width:6px;height:6px;border-radius:50%;background:var(--g3);
+  flex-shrink:0;animation:ldot 1.2s infinite;
+  position:absolute;left:.3rem;top:50%;transform:translateY(-50%);
+}
+
+/* Time column */
+.ls-time{width:44px;flex-shrink:0;text-align:center}
+.ls-time-txt{font-size:.54rem;color:var(--t3);font-weight:600}
+.ls-time-txt.ls-ft{color:var(--t3);font-weight:700}
+.ls-live-lbl{font-size:.5rem;font-weight:900;color:var(--g3);animation:pulse 1.5s ease-in-out infinite}
+
+/* Teams column */
+.ls-teams{flex:1;display:flex;flex-direction:column;gap:.26rem}
+.ls-team{display:flex;align-items:center;gap:.3rem;position:relative}
+.ls-crest{width:18px;height:18px;object-fit:contain;border-radius:2px;flex-shrink:0}
+.ls-crest-ph{width:18px;height:18px;background:var(--bg4);border-radius:2px;flex-shrink:0}
+.ls-tname{font-size:.64rem;font-weight:600;color:var(--t1);flex:1;line-height:1.2}
+.ls-tname.ls-bold{font-weight:800;color:var(--g3)}
+
+/* Score — right-aligned like LiveScore */
+.ls-score{
+  font-size:.72rem;font-weight:900;color:var(--t1);
+  min-width:18px;text-align:right;flex-shrink:0;
+}
+.ls-score.ls-live-sc{color:var(--g3)}
+
+/* Venue below teams */
+.ls-venue{font-size:.38rem;color:var(--t3);padding:.06rem 0 0 48px}
+
+/* View buttons — wider for 4 options */
+.vw-bar{display:flex;gap:.2rem;padding:.26rem .46rem;border-bottom:1px solid var(--bd);flex-shrink:0;overflow-x:auto;scrollbar-width:none}
+.vw-bar::-webkit-scrollbar{display:none}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login">
+  <div class="lg-o1"></div><div class="lg-o2"></div>
+  <div class="lg-top"></div>
+  <div class="lg-body">
+    <div class="lg-badge">Pi Network · Mainnet · sandbox:false</div>
+    <div class="lg-name">DigitalSaudi</div>
+    <div class="lg-tag" id="lg-tag">Saudi Digital Ecosystem on Pi</div>
+    <div class="lg-grid">
+      <div class="lg-card"><div class="lc-ico">🤖</div><div class="lc-n">AI Concierge</div><div class="lc-s">Saudi expert assistant</div></div>
+      <div class="lg-card"><div class="lc-ico">⚽</div><div class="lc-n">Live Scores</div><div class="lc-s">6 leagues · Live · Table</div></div>
+      <div class="lg-card"><div class="lc-ico">💳</div><div class="lc-n">Pi Wallet</div><div class="lc-s">Send &amp; Request Pi</div></div>
+      <div class="lg-card"><div class="lc-ico">🕌</div><div class="lc-n">Saudi Hub</div><div class="lc-s">Prayer · Calendar · Qibla</div></div>
+    </div>
+  </div>
+  <div class="lg-foot">
+    <button class="btn-signin" id="loginBtn" onclick="piLogin()">
+      <span style="font-size:1.1rem">π</span>
+      <span id="stxt">Sign In with Pi</span>
+    </button>
+    <div id="lmsg"></div>
+    <div style="font-size:.42rem;color:var(--t3);text-align:center;margin-top:.42rem">Pi Network Mainnet · Open in Pi Browser</div>
+    <div style="display:flex;gap:.5rem;justify-content:center;margin-top:.68rem">
+      <a href="/privacy" style="font-size:.46rem;color:rgba(200,169,81,.5);text-decoration:underline">Privacy</a>
+      <span style="color:var(--t3)">·</span>
+      <a href="/terms" style="font-size:.46rem;color:rgba(200,169,81,.5);text-decoration:underline">Terms</a>
+    </div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <div id="hdr">
+    <div>
+      <div class="hdr-logo">DigitalSaudi</div>
+      <div class="hdr-sub">Saudi Digital Ecosystem on Pi</div>
+    </div>
+    <div class="hdr-r">
+      <button id="lang-btn" onclick="toggleLang()">عر</button>
+      <div id="user-chip"></div>
+    </div>
+  </div>
+  <div id="main">
+    <!-- HOME -->
+    <section class="scr on" id="s-home">
+      <div class="sbar">
+        <div><div class="sbar-t">🇸🇦 Home</div><div class="sbar-s">AI · Prayer · Calendar · Scores · Wallet</div></div>
+        <button class="sbar-btn" onclick="homeLoad()">↺</button>
+      </div>
+      <div class="htabs" id="htabs">
+        <div class="htab on" onclick="hTab(0,this)"><span class="htab-ico">🤖</span><span class="htab-lbl">AI</span></div>
+        <div class="htab" onclick="hTab(1,this)"><span class="htab-ico">🕌</span><span class="htab-lbl">Prayer</span></div>
+        <div class="htab" onclick="hTab(2,this)"><span class="htab-ico">🌦</span><span class="htab-lbl">Weather</span></div>
+        <div class="htab" onclick="hTab(3,this)"><span class="htab-ico">⚽</span><span class="htab-lbl">Scores</span></div>
+        <div class="htab" onclick="hTab(4,this)"><span class="htab-ico">💳</span><span class="htab-lbl">Wallet</span></div>
+        <div class="htab" onclick="hTab(5,this)"><span class="htab-ico">📅</span><span class="htab-lbl">Calendar</span></div>
+        <div class="htab" onclick="hTab(6,this)"><span class="htab-ico">🗓</span><span class="htab-lbl">Holidays</span></div>
+        <div class="htab" onclick="hTab(7,this)"><span class="htab-ico">🧭</span><span class="htab-lbl">Qibla</span></div>
+        <div class="htab" onclick="hTab(8,this)"><span class="htab-ico">💰</span><span class="htab-lbl">Zakat</span></div>
+      </div>
+      <div class="citybar" id="citybar" style="display:none">
+        <button class="cty on" onclick="selCity('riyadh',this)">Riyadh</button>
+        <button class="cty" onclick="selCity('jeddah',this)">Jeddah</button>
+        <button class="cty" onclick="selCity('makkah',this)">Makkah</button>
+        <button class="cty" onclick="selCity('madinah',this)">Madinah</button>
+        <button class="cty" onclick="selCity('dammam',this)">Dammam</button>
+        <button class="cty" onclick="selCity('taif',this)">Taif</button>
+        <button class="cty" onclick="selCity('tabuk',this)">Tabuk</button>
+        <button class="cty" onclick="selCity('abha',this)">Abha</button>
+        <button class="cty" onclick="selCity('neom',this)">NEOM</button>
+      </div>
+      <div id="home-body" style="flex:1;overflow:hidden;min-height:0;display:flex;flex-direction:column"></div>
+    </section>
+    <!-- DISCOVER -->
+    <section class="scr" id="s-disc">
+      <div class="sbar"><div><div class="sbar-t">🚀 Discover</div><div class="sbar-s">Startups · Tech · Opportunities</div></div></div>
+      <div class="tbr"><button class="tb on" onclick="dTab(0,this)">🦄 Startups</button><button class="tb" onclick="dTab(1,this)">🗺 Ecosystem</button><button class="tb" onclick="dTab(2,this)">💡 Opportunities</button></div>
+      <div class="scroll" id="disc-body"></div>
+    </section>
+    <!-- MEDIA -->
+    <section class="scr" id="s-media">
+      <div class="sbar">
+        <div><div class="sbar-t">📰 Media</div><div class="sbar-s">News · Images · Auto-refresh</div></div>
+        <button class="sbar-btn" onclick="mediaRefresh()">↺</button>
+      </div>
+      <div class="tbr"><button class="tb on" onclick="mTab(0,this)">📰 News</button><button class="tb" onclick="mTab(1,this)">🖼 Images</button></div>
+      <div class="catbar" id="news-cats">
+        <button class="cb on" onclick="newsCat('all',this)">All</button>
+        <button class="cb" onclick="newsCat('tech',this)">Tech</button>
+        <button class="cb" onclick="newsCat('vision',this)">Vision</button>
+        <button class="cb" onclick="newsCat('business',this)">Business</button>
+        <button class="cb" onclick="newsCat('tourism',this)">Tourism</button>
+        <button class="cb" onclick="newsCat('sports',this)">Sports</button>
+      </div>
+      <div class="nfeed" id="news-feed"></div>
+      <div class="ifeed" id="img-feed" style="display:none"></div>
+    </section>
+    <!-- EXPLORE -->
+    <section class="scr" id="s-exp">
+      <div class="sbar"><div><div class="sbar-t">🌍 Explore</div><div class="sbar-s">Vision 2030 · Tourism · Culture</div></div></div>
+      <div class="tbr"><button class="tb on" onclick="eTab(0,this)">🚀 Vision</button><button class="tb" onclick="eTab(1,this)">🏛 Tourism</button><button class="tb" onclick="eTab(2,this)">🌟 Culture</button></div>
+      <div class="scroll" id="exp-body"></div>
+    </section>
+    <!-- DIGITAL+ -->
+    <section class="scr" id="s-digi">
+      <div class="sbar">
+        <div><div class="sbar-t">⚡ Digital+</div><div class="sbar-s">Passport · Support · About</div></div>
+        <div style="display:flex;align-items:center;gap:.3rem">
+          <div id="digi-user" style="font-size:.42rem;color:var(--gold);font-weight:700"></div>
+          <button onclick="logOut()" style="font-size:.44rem;color:var(--t3);background:var(--bg3);border:1px solid var(--bd);border-radius:7px;padding:.14rem .4rem;cursor:pointer">Out</button>
+        </div>
+      </div>
+      <div class="tbr"><button class="tb on" onclick="dgTab(0,this)">💳 Passport</button><button class="tb" onclick="dgTab(1,this)">❓ Support</button><button class="tb" onclick="dgTab(2,this)">ℹ️ About</button></div>
+      <div class="scroll" id="digi-body"></div>
+    </section>
+  </div>
+  <nav id="nav">
+    <div class="nb on" onclick="goS('home',this)"><span class="nb-ico">🇸🇦</span><span class="nb-lbl" id="nl-h">Home</span></div>
+    <div class="nb" onclick="goS('disc',this)"><span class="nb-ico">🚀</span><span class="nb-lbl" id="nl-d">Discover</span></div>
+    <div class="nb" onclick="goS('media',this)"><span class="nb-ico">📰</span><span class="nb-lbl" id="nl-m">Media</span></div>
+    <div class="nb" onclick="goS('exp',this)"><span class="nb-ico">🌍</span><span class="nb-lbl" id="nl-e">Explore</span></div>
+    <div class="nb" onclick="goS('digi',this)"><span class="nb-ico">⚡</span><span class="nb-lbl" id="nl-p">Digital+</span></div>
+  </nav>
+  <div class="panel" id="panel">
+    <div class="panel-hdr">
+      <button class="panel-back" onclick="closePanel()">← Back</button>
+      <div class="panel-tag" id="panel-tag"></div>
+    </div>
+    <div class="panel-body" id="panel-body"></div>
+  </div>
+</div>
+<div id="img-viewer"><div class="iv-close" onclick="closeImgViewer()">✕</div><img id="iv-img" src="" alt=""></div>
+<div id="toast"></div>
+<script>
+/* ═══════════════════════════════════════════════════════════════
+   DigitalSaudi v10.0 — COPA PATTERN LOGIN
+   Login shown by default. piLogin() called on window.load.
+   No initSDK, no loading screen, no check loop.
+   Payments: exact Copa approve/complete/cancel pattern.
+═══════════════════════════════════════════════════════════════ */
+
+/* ── STATE ── */
+var piUser = null;
+var isPass = false;
+var txLog  = [];
+var _APPROVE = '/approve';
+var _COMPLETE = '/complete';
+var _CANCEL   = '/cancel-payment';
+var _lang = 'en';
+var _city = 'riyadh';
+var _hTab=0, _dTab=0, _eTab=0, _dgTab=0, _mTab=0;
+var _pr=null, _wx=null, _hols=null, _ic=null, _cdT=null;
+var _aiMsgs=[];
+var _nPage=1, _nLoad=false, _nMore=true, _nCat='all';
+var _iPage=1, _iLoad=false, _iMore=true;
+var _sLeague='sau.1', _sView='all', _sData=null, _sLoad=false;
+var _nTimer=null;
+
+/* ── UTILS ── */
+function toast(msg){
+  var t=document.getElementById('toast');
+  if(!t)return;
+  t.textContent=msg;
+  t.classList.add('show');
+  setTimeout(function(){t.classList.remove('show');},2600);
+}
+function openPanel(tag,html){
+  document.getElementById('panel-tag').textContent=tag;
+  document.getElementById('panel-body').innerHTML=html;
+  document.getElementById('panel').classList.add('open');
+}
+function closePanel(){document.getElementById('panel').classList.remove('open');}
+
+/* ── LANGUAGE ── */
+function toggleLang(){
+  _lang=_lang==='en'?'ar':'en';
+  localStorage.setItem('ds_lang',_lang);
+  var r=document.getElementById('root');
+  r.setAttribute('dir',_lang==='ar'?'rtl':'ltr');
+  r.setAttribute('lang',_lang);
+  document.getElementById('lang-btn').textContent=_lang==='ar'?'EN':'عر';
+  toast(_lang==='ar'?'تم تغيير اللغة':'Language changed');
+}
+
+/* ════════════════════════════════════════
+   piLogin — EXACT COPA PATTERN
+════════════════════════════════════════ */
+function piLogin() {
+  var btn     = document.getElementById('loginBtn');
+  var btnText = document.getElementById('stxt');
+  var lmsg    = document.getElementById('lmsg');
+  if (btn)     { btn.disabled = true; btn.style.opacity = '0.7'; }
+  if (btnText) btnText.textContent = 'Authenticating...';
+  if (lmsg)    lmsg.textContent = 'Connecting to Pi Network...';
+
+  /* Copa pattern: if Pi SDK not loaded, demo mode */
+  if (typeof Pi === 'undefined') {
+    setTimeout(function() {
+      piUser = { username: 'Pioneer' };
+      localStorage.setItem('ds_user', JSON.stringify(piUser));
+      launchApp();
+      toast('Demo mode — open in Pi Browser!');
+    }, 500);
+    return;
+  }
+
+  /* Exact Copa sequence */
+  Pi.init({ version: '2.0', sandbox: false });
+  Pi.authenticate(['username', 'payments'], onIncompletePayment)
+    .then(function(auth) {
+      piUser = auth.user;
+      localStorage.setItem('ds_user', JSON.stringify(piUser));
+      launchApp();
+    })
+    .catch(function(err) {
+      console.error('[DS] Auth error:', err);
+      if (btn)     { btn.disabled = false; btn.style.opacity = '1'; }
+      if (btnText) btnText.textContent = 'Sign In with Pi';
+      if (lmsg)    lmsg.textContent = 'Try again';
+    });
+}
+
+/* ════════════════════════════════════════
+   launchApp — EXACT COPA PATTERN
+════════════════════════════════════════ */
+function launchApp() {
+  var loginEl = document.getElementById('login');
+  var appEl   = document.getElementById('app');
+  if (loginEl) loginEl.style.display = 'none';
+  if (appEl)   { appEl.style.display='flex'; appEl.style.flexDirection='column'; appEl.style.height='100vh'; }
+
+  if (piUser) {
+    var u = piUser.username || 'Pioneer';
+    var chip = document.getElementById('user-chip');
+    var du   = document.getElementById('digi-user');
+    if (chip) chip.textContent = 'π ' + u;
+    if (du)   du.textContent   = '@' + u;
+  }
+
+  isPass = localStorage.getItem('ds_pass') === '1';
+  txLog  = JSON.parse(localStorage.getItem('ds_tx') || '[]');
+
+  var sl = localStorage.getItem('ds_lang');
+  if (sl && sl !== _lang) { _lang = sl; toggleLang(); }
+  var sc = localStorage.getItem('ds_city');
+  if (sc) { _city = sc; }
+
+  homeLoad();
+  renderDisc();
+  newsLoad(true);
+  renderExp();
+  renderDigi();
+
+  setInterval(function() {
+    var a = document.querySelector('.scr.on');
+    if (a && a.id === 's-home' && _hTab === 3) loadScores();
+  }, 60000);
+
+  toast('Welcome ' + (piUser ? '@' + piUser.username : '') + ' 🇸🇦');
+}
+
+/* ════════════════════════════════════════
+   onIncompletePayment — EXACT COPA PATTERN
+════════════════════════════════════════ */
+function onIncompletePayment(payment) {
+  if (!payment) return;
+  var txid = '';
+  try { txid = (payment.transaction && payment.transaction.txid) ? payment.transaction.txid : ''; } catch(e){}
+  var pid = payment.identifier;
+  if (txid) {
+    fetch(_COMPLETE, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({paymentId:pid,txid:txid}) })
+      .then(function(r){ return r.json(); }).catch(function(){});
+  } else {
+    fetch(_CANCEL, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({paymentId:pid}) })
+      .then(function(r){ return r.json(); }).catch(function(){});
+  }
+}
+
+function logOut(){
+  localStorage.removeItem('ds_user');
+  piUser=null; _aiMsgs=[];
+  if(_cdT)clearInterval(_cdT);
+  if(_nTimer)clearInterval(_nTimer);
+  var appEl=document.getElementById('app');
+  var loginEl=document.getElementById('login');
+  if(appEl) appEl.style.display='none';
+  if(loginEl){ loginEl.style.display='flex'; }
+  var btn=document.getElementById('loginBtn');
+  var st=document.getElementById('stxt');
+  var lm=document.getElementById('lmsg');
+  if(btn){btn.disabled=false;btn.style.opacity='1';}
+  if(st) st.textContent='Sign In with Pi';
+  if(lm) lm.textContent='';
+}
+
+/* ════════════════════════════════════════
+   buyPass — EXACT COPA buyCopaPass PATTERN
+════════════════════════════════════════ */
+function buyPass() {
+  /* EXACT COPA buyCopaPass PATTERN */
+  if (isPass) { toast('Passport already active!'); return; }
+  var btn = document.getElementById('ds-pass-btn');
+  if (btn) { btn.disabled=false; }  /* reset any stuck state */
+  if (btn) { btn.textContent='Processing...'; btn.disabled=true; }
+  if (typeof Pi==='undefined') {
+    toast('Open in Pi Browser');
+    if(btn){btn.textContent='Get DigitalSaudi Passport · 1π';btn.disabled=false;}
+    return;
+  }
+  Pi.createPayment({ amount:1, memo:'DigitalSaudi Passport', metadata:{type:'passport',app:'digitalsaudi',network:'mainnet'} }, {
+    onReadyForServerApproval: function(paymentId){
+      return fetch(_APPROVE,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({paymentId:paymentId,expectedAmount:1})})
+        .then(function(r){ return r.json(); })
+        .then(function(d){ console.log('[DS] Passport approved:',d); });
+    },
+    onReadyForServerCompletion: function(paymentId,txid){
+      return fetch(_COMPLETE,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({paymentId:paymentId,txid:txid})})
+        .then(function(r){ return r.json(); })
+        .then(function(d){
+          isPass=true; localStorage.setItem('ds_pass','1');
+          addTx('DigitalSaudi Passport 1π txid:'+txid.slice(0,12)+'...');
+          showPayStatus('success','Passport activated!');
+          renderDigi(); toast('✅ Passport activated!');
+        }).catch(function(){
+          /* Activate anyway — payment completed on chain */
+          isPass=true; localStorage.setItem('ds_pass','1');
+          addTx('DigitalSaudi Passport 1π');
+          showPayStatus('success','Passport activated!');
+          renderDigi(); toast('✅ Passport activated!');
+        });
+    },
+    onCancel: function(){
+      if(btn){btn.textContent='Get DigitalSaudi Passport · 1π';btn.disabled=false;}
+      showPayStatus('cancelled','Cancelled'); toast('Cancelled');
+    },
+    onError: function(err){
+      console.error('[DS] Passport error:',err);
+      if(btn){btn.textContent='Get DigitalSaudi Passport · 1π';btn.disabled=false;}
+      showPayStatus('failed','Error — try again');
+    }
+  });
+}
+function showPayStatus(type,msg){
+  var el=document.getElementById('pay-status');
+  if(!el)return;
+  el.className='pay-status '+type;
+  el.textContent=msg;
+  setTimeout(function(){if(el)el.className='pay-status';},5000);
+}
+function addTx(text){
+  txLog.unshift({t:text,d:new Date().toLocaleString()});
+  if(txLog.length>60)txLog.pop();
+  localStorage.setItem('ds_tx',JSON.stringify(txLog));
+}
+
+/* ── _doSendPi — Copa pattern ── */
+function _doSendPi(to, amt, memo) {
+  /* EXACT COPA PATTERN */
+  if (!amt||amt<=0) { toast('Enter amount'); return; }
+  if (typeof Pi==='undefined') { toast('Open in Pi Browser'); return; }
+  Pi.createPayment({ amount:amt, memo:memo||'DigitalSaudi Pi transfer', metadata:{type:'send',app:'digitalsaudi',network:'mainnet'} }, {
+    onReadyForServerApproval: function(paymentId){
+      return fetch(_APPROVE,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({paymentId:paymentId})})
+        .then(function(r){ return r.json(); }).then(function(d){ console.log('[DS] Send approved:',d); });
+    },
+    onReadyForServerCompletion: function(paymentId,txid){
+      return fetch(_COMPLETE,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({paymentId:paymentId,txid:txid})})
+        .then(function(r){ return r.json(); })
+        .then(function(){
+          addTx(amt+'π sent'); showPayStatus('success',amt+'π sent!'); toast(amt+'π sent!');
+          var te=document.getElementById('ds-send-to'); if(te) te.value='';
+          var ae=document.getElementById('ds-send-amt'); if(ae) ae.value='';
+          var btn=document.getElementById('ds-send-btn'); if(btn){btn.textContent='π Send Pi';btn.disabled=false;}
+        }).catch(function(){
+          addTx(amt+'π sent'); toast('Sent!');
+          var btn=document.getElementById('ds-send-btn'); if(btn){btn.textContent='π Send Pi';btn.disabled=false;}
+        });
+    },
+    onCancel: function(){
+      toast('Cancelled');
+      var btn=document.getElementById('ds-send-btn'); if(btn){btn.textContent='π Send Pi';btn.disabled=false;}
+    },
+    onError: function(err){
+      console.error('[DS] Send error:',err);
+      toast('Payment error — try again');
+      var btn=document.getElementById('ds-send-btn'); if(btn){btn.textContent='π Send Pi';btn.disabled=false;}
+    }
+  });
+}
+function sendPi() {
+  /* EXACT COPA sendPi PATTERN */
+  var to   = (document.getElementById('ds-send-to')||{}).value||'';
+  var amt  = parseFloat((document.getElementById('ds-send-amt')||{}).value)||0;
+  var memo = (document.getElementById('ds-send-memo')||{}).value||'DigitalSaudi Pi transfer';
+  var btn  = document.getElementById('ds-send-btn');
+  if (btn) { btn.textContent='Processing...'; btn.disabled=true; }
+  _doSendPi(to, amt, memo);
+}
+function genRequest(){
+  var amt=parseFloat((document.getElementById('rq-amt')||{}).value||0);
+  var memo=(document.getElementById('rq-memo')||{}).value||'Pi Request';
+  var out=document.getElementById('rq-out');
+  if(!amt||amt<=0){toast('Enter a valid amount');return;}
+  var user=piUser?piUser.username:'';
+  var uri='pi://pay?amount='+encodeURIComponent(amt.toFixed(2))+'&memo='+encodeURIComponent(memo)+(user?'&to='+encodeURIComponent(user):'');
+  if(out){
+    out.innerHTML='<div style="background:var(--bg3);border:1.5px solid var(--bd2);border-radius:13px;padding:.68rem;text-align:center;margin-bottom:.4rem"><div style="font-size:1.85rem;font-weight:900;color:var(--g3)">π '+amt.toFixed(2)+'</div><div style="font-size:.56rem;color:var(--t2)">'+memo+'</div></div><button onclick="if(navigator.clipboard)navigator.clipboard.writeText(\''+uri+'\').then(function(){toast(\'Copied ✅\');})" style="width:100%;padding:.54rem;background:rgba(22,196,127,.12);border:1.5px solid var(--bd2);border-radius:10px;color:var(--g3);font-size:.68rem;font-weight:700;cursor:pointer;margin-bottom:.3rem">📋 Copy Link</button><div style="font-size:.44rem;color:var(--t3);word-break:break-all;line-height:1.5">'+uri+'</div>';
+  }
+  toast('Payment link ready ✅');
+}
+
+/* ── NAV ── */
+function goS(id,el){
+  document.querySelectorAll('.scr').forEach(function(s){s.classList.remove('on');});
+  document.querySelectorAll('.nb').forEach(function(b){b.classList.remove('on');});
+  document.getElementById('s-'+id).classList.add('on');
+  if(el)el.classList.add('on');
+}
+
+/* ── HOME TABS ── */
+var CTABS=[1,2,5,6,7];
+function selCity(c,btn){
+  _city=c;localStorage.setItem('ds_city',c);
+  document.querySelectorAll('.cty').forEach(function(b){b.classList.remove('on');});
+  if(btn)btn.classList.add('on');
+  _pr=null;_wx=null;renderHTab();
+}
+function hTab(n,el){
+  _hTab=n;
+  document.querySelectorAll('.htab').forEach(function(b){b.classList.remove('on');});
+  if(el)el.classList.add('on');
+  document.getElementById('citybar').style.display=CTABS.indexOf(n)>=0?'flex':'none';
+  renderHTab();
+}
+function homeLoad(){
+  renderHTab();
+  Promise.all([
+    fetch('/api?type=prayer&city='+_city).then(function(r){return r.json();}).catch(function(){return null;}),
+    fetch('/api?type=weather&city='+_city).then(function(r){return r.json();}).catch(function(){return null;}),
+    fetch('/api?type=holidays').then(function(r){return r.json();}).catch(function(){return null;}),
+    fetch('/api?type=islamic').then(function(r){return r.json();}).catch(function(){return null;}),
+  ]).then(function(res){
+    _pr=res[0];_wx=res[1];_hols=res[2];_ic=res[3];
+    /* Re-render whichever tab is active after data loads */
+    renderHTab();
+    startCD();
+  });
+}
+function renderHTab(){
+  var fns=[renderAI,renderPrayer,renderWeather,renderScores,renderWallet,renderCalendar,renderHolidays,renderQibla,renderZakat];
+  if(fns[_hTab])fns[_hTab]();
+}
+
+/* ── AI (DOM-based, no innerHTML string nesting) ── */
+var CHIPS=['Best places in Saudi?','What is NEOM?','Explain Vision 2030','Top Saudi startups','How to visit AlUla?','What is LEAP?','Saudi food to try','Tell me about Pi economy'];
+function renderAI(){
+  var body=document.getElementById('home-body');
+  body.innerHTML='';
+  var wrap=document.createElement('div');wrap.className='ai-wrap';
+  var feed=document.createElement('div');feed.className='ai-feed';feed.id='ai-feed';
+  var welcome=document.createElement('div');welcome.className='ai-welcome';
+  var wt=document.createElement('div');wt.className='ai-wt';wt.textContent='🤖 AI Concierge';
+  var ws=document.createElement('div');ws.className='ai-ws';
+  ws.textContent='Ask me anything about Saudi Arabia — tourism, Vision 2030, startups, culture, events, and the Pi economy.';
+  var chipsDiv=document.createElement('div');chipsDiv.className='ai-chips';
+  CHIPS.forEach(function(c){
+    var chip=document.createElement('div');chip.className='chip';chip.textContent=c;
+    chip.onclick=function(){aiChip(c);};
+    chipsDiv.appendChild(chip);
+  });
+  welcome.appendChild(wt);welcome.appendChild(ws);welcome.appendChild(chipsDiv);
+  feed.appendChild(welcome);
+  if(_aiMsgs.length){
+    welcome.style.display='none';
+    _aiMsgs.forEach(function(m){feed.appendChild(mkMsg(m.role,m.content));});
+  }
+  wrap.appendChild(feed);
+  var bar=document.createElement('div');bar.className='ai-bar';
+  var inp=document.createElement('input');
+  inp.id='ai-inp';inp.type='text';inp.placeholder='Ask about Saudi Arabia…';
+  inp.addEventListener('keydown',function(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();aiSend();}});
+  var sendBtn=document.createElement('button');
+  sendBtn.id='ai-send';sendBtn.textContent='➤';sendBtn.onclick=function(){aiSend();};
+  bar.appendChild(inp);bar.appendChild(sendBtn);
+  wrap.appendChild(bar);
+  body.appendChild(wrap);
+  if(_aiMsgs.length)setTimeout(function(){feed.scrollTop=feed.scrollHeight;},50);
+}
+function mkMsg(role,text){var d=document.createElement('div');d.className='msg '+(role==='user'?'u':'a');d.textContent=text;return d;}
+function aiChip(t){var i=document.getElementById('ai-inp');if(i)i.value=t;aiSend();}
+function aiSend(){
+  var inp=document.getElementById('ai-inp');if(!inp)return;
+  var text=inp.value.trim();if(!text)return;
+  inp.value='';
+  var feed=document.getElementById('ai-feed');if(!feed)return;
+  var w=feed.querySelector('.ai-welcome');if(w)w.style.display='none';
+  _aiMsgs.push({role:'user',content:text});
+  feed.appendChild(mkMsg('user',text));
+  var ty=document.createElement('div');ty.className='typing';ty.id='ai-ty';
+  ty.innerHTML='<div class="td"></div><div class="td"></div><div class="td"></div>';
+  feed.appendChild(ty);feed.scrollTop=feed.scrollHeight;
+  var snd=document.getElementById('ai-send');if(snd)snd.disabled=true;
+  fetch('/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:_aiMsgs.slice(-10)})})
+    .then(function(r){return r.json();})
+    .then(function(d){
+      var old=document.getElementById('ai-ty');if(old)old.remove();
+      var reply=d.reply||'Please try again.';
+      _aiMsgs.push({role:'assistant',content:reply});
+      feed.appendChild(mkMsg('assistant',reply));
+      feed.scrollTop=feed.scrollHeight;
+      if(snd)snd.disabled=false;
+    }).catch(function(){
+      var old=document.getElementById('ai-ty');if(old)old.remove();
+      var er='Connection error. Try again.';
+      _aiMsgs.push({role:'assistant',content:er});
+      feed.appendChild(mkMsg('assistant',er));
+      feed.scrollTop=feed.scrollHeight;
+      if(snd)snd.disabled=false;
+    });
+}
+
+/* ── PRAYER ── */
+function renderPrayer(){
+  var body=document.getElementById('home-body');
+  if(!_pr){
+    body.innerHTML='<div class="scroll"><div class="spin-wrap"><div class="spin"></div><span>Loading prayer times…</span></div></div>';
+    fetch('/api?type=prayer&city='+_city).then(function(r){return r.json();}).then(function(d){_pr=d;renderPrayer();startCD();}).catch(function(){});
+    return;
+  }
+  var t=_pr.timings||{};
+  var order=['Fajr','Sunrise','Dhuhr','Asr','Maghrib','Isha'];
+  var now=new Date(),cur=now.getHours()*60+now.getMinutes();
+  function toM(str){var p=(str||'00:00').split(':');return parseInt(p[0])*60+parseInt(p[1]);}
+  var next='Isha';
+  for(var i=0;i<order.length;i++){if(cur<toM(t[order[i]])){next=order[i];break;}}
+  var h=_pr.hijri||{};
+  var html='<div class="scroll"><div style="padding:.36rem .72rem .06rem;display:flex;align-items:center;justify-content:space-between"><div style="font-size:.54rem;color:var(--t2)">'+(_pr.date||'')+'</div><div style="font-family:serif;direction:rtl;color:var(--gold);font-size:.58rem">'+h.day+' '+(h.monthAr||'')+'</div></div>'
+    +'<div class="cd-bar"><div class="cd-lbl">Next prayer in</div><div class="cd-val" id="cd-val">—</div></div>'
+    +'<div class="pr-grid">';
+  order.forEach(function(n){
+    var isN=n===next;
+    html+='<div class="pr-cell'+(isN?' next':'')+'">'+
+      (isN?'<div class="next-b">NEXT</div>':'')+
+      '<div class="pr-name">'+n+'</div><div class="pr-time">'+(t[n]||'--:--')+'</div></div>';
+  });
+  html+='</div>'+(_pr.offline?'<div class="offline-note">Offline — approximate times</div>':'')+'</div>';
+  body.innerHTML=html;
+}
+function startCD(){
+  if(_cdT)clearInterval(_cdT);
+  function tick(){
+    var el=document.getElementById('cd-val');if(!el||!_pr)return;
+    var t=_pr.timings||{};
+    var order=['Fajr','Sunrise','Dhuhr','Asr','Maghrib','Isha'];
+    var now=new Date(),cur=now.getHours()*60+now.getMinutes()+now.getSeconds()/60;
+    function toM(str){var p=(str||'00:00').split(':');return parseInt(p[0])*60+parseInt(p[1]);}
+    var diff=null;
+    for(var i=0;i<order.length;i++){var m=toM(t[order[i]]);if(cur<m){diff=(m-cur)*60;break;}}
+    if(diff===null)diff=(1440-cur+toM(t['Fajr']||'04:45'))*60;
+    var h=Math.floor(diff/3600),m=Math.floor((diff%3600)/60),s=Math.floor(diff%60);
+    el.textContent=(h?h+'h ':'')+m+'m '+s+'s';
+  }
+  tick();_cdT=setInterval(tick,1000);
+}
+
+/* ── WEATHER ── */
+function renderWeather(){
+  var body=document.getElementById('home-body');
+  if(!_wx){
+    body.innerHTML='<div class="scroll"><div class="spin-wrap"><div class="spin"></div><span>Loading weather…</span></div></div>';
+    fetch('/api?type=weather&city='+_city).then(function(r){return r.json();}).then(function(d){_wx=d;renderWeather();}).catch(function(){});
+    return;
+  }
+  if(_wx.error){body.innerHTML='<div class="scroll"><div class="offline-note">Weather unavailable</div></div>';return;}
+  var fc=(_wx.forecast||[]).slice(0,5).map(function(d){
+    return'<div class="fcd"><div class="fcd-dt">'+(d.date?d.date.slice(5):'')+'</div><div class="fcd-i">'+d.icon+'</div><div class="fcd-hi">'+d.max+'°</div><div class="fcd-lo">'+d.min+'°</div></div>';
+  }).join('');
+  body.innerHTML='<div class="scroll"><div class="wx-hero"><div class="wx-ico">'+_wx.icon+'</div><div><div class="wx-tmp">'+_wx.temp+'°C</div><div class="wx-dsc">'+_wx.desc+' · '+_wx.city+'</div></div></div><div class="wx-meta"><span class="wm">💨 '+(_wx.windspeed||0)+' km/h</span></div><div class="fc">'+fc+'</div><div class="sec-lbl">All Cities</div><div id="wx-all"><div class="spin-wrap"><div class="spin"></div></div></div></div>';
+  fetch('/api?type=weather&all=1').then(function(r){return r.json();}).then(function(d){
+    var el=document.getElementById('wx-all');if(!el)return;
+    el.innerHTML='<div class="wx-all">'+(d.cities||[]).map(function(c){return'<div class="wag"><div class="wag-c">'+c.name+'</div><div class="wag-i">'+c.icon+'</div><div class="wag-t">'+c.temp+'°</div></div>';}).join('')+'</div>';
+  }).catch(function(){});
+}
+
+/* ── SCORES — LiveScore style ── */
+var LEAGUES=[
+  {id:'sau.1',n:'Saudi Pro',f:'🇸🇦'},{id:'eng.1',n:'Premier League',f:'🏴'},
+  {id:'esp.1',n:'La Liga',f:'🇪🇸'},{id:'ger.1',n:'Bundesliga',f:'🇩🇪'},
+  {id:'ita.1',n:'Serie A',f:'🇮🇹'},{id:'fra.1',n:'Ligue 1',f:'🇫🇷'},
+  {id:'uefa.champions',n:'UCL',f:'⭐'},{id:'fifa.worldcup',n:'World Cup',f:'🌍'},
+];
+function renderScores(){
+  var body=document.getElementById('home-body');
+  var lgBtns=LEAGUES.map(function(l){return'<button class="lgb'+(l.id===_sLeague?' on':'')+'" onclick="swLg(\''+l.id+'\',this)">'+l.f+' '+l.n+'</button>';}).join('');
+  var vwBtns=[['all','📅 All'],['live','🔴 Live'],['previous','✅ Results'],['table','📊 Table']].map(function(v){return'<button class="vwb'+(_sView===v[0]?' on':'')+'" onclick="swVw(\''+v[0]+'\',this)">'+v[1]+'</button>';}).join('');
+  body.innerHTML='<div style="flex:1;overflow:hidden;min-height:0;display:flex;flex-direction:column"><div class="lg-bar">'+lgBtns+'</div><div class="vw-bar">'+vwBtns+'</div><div class="scroll" id="sc-in"><div class="spin-wrap"><div class="spin"></div><span>Loading scores…</span></div></div></div>';
+  loadScores();
+}
+function swLg(id,btn){
+  _sLeague=id;_sData=null;
+  document.querySelectorAll('.lgb').forEach(function(b){b.classList.remove('on');});if(btn)btn.classList.add('on');
+  var el=document.getElementById('sc-in');if(el)el.innerHTML='<div class="spin-wrap"><div class="spin"></div></div>';
+  loadScores();
+}
+function swVw(v,btn){
+  _sView=v;document.querySelectorAll('.vwb').forEach(function(b){b.classList.remove('on');});if(btn)btn.classList.add('on');
+  if(_sData)renderScoresView();else loadScores();
+}
+function loadScores(){
+  if(_sLoad)return;_sLoad=true;
+  Promise.allSettled([
+    fetch('/scores?league='+_sLeague+'&type=all').then(function(r){return r.ok?r.json():{grouped:[],live_matches:[],finished_matches:[]};}).catch(function(){return{grouped:[],live_matches:[],finished_matches:[]};}),
+    fetch('/scores?league='+_sLeague+'&type=table').then(function(r){return r.ok?r.json():{table:[]};}).catch(function(){return{table:[]};})
+  ]).then(function(res){
+    var md=res[0].status==='fulfilled'?res[0].value:{grouped:[],live_matches:[],finished_matches:[]};
+    var td=res[1].status==='fulfilled'?res[1].value:{table:[]};
+    _sData={grouped:md.grouped||[],live:md.live_matches||[],finished:md.finished_matches||[],table:td.table||[],nowStr:md.nowStr||new Date().toISOString().split('T')[0]};
+    _sLoad=false;renderScoresView();
+  }).catch(function(){_sLoad=false;});
+}
+function buildMatch(m){
+  var isLive=m.status==='LIVE'||m.status==='IN_PLAY';
+  var isDone=m.status==='FINISHED';
+  var tl='';
+  if(isLive) tl=m.minute?(m.minute+"'"):'LIVE';
+  else if(isDone) tl='FT';
+  else if(m.date){try{tl=new Date(m.date).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});}catch(e){}}
+  var ERR='this.style.display=&quot;none&quot;';
+  var HL=m.homeLogo?('<img class="ls-crest" src="'+m.homeLogo+'" onerror="'+ERR+'">'):'<div class="ls-crest-ph"></div>';
+  var AL=m.awayLogo?('<img class="ls-crest" src="'+m.awayLogo+'" onerror="'+ERR+'">'):'<div class="ls-crest-ph"></div>';
+  var SCH=m.homeScore!=null?('<span class="ls-score'+(isLive?' ls-live-sc':'')+'">'+m.homeScore+'</span>'):'';
+  var SCA=m.awayScore!=null?('<span class="ls-score">'+m.awayScore+'</span>'):'';
+  var TH=isLive?('<span class="ls-live-lbl">'+tl+'</span>'):('<span class="ls-time-txt'+(isDone?' ls-ft':'')+'">'+tl+'</span>');
+  var html='<div class="ls-match'+(isLive?' ls-live':isDone?' ls-done':'')+'">';
+  if(isLive)html+='<div class="ls-live-dot"></div>';
+  html+='<div class="ls-time">'+TH+'</div>';
+  html+='<div class="ls-teams"><div class="ls-team">'+HL+'<span class="ls-tname'+(isLive?' ls-bold':'')+'">'+m.home+'</span>'+SCH+'</div>';
+  html+='<div class="ls-team">'+AL+'<span class="ls-tname">'+m.away+'</span>'+SCA+'</div></div>';
+  if(m.venue)html+='<div class="ls-venue">'+m.venue+'</div>';
+  html+='</div>';
+  return html;
+}
+function renderScoresView(){
+  var inner=document.getElementById('sc-in');if(!inner||!_sData)return;
+  if(_sView==='table'){renderTable(inner);return;}
+  var html='';
+  /* ALL view: live at top with red pill, then all matches grouped by date/competition */
+  var live=_sData.live||[];
+  var grp=_sData.grouped||[];
+  /* Live section pinned at top */
+  if(live.length){
+    html+='<div class="ls-date-hdr"><span class="ls-date-pill" style="background:var(--red);color:#fff;border-color:var(--red)">🔴 LIVE NOW · '+live.length+' match'+(live.length>1?'es':'')+'</span></div>';
+    var liveComps={};
+    live.forEach(function(m){
+      var c=m.competition||'Live';
+      if(!liveComps[c])liveComps[c]=[];
+      liveComps[c].push(m);
+    });
+    Object.keys(liveComps).forEach(function(comp){
+      html+='<div class="ls-comp-hdr" style="color:var(--red);border-left:3px solid var(--red)">'+comp+'</div>';
+      liveComps[comp].forEach(function(m){html+=buildMatch(m);});
+    });
+  }
+  /* All matches grouped by date then competition */
+  if(!grp.length&&!live.length){
+    html='<div class="empty-state"><div class="es-ico">⚽</div><div class="es-t">No matches found</div><div class="es-s">Try another league or check back later</div></div>';
+  } else {
+    grp.forEach(function(day){
+      html+='<div class="ls-date-hdr"><span class="ls-date-pill">'+day.dayLabel+'</span></div>';
+      var comps=day.competitions||{};
+      Object.keys(comps).forEach(function(comp){
+        html+='<div class="ls-comp-hdr">'+comp+'</div>';
+        (comps[comp]||[]).forEach(function(m){html+=buildMatch(m);});
+      });
+    });
+  }
+  inner.innerHTML=html;
+}
+function renderTable(el){
+  var rows=_sData.table||[];
+  if(!rows.length){el.innerHTML='<div class="empty-state"><div class="es-ico">📊</div><div class="es-t">Table unavailable</div></div>';return;}
+  var html='<div class="tbl-wrap"><table class="tbl"><thead><tr><th>#</th><th>Club</th><th>P</th><th>W</th><th>D</th><th>L</th><th>GD</th><th>Pts</th></tr></thead><tbody>';
+  rows.forEach(function(r,i){
+    var pc=r.pos<=4?'pos cl':r.pos>=rows.length-2?'pos rz':'pos';
+    var gd=r.gd>0?'+'+r.gd:r.gd;
+    html+='<tr'+(i===0?' class="hl"':'')+'><td><span class="'+pc+'">'+r.pos+'</span></td><td><div class="club-c"><span class="club-n">'+r.name+'</span></div></td><td>'+r.played+'</td><td>'+r.won+'</td><td>'+r.drawn+'</td><td>'+r.lost+'</td><td>'+gd+'</td><td><span class="pts">'+r.points+'</span></td></tr>';
+  });
+  html+='</tbody></table></div>';
+  el.innerHTML=html;
+}
+
+/* ── WALLET ── */
+function renderWallet(){
+  var body=document.getElementById('home-body');
+  var addr=piUser&&piUser.wallet_address?piUser.wallet_address:(piUser&&piUser.wallet?piUser.wallet:'');
+  var uname=piUser?('@'+(piUser.username||'Pioneer')):'';
+  body.innerHTML='<div class="scroll"><div class="wallet-hero"><div class="wh-label">π Pi Wallet</div>'
+    +'<div style="font-size:1.1rem;font-weight:900;color:var(--g3);margin-bottom:.18rem">'+uname+'</div>'
+    +(addr?'<div class="wh-addr">'+addr+'</div>':'<div style="font-size:.48rem;color:var(--gold);margin-bottom:.5rem">🔐 Wallet address requires KYC verification in Pi App</div>')+'<div class="wallet-btns"><button class="wbtn send" onclick="openSend()" ontouchstart="" style="-webkit-tap-highlight-color:transparent"><span>↑</span> Send Pi</button><button class="wbtn req" onclick="openRequest()" ontouchstart="" style="-webkit-tap-highlight-color:transparent"><span>↓</span> Request Pi</button></div></div><div id="pay-status" class="pay-status"></div><div class="sec-lbl">Recent Transactions</div>';
+  var txs=JSON.parse(localStorage.getItem('ds_tx')||'[]').slice(0,8);
+  if(txs.length){txs.forEach(function(tx){body.innerHTML+='<div class="tx-row"><div><div class="tx-type">'+(tx.t||'Transaction')+'</div><div class="tx-date">'+(tx.d||'')+'</div></div></div>';});}
+  else{body.innerHTML+='<div style="text-align:center;padding:.8rem;font-size:.56rem;color:var(--t3)">No transactions yet</div>';}
+  body.innerHTML+='</div>';
+}
+function openSend(){
+  /* Build panel HTML — Pi Browser compatible */
+  var html='<div style="padding:.78rem .82rem">'
+    +'<div style="font-size:.92rem;font-weight:900;color:var(--g3);margin-bottom:.52rem">↑ Send Pi</div>'
+    +'<label class="w-label">Recipient Pi Wallet Address</label>'
+    +'<input class="w-inp" id="ds-send-to" type="text" placeholder="Paste wallet address or Pi username" autocomplete="off" style="font-size:.52rem">'
+    +'<label class="w-label">Amount (π)</label>'
+    +'<input class="w-inp" id="ds-send-amt" type="number" step="0.01" min="0.01" placeholder="1.00">'
+    +'<label class="w-label">Memo (optional)</label>'
+    +'<input class="w-inp" id="ds-send-memo" type="text" placeholder="e.g. Payment for service">'
+    +'<div id="send-status" style="font-size:.52rem;color:var(--t3);text-align:center;min-height:.9rem;margin-bottom:.3rem"></div>'
+    +'<button id="ds-send-btn" class="w-btn" style="touch-action:manipulation;cursor:pointer" onclick="sendPi()"><span>π</span> Send Pi</button>'
+    +'<div style="font-size:.44rem;color:var(--t3);text-align:center;margin-top:.5rem;line-height:1.5">Pi Wallet popup will open to confirm the transaction</div>'
+    +'</div>';
+  openPanel('Send Pi', html);
+}
+function openRequest(){openPanel('Request Pi','<div style="padding:.78rem .82rem"><div style="font-size:.92rem;font-weight:900;color:var(--g3);margin-bottom:.52rem">↓ Request Pi</div><label class="w-label">Amount (π)</label><input class="w-inp" id="rq-amt" type="number" step="0.01" min="0.01" placeholder="1.00"><label class="w-label">Reason</label><input class="w-inp" id="rq-memo" type="text" placeholder="e.g. Coffee"><button class="w-btn" onclick="genRequest()">↓ Generate Link</button><div id="rq-out" style="margin-top:.62rem"></div></div>');}
+
+/* ── ISLAMIC CALENDAR ── */
+function renderCalendar(){
+  var body=document.getElementById('home-body');
+  if(!_ic){body.innerHTML='<div class="scroll"><div class="spin-wrap"><div class="spin"></div></div></div>';fetch('/api?type=islamic').then(function(r){return r.json();}).then(function(d){_ic=d;renderCalendar();}).catch(function(){});return;}
+  var h=_ic.hijri||{};var g=_ic.gregorian||{};
+  /* Guard: if data incomplete, refetch */
+  if(!h.day||!h.monthName||!h.year){
+    body.innerHTML='<div class="scroll"><div class="spin-wrap"><div class="spin"></div><span>Loading calendar…</span></div></div>';
+    fetch('/api?type=islamic').then(function(r){return r.json();}).then(function(d){_ic=d;renderCalendar();}).catch(function(){});
+    return;
+  }
+  var months=['Muharram','Safar','Rabi al-Awwal','Rabi al-Thani','Jumada al-Awwal','Jumada al-Thani','Rajab','Shaban','Ramadan','Shawwal','Dhu al-Qidah','Dhu al-Hijjah'];
+  var monthsAr=['محرم','صفر','ربيع الأول','ربيع الثاني','جمادى الأولى','جمادى الثانية','رجب','شعبان','رمضان','شوال','ذو القعدة','ذو الحجة'];
+  var html='<div class="scroll"><div class="ic-card"><div style="display:flex;align-items:flex-start;justify-content:space-between"><div><div class="ic-hijri">'+h.day+' '+h.monthName+' '+h.year+' AH</div><div class="ic-hijri-ar">'+h.displayAr+'</div><div class="ic-greg">'+g.weekday+', '+g.day+'/'+g.month+'/'+g.year+'</div></div><div style="font-size:2.2rem">🌙</div></div>'+(_ic.occasion?'<div class="ic-occasion">🌟 '+_ic.occasion+'</div>':'')+'</div><div class="sec-lbl">Islamic Months</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:.22rem;padding:.3rem .5rem">';
+  months.forEach(function(m,i){
+    var isCur=h.month===(i+1);
+    html+='<div style="background:'+(isCur?'rgba(22,196,127,.12)':'var(--bg2)')
+      +';border:1.5px solid '+(isCur?'var(--g3)':'var(--bd)')
+      +';border-radius:10px;padding:.36rem .44rem;min-height:56px">'
+      +'<div style="font-size:.44rem;color:var(--t3)">Month '+(i+1)+'</div>'
+      +'<div style="font-size:.58rem;font-weight:700;color:'+(isCur?'var(--g3)':'var(--t1)')+'">'+m+'</div>'
+      +'<div style="font-family:serif;font-size:.52rem;color:var(--gold);direction:rtl">'+monthsAr[i]+'</div>'
+      +'</div>';
+  });
+  html+='</div></div>';
+  body.innerHTML=html;
+}
+
+/* ── HOLIDAYS ── */
+function renderHolidays(){
+  var body=document.getElementById('home-body');
+  if(!_hols){body.innerHTML='<div class="scroll"><div class="spin-wrap"><div class="spin"></div></div></div>';fetch('/api?type=holidays').then(function(r){return r.json();}).then(function(d){_hols=d;renderHolidays();}).catch(function(){});return;}
+  var html='<div class="scroll">'+(_hols.holidays||[]).map(function(h){return'<div class="hol"><div class="hol-f">'+h.flag+'</div><div style="flex:1"><div class="hol-n">'+h.name+'</div><div class="hol-ar">'+h.ar+'</div><div class="hol-d">'+h.date+(h.note?' · '+h.note:'')+'</div></div><div class="hol-cnt"><div class="hol-days">'+Math.abs(h.daysUntil)+'</div><div class="hol-unit">'+(h.daysUntil===0?'Today!':h.daysUntil>0?'days':'days ago')+'</div></div></div>';}).join('')+'</div>';
+  body.innerHTML=html;
+}
+
+/* ── QIBLA ── */
+var CITY_COORDS={riyadh:{lat:24.6877,lng:46.7219},jeddah:{lat:21.4858,lng:39.1925},makkah:{lat:21.3891,lng:39.8579},madinah:{lat:24.5247,lng:39.5692},dammam:{lat:26.3927,lng:50.1418},taif:{lat:21.2703,lng:40.4158},tabuk:{lat:28.3998,lng:36.5672},abha:{lat:18.2164,lng:42.5053},neom:{lat:28.0,lng:35.0}};
+function renderQibla(){
+  var body=document.getElementById('home-body');
+  body.innerHTML='<div class="scroll"><div class="qibla-wrap"><div class="compass"><div class="c-n">N</div><div class="c-arr" id="c-arr"></div></div><div class="q-brg" id="q-brg">Calculating…</div><div class="q-dist" id="q-dist"></div></div></div>';
+  var cc=CITY_COORDS[_city]||CITY_COORDS.riyadh;
+  var kaaba={lat:21.4225,lng:39.8262};
+  var R=Math.PI/180,dL=(kaaba.lng-cc.lng)*R,y=Math.sin(dL)*Math.cos(kaaba.lat*R),x=Math.cos(cc.lat*R)*Math.sin(kaaba.lat*R)-Math.sin(cc.lat*R)*Math.cos(kaaba.lat*R)*Math.cos(dL);
+  var b=(Math.atan2(y,x)*180/Math.PI+360)%360;
+  var Rv=6371,rr=Math.PI/180,dLat=(kaaba.lat-cc.lat)*rr,dLng=(kaaba.lng-cc.lng)*rr,a=Math.sin(dLat/2)**2+Math.cos(cc.lat*rr)*Math.cos(kaaba.lat*rr)*Math.sin(dLng/2)**2;
+  var dist=Rv*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
+  var br=document.getElementById('q-brg');var dt=document.getElementById('q-dist');var ar=document.getElementById('c-arr');
+  if(br)br.textContent=Math.round(b)+'° to Makkah';
+  if(dt)dt.textContent=Math.round(dist).toLocaleString()+' km · '+_city.charAt(0).toUpperCase()+_city.slice(1);
+  if(ar)ar.style.transform='rotate('+(b-180)+'deg)';
+}
+
+/* ── ZAKAT ── */
+function renderZakat(){
+  var body=document.getElementById('home-body');
+  body.innerHTML='<div class="scroll"><div class="card"><div class="card-h"><div class="ch-ico">💰</div><div><div class="ch-t">Zakat Calculator</div><div class="ch-s">Nisab: 4,500 SAR · Rate: 2.5%</div></div></div><div class="card-b"><input class="z-inp" id="z-g" type="number" placeholder="Gold (grams × 225 SAR/g)"><input class="z-inp" id="z-c" type="number" placeholder="Cash &amp; Savings (SAR)"><input class="z-inp" id="z-b" type="number" placeholder="Business Assets (SAR)"><button class="w-btn" onclick="calcZ()">Calculate Zakat</button><div class="z-res" id="z-r"><div style="font-size:.5rem;color:var(--t3);margin-bottom:.2rem">Zakat Due</div><div class="z-amt" id="z-a">0 SAR</div><div id="z-note" style="font-size:.44rem;color:var(--t3);margin-top:.15rem"></div></div></div></div></div>';
+}
+function calcZ(){
+  var g=parseFloat(document.getElementById('z-g').value||0);
+  var c=parseFloat(document.getElementById('z-c').value||0);
+  var b=parseFloat(document.getElementById('z-b').value||0);
+  var tot=g*225+c+b,nisab=4500;
+  var r=document.getElementById('z-r'),a=document.getElementById('z-a'),n=document.getElementById('z-note');
+  r.style.display='block';
+  if(tot<nisab){a.textContent='0 SAR';a.style.color='var(--t3)';n.textContent='Total '+tot.toLocaleString()+' SAR — below Nisab';}
+  else{var due=Math.round(tot*.025);a.textContent=due.toLocaleString()+' SAR';a.style.color='var(--g3)';n.textContent='2.5% of '+tot.toLocaleString()+' SAR';}
+}
+
+/* ── NEWS ── */
+function mTab(n,btn){
+  _mTab=n;document.querySelectorAll('#s-media .tb').forEach(function(b){b.classList.remove('on');});if(btn)btn.classList.add('on');
+  var nf=document.getElementById('news-feed'),imf=document.getElementById('img-feed'),cats=document.getElementById('news-cats');
+  if(n===0){nf.style.display='';imf.style.display='none';cats.style.display='flex';if(!document.querySelector('.ncard'))newsLoad(true);}
+  else{nf.style.display='none';imf.style.display='';cats.style.display='none';if(!document.querySelector('.ig-item'))imgLoad(true);}
+}
+function newsCat(cat,btn){
+  _nCat=cat;_nPage=1;_nMore=true;
+  document.querySelectorAll('#news-cats .cb').forEach(function(b){b.classList.remove('on');});if(btn)btn.classList.add('on');
+  newsLoad(true);
+}
+function newsLoad(reset){
+  if(_nLoad)return;if(!_nMore&&!reset)return;
+  if(reset){_nPage=1;_nMore=true;}
+  _nLoad=true;
+  var feed=document.getElementById('news-feed');
+  if(_nPage===1){feed.innerHTML='';for(var i=0;i<4;i++)feed.innerHTML+='<div style="margin-bottom:3px"><div class="skel" style="height:180px;border-radius:0;margin-bottom:.45rem"></div><div style="padding:0 .82rem .55rem"><div class="skel" style="height:13px;width:72%;margin-bottom:.28rem;border-radius:4px"></div><div class="skel" style="height:11px;width:52%;border-radius:4px"></div></div></div>';}
+  else{var ld=document.createElement('div');ld.id='n-ld';ld.className='spin-wrap';ld.innerHTML='<div class="spin"></div>';feed.appendChild(ld);}
+  fetch('/news?cat='+_nCat+'&page='+_nPage)
+    .then(function(r){return r.ok?r.json():Promise.reject('HTTP '+r.status);})
+    .then(function(d){
+      var old=document.getElementById('n-ld');if(old)old.remove();
+      _nMore=d.hasMore||false;
+      var arts=d.articles||[];
+      if(_nPage===1)feed.innerHTML='';
+      if(!arts.length&&_nPage===1){feed.innerHTML='<div class="empty-state"><div class="es-ico">📰</div><div class="es-t">No articles found</div></div>';_nLoad=false;return;}
+      arts.forEach(function(a){feed.appendChild(buildNCard(a));});
+      if(_nMore){var sen=document.createElement('div');sen.id='n-sen';sen.style.height='4px';feed.appendChild(sen);obsNews(sen);}
+      _nPage++;_nLoad=false;
+    }).catch(function(){_nLoad=false;var old=document.getElementById('n-ld');if(old)old.remove();if(_nPage===1)feed.innerHTML='<div class="empty-state"><div class="es-ico">📰</div><div class="es-t">News unavailable</div></div>';});
+}
+function buildNCard(a){
+  var d=document.createElement('div');d.className='ncard';
+  d.onclick=function(){if(a.url)window.location.href=a.url;};
+  var ago='';try{var ms=Date.now()-new Date(a.date).getTime(),h=Math.floor(ms/3600000);ago=h<1?'Just now':h<24?h+'h ago':Math.floor(h/24)+'d ago';}catch(e){}
+  d.innerHTML=(a.image?'<div style="overflow:hidden"><img class="nc-img" loading="lazy" src="'+a.image+'" alt="" onload="this.classList.add(\'loaded\')" onerror="this.parentElement.style.display=\'none\'"></div>':'')+'<div class="nc-body"><div class="nc-meta"><span class="nc-src">'+a.source+'</span><span class="nc-ago">'+ago+'</span></div><div class="nc-title">'+a.title+'</div>'+(a.summary?'<div class="nc-sum">'+a.summary+'</div>':'')+'</div>';
+  return d;
+}
+function obsNews(el){
+  if(window._nObs)window._nObs.disconnect();
+  window._nObs=new IntersectionObserver(function(en){if(en[0].isIntersecting){el.remove();newsLoad(false);}},{rootMargin:'400px'});
+  window._nObs.observe(el);
+}
+function mediaRefresh(){if(_mTab===0){_nPage=1;_nMore=true;newsLoad(true);}else{_iPage=1;_iMore=true;imgLoad(true);}toast('Refreshing…');}
+function startNewsRefresh(){if(_nTimer)clearInterval(_nTimer);_nTimer=setInterval(function(){if(document.getElementById('s-media').classList.contains('on')&&_mTab===0){var f=document.getElementById('news-feed');if(f&&f.scrollTop<60){_nPage=1;_nMore=true;newsLoad(true);}}},5*60*1000);}
+function imgLoad(reset){
+  if(_iLoad)return;if(!_iMore&&!reset)return;
+  if(reset){_iPage=1;_iMore=true;}
+  _iLoad=true;
+  var feed=document.getElementById('img-feed');
+  if(_iPage===1)feed.innerHTML='<div class="img-grid" id="img-grid"></div>';
+  var grid=document.getElementById('img-grid');if(!grid){_iLoad=false;return;}
+  _iMore=_iPage<30;
+  Array.from({length:20},function(_,i){return(_iPage-1)*20+i+1;}).forEach(function(seed){
+    var item=document.createElement('div');item.className='ig-item';
+    var img=document.createElement('img');img.loading='lazy';img.src='https://picsum.photos/seed/sa'+seed+'/400/300';
+    img.onload=function(){this.classList.add('loaded');};img.onerror=function(){item.style.display='none';};
+    img.onclick=function(){openImgViewer(this.src);};
+    item.appendChild(img);grid.appendChild(item);
+  });
+  if(_iMore){var sen=document.createElement('div');sen.id='i-sen';sen.style.height='4px';feed.appendChild(sen);var obs=new IntersectionObserver(function(en){if(en[0].isIntersecting){sen.remove();_iPage++;_iLoad=false;imgLoad(false);}},{rootMargin:'600px'});obs.observe(sen);}
+  _iLoad=false;_iPage++;
+}
+function openImgViewer(src){var v=document.getElementById('img-viewer');var i=document.getElementById('iv-img');if(!v||!i)return;i.src=src;v.classList.add('open');}
+function closeImgViewer(){var v=document.getElementById('img-viewer');if(v)v.classList.remove('open');}
+
+/* ── DISCOVER ── */
+var STARTUPS=[{n:'Tamara',y:2020,ind:'Fintech · BNPL',tag:'Unicorn',desc:'Saudi BNPL platform. Millions of users.',impact:'Raised $340M+.'},{n:'Tabby',y:2019,ind:'Fintech · BNPL',tag:'Unicorn',desc:'Pan-MENA BNPL. 10M+ shoppers.',impact:'Valued $1.5B+.'},{n:'Salla',y:2016,ind:'E-Commerce',tag:'Unicorn',desc:'Arabic e-commerce. 60,000+ stores.',impact:'Unicorn.'},{n:'Foodics',y:2014,ind:'Restaurant Tech',tag:'Series C',desc:'Restaurant OS — 20,000+ restaurants.',impact:'Raised $170M+.'},{n:'Jahez',y:2016,ind:'Food Delivery',tag:'Public',desc:'First Saudi tech IPO on Tadawul.',impact:'Public company.'},{n:'Lean Technologies',y:2019,ind:'Open Banking',tag:'Series B',desc:"SAMA licensed open banking.",impact:'Raised $33M+.'}];
+var ECOSYSTEM=[{s:'🤖 AI & Data',items:[{n:'SDAIA',d:'Saudi Data and AI Authority'},{n:'Aramco AI',d:"AI for world's largest oil company"}]},{s:'🏙️ Smart Cities',items:[{n:'NEOM',d:'170km linear smart city'},{n:'Diriyah Gate',d:'$20B UNESCO transformation'}]},{s:'💳 Fintech',items:[{n:'Tamara',d:'BNPL unicorn'},{n:'Lean Technologies',d:"Open banking"}]}];
+var OPPS=[{ico:'🏆',n:'LEAP Innovation Challenge',d:'Annual AI and tech startup competition.',cat:'Competition'},{ico:'🚀',n:'Misk Accelerator',d:'MBS Foundation accelerator.',cat:'Accelerator'},{ico:'💰',n:'STV (STC Ventures)',d:'Corporate VC investing in regional startups.',cat:'VC'},{ico:'📅',n:'LEAP Conference',d:"World's largest tech conference in Riyadh.",cat:'Conference'},{ico:'π',n:'Pi Business Ecosystem',d:"Build on Pi Network in Saudi Arabia.",cat:'Pi Network'}];
+function dTab(n,btn){_dTab=n;document.querySelectorAll('#s-disc .tb').forEach(function(b){b.classList.remove('on');});if(btn)btn.classList.add('on');renderDisc();}
+function renderDisc(){
+  var body=document.getElementById('disc-body');if(!body)return;
+  if(_dTab===0){var html='';STARTUPS.forEach(function(st,i){html+='<div class="item-card" onclick="openStartup('+i+')"><div class="ic-top"><div class="ic-name">'+st.n+'</div><div class="ic-tag">'+st.tag+'</div></div><div class="ic-year">Est. '+st.y+' · '+st.ind+'</div><div class="ic-desc">'+st.desc+'</div></div>';});body.innerHTML=html;}
+  else if(_dTab===1){var html='';ECOSYSTEM.forEach(function(sec){html+='<div class="eco-sec"><div class="eco-hdr">'+sec.s+'</div><div class="eco-items">'+sec.items.map(function(item){return'<div class="eco-row"><div><div class="er-n">'+item.n+'</div><div class="er-s">'+item.d+'</div></div></div>';}).join('')+'</div></div>';});body.innerHTML=html;}
+  else{var html='';OPPS.forEach(function(o){html+='<div class="ev-card"><div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:.1rem"><div class="ev-name">'+o.ico+' '+o.n+'</div><div style="font-size:.42rem;font-weight:700;color:var(--g3)">'+o.cat+'</div></div><div class="ev-desc">'+o.d+'</div></div>';});body.innerHTML=html;}
+}
+function openStartup(i){var st=STARTUPS[i];openPanel(st.ind,'<div style="padding:.76rem .84rem"><div style="font-size:1.6rem;font-weight:900;color:var(--t1);margin-bottom:.36rem">'+st.n+'</div><div style="font-size:.6rem;color:var(--t2);line-height:1.62;margin-bottom:.5rem">'+st.desc+'</div><div style="font-size:.56rem;color:var(--gold)">'+st.impact+'</div></div>');}
+
+/* ── EXPLORE ── */
+var GIGA=[{e:'🏙️',n:'NEOM',s:'dev',desc:'170km linear smart city. 100% renewable energy.',subs:['THE LINE','SINDALAH','OXAGON','TROJENA']},{e:'🌊',n:'Red Sea Project',s:'open',desc:'50+ islands. Phase 1 open.',subs:['Shura Island open','RSI Airport operational']},{e:'🏰',n:'Diriyah Gate',s:'act',desc:'$20B UNESCO Heritage transformation.',subs:['At-Turaif open','Bujairi Terrace']}];
+var DESTS=[{n:'Makkah',ar:'مكة المكرمة',e:'🕋',tag:'Holy City'},{n:'Madinah',ar:'المدينة المنورة',e:'🌙',tag:"Prophet's City"},{n:'Riyadh',ar:'الرياض',e:'🏙️',tag:'Capital'},{n:'AlUla',ar:'العُلا',e:'🏺',tag:'UNESCO Heritage'},{n:'Red Sea',ar:'البحر الأحمر',e:'🌊',tag:'Luxury Tourism'},{n:'Jeddah',ar:'جدة',e:'🕌',tag:'Coastal City'},{n:'Diriyah',ar:'الدرعية',e:'🏰',tag:'Heritage Site'},{n:'Abha',ar:'أبها',e:'⛰️',tag:'Mountain City'}];
+var PHRASES=[{ar:'السَّلَامُ عَلَيْكُمْ',ph:'As-salamu alaykum',en:'Peace be upon you'},{ar:'أَهْلاً وَسَهْلاً',ph:'Ahlan wa sahlan',en:'Welcome'},{ar:'شُكْرًا جَزِيلاً',ph:'Shukran jazilan',en:'Thank you very much'},{ar:'إِن شَاءَ اللَّه',ph:'In sha Allah',en:'God willing'},{ar:'الحَمْدُ لِلَّه',ph:'Alhamdulillah',en:'Praise be to God'},{ar:'بِسْمِ اللَّه',ph:'Bismillah',en:'In the name of God'}];
+function eTab(n,btn){_eTab=n;document.querySelectorAll('#s-exp .tb').forEach(function(b){b.classList.remove('on');});if(btn)btn.classList.add('on');renderExp();}
+function renderExp(){
+  var body=document.getElementById('exp-body');if(!body)return;
+  if(_eTab===0){
+    var html='<div style="background:rgba(22,196,127,.06);border:1px solid var(--bd2);border-radius:var(--r);margin:.38rem .5rem;padding:.68rem .74rem"><div style="font-size:.84rem;font-weight:900;color:var(--g3);margin-bottom:.16rem">Saudi Vision 2030</div><div style="font-size:.56rem;color:var(--t2);line-height:1.58">National transformation launched 2016. Diversify beyond oil. Tourism, Technology, Entertainment.</div></div><div class="sec-lbl">Giga Projects</div>';
+    GIGA.forEach(function(g,i){var sc=g.s==='open'?'s-open':g.s==='act'?'s-act':'s-dev';html+='<div class="giga" onclick="openGiga('+i+')"><div class="g-emo">'+g.e+'</div><div style="flex:1"><div class="g-name">'+g.n+'</div><div class="g-desc">'+g.desc+'</div><span class="g-st '+sc+'">'+g.s+'</span></div></div>';});
+    body.innerHTML=html;
+  } else if(_eTab===1){
+    var html='<div class="dest-grid">';DESTS.forEach(function(d,i){html+='<div class="dest-card" onclick="openDest('+i+')"><div class="dc-emo">'+d.e+'</div><div class="dc-body"><div class="dc-name">'+d.n+'</div><div class="dc-tag">'+d.tag+'</div></div></div>';});body.innerHTML=html+'</div>';
+  } else {
+    var html='<div class="sec-lbl" style="padding-top:.45rem">Arabic Phrases</div><div style="display:grid;gap:.2rem;padding:.28rem .5rem">';
+    PHRASES.forEach(function(p){html+='<div class="phrase-row"><div class="ph-ar">'+p.ar+'</div><div><div class="ph-ph">'+p.ph+'</div><div class="ph-en">'+p.en+'</div></div></div>';});
+    body.innerHTML=html+'</div>';
+  }
+}
+function openGiga(i){var g=GIGA[i];openPanel('Vision 2030','<div style="padding:.76rem .84rem"><div style="font-size:2rem">'+g.e+'</div><div style="font-size:1.3rem;font-weight:900;color:var(--t1);margin-bottom:.36rem">'+g.n+'</div><div style="font-size:.6rem;color:var(--t2);line-height:1.62;margin-bottom:.5rem">'+g.desc+'</div><ul style="font-size:.56rem;color:var(--t2);line-height:1.55;padding-left:1rem">'+g.subs.map(function(s){return'<li style="margin-bottom:.24rem">'+s+'</li>';}).join('')+'</ul></div>');}
+function openDest(i){var d=DESTS[i];openPanel(d.tag,'<div><div style="height:120px;display:flex;align-items:center;justify-content:center;font-size:4rem;background:var(--bg2)">'+d.e+'</div><div style="padding:.68rem .84rem"><div style="font-size:1.35rem;font-weight:900;color:var(--t1)">'+d.n+'</div><div style="font-family:serif;color:var(--gold);font-size:1rem;direction:rtl;text-align:right;margin-bottom:.5rem">'+d.ar+'</div><div style="font-size:.6rem;color:var(--t2)">'+d.tag+'</div></div></div>');}
+
+/* ── DIGITAL+ ── */
+function dgTab(n,btn){_dgTab=n;document.querySelectorAll('#s-digi .tb').forEach(function(b){b.classList.remove('on');});if(btn)btn.classList.add('on');renderDigi();}
+function renderDigi(){var body=document.getElementById('digi-body');if(!body)return;if(_dgTab===0)renderPassport(body);else if(_dgTab===1)renderSupport(body);else renderAbout(body);}
+function renderPassport(body){
+  isPass=localStorage.getItem('ds_pass')==='1';
+  var txs=JSON.parse(localStorage.getItem('ds_tx')||'[]').slice(0,5);
+  var html='';
+  if(isPass){html='<div class="pass-card" style="text-align:center;padding:1rem"><div style="font-size:2.4rem">⚡</div><div style="font-size:.92rem;font-weight:900;color:var(--g3)">Passport Active</div><div style="font-size:.5rem;color:var(--t3);margin-top:.1rem">Thank you for supporting DigitalSaudi</div></div>';}
+  else{html='<div class="pass-card"><div style="font-size:.88rem;font-weight:900;color:var(--g3);margin-bottom:.04rem">⚡ DigitalSaudi Passport</div><div style="font-size:.5rem;color:var(--t3);margin-bottom:.46rem">Premium membership · 1π one-time</div><div class="pass-feats"><div class="pf"><div class="pf-ico">🤖</div><div class="pf-n">AI Priority</div></div><div class="pf"><div class="pf-ico">⭐</div><div class="pf-n">Premium Badge</div></div><div class="pf"><div class="pf-ico">📌</div><div class="pf-n">Favourites</div></div><div class="pf"><div class="pf-ico">🚀</div><div class="pf-n">Early Access</div></div></div><button class="pi-pay-btn" id="ds-pass-btn" onclick="buyPass()" style="cursor:pointer;touch-action:manipulation"><span style="font-size:1rem">π</span> Get DigitalSaudi Passport · 1π</button><div id="pay-status" class="pay-status"></div></div>';}
+  html+='<div class="sec-lbl">Payment History</div>';
+  if(txs.length)txs.forEach(function(tx){html+='<div class="tx-row"><div><div class="tx-type">'+(tx.t||'Transaction')+'</div><div class="tx-date">'+(tx.d||'')+'</div></div></div>';});
+  else html+='<div style="text-align:center;padding:.65rem;font-size:.56rem;color:var(--t3)">No transactions yet</div>';
+  body.innerHTML=html;
+}
+var FAQS=[{q:'Payment stuck on Processing?',a:'Make sure you are using Pi Browser. The onIncompletePayment handler clears stuck payments on next login. Sign out and sign in again.'},{q:'AI not responding?',a:'Check GEMINI_API_KEY is set in Cloudflare Variables. Visit /ai to check key_present:true.'},{q:'Scores not loading?',a:'Saudi Pro League uses ESPN (no key). Test: /scores?league=sau.1'},{q:'How do I use AI Concierge?',a:'Tap Home → AI tab. Type any question. Responds in English or Arabic.'},{q:'How do I Send Pi?',a:'Tap Home → Wallet tab → Send Pi. Enter recipient username and amount.'},{q:'How do Prayer Times work?',a:'Tap Home → Prayer. Select your city. Countdown updates every second.'},{q:'How do I switch to Arabic?',a:'Tap the عر button in the top-right corner.'}];
+function renderSupport(body){var html='<div class="sec-lbl" style="padding-top:.45rem">Frequently Asked Questions</div>';FAQS.forEach(function(faq,i){html+='<div class="faq-item" id="faq-'+i+'" onclick="toggleFAQ('+i+')"><div class="faq-q">'+faq.q+'<span class="faq-ico">+</span></div><div class="faq-a">'+faq.a+'</div></div>';});html+='<div class="card" style="margin:.32rem .5rem"><div class="card-b"><div style="font-size:.64rem;font-weight:700;color:var(--g3);margin-bottom:.35rem">support.digitalsaudi.pi@gmail.com</div><div style="display:flex;gap:.38rem"><a href="/privacy" style="font-size:.5rem;color:var(--gold)">Privacy Policy</a><span style="color:var(--t3)">·</span><a href="/terms" style="font-size:.5rem;color:var(--gold)">Terms</a></div></div></div>';body.innerHTML=html;}
+function toggleFAQ(i){var el=document.getElementById('faq-'+i);if(el)el.classList.toggle('open');}
+function renderAbout(body){body.innerHTML='<div class="card" style="margin:.5rem"><div style="text-align:center;padding:1.1rem .74rem"><div style="font-size:2.9rem;font-weight:900;letter-spacing:-.06em;background:var(--gg);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:.06rem">DigitalSaudi</div><div style="font-size:.54rem;color:var(--t3);letter-spacing:.12em;text-transform:uppercase;margin-bottom:.5rem">Saudi Digital Ecosystem on Pi</div><div style="display:inline-block;background:rgba(22,196,127,.1);border:1px solid var(--bd2);color:var(--g3);font-size:.52rem;font-weight:700;padding:.2rem .65rem;border-radius:99px;margin-bottom:.55rem">v10.0.0 · Pi Mainnet · sandbox:false</div><div style="font-size:.55rem;color:var(--t2);line-height:1.65">Saudi technology, startups, Vision 2030, tourism, Islamic calendar, prayer times, live football, and Pi economy. Built exclusively for Pi Network.</div><div style="font-size:.4rem;color:var(--t3);margin-top:.8rem">© 2026 DigitalSaudi · Abdullahi Bashir Abubakar</div></div></div>';}
+
+/* ════════════════════════════════════════
+   COPA STARTUP PATTERN:
+   window.addEventListener('load', function(){ piLogin(); })
+   No initSDK. No loading screen. Login shown by default.
+════════════════════════════════════════ */
+window.addEventListener('load', function() {
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js').catch(function(){});
+  }
+  /* Copa pattern: restore session OR call piLogin */
+  var saved = localStorage.getItem('ds_user');
+  if (saved) {
+    try {
+      piUser = JSON.parse(saved);
+      isPass = localStorage.getItem('ds_pass') === '1';
+      txLog  = JSON.parse(localStorage.getItem('ds_tx') || '[]');
+      launchApp();
+      return;
+    } catch(e) {
+      localStorage.removeItem('ds_user');
+    }
+  }
+  piLogin();
+});
+</script></body></html>
