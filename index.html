@@ -650,7 +650,7 @@ function piLogin() {
 
   /* Exact Copa sequence */
   Pi.init({ version: '2.0', sandbox: false });
-  Pi.authenticate(['username', 'payments', 'wallet_address'], onIncompletePayment)
+  Pi.authenticate(['username', 'payments'], onIncompletePayment)
     .then(function(auth) {
       piUser = auth.user;
       localStorage.setItem('ds_user', JSON.stringify(piUser));
@@ -1312,18 +1312,19 @@ window.addEventListener('load', function() {
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/sw.js').catch(function(){});
   }
-  /* Restore saved session exactly like Copa */
+  /* Copa pattern: restore session OR call piLogin */
   var saved = localStorage.getItem('ds_user');
   if (saved) {
     try {
       piUser = JSON.parse(saved);
+      isPass = localStorage.getItem('ds_pass') === '1';
+      txLog  = JSON.parse(localStorage.getItem('ds_tx') || '[]');
       launchApp();
       return;
     } catch(e) {
       localStorage.removeItem('ds_user');
     }
   }
-  /* No saved session — show login and call piLogin */
   piLogin();
 });
 </script></body></html>
