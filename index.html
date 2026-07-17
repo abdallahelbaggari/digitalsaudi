@@ -813,15 +813,22 @@ function _doSendPi(to,amt,memo){
         .then(function(){addTx(amt+'π sent to @'+to);showPayStatus('success',amt+'π sent!');toast(amt+'π sent!');})
         .catch(function(){addTx(amt+'π sent');toast('Sent!');});
     },
-    onCancel:function(){showPayStatus('cancelled','Cancelled');toast('Cancelled');},
-    onError:function(err){console.error('[DS] Send error:',err);showPayStatus('failed','Error');}
+    onCancel:function(){if(sendBtn){sendBtn.textContent='π Send Pi';sendBtn.disabled=false;}showPayStatus('cancelled','Cancelled');toast('Cancelled');},
+    onError:function(err){console.error('[DS] Send error:',err);if(sendBtn){sendBtn.textContent='π Send Pi';sendBtn.disabled=false;}showPayStatus('failed','Error');}
   });
 }
 function sendPi(){
-  var to=(document.getElementById('ds-send-to')||{}).value||'';
-  var amt=parseFloat((document.getElementById('ds-send-amt')||{}).value)||0;
-  var memo=(document.getElementById('ds-send-memo')||{}).value||'Pi payment';
-  _doSendPi(to,amt,memo);
+  var toEl=document.getElementById('ds-send-to');
+  var amtEl=document.getElementById('ds-send-amt');
+  var memoEl=document.getElementById('ds-send-memo');
+  var sendBtn=document.getElementById('ds-send-btn');
+  var to=toEl?toEl.value.trim():'';
+  var amt=amtEl?parseFloat(amtEl.value)||0:0;
+  var memo=(memoEl&&memoEl.value.trim())||'Pi transfer';
+  console.log('[DS] sendPi to='+to+' amt='+amt);
+  if(!amt||amt<=0){toast('Enter amount greater than 0');return;}
+  if(sendBtn){sendBtn.textContent='Opening Pi Wallet...';sendBtn.disabled=true;}
+  _doSendPi(to,amt,memo,sendBtn);
 }
 function genRequest(){
   var amt=parseFloat((document.getElementById('rq-amt')||{}).value||0);
@@ -1119,14 +1126,32 @@ function renderTable(el){
 /* ── WALLET ── */
 function renderWallet(){
   var body=document.getElementById('home-body');
-  var addr=piUser&&piUser.wallet_address?piUser.wallet_address:(piUser&&piUser.wallet?piUser.wallet:'No wallet — KYC required');
-  body.innerHTML='<div class="scroll"><div class="wallet-hero"><div class="wh-label">π Pi Wallet</div><div class="wh-addr">'+addr+'</div><div class="wallet-btns"><button class="wbtn send" onclick="openSend()" ontouchstart="" style="-webkit-tap-highlight-color:transparent"><span>↑</span> Send Pi</button><button class="wbtn req" onclick="openRequest()" ontouchstart="" style="-webkit-tap-highlight-color:transparent"><span>↓</span> Request Pi</button></div></div><div id="pay-status" class="pay-status"></div><div class="sec-lbl">Recent Transactions</div>';
+  var addr=piUser&&piUser.wallet_address?piUser.wallet_address:(piUser&&piUser.wallet?piUser.wallet:'');
+  var uname=piUser?('@'+(piUser.username||'Pioneer')):'';
+  body.innerHTML='<div class="scroll"><div class="wallet-hero"><div class="wh-label">π Pi Wallet</div>'
+    +'<div style="font-size:1.1rem;font-weight:900;color:var(--g3);margin-bottom:.18rem">'+uname+'</div>'
+    +(addr?'<div class="wh-addr">'+addr+'</div>':'<div style="font-size:.48rem;color:var(--gold);margin-bottom:.5rem">🔐 Wallet address requires KYC verification in Pi App</div>')+'<div class="wallet-btns"><button class="wbtn send" onclick="openSend()" ontouchstart="" style="-webkit-tap-highlight-color:transparent"><span>↑</span> Send Pi</button><button class="wbtn req" onclick="openRequest()" ontouchstart="" style="-webkit-tap-highlight-color:transparent"><span>↓</span> Request Pi</button></div></div><div id="pay-status" class="pay-status"></div><div class="sec-lbl">Recent Transactions</div>';
   var txs=JSON.parse(localStorage.getItem('ds_tx')||'[]').slice(0,8);
   if(txs.length){txs.forEach(function(tx){body.innerHTML+='<div class="tx-row"><div><div class="tx-type">'+(tx.t||'Transaction')+'</div><div class="tx-date">'+(tx.d||'')+'</div></div></div>';});}
   else{body.innerHTML+='<div style="text-align:center;padding:.8rem;font-size:.56rem;color:var(--t3)">No transactions yet</div>';}
   body.innerHTML+='</div>';
 }
-function openSend(){openPanel('Send Pi','<div style="padding:.78rem .82rem"><div style="font-size:.92rem;font-weight:900;color:var(--g3);margin-bottom:.52rem">↑ Send Pi</div><label class="w-label">Recipient Username</label><input class="w-inp" id="ds-send-to" type="text" placeholder="e.g. abdullahi" autocomplete="off"><label class="w-label">Amount (π)</label><input class="w-inp" id="ds-send-amt" type="number" step="0.01" min="0.01" placeholder="1.00"><label class="w-label">Memo</label><input class="w-inp" id="ds-send-memo" type="text" placeholder="e.g. Payment for service"><button class="w-btn" onclick="sendPi()"><span>π</span> Send Pi</button></div>');}
+function openSend(){
+  /* Build panel HTML — Pi Browser compatible */
+  var html='<div style="padding:.78rem .82rem">'
+    +'<div style="font-size:.92rem;font-weight:900;color:var(--g3);margin-bottom:.52rem">↑ Send Pi</div>'
+    +'<label class="w-label">Recipient Pi Wallet Address</label>'
+    +'<input class="w-inp" id="ds-send-to" type="text" placeholder="Paste wallet address or Pi username" autocomplete="off" style="font-size:.52rem">'
+    +'<label class="w-label">Amount (π)</label>'
+    +'<input class="w-inp" id="ds-send-amt" type="number" step="0.01" min="0.01" placeholder="1.00">'
+    +'<label class="w-label">Memo (optional)</label>'
+    +'<input class="w-inp" id="ds-send-memo" type="text" placeholder="e.g. Payment for service">'
+    +'<div id="send-status" style="font-size:.52rem;color:var(--t3);text-align:center;min-height:.9rem;margin-bottom:.3rem"></div>'
+    +'<button id="ds-send-btn" class="w-btn" style="touch-action:manipulation;cursor:pointer" onclick="sendPi()"><span>π</span> Send Pi</button>'
+    +'<div style="font-size:.44rem;color:var(--t3);text-align:center;margin-top:.5rem;line-height:1.5">Pi Wallet popup will open to confirm the transaction</div>'
+    +'</div>';
+  openPanel('Send Pi', html);
+}
 function openRequest(){openPanel('Request Pi','<div style="padding:.78rem .82rem"><div style="font-size:.92rem;font-weight:900;color:var(--g3);margin-bottom:.52rem">↓ Request Pi</div><label class="w-label">Amount (π)</label><input class="w-inp" id="rq-amt" type="number" step="0.01" min="0.01" placeholder="1.00"><label class="w-label">Reason</label><input class="w-inp" id="rq-memo" type="text" placeholder="e.g. Coffee"><button class="w-btn" onclick="genRequest()">↓ Generate Link</button><div id="rq-out" style="margin-top:.62rem"></div></div>');}
 
 /* ── ISLAMIC CALENDAR ── */
