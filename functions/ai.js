@@ -12,7 +12,7 @@ Rules: short mobile-friendly answers (3-5 sentences). Never fake stats. No finan
 export async function onRequestGet(context) {
   const key = context.env.GEMINI_API_KEY;
   return new Response(JSON.stringify({
-    status:'ok', service:'DigitalSaudi AI', model:'gemini-1.5-flash',
+    status:'ok', service:'DigitalSaudi AI', model:'gemini-2.0-flash-lite',
     key_present:!!key, key_length:key?key.length:0
   }), { status:200, headers:CORS });
 }
@@ -47,7 +47,7 @@ export async function onRequestPost(context) {
   if(!deduped.length) return new Response(JSON.stringify({ reply:'Please send a message.' }), { status:200, headers:CORS });
 
   try {
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${key}`;
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-lite:generateContent?key=${key}`;
     console.log('[DS/ai] calling Gemini, msgs:', deduped.length);
     const resp = await fetch(url, {
       method:'POST',
