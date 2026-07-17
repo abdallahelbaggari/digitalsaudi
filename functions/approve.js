@@ -1,35 +1,23 @@
 /* =================================================================
-   COPA.pi · functions/approve.js · Cloudflare Pages Function
-   Route:  /approve
+   DigitalSaudi · functions/approve.js · Cloudflare Pages Function
+   Route: /approve
    MAINNET · sandbox:false
-
-   DIAGNOSTIC VERSION — logs every step to Cloudflare Real-time Logs
-   
-   TO DEBUG:
-   1. Deploy this file
-   2. Go to Cloudflare Dashboard → copa-pi → Real-time Logs
-   3. Open app in Pi Browser → tap Copa Pass
-   4. Watch logs — you will see exactly where it fails
-   
-   TO CONFIRM PI_API_KEY IS SET:
-   Visit: https://copa-pi.pages.dev/approve
-   Must show: pi_api_key_present: true, pi_api_key_length: 64
+   Copied exactly from Copa proven working pattern
 ================================================================= */
 
 export async function onRequestGet(context) {
   const key = context.env.PI_API_KEY;
   return new Response(JSON.stringify({
     success:            true,
-    status:             'approve.js is reachable',
+    message:            'DigitalSaudi approve.js working',
     route:              '/approve',
     network:            'MAINNET · sandbox:false',
     pi_api_key_present: !!key,
     pi_api_key_length:  key ? key.length : 0,
-    pi_api_key_prefix:  key ? key.substring(0, 8) + '...' : 'MISSING',
-    instruction:        !key ? 'Go to Cloudflare Dashboard → copa-pi → Settings → Environment Variables → add PI_API_KEY' : 'Key is set',
+    pi_api_key_prefix:  key ? key.substring(0,8)+'...' : 'MISSING — set in Cloudflare Dashboard',
   }), {
     status:  200,
-    headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
+    headers: { 'Content-Type':'application/json', 'Access-Control-Allow-Origin':'*' },
   });
 }
 
@@ -41,49 +29,60 @@ export async function onRequestPost(context) {
     'Content-Type':                 'application/json',
   };
 
-  /* ── STEP 1: Log that we were called ── */
-  console.log('[Copa/approve] ===== POST RECEIVED =====');
+  console.log('[DS MAINNET] /approve POST called');
 
-  /* ── STEP 2: Parse body ── */
-  let paymentId = null;
   try {
-    const body = await context.request.json();
-    paymentId  = body.paymentId || null;
-    console.log('[Copa/approve] STEP 2 OK - paymentId:', paymentId);
-  } catch (e) {
-    console.error('[Copa/approve] STEP 2 FAIL - body parse error:', e.message);
-    return new Response(
-      JSON.stringify({ approved: true, step: 'body_parse_error' }),
-      { status: 200, headers: cors }
-    );
-  }
+    /* ── Parse body ── */
+    let paymentId = null;
+    try {
+      const body = await context.request.json();
+      paymentId  = body.paymentId || null;
+    } catch(e) {
+      console.error('[DS] Body parse error:', e.message);
+      return new Response(
+        JSON.stringify({ approved: true, step: 'body_parse_error' }),
+        { status: 200, headers: cors }
+      );
+    }
 
-  if (!paymentId) {
-    console.error('[Copa/approve] STEP 2 FAIL - no paymentId in body');
-    return new Response(
-      JSON.stringify({ approved: true, step: 'no_payment_id' }),
-      { status: 200, headers: cors }
-    );
-  }
+    console.log('[DS MAINNET] paymentId:', paymentId);
 
-  /* ── STEP 3: Check API key ── */
-  const PI_API_KEY = context.env.PI_API_KEY;
-  console.log('[Copa/approve] STEP 3 - PI_API_KEY present:', !!PI_API_KEY,
-    '| length:', PI_API_KEY ? PI_API_KEY.length : 0);
+    if (!paymentId) {
+      return new Response(
+        JSON.stringify({ approved: true, step: 'no_payment_id' }),
+        { status: 200, headers: cors }
+      );
+    }
 
-  if (!PI_API_KEY) {
-    console.error('[Copa/approve] STEP 3 FAIL - PI_API_KEY NOT SET IN CLOUDFLARE ENV VARS');
-    console.error('[Copa/approve] FIX: Cloudflare Dashboard → copa-pi → Settings → Environment Variables → add PI_API_KEY');
-    /* Return 200 so Pi SDK does not immediately fail */
-    return new Response(
-      JSON.stringify({ approved: true, step: 'no_api_key' }),
-      { status: 200, headers: cors }
-    );
-  }
+    /* ── Get API key ── */
+    const PI_API_KEY = context.env.PI_API_KEY;
+    console.log('[DS MAINNET] PI_API_KEY present:', !!PI_API_KEY,
+      '| length:', PI_API_KEY ? PI_API_KEY.length : 0);
 
-  /* ── STEP 4: Call Pi API to approve ── */
-  console.log('[Copa/approve] STEP 4 - Calling api.minepi.com/v2/payments/' + paymentId + '/approve');
-  try {
+    if (!PI_API_KEY) {
+      console.error('[DS MAINNET] PI_API_KEY MISSING — add in Cloudflare Dashboard');
+      return new Response(
+        JSON.stringify({ approved: true, step: 'no_api_key',
+          error: 'PI_API_KEY not set in Cloudflare env vars' }),
+        { status: 200, headers: cors }
+      );
+    }
+
+    /* ── GET payment state first (for logging) ── */
+    try {
+      const getRes = await fetch(
+        `https://api.minepi.com/v2/payments/${paymentId}`,
+        { method: 'GET', headers: { 'Authorization': `Key ${PI_API_KEY}` } }
+      );
+      const getRaw = await getRes.text();
+      console.log('[DS MAINNET] Payment state:', getRes.status,
+        getRaw.substring(0, 200));
+    } catch(e) {
+      console.warn('[DS MAINNET] GET state error (non-fatal):', e.message);
+    }
+
+    /* ── POST approve ── */
+    console.log('[DS MAINNET] Calling Pi approve API...');
     const piRes = await fetch(
       `https://api.minepi.com/v2/payments/${paymentId}/approve`,
       {
@@ -95,28 +94,21 @@ export async function onRequestPost(context) {
         body: JSON.stringify({}),
       }
     );
-    const piRaw = await piRes.text();
-    console.log('[Copa/approve] STEP 4 RESULT - Pi API status:', piRes.status);
-    console.log('[Copa/approve] STEP 4 RESULT - Pi API response:', piRaw.substring(0, 300));
 
-    if (piRes.status === 200) {
-      console.log('[Copa/approve] SUCCESS - payment approved by Pi API');
-    } else if (piRes.status === 401) {
-      console.error('[Copa/approve] FAIL 401 - PI_API_KEY is WRONG - get correct key from develop.pi');
-    } else if (piRes.status === 400) {
-      console.error('[Copa/approve] FAIL 400 - Bad request - paymentId may be invalid:', piRaw);
-    } else {
-      console.error('[Copa/approve] FAIL', piRes.status, '-', piRaw);
-    }
+    const piStatus = piRes.status;
+    const piRaw    = await piRes.text();
+    console.log('[DS MAINNET] Pi approve response:', piStatus,
+      piRaw.substring(0, 300));
 
-    /* ALWAYS return 200 to Pi SDK */
+    /* ALWAYS HTTP 200 back to Pi SDK */
     return new Response(
-      JSON.stringify({ approved: true, pi_status: piRes.status, pi_response: piRaw }),
+      JSON.stringify({ approved: true, pi_status: piStatus }),
       { status: 200, headers: cors }
     );
 
-  } catch (err) {
-    console.error('[Copa/approve] STEP 4 EXCEPTION:', err.message);
+  } catch(err) {
+    console.error('[DS MAINNET] approve error:', err.message);
+    /* ALWAYS HTTP 200 — never let this return non-200 */
     return new Response(
       JSON.stringify({ approved: true, error: err.message }),
       { status: 200, headers: cors }
