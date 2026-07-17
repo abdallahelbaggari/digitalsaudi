@@ -1,9 +1,10 @@
 /* =================================================================
-   COPA.pi · functions/cancel-payment.js · Cloudflare Pages Function
+   DigitalSaudi · functions/cancel-payment.js · Cloudflare Pages Function
    Route: /cancel-payment
    Called by onIncompletePayment when payment has no txid
    Re-approves stuck payment so Pi SDK can retry
    MAINNET · sandbox: false
+   Copied exactly from Copa proven working pattern
 ================================================================= */
 
 export async function onRequestGet(context) {
@@ -29,6 +30,7 @@ export async function onRequestPost(context) {
       body: JSON.stringify({}),
     });
     const text = await res.text();
+    console.log('[DS MAINNET] cancel-payment re-approve:', res.status, text.slice(0,100));
     return new Response(JSON.stringify({ success:true, pi_status:res.status }), { status:200, headers:cors });
   } catch(err) {
     return new Response(JSON.stringify({ success:false, error:err.message }), { status:200, headers:cors });
