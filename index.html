@@ -743,6 +743,8 @@ function logOut(){
 function buyPass() {
   if (isPass) { toast('Passport already active!'); return; }
   var btn = document.getElementById('ds-pass-btn');
+  /* Always reset first in case previously stuck */
+  if (btn) { btn.disabled=false; }
   if (btn) { btn.textContent='Processing...'; btn.disabled=true; }
   if (typeof Pi === 'undefined') {
     toast('Open in Pi Browser');
@@ -866,10 +868,8 @@ function homeLoad(){
     fetch('/api?type=islamic').then(function(r){return r.json();}).catch(function(){return null;}),
   ]).then(function(res){
     _pr=res[0];_wx=res[1];_hols=res[2];_ic=res[3];
-    if(_hTab===1)renderPrayer();
-    else if(_hTab===2)renderWeather();
-    else if(_hTab===5)renderCalendar();
-    else if(_hTab===6)renderHolidays();
+    /* Re-render whichever tab is active after data loads */
+    renderHTab();
     startCD();
   });
 }
@@ -1134,6 +1134,12 @@ function renderCalendar(){
   var body=document.getElementById('home-body');
   if(!_ic){body.innerHTML='<div class="scroll"><div class="spin-wrap"><div class="spin"></div></div></div>';fetch('/api?type=islamic').then(function(r){return r.json();}).then(function(d){_ic=d;renderCalendar();}).catch(function(){});return;}
   var h=_ic.hijri||{};var g=_ic.gregorian||{};
+  /* Guard: if data incomplete, refetch */
+  if(!h.day||!h.monthName||!h.year){
+    body.innerHTML='<div class="scroll"><div class="spin-wrap"><div class="spin"></div><span>Loading calendar…</span></div></div>';
+    fetch('/api?type=islamic').then(function(r){return r.json();}).then(function(d){_ic=d;renderCalendar();}).catch(function(){});
+    return;
+  }
   var months=['Muharram','Safar','Rabi al-Awwal','Rabi al-Thani','Jumada al-Awwal','Jumada al-Thani','Rajab','Shaban','Ramadan','Shawwal','Dhu al-Qidah','Dhu al-Hijjah'];
   var monthsAr=['محرم','صفر','ربيع الأول','ربيع الثاني','جمادى الأولى','جمادى الثانية','رجب','شعبان','رمضان','شوال','ذو القعدة','ذو الحجة'];
   var html='<div class="scroll"><div class="ic-card"><div style="display:flex;align-items:flex-start;justify-content:space-between"><div><div class="ic-hijri">'+h.day+' '+h.monthName+' '+h.year+' AH</div><div class="ic-hijri-ar">'+h.displayAr+'</div><div class="ic-greg">'+g.weekday+', '+g.day+'/'+g.month+'/'+g.year+'</div></div><div style="font-size:2.2rem">🌙</div></div>'+(_ic.occasion?'<div class="ic-occasion">🌟 '+_ic.occasion+'</div>':'')+'</div><div class="sec-lbl">Islamic Months</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:.22rem;padding:.3rem .5rem">';
@@ -1302,7 +1308,7 @@ function renderPassport(body){
   var txs=JSON.parse(localStorage.getItem('ds_tx')||'[]').slice(0,5);
   var html='';
   if(isPass){html='<div class="pass-card" style="text-align:center;padding:1rem"><div style="font-size:2.4rem">⚡</div><div style="font-size:.92rem;font-weight:900;color:var(--g3)">Passport Active</div><div style="font-size:.5rem;color:var(--t3);margin-top:.1rem">Thank you for supporting DigitalSaudi</div></div>';}
-  else{html='<div class="pass-card"><div style="font-size:.88rem;font-weight:900;color:var(--g3);margin-bottom:.04rem">⚡ DigitalSaudi Passport</div><div style="font-size:.5rem;color:var(--t3);margin-bottom:.46rem">Premium membership · 1π one-time</div><div class="pass-feats"><div class="pf"><div class="pf-ico">🤖</div><div class="pf-n">AI Priority</div></div><div class="pf"><div class="pf-ico">⭐</div><div class="pf-n">Premium Badge</div></div><div class="pf"><div class="pf-ico">📌</div><div class="pf-n">Favourites</div></div><div class="pf"><div class="pf-ico">🚀</div><div class="pf-n">Early Access</div></div></div><button class="pi-pay-btn" id="ds-pass-btn" onclick="buyPass()" ontouchstart="" style="-webkit-tap-highlight-color:transparent"><span style="font-size:1rem">π</span> Get DigitalSaudi Passport · 1π</button><div id="pay-status" class="pay-status"></div></div>';}
+  else{html='<div class="pass-card"><div style="font-size:.88rem;font-weight:900;color:var(--g3);margin-bottom:.04rem">⚡ DigitalSaudi Passport</div><div style="font-size:.5rem;color:var(--t3);margin-bottom:.46rem">Premium membership · 1π one-time</div><div class="pass-feats"><div class="pf"><div class="pf-ico">🤖</div><div class="pf-n">AI Priority</div></div><div class="pf"><div class="pf-ico">⭐</div><div class="pf-n">Premium Badge</div></div><div class="pf"><div class="pf-ico">📌</div><div class="pf-n">Favourites</div></div><div class="pf"><div class="pf-ico">🚀</div><div class="pf-n">Early Access</div></div></div><button class="pi-pay-btn" id="ds-pass-btn" onclick="buyPass()" style="cursor:pointer;touch-action:manipulation"><span style="font-size:1rem">π</span> Get DigitalSaudi Passport · 1π</button><div id="pay-status" class="pay-status"></div></div>';}
   html+='<div class="sec-lbl">Payment History</div>';
   if(txs.length)txs.forEach(function(tx){html+='<div class="tx-row"><div><div class="tx-type">'+(tx.t||'Transaction')+'</div><div class="tx-date">'+(tx.d||'')+'</div></div></div>';});
   else html+='<div style="text-align:center;padding:.65rem;font-size:.56rem;color:var(--t3)">No transactions yet</div>';
