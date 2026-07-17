@@ -1,14 +1,15 @@
 /* =================================================================
-   COPA.pi · functions/complete.js · Cloudflare Pages Function
+   DigitalSaudi · functions/complete.js · Cloudflare Pages Function
    Route: /complete
    MAINNET · sandbox: false
+   Copied exactly from Copa proven working pattern
 ================================================================= */
 
 export async function onRequestGet(context) {
   const key = context.env.PI_API_KEY;
   return new Response(JSON.stringify({
     success: true,
-    message: 'Copa.pi complete.js working',
+    message: 'DigitalSaudi complete.js working',
     route:   '/complete',
     network: 'MAINNET · sandbox:false',
     pi_api_key_present: !!key,
@@ -22,7 +23,7 @@ export async function onRequestPost(context) {
     'Access-Control-Allow-Headers': 'Content-Type',
     'Content-Type':                 'application/json',
   };
-  console.log('[CopaAmerica MAINNET] /complete POST');
+  console.log('[DS MAINNET] /complete POST');
   try {
     const body      = await context.request.json();
     const paymentId = body.paymentId;
@@ -43,10 +44,10 @@ export async function onRequestPost(context) {
       body:    JSON.stringify({ txid }),
     });
     const text = await res.text();
-    console.log('[CopaAmerica MAINNET] complete response:', res.status, text.slice(0,200));
+    console.log('[DS MAINNET] complete response:', res.status, text.slice(0,200));
     return new Response(JSON.stringify({ completed:res.ok, pi_status:res.status }), { status:200, headers:cors });
   } catch(err) {
-    console.error('[CopaAmerica MAINNET] complete error:', err.message);
+    console.error('[DS MAINNET] complete error:', err.message);
     return new Response(JSON.stringify({ completed:false, error:err.message }), { status:200, headers:cors });
   }
 }
