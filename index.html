@@ -630,6 +630,7 @@ function toggleLang(){
    piLogin — EXACT COPA PATTERN
 ════════════════════════════════════════ */
 function piLogin() {
+  /* EXACT COPA piLogin PATTERN */
   var btn     = document.getElementById('loginBtn');
   var btnText = document.getElementById('stxt');
   var lmsg    = document.getElementById('lmsg');
@@ -637,7 +638,6 @@ function piLogin() {
   if (btnText) btnText.textContent = 'Authenticating...';
   if (lmsg)    lmsg.textContent = 'Connecting to Pi Network...';
 
-  /* Copa pattern: if Pi SDK not loaded, demo mode */
   if (typeof Pi === 'undefined') {
     setTimeout(function() {
       piUser = { username: 'Pioneer' };
@@ -648,7 +648,7 @@ function piLogin() {
     return;
   }
 
-  /* Exact Copa sequence */
+  /* Copa: Pi.init then Pi.authenticate — no async/await */
   Pi.init({ version: '2.0', sandbox: false });
   Pi.authenticate(['username', 'payments'], onIncompletePayment)
     .then(function(auth) {
@@ -751,6 +751,8 @@ function buyPass() {
     if(btn){btn.textContent='Get DigitalSaudi Passport · 1π';btn.disabled=false;}
     return;
   }
+  /* Re-init SDK before payment — prevents "processing but no popup" */
+  try { Pi.init({ version:'2.0', sandbox:false }); } catch(e){}
   Pi.createPayment({ amount:1, memo:'DigitalSaudi Passport', metadata:{type:'passport',app:'digitalsaudi',network:'mainnet'} }, {
     onReadyForServerApproval: function(paymentId){
       return fetch(_APPROVE,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({paymentId:paymentId,expectedAmount:1})})
@@ -802,6 +804,8 @@ function _doSendPi(to, amt, memo) {
   /* EXACT COPA PATTERN */
   if (!amt||amt<=0) { toast('Enter amount'); return; }
   if (typeof Pi==='undefined') { toast('Open in Pi Browser'); return; }
+  /* Re-init SDK before payment — prevents "processing but no popup" */
+  try { Pi.init({ version:'2.0', sandbox:false }); } catch(e){}
   Pi.createPayment({ amount:amt, memo:memo||'DigitalSaudi Pi transfer', metadata:{type:'send',app:'digitalsaudi',network:'mainnet'} }, {
     onReadyForServerApproval: function(paymentId){
       return fetch(_APPROVE,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({paymentId:paymentId})})
@@ -1363,19 +1367,12 @@ window.addEventListener('load', function() {
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/sw.js').catch(function(){});
   }
-  /* Copa pattern: restore session OR call piLogin */
-  var saved = localStorage.getItem('ds_user');
-  if (saved) {
-    try {
-      piUser = JSON.parse(saved);
-      isPass = localStorage.getItem('ds_pass') === '1';
-      txLog  = JSON.parse(localStorage.getItem('ds_tx') || '[]');
-      launchApp();
-      return;
-    } catch(e) {
-      localStorage.removeItem('ds_user');
-    }
-  }
+  /* EXACT COPA PATTERN: always call piLogin() on every load
+     Never skip authenticate — Pi SDK needs payments scope every session
+     Copa does: renderTxHistory(); renderPassStatus(); piLogin();
+  */
+  isPass = localStorage.getItem('ds_pass') === '1';
+  txLog  = JSON.parse(localStorage.getItem('ds_tx') || '[]');
   piLogin();
 });
 </script></body></html>
