@@ -711,12 +711,26 @@ function onIncompletePayment(payment) {
   var txid = '';
   try { txid = (payment.transaction && payment.transaction.txid) ? payment.transaction.txid : ''; } catch(e){}
   var pid = payment.identifier;
+  console.log('[DS] onIncompletePayment pid:', pid, 'txid:', txid||'none');
+  toast('Clearing previous payment…');
   if (txid) {
-    fetch(_COMPLETE, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({paymentId:pid,txid:txid}) })
-      .then(function(r){ return r.json(); }).catch(function(){});
+    /* Payment reached blockchain — complete it */
+    return fetch(_COMPLETE, {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({paymentId:pid, txid:txid})
+    }).then(function(r){ return r.json(); })
+      .then(function(d){ console.log('[DS] Completed incomplete payment:', d); toast('Previous payment completed ✅'); })
+      .catch(function(e){ console.error('[DS] Complete error:', e.message); });
   } else {
-    fetch(_CANCEL, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({paymentId:pid}) })
-      .then(function(r){ return r.json(); }).catch(function(){});
+    /* No txid — cancel and re-approve to clear the pending state */
+    return fetch(_CANCEL, {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({paymentId:pid})
+    }).then(function(r){ return r.json(); })
+      .then(function(d){ console.log('[DS] Cleared incomplete payment:', d); toast('Previous payment cleared ✅'); })
+      .catch(function(e){ console.error('[DS] Cancel error:', e.message); });
   }
 }
 
