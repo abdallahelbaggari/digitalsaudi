@@ -1,5 +1,5 @@
 {
   "version": 1,
-  "include": ["/approve", "/complete", "/cancel-payment", "/api", "/ai", "/news", "/scores", "/privacy", "/terms"],
+  "include": ["/approve","/complete","/cancel-payment","/clear-payment","/api","/ai","/news","/scores","/privacy","/terms"],
   "exclude": []
 }
