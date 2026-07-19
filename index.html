@@ -1150,14 +1150,46 @@ function renderWallet(){
   var body=document.getElementById('home-body');
   var addr=piUser&&piUser.wallet_address?piUser.wallet_address:(piUser&&piUser.wallet?piUser.wallet:'');
   var uname=piUser?('@'+(piUser.username||'Pioneer')):'';
+  var pendingPid=localStorage.getItem('ds_pending_pid')||'';
+  var recoveryBtn=pendingPid
+    ?'<div style="background:rgba(200,169,81,.1);border:1px solid rgba(200,169,81,.3);border-radius:12px;padding:.52rem .68rem;margin-bottom:.5rem"><div style="font-size:.52rem;color:var(--gold);font-weight:700;margin-bottom:.28rem">⚠️ Incomplete payment detected</div><div style="font-size:.44rem;color:var(--t3);margin-bottom:.34rem">A previous payment reached the blockchain but was not confirmed. Tap below to recover it.</div><button onclick="recoverPending()" style="width:100%;padding:.52rem;background:rgba(200,169,81,.15);border:1.5px solid rgba(200,169,81,.4);border-radius:10px;color:var(--gold);font-size:.62rem;font-weight:700;cursor:pointer">🔄 Recover Payment</button></div>'
+    :'';
   body.innerHTML='<div class="scroll"><div class="wallet-hero"><div class="wh-label">π Pi Wallet</div>'
     +'<div style="font-size:1.1rem;font-weight:900;color:var(--g3);margin-bottom:.18rem">'+uname+'</div>'
-    +(addr?'<div class="wh-addr">'+addr+'</div>':'<div style="font-size:.48rem;color:var(--gold);margin-bottom:.5rem">🔐 Wallet address requires KYC verification in Pi App</div>')+'<div class="wallet-btns"><button class="wbtn send" onclick="openSend()" ontouchstart="" style="-webkit-tap-highlight-color:transparent"><span>↑</span> Send Pi</button><button class="wbtn req" onclick="openRequest()" ontouchstart="" style="-webkit-tap-highlight-color:transparent"><span>↓</span> Request Pi</button></div></div><div id="pay-status" class="pay-status"></div><div class="sec-lbl">Recent Transactions</div>';
+    +(addr?'<div class="wh-addr">'+addr+'</div>':'<div style="font-size:.48rem;color:var(--gold);margin-bottom:.5rem">🔐 Wallet address requires KYC verification in Pi App</div>')+recoveryBtn+'<div class="wallet-btns"><button class="wbtn send" onclick="openSend()" ontouchstart="" style="-webkit-tap-highlight-color:transparent"><span>↑</span> Send Pi</button><button class="wbtn req" onclick="openRequest()" ontouchstart="" style="-webkit-tap-highlight-color:transparent"><span>↓</span> Request Pi</button></div></div><div id="pay-status" class="pay-status"></div><div class="sec-lbl">Recent Transactions</div>';
   var txs=JSON.parse(localStorage.getItem('ds_tx')||'[]').slice(0,8);
   if(txs.length){txs.forEach(function(tx){body.innerHTML+='<div class="tx-row"><div><div class="tx-type">'+(tx.t||'Transaction')+'</div><div class="tx-date">'+(tx.d||'')+'</div></div></div>';});}
   else{body.innerHTML+='<div style="text-align:center;padding:.8rem;font-size:.56rem;color:var(--t3)">No transactions yet</div>';}
   body.innerHTML+='</div>';
 }
+function recoverPending(){
+  var pid=localStorage.getItem('ds_pending_pid');
+  if(!pid){toast('No pending payment found');return;}
+  var btn=event&&event.target?event.target:null;
+  if(btn){btn.textContent='Recovering...';btn.disabled=true;}
+  console.log('[DS] recoverPending pid:',pid);
+  fetch('/payment-recovery',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({paymentId:pid})
+  }).then(function(r){return r.json();})
+    .then(function(d){
+      console.log('[DS] Recovery result:',d);
+      if(d.cleared){
+        localStorage.removeItem('ds_pending_pid');
+        toast('✅ Payment recovered! Try again.');
+        renderWallet();
+      } else {
+        toast('Recovery: '+d.message);
+        if(btn){btn.textContent='🔄 Recover Payment';btn.disabled=false;}
+      }
+    }).catch(function(e){
+      toast('Recovery error — check connection');
+      if(btn){btn.textContent='🔄 Recover Payment';btn.disabled=false;}
+    });
+}
+
+
 function openSend(){
   /* Build panel HTML — Pi Browser compatible */
   var html='<div style="padding:.78rem .82rem">'
