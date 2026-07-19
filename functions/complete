@@ -1,9 +1,10 @@
 /* =================================================================
    DigitalSaudi · functions/complete.js · Route: /complete
    MAINNET · sandbox:false
-   - Idempotency: checks if already completed before calling Pi API
-   - Timeout protection on every fetch
-   - Never silently skips when txid exists
+
+   OPTIMIZED FOR SPEED — Pi SDK has a short timeout window.
+   Do NOT call GET before completing. Complete immediately.
+   Treat 400/409 as success (already completed = still success).
 ================================================================= */
 const CORS = {
   'Access-Control-Allow-Origin':  '*',
@@ -11,120 +12,127 @@ const CORS = {
   'Access-Control-Allow-Headers': 'Content-Type',
   'Content-Type':                 'application/json',
 };
-const PI_TIMEOUT_MS = 15000;
-
-function piHeaders(key) {
-  return { 'Authorization': `Key ${key}`, 'Content-Type': 'application/json' };
-}
 
 export async function onRequestGet(context) {
   const key = context.env.PI_API_KEY;
   return new Response(JSON.stringify({
-    status: 'ok', route: '/complete', network: 'MAINNET · sandbox:false',
+    status: 'ok', route: '/complete',
+    network: 'MAINNET · sandbox:false',
     pi_api_key_present: !!key,
-  }), { status:200, headers:CORS });
+  }), { status: 200, headers: CORS });
 }
 
 export async function onRequestPost(context) {
   console.log('[DS/complete] ── Payment Complete Started ──');
 
-  /* 1. Parse body */
+  /* 1. Parse body — fast */
   let paymentId, txid;
   try {
     const body = await context.request.json();
     paymentId  = body.paymentId || null;
     txid       = body.txid      || null;
-    console.log('[DS/complete] paymentId:', paymentId, '| txid:', txid ? txid.slice(0,16)+'...' : 'MISSING');
+    console.log('[DS/complete] paymentId:', paymentId,
+                '| txid:', txid ? txid.slice(0,16)+'...' : 'MISSING');
   } catch(e) {
     console.error('[DS/complete] Body parse error:', e.message);
-    return new Response(JSON.stringify({ completed:false, error:'body_parse_error' }), { status:200, headers:CORS });
+    return new Response(
+      JSON.stringify({ completed: false, error: 'body_parse_error' }),
+      { status: 200, headers: CORS }
+    );
   }
 
   if (!paymentId) {
     console.error('[DS/complete] Missing paymentId');
-    return new Response(JSON.stringify({ completed:false, error:'missing_payment_id' }), { status:200, headers:CORS });
+    return new Response(
+      JSON.stringify({ completed: false, error: 'missing_payment_id' }),
+      { status: 200, headers: CORS }
+    );
   }
 
+  /* 2. No txid yet — blockchain still processing */
   if (!txid) {
-    /* txid not yet available — blockchain still processing */
-    console.warn('[DS/complete] ⚠️ txid not yet available — payment still on blockchain');
-    return new Response(JSON.stringify({
-      completed: false,
-      reason:    'txid_not_yet_available',
-      message:   'Blockchain transaction not yet confirmed. Pi SDK will call /complete again when txid is ready.',
-    }), { status:200, headers:CORS });
+    console.warn('[DS/complete] No txid yet — blockchain pending');
+    return new Response(
+      JSON.stringify({ completed: false, reason: 'txid_not_yet_available' }),
+      { status: 200, headers: CORS }
+    );
   }
 
-  /* 2. Validate API key */
+  /* 3. Validate API key */
   const PI_API_KEY = context.env.PI_API_KEY;
   if (!PI_API_KEY) {
-    console.error('[DS/complete] PI_API_KEY not configured');
-    return new Response(JSON.stringify({ completed:false, error:'missing_api_key' }), { status:200, headers:CORS });
+    console.error('[DS/complete] PI_API_KEY not set');
+    return new Response(
+      JSON.stringify({ completed: false, error: 'missing_api_key' }),
+      { status: 200, headers: CORS }
+    );
   }
 
-  /* 3. Idempotency check — GET current payment state first */
+  /* 4. Complete immediately — NO GET before this.
+        Speed is critical here. Pi SDK times out fast.
+        Treat 400 and 409 as success — payment already completed. */
+  console.log('[DS/complete] Calling Pi complete API NOW...');
   try {
     const ctrl  = new AbortController();
-    const timer = setTimeout(() => ctrl.abort(), PI_TIMEOUT_MS);
-    const getRes = await fetch(`https://api.minepi.com/v2/payments/${paymentId}`, {
-      method: 'GET', headers: piHeaders(PI_API_KEY), signal: ctrl.signal,
-    });
-    clearTimeout(timer);
-    const getText = await getRes.text();
-    console.log('[DS/complete] Current state GET:', getRes.status, getText.slice(0,200));
+    const timer = setTimeout(() => ctrl.abort(), 8000); /* 8s — stay under Pi timeout */
 
-    if (getRes.ok) {
-      try {
-        const data = JSON.parse(getText);
-        if (data.status === 'COMPLETE' || data.status === 'completed') {
-          console.log('[DS/complete] ✅ Payment already completed (idempotency) — skipping');
-          return new Response(JSON.stringify({
-            completed: true, reason: 'already_completed', pi_status: getRes.status,
-          }), { status:200, headers:CORS });
-        }
-        console.log('[DS/complete] Payment status:', data.status, '— proceeding to complete');
-      } catch(e) { /* JSON parse failed — continue anyway */ }
-    }
-  } catch(e) {
-    if (e.name === 'AbortError') {
-      console.warn('[DS/complete] GET state timeout — proceeding anyway');
-    } else {
-      console.warn('[DS/complete] GET state error (non-fatal):', e.message);
-    }
-  }
-
-  /* 4. Complete the payment */
-  try {
-    console.log('[DS/complete] Calling Pi complete API...');
-    const ctrl  = new AbortController();
-    const timer = setTimeout(() => ctrl.abort(), PI_TIMEOUT_MS);
-    const piRes = await fetch(`https://api.minepi.com/v2/payments/${paymentId}/complete`, {
-      method: 'POST', headers: piHeaders(PI_API_KEY),
-      body: JSON.stringify({ txid }), signal: ctrl.signal,
-    });
+    const piRes  = await fetch(
+      `https://api.minepi.com/v2/payments/${paymentId}/complete`,
+      {
+        method:  'POST',
+        headers: {
+          'Authorization': `Key ${PI_API_KEY}`,
+          'Content-Type':  'application/json',
+        },
+        body:   JSON.stringify({ txid }),
+        signal: ctrl.signal,
+      }
+    );
     clearTimeout(timer);
     const piText = await piRes.text();
-    console.log('[DS/complete] Pi response:', piRes.status, piText.slice(0,300));
+    console.log('[DS/complete] Pi response:', piRes.status, piText.slice(0, 300));
 
-    if (piRes.ok) {
+    /* 200 = completed now */
+    if (piRes.status === 200) {
       console.log('[DS/complete] ✅ Payment Completed');
-      return new Response(JSON.stringify({ completed:true, pi_status:piRes.status }), { status:200, headers:CORS });
-    } else {
-      console.error('[DS/complete] ❌ Pi API error:', piRes.status, piText.slice(0,200));
-      return new Response(JSON.stringify({
-        completed: false, pi_status: piRes.status, pi_error: piText.slice(0,200),
-      }), { status:200, headers:CORS });
+      return new Response(
+        JSON.stringify({ completed: true, pi_status: 200 }),
+        { status: 200, headers: CORS }
+      );
     }
+
+    /* 400 or 409 = already completed — treat as success */
+    if (piRes.status === 400 || piRes.status === 409) {
+      console.log('[DS/complete] ✅ Payment already completed (idempotent):', piRes.status);
+      return new Response(
+        JSON.stringify({ completed: true, pi_status: piRes.status, note: 'already_completed' }),
+        { status: 200, headers: CORS }
+      );
+    }
+
+    /* Any other status = real error */
+    console.error('[DS/complete] ❌ Pi error:', piRes.status, piText.slice(0, 200));
+    return new Response(
+      JSON.stringify({ completed: false, pi_status: piRes.status, pi_error: piText.slice(0, 200) }),
+      { status: 200, headers: CORS }
+    );
+
   } catch(err) {
     if (err.name === 'AbortError') {
-      console.error('[DS/complete] ❌ Pi API timeout after', PI_TIMEOUT_MS, 'ms');
-      return new Response(JSON.stringify({ completed:false, error:'pi_api_timeout' }), { status:200, headers:CORS });
+      console.error('[DS/complete] ❌ Timed out after 8s calling Pi API');
+      return new Response(
+        JSON.stringify({ completed: false, error: 'pi_api_timeout' }),
+        { status: 200, headers: CORS }
+      );
     }
     console.error('[DS/complete] ❌ Error:', err.message);
-    return new Response(JSON.stringify({ completed:false, error:err.message }), { status:200, headers:CORS });
+    return new Response(
+      JSON.stringify({ completed: false, error: err.message }),
+      { status: 200, headers: CORS }
+    );
   }
 }
 
 export async function onRequestOptions() {
-  return new Response(null, { status:200, headers:CORS });
+  return new Response(null, { status: 200, headers: CORS });
 }
