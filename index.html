@@ -768,15 +768,21 @@ function buyPass() {
         .then(function(d){ console.log('[DS] Passport approved:',d); });
     },
     onReadyForServerCompletion: function(paymentId,txid){
+      /* Store for wallet recovery button */
+      localStorage.setItem('ds_pending_pid', paymentId);
+      /* EXACT COPA PATTERN — return fetch Promise directly */
       return fetch(_COMPLETE,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({paymentId:paymentId,txid:txid})})
         .then(function(r){ return r.json(); })
         .then(function(d){
+          console.log('[DS] Passport complete response:',d.completed,d.pi_status);
+          localStorage.removeItem('ds_pending_pid');
           isPass=true; localStorage.setItem('ds_pass','1');
           addTx('DigitalSaudi Passport 1π txid:'+txid.slice(0,12)+'...');
           showPayStatus('success','Passport activated!');
           renderDigi(); toast('✅ Passport activated!');
-        }).catch(function(){
-          /* Activate anyway — payment completed on chain */
+        }).catch(function(err){
+          console.error('[DS] Passport complete error:',err);
+          /* Payment is on blockchain — activate anyway, recover via wallet */
           isPass=true; localStorage.setItem('ds_pass','1');
           addTx('DigitalSaudi Passport 1π');
           showPayStatus('success','Passport activated!');
@@ -820,10 +826,13 @@ function _doSendPi(to, amt, memo) {
         .then(function(r){ return r.json(); }).then(function(d){ console.log('[DS] Send approved:',d); });
     },
     onReadyForServerCompletion: function(paymentId,txid){
+      localStorage.setItem('ds_pending_pid',paymentId);
       return fetch(_COMPLETE,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({paymentId:paymentId,txid:txid})})
         .then(function(r){ return r.json(); })
-        .then(function(){
-          addTx(amt+'π sent'); showPayStatus('success',amt+'π sent!'); toast(amt+'π sent!');
+        .then(function(d){
+          console.log('[DS] Send complete:',d.completed,d.pi_status);
+          localStorage.removeItem('ds_pending_pid');
+          addTx(amt+'π sent txid:'+txid.slice(0,12)+'...'); showPayStatus('success',amt+'π sent!'); toast(amt+'π sent!');
           var te=document.getElementById('ds-send-to'); if(te) te.value='';
           var ae=document.getElementById('ds-send-amt'); if(ae) ae.value='';
           var btn=document.getElementById('ds-send-btn'); if(btn){btn.textContent='π Send Pi';btn.disabled=false;}
