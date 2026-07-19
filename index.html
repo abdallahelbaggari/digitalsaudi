@@ -587,9 +587,9 @@ a{color:var(--g3);text-decoration:none}
 var piUser = null;
 var isPass = false;
 var txLog  = [];
-var _APPROVE = '/approve';
+var _APPROVE  = '/approve';
 var _COMPLETE = '/complete';
-var _CANCEL   = '/cancel-payment';
+var _RECOVERY = '/payment-recovery';
 var _lang = 'en';
 var _city = 'riyadh';
 var _hTab=0, _dTab=0, _eTab=0, _dgTab=0, _mTab=0;
@@ -707,35 +707,25 @@ function launchApp() {
    onIncompletePayment — EXACT COPA PATTERN
 ════════════════════════════════════════ */
 function onIncompletePayment(payment) {
-  /* Called by Pi SDK when a previous payment is incomplete */
+  /* Called by Pi SDK when a previous payment needs recovery */
   if (!payment) return;
   var pid  = payment.identifier || '';
   var txid = '';
   try { txid = (payment.transaction && payment.transaction.txid) ? payment.transaction.txid : ''; } catch(e){}
-  console.log('[DS] onIncompletePayment pid:', pid, 'txid:', txid||'none');
-
-  /* Store payment ID so user can manually clear if needed */
-  if (pid) localStorage.setItem('ds_pending_pid', pid);
-
-  if (txid) {
-    /* Has blockchain txid — complete it */
-    return fetch('/complete', {
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({paymentId:pid, txid:txid})
-    }).then(function(r){ return r.json(); })
-      .then(function(d){ console.log('[DS] Completed:', d); localStorage.removeItem('ds_pending_pid'); })
-      .catch(function(e){ console.error('[DS] Complete error:', e.message); });
-  } else {
-    /* No txid — call clear-payment to re-approve and unlock */
-    return fetch('/clear-payment', {
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({paymentId:pid})
-    }).then(function(r){ return r.json(); })
-      .then(function(d){ console.log('[DS] Cleared:', d); localStorage.removeItem('ds_pending_pid'); })
-      .catch(function(e){ console.error('[DS] Clear error:', e.message); });
-  }
+  console.log('[DS/recovery] paymentId:', pid, '| txid:', txid||'none');
+  if (!pid) return;
+  localStorage.setItem('ds_pending_pid', pid);
+  /* Send to unified recovery endpoint */
+  return fetch('/payment-recovery', {
+    method:  'POST',
+    headers: {'Content-Type':'application/json'},
+    body:    JSON.stringify({paymentId: pid, txid: txid||null})
+  }).then(function(r){ return r.json(); })
+    .then(function(d){
+      console.log('[DS/recovery] Result:', d.action, '| cleared:', d.cleared);
+      if (d.cleared) localStorage.removeItem('ds_pending_pid');
+    })
+    .catch(function(e){ console.error('[DS/recovery] Error:', e.message); });
 }
 
 function logOut(){
