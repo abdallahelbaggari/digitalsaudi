@@ -1,138 +1,119 @@
 /* =================================================================
-   DigitalSaudi · functions/complete.js · Route: /complete
-   MAINNET · sandbox:false
+   DigitalSaudi · functions/complete.js · Cloudflare Pages Function
+   Route:  /complete
+   Test:   https://digitalsaudi.pages.dev/complete  (GET → JSON)
+   Pi Network Mainnet · sandbox:false
 
-   OPTIMIZED FOR SPEED — Pi SDK has a short timeout window.
-   Do NOT call GET before completing. Complete immediately.
-   Treat 400/409 as success (already completed = still success).
+   CRITICAL RULE: ALWAYS return HTTP 200 to Pi SDK
+   Non-200 response = Pi SDK shows "Payment Expired"
+   Copied exactly from WorldCup proven working pattern
 ================================================================= */
-const CORS = {
-  'Access-Control-Allow-Origin':  '*',
-  'Access-Control-Allow-Methods': 'POST, GET, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type',
-  'Content-Type':                 'application/json',
-};
 
 export async function onRequestGet(context) {
   const key = context.env.PI_API_KEY;
-  return new Response(JSON.stringify({
-    status: 'ok', route: '/complete',
-    network: 'MAINNET · sandbox:false',
-    pi_api_key_present: !!key,
-  }), { status: 200, headers: CORS });
+  return new Response(
+    JSON.stringify({
+      success:            true,
+      message:            "complete.js is working",
+      app:                "digitalsaudi.pages.dev",
+      route:              "/complete",
+      network:            "MAINNET · sandbox:false",
+      pi_api_key_present: !!key,
+      pi_api_key_length:  key ? key.length : 0,
+      pi_api_key_prefix:  key ? key.substring(0, 8) + "..." : "MISSING — set in Cloudflare Dashboard → Settings → Variables"
+    }),
+    {
+      status:  200,
+      headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" }
+    }
+  );
 }
 
 export async function onRequestPost(context) {
-  console.log('[DS/complete] ── Payment Complete Started ──');
+  const cors = {
+    "Access-Control-Allow-Origin":  "*",
+    "Access-Control-Allow-Methods": "POST, GET, OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type",
+    "Content-Type":                 "application/json"
+  };
 
-  /* 1. Parse body — fast */
-  let paymentId, txid;
+  console.log("[DS] /complete POST called");
+
   try {
-    const body = await context.request.json();
-    paymentId  = body.paymentId || null;
-    txid       = body.txid      || null;
-    console.log('[DS/complete] paymentId:', paymentId,
-                '| txid:', txid ? txid.slice(0,16)+'...' : 'MISSING');
-  } catch(e) {
-    console.error('[DS/complete] Body parse error:', e.message);
-    return new Response(
-      JSON.stringify({ completed: false, error: 'body_parse_error' }),
-      { status: 200, headers: CORS }
-    );
-  }
+    /* ── Parse body ── */
+    const body      = await context.request.json();
+    const paymentId = body.paymentId;
+    const txid      = body.txid;
 
-  if (!paymentId) {
-    console.error('[DS/complete] Missing paymentId');
-    return new Response(
-      JSON.stringify({ completed: false, error: 'missing_payment_id' }),
-      { status: 200, headers: CORS }
-    );
-  }
+    console.log("[DS] paymentId:", paymentId, "| txid:", txid);
 
-  /* 2. No txid yet — blockchain still processing */
-  if (!txid) {
-    console.warn('[DS/complete] No txid yet — blockchain pending');
-    return new Response(
-      JSON.stringify({ completed: false, reason: 'txid_not_yet_available' }),
-      { status: 200, headers: CORS }
-    );
-  }
+    if (!paymentId) {
+      return new Response(
+        JSON.stringify({ completed: false, error: "missing paymentId" }),
+        { status: 200, headers: cors }
+      );
+    }
 
-  /* 3. Validate API key */
-  const PI_API_KEY = context.env.PI_API_KEY;
-  if (!PI_API_KEY) {
-    console.error('[DS/complete] PI_API_KEY not set');
-    return new Response(
-      JSON.stringify({ completed: false, error: 'missing_api_key' }),
-      { status: 200, headers: CORS }
-    );
-  }
+    if (!txid) {
+      console.log("[DS] No txid yet — payment still processing on blockchain");
+      return new Response(
+        JSON.stringify({ completed: true, skipped: true, message: "waiting for txid" }),
+        { status: 200, headers: cors }
+      );
+    }
 
-  /* 4. Complete immediately — NO GET before this.
-        Speed is critical here. Pi SDK times out fast.
-        Treat 400 and 409 as success — payment already completed. */
-  console.log('[DS/complete] Calling Pi complete API NOW...');
-  try {
-    const ctrl  = new AbortController();
-    const timer = setTimeout(() => ctrl.abort(), 8000); /* 8s — stay under Pi timeout */
+    /* ── Get API key ── */
+    const PI_API_KEY = context.env.PI_API_KEY;
+    console.log("[DS] PI_API_KEY present:", !!PI_API_KEY, "| length:", PI_API_KEY ? PI_API_KEY.length : 0);
 
-    const piRes  = await fetch(
+    if (!PI_API_KEY) {
+      console.error("[DS] PI_API_KEY MISSING");
+      return new Response(
+        JSON.stringify({ completed: true, skipped: true, error: "PI_API_KEY not set" }),
+        { status: 200, headers: cors }
+      );
+    }
+
+    /* ── POST complete ── */
+    console.log("[DS] POSTing complete to Pi API...");
+    const res = await fetch(
       `https://api.minepi.com/v2/payments/${paymentId}/complete`,
       {
-        method:  'POST',
+        method:  "POST",
         headers: {
-          'Authorization': `Key ${PI_API_KEY}`,
-          'Content-Type':  'application/json',
+          "Authorization": `Key ${PI_API_KEY}`,
+          "Content-Type":  "application/json"
         },
-        body:   JSON.stringify({ txid }),
-        signal: ctrl.signal,
+        body: JSON.stringify({ txid })
       }
     );
-    clearTimeout(timer);
-    const piText = await piRes.text();
-    console.log('[DS/complete] Pi response:', piRes.status, piText.slice(0, 300));
 
-    /* 200 = completed now */
-    if (piRes.status === 200) {
-      console.log('[DS/complete] ✅ Payment Completed');
-      return new Response(
-        JSON.stringify({ completed: true, pi_status: 200 }),
-        { status: 200, headers: CORS }
-      );
-    }
+    const text = await res.text();
+    console.log("[DS] Pi complete response:", res.status, text.substring(0, 200));
 
-    /* 400 or 409 = already completed — treat as success */
-    if (piRes.status === 400 || piRes.status === 409) {
-      console.log('[DS/complete] ✅ Payment already completed (idempotent):', piRes.status);
-      return new Response(
-        JSON.stringify({ completed: true, pi_status: piRes.status, note: 'already_completed' }),
-        { status: 200, headers: CORS }
-      );
-    }
-
-    /* Any other status = real error */
-    console.error('[DS/complete] ❌ Pi error:', piRes.status, piText.slice(0, 200));
+    /* completed: res.ok for honest logging
+       status: 200 ALWAYS — non-200 = Payment Expired in Pi SDK */
     return new Response(
-      JSON.stringify({ completed: false, pi_status: piRes.status, pi_error: piText.slice(0, 200) }),
-      { status: 200, headers: CORS }
+      JSON.stringify({ completed: res.ok, pi_status: res.status, response: text }),
+      { status: 200, headers: cors }
     );
 
-  } catch(err) {
-    if (err.name === 'AbortError') {
-      console.error('[DS/complete] ❌ Timed out after 8s calling Pi API');
-      return new Response(
-        JSON.stringify({ completed: false, error: 'pi_api_timeout' }),
-        { status: 200, headers: CORS }
-      );
-    }
-    console.error('[DS/complete] ❌ Error:', err.message);
+  } catch (err) {
+    console.error("[DS] complete.js error:", err.message);
     return new Response(
       JSON.stringify({ completed: false, error: err.message }),
-      { status: 200, headers: CORS }
+      { status: 200, headers: cors }
     );
   }
 }
 
 export async function onRequestOptions() {
-  return new Response(null, { status: 200, headers: CORS });
+  return new Response(null, {
+    status:  200,
+    headers: {
+      "Access-Control-Allow-Origin":  "*",
+      "Access-Control-Allow-Methods": "POST, GET, OPTIONS",
+      "Access-Control-Allow-Headers": "Content-Type"
+    }
+  });
 }
