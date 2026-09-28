@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>DigitalSaudi Admin</title>
+<style>
+:root{--bg:#04150D;--card:#0A2618;--card2:#0F3322;--line:rgba(255,255,255,.1);--accent:#00A859;--gold:#D4AF37;--text:#EAF5EE;--muted:#9BB8A6;--danger:#EF4444}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.5;padding:16px;padding-bottom:60px}
+main{max-width:860px;margin:auto}
+h1{font-size:22px;margin-bottom:4px}h1 span{color:var(--gold)}
+h2{font-size:16px;margin:22px 0 10px;color:var(--gold)}
+.small{font-size:12.5px;color:var(--muted)}
+input,select,textarea{font:inherit;color:var(--text);background:var(--card2);border:1px solid var(--line);border-radius:10px;padding:11px;width:100%;margin-bottom:10px}
+button{font:inherit;cursor:pointer;border:0;border-radius:10px;padding:10px 14px;font-weight:700;color:#fff;background:var(--card2);border:1px solid var(--line)}
+.primary{background:var(--accent);border-color:var(--accent)}.danger{background:transparent;color:var(--danger);border-color:rgba(239,68,68,.4)}.gold{background:var(--gold);color:#231A00;border-color:var(--gold)}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0}.tabs button.on{background:var(--accent);border-color:var(--accent)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:10px}
+.card b{font-size:16px}.row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.tag{display:inline-block;font-size:11px;font-weight:800;padding:2px 8px;border-radius:8px;background:var(--card2);color:var(--muted);margin-right:4px}
+.pi{background:rgba(124,58,237,.25);color:#C4B5FD}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+#login{max-width:420px;margin:60px auto;text-align:center}
+#msg{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:#12402A;border:1px solid var(--accent);padding:10px 16px;border-radius:10px;display:none}
+@media(max-width:560px){.two{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<main>
+  <div id="login">
+    <h1>Digital<span>Saudi</span> Admin</h1>
+    <p class="small" style="margin:8px 0 16px">Enter your ADMIN_TOKEN (set in Cloudflare → Settings → Variables and Secrets).</p>
+    <input id="tok" type="password" placeholder="Admin token" onkeydown="if(event.key==='Enter')login()">
+    <button class="primary" onclick="login()" style="width:100%">Sign in</button>
+  </div>
+
+  <div id="panel" style="display:none">
+    <div style="display:flex;justify-content:space-between;align-items:center"><h1>Digital<span>Saudi</span> Admin</h1><button onclick="logout()">Sign out</button></div>
+    <div class="tabs" id="tabs">
+      <button data-v="pending" onclick="show('pending')">Pending <span id="c_pending"></span></button>
+      <button data-v="approved" onclick="show('approved')">Approved <span id="c_approved"></span></button>
+      <button data-v="rejected" onclick="show('rejected')">Rejected <span id="c_rejected"></span></button>
+      <button data-v="events" onclick="show('events')">Events</button>
+    </div>
+    <div id="eventForm" style="display:none">
+      <h2>Add an event</h2>
+      <div class="card">
+        <input id="e_title" placeholder="Title *">
+        <div class="two"><select id="e_city"></select><select id="e_category"><option value="culture">Culture</option><option value="concerts">Concerts</option><option value="sports">Sports</option><option value="family">Family</option><option value="exhibitions">Exhibitions</option><option value="conferences">Conferences</option><option value="seasons">Seasons</option><option value="religious">Religious</option><option value="national">National</option></select></div>
+        <div class="two"><div><label class="small">Start *</label><input id="e_start" type="datetime-local"></div><div><label class="small">End (optional)</label><input id="e_end" type="datetime-local"></div></div>
+        <input id="e_venue" placeholder="Venue">
+        <textarea id="e_description" rows="3" placeholder="Description"></textarea>
+        <input id="e_url" placeholder="Official link (https://…)">
+        <input id="e_image" placeholder="Image URL (https://…, optional)">
+        <button class="primary" onclick="addEvent()">Publish event</button>
+      </div>
+      <h2>Published events</h2>
+    </div>
+    <div id="list"></div>
+  </div>
+</main>
+<div id="msg"></div>
+<script>
+const CITIES = ['Riyadh','Jeddah','Makkah','Madinah','Dammam','Khobar','Taif','Abha','AlUla','Tabuk','Yanbu','Hail','Buraidah','Jazan','Najran','Hofuf','Nationwide'];
+let TOKEN = '', view = 'pending';
+function $(i){ return document.getElementById(i); }
+function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function note(t){ const m = $('msg'); m.textContent = t; m.style.display = 'block'; clearTimeout(m._t); m._t = setTimeout(() => m.style.display = 'none', 2500); }
+function api(method, q, body){
+  return fetch('/admin-api' + (q || ''), { method, headers:{ 'Content-Type':'application/json', 'X-Admin-Token':TOKEN }, body: body ? JSON.stringify(body) : undefined }).then(r => r.json());
+}
+function login(){
+  TOKEN = $('tok').value.trim();
+  api('GET', '?view=pending').then(d => {
+    if(!d.ok){ note(d.error === 'unauthorised' ? 'Wrong token' : d.error); return; }
+    try{ sessionStorage.setItem('dsAdmin', TOKEN); }catch(e){}
+    $('login').style.display = 'none'; $('panel').style.display = 'block'; show('pending');
+  }).catch(() => note('Network error'));
+}
+function logout(){ try{ sessionStorage.removeItem('dsAdmin'); }catch(e){} location.reload(); }
+function show(v){
+  view = v;
+  document.querySelectorAll('#tabs button').forEach(b => b.classList.toggle('on', b.dataset.v === v));
+  $('eventForm').style.display = v === 'events' ? 'block' : 'none';
+  $('list').innerHTML = '<p class="small">Loading…</p>';
+  api('GET', '?view=' + v).then(d => {
+    if(!d.ok){ $('list').innerHTML = '<p class="small">' + esc(d.error) + '</p>'; return; }
+    if(d.counts) ['pending','approved','rejected'].forEach(k => $('c_' + k).textContent = d.counts[k] ? '(' + d.counts[k] + ')' : '');
+    if(v === 'events') return renderEvents(d.events || []);
+    const items = d.items || [];
+    $('list').innerHTML = items.length ? items.map(card).join('') : '<p class="small">Nothing here.</p>';
+  });
+}
+function card(b){
+  return `<div class="card"><b>${esc(b.name)}</b> <span class="tag">${esc(b.category)}</span><span class="tag">${esc(b.city)}</span>${b.accepts_pi ? '<span class="tag pi">Accepts Pi · @' + esc(b.pi_username) + '</span>' : ''}
+    <p style="margin:8px 0">${esc(b.description)}</p>
+    <div class="small">${[b.address, b.phone && '📞 ' + b.phone, b.whatsapp && 'WhatsApp ' + b.whatsapp, b.website, b.lat && ('📍 ' + b.lat + ', ' + b.lng)].filter(Boolean).map(esc).join(' · ')}</div>
+    <div class="small" style="margin-top:6px">Submitted by Pi user <b>@${esc(b.username)}</b> · ${new Date(b.created_at).toLocaleString()}${b.note ? ' · Note: ' + esc(b.note) : ''}</div>
+    <div class="row">${b.status !== 'approved' ? `<button class="primary" onclick="act('approve',${b.id})">✓ Approve</button>` : ''}${b.status !== 'rejected' ? `<button onclick="act('reject',${b.id})">✗ Reject</button>` : ''}<button class="danger" onclick="if(confirm('Delete permanently?'))act('delete',${b.id})">Delete</button>${b.lat ? `<a href="https://www.openstreetmap.org/?mlat=${b.lat}&mlon=${b.lng}#map=17/${b.lat}/${b.lng}" target="_blank"><button>Map</button></a>` : ''}</div></div>`;
+}
+function act(action, id){
+  const body = { action, id };
+  if(action === 'reject') body.note = prompt('Reason (optional, internal):') || '';
+  api('POST', '', body).then(d => { note(d.ok ? 'Done' : d.error); show(view); });
+}
+function renderEvents(list){
+  $('list').innerHTML = list.length ? list.map(e => `<div class="card"><b>${esc(e.title)}</b> <span class="tag">${esc(e.category)}</span><span class="tag">${esc(e.city)}</span><div class="small">${esc(e.start)}${e.end ? ' → ' + esc(e.end) : ''}${e.venue ? ' · ' + esc(e.venue) : ''}</div>${e.description ? '<p style="margin-top:6px">' + esc(e.description) + '</p>' : ''}<div class="row"><button class="danger" onclick="if(confirm('Delete event?'))api('POST','',{action:'deleteEvent',id:${e.id}}).then(()=>show('events'))">Delete</button></div></div>`).join('') : '<p class="small">No events yet.</p>';
+}
+function addEvent(){
+  const v = k => $('e_' + k).value.trim();
+  const ev = { title:v('title'), city:v('city'), category:v('category'), start:v('start'), end:v('end'), venue:v('venue'), description:v('description'), url:v('url'), image:v('image') };
+  if(!ev.title || !ev.start) return note('Title and start are required');
+  api('POST', '', { action:'addEvent', event:ev }).then(d => { note(d.ok ? 'Event published' : d.error); if(d.ok){ ['title','venue','description','url','image','start','end'].forEach(k => $('e_' + k).value = ''); show('events'); } });
+}
+$('e_city').innerHTML = CITIES.map(c => '<option>' + c + '</option>').join('');
+try{ const t = sessionStorage.getItem('dsAdmin'); if(t){ $('tok').value = t; login(); } }catch(e){}
+</script>
+</body>
+</html>
