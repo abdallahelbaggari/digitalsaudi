@@ -1,119 +1,39 @@
-/* =================================================================
-   DigitalSaudi · functions/complete.js · Cloudflare Pages Function
-   Route:  /complete
-   Test:   https://digitalsaudi.pages.dev/complete  (GET → JSON)
-   Pi Network Mainnet · sandbox:false
-
-   CRITICAL RULE: ALWAYS return HTTP 200 to Pi SDK
-   Non-200 response = Pi SDK shows "Payment Expired"
-   Copied exactly from WorldCup proven working pattern
-================================================================= */
-
-export async function onRequestGet(context) {
-  const key = context.env.PI_API_KEY;
-  return new Response(
-    JSON.stringify({
-      success:            true,
-      message:            "complete.js is working",
-      app:                "digitalsaudi.pages.dev",
-      route:              "/complete",
-      network:            "MAINNET · sandbox:false",
-      pi_api_key_present: !!key,
-      pi_api_key_length:  key ? key.length : 0,
-      pi_api_key_prefix:  key ? key.substring(0, 8) + "..." : "MISSING — set in Cloudflare Dashboard → Settings → Variables"
-    }),
-    {
-      status:  200,
-      headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" }
-    }
-  );
-}
+// DigitalSaudi — /complete  (Cloudflare Pages Function)
+// Always returns HTTP 200: a non-200 here makes Pi show "Payment Expired".
+const CORS = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+  'Access-Control-Allow-Headers': 'Content-Type',
+  'Content-Type': 'application/json'
+};
+const json = (obj) => new Response(JSON.stringify(obj), { status: 200, headers: CORS });
 
 export async function onRequestPost(context) {
-  const cors = {
-    "Access-Control-Allow-Origin":  "*",
-    "Access-Control-Allow-Methods": "POST, GET, OPTIONS",
-    "Access-Control-Allow-Headers": "Content-Type",
-    "Content-Type":                 "application/json"
-  };
-
-  console.log("[DS] /complete POST called");
-
   try {
-    /* ── Parse body ── */
-    const body      = await context.request.json();
+    const body = await context.request.json();
     const paymentId = body.paymentId;
-    const txid      = body.txid;
+    const txid = body.txid;
+    if (!txid) return json({ ok: false, error: 'Missing txid' });
+    const PAYLOAD = { txid };
+    if (!paymentId) return json({ ok: false, error: 'Missing paymentId' });
+    if (!context.env.PI_API_KEY) return json({ ok: false, error: 'PI_API_KEY not set' });
 
-    console.log("[DS] paymentId:", paymentId, "| txid:", txid);
-
-    if (!paymentId) {
-      return new Response(
-        JSON.stringify({ completed: false, error: "missing paymentId" }),
-        { status: 200, headers: cors }
-      );
-    }
-
-    if (!txid) {
-      console.log("[DS] No txid yet — payment still processing on blockchain");
-      return new Response(
-        JSON.stringify({ completed: true, skipped: true, message: "waiting for txid" }),
-        { status: 200, headers: cors }
-      );
-    }
-
-    /* ── Get API key ── */
-    const PI_API_KEY = context.env.PI_API_KEY;
-    console.log("[DS] PI_API_KEY present:", !!PI_API_KEY, "| length:", PI_API_KEY ? PI_API_KEY.length : 0);
-
-    if (!PI_API_KEY) {
-      console.error("[DS] PI_API_KEY MISSING");
-      return new Response(
-        JSON.stringify({ completed: true, skipped: true, error: "PI_API_KEY not set" }),
-        { status: 200, headers: cors }
-      );
-    }
-
-    /* ── POST complete ── */
-    console.log("[DS] POSTing complete to Pi API...");
-    const res = await fetch(
-      `https://api.minepi.com/v2/payments/${paymentId}/complete`,
-      {
-        method:  "POST",
-        headers: {
-          "Authorization": `Key ${PI_API_KEY}`,
-          "Content-Type":  "application/json"
-        },
-        body: JSON.stringify({ txid })
-      }
-    );
-
-    const text = await res.text();
-    console.log("[DS] Pi complete response:", res.status, text.substring(0, 200));
-
-    /* completed: res.ok for honest logging
-       status: 200 ALWAYS — non-200 = Payment Expired in Pi SDK */
-    return new Response(
-      JSON.stringify({ completed: res.ok, pi_status: res.status, response: text }),
-      { status: 200, headers: cors }
-    );
-
+    const res = await fetch('https://api.minepi.com/v2/payments/' + paymentId + '/complete', {
+      method: 'POST',
+      headers: { 'Authorization': 'Key ' + context.env.PI_API_KEY, 'Content-Type': 'application/json' },
+      body: JSON.stringify(PAYLOAD)
+    });
+    const data = await res.json().catch(() => ({}));
+    return json({ ok: res.ok, status: res.status, data });
   } catch (err) {
-    console.error("[DS] complete.js error:", err.message);
-    return new Response(
-      JSON.stringify({ completed: false, error: err.message }),
-      { status: 200, headers: cors }
-    );
+    return json({ ok: false, error: String(err && err.message || err) });
   }
 }
 
+export async function onRequestGet() {
+  return json({ ok: true, endpoint: '/complete', app: 'DigitalSaudi', time: new Date().toISOString() });
+}
+
 export async function onRequestOptions() {
-  return new Response(null, {
-    status:  200,
-    headers: {
-      "Access-Control-Allow-Origin":  "*",
-      "Access-Control-Allow-Methods": "POST, GET, OPTIONS",
-      "Access-Control-Allow-Headers": "Content-Type"
-    }
-  });
+  return new Response(null, { status: 204, headers: CORS });
 }
