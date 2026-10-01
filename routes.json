@@ -1,5 +1,1 @@
-{
-  "version": 1,
-  "include": ["/approve","/complete","/cancel-payment","/clear-payment","/api","/ai","/news","/scores","/privacy","/terms"],
-  "exclude": []
-}
+{ "version": 1, "include": ["/approve", "/complete", "/cancel-payment", "/scores", "/news", "/pi-price", "/premium", "/places", "/directory", "/events", "/admin-api", "/ai"], "exclude": [] }
