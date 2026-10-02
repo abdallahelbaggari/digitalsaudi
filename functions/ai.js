@@ -1,11 +1,15 @@
 // DigitalSaudi — /ai  (Cloudflare Pages Function)
-// Saudi AI assistant powered by Claude (Anthropic API).
-// Needs: ANTHROPIC_API_KEY (secret) and the DS_KV binding (for daily limits + Premium check).
-// Free users: 5 questions per day. Premium (verified Pi account with active Premium): unlimited.
+// Saudi AI assistant — FREE providers first, with automatic fallback:
+//   1. Google Gemini (free tier)      → secret  GEMINI_API_KEY   (aistudio.google.com → Get API key)
+//   2. Cloudflare Workers AI (free)   → binding AI  (Settings → Bindings → Add → Workers AI)
+//   3. Anthropic Claude (paid, optional) → secret ANTHROPIC_API_KEY
+// Set up at least one. DS_KV binding enforces the daily free limit and checks Premium.
+// Free users: AI_FREE_PER_DAY questions/day (default 10). Premium: unlimited.
 //   POST /ai { mode, messages:[{role,content}], accessToken?, guest? }
 
-const MODEL = 'claude-haiku-4-5-20251001';
-const FREE_PER_DAY = 5;
+const GEMINI_MODEL = 'gemini-flash-latest';
+const CF_MODEL = '@cf/meta/llama-3.3-70b-instruct-fp8-fast';
+const CLAUDE_MODEL = 'claude-haiku-4-5-20251001';
 const HEADERS = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'POST, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type', 'Content-Type': 'application/json', 'Cache-Control': 'no-store' };
 const json = o => new Response(JSON.stringify(o), { status: 200, headers: HEADERS });
 
@@ -38,9 +42,57 @@ async function verifyPi(token) {
   catch (e) { return null; }
 }
 
+
+/* ---------- providers: each returns reply text or throws ---------- */
+async function askGemini(env, system, msgs) {
+  const model = env.GEMINI_MODEL || GEMINI_MODEL;
+  const res = await fetch('https://generativelanguage.googleapis.com/v1beta/models/' + model + ':generateContent', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'x-goog-api-key': env.GEMINI_API_KEY },
+    body: JSON.stringify({
+      systemInstruction: { parts: [{ text: system }] },
+      contents: msgs.map(m => ({ role: m.role === 'assistant' ? 'model' : 'user', parts: [{ text: m.content }] })),
+      generationConfig: { temperature: 0.6, maxOutputTokens: 2048 }
+    })
+  });
+  const d = await res.json().catch(() => null);
+  if (!res.ok || !d) throw new Error('gemini ' + res.status + ' ' + (d && d.error && d.error.message || ''));
+  const parts = (d.candidates && d.candidates[0] && d.candidates[0].content && d.candidates[0].content.parts) || [];
+  const text = parts.filter(p => p.text && !p.thought).map(p => p.text).join('').trim();
+  if (!text) throw new Error('gemini empty');
+  return text;
+}
+async function askWorkersAI(env, system, msgs) {
+  const r = await env.AI.run(env.CF_AI_MODEL || CF_MODEL, { messages: [{ role: 'system', content: system }].concat(msgs), max_tokens: 900, temperature: 0.6 });
+  const text = (r && (r.response || (r.result && r.result.response)) || '').trim();
+  if (!text) throw new Error('workers-ai empty');
+  return text;
+}
+async function askClaude(env, system, msgs) {
+  const res = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: { 'x-api-key': env.ANTHROPIC_API_KEY, 'anthropic-version': '2023-06-01', 'content-type': 'application/json' },
+    body: JSON.stringify({ model: env.AI_MODEL || CLAUDE_MODEL, max_tokens: 1000, system, messages: msgs })
+  });
+  const d = await res.json().catch(() => null);
+  if (!res.ok || !d || !d.content) throw new Error('claude ' + res.status);
+  const text = d.content.filter(c => c.type === 'text').map(c => c.text).join('\n').trim();
+  if (!text) throw new Error('claude empty');
+  return text;
+}
+function providers(env) {
+  const list = [];
+  if (env.GEMINI_API_KEY) list.push(['gemini', askGemini]);
+  if (env.AI && typeof env.AI.run === 'function') list.push(['workers-ai', askWorkersAI]);
+  if (env.ANTHROPIC_API_KEY) list.push(['claude', askClaude]);
+  return list;
+}
+
 export async function onRequestPost(context) {
   const env = context.env;
-  if (!env.ANTHROPIC_API_KEY) return json({ ok: false, error: 'not_configured' });
+  const list = providers(env);
+  if (!list.length) return json({ ok: false, error: 'not_configured' });
+  const FREE = parseInt(env.AI_FREE_PER_DAY, 10) || 10;
   const kv = env.DS_KV;
   try {
     const b = await context.request.json();
@@ -68,25 +120,23 @@ export async function onRequestPost(context) {
     let used = 0, ipUsed = 0;
     if (!premium && kv) {
       used = parseInt(await kv.get(limitKey), 10) || 0;
-      if (used >= FREE_PER_DAY) return json({ ok: false, error: 'limit', remaining: 0 });
-      if (!user) { ipUsed = parseInt(await kv.get('ai:' + today() + ':ip:' + ip), 10) || 0; if (ipUsed >= FREE_PER_DAY * 4) return json({ ok: false, error: 'limit', remaining: 0 }); }
+      if (used >= FREE) return json({ ok: false, error: 'limit', remaining: 0, free: FREE });
+      if (!user) { ipUsed = parseInt(await kv.get('ai:' + today() + ':ip:' + ip), 10) || 0; if (ipUsed >= FREE * 4) return json({ ok: false, error: 'limit', remaining: 0, free: FREE }); }
     }
 
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: { 'x-api-key': env.ANTHROPIC_API_KEY, 'anthropic-version': '2023-06-01', 'content-type': 'application/json' },
-      body: JSON.stringify({ model: env.AI_MODEL || MODEL, max_tokens: 1000, system: BASE + '\n' + MODES[mode] + '\nToday (Saudi time) is ' + today() + '.', messages: merged })
-    });
-    const d = await res.json().catch(() => null);
-    if (!res.ok || !d || !d.content) return json({ ok: false, error: 'upstream' });
-    const reply = d.content.filter(c => c.type === 'text').map(c => c.text).join('\n').trim();
-    if (!reply) return json({ ok: false, error: 'empty' });
+    const system = BASE + '\n' + MODES[mode] + '\nToday (Saudi time) is ' + today() + '.';
+    let reply = '', via = '';
+    for (const [name, fn] of list) {
+      try { reply = await fn(env, system, merged); via = name; break; }
+      catch (e) { console.log('[ai] ' + name + ' failed: ' + (e && e.message)); }
+    }
+    if (!reply) return json({ ok: false, error: 'upstream' });
 
     if (!premium && kv) {
       await kv.put(limitKey, String(used + 1), { expirationTtl: 172800 });
       if (!user) await kv.put('ai:' + today() + ':ip:' + ip, String(ipUsed + 1), { expirationTtl: 172800 });
     }
-    return json({ ok: true, reply, premium, remaining: premium ? null : Math.max(0, FREE_PER_DAY - used - 1) });
+    return json({ ok: true, reply, via, premium, free: FREE, remaining: premium ? null : Math.max(0, FREE - used - 1) });
   } catch (err) {
     return json({ ok: false, error: 'server' });
   }
