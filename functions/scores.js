@@ -84,9 +84,9 @@ export async function onRequestGet(context) {
   const url = new URL(context.request.url);
   const type = url.searchParams.get('type') || 'window';
   const comp = (url.searchParams.get('comp') || 'PL').toUpperCase();
-  const key = context.env.FOOTBALL_API_KEY;
+  const key = context.env.FOOTBALL_API_KEY || context.env.FD_API_KEY;
 
-  if (!key) return json({ ok: false, error: 'FOOTBALL_API_KEY not set' });
+  if (!key) return json({ ok: false, error: 'FOOTBALL_API_KEY (or FD_API_KEY) not set' });
   if (type !== 'window' && type !== 'team' && COMPS.indexOf(comp) < 0) return json({ ok: false, error: 'Unknown competition' });
 
   try {
