@@ -486,7 +486,7 @@ footer.legal{text-align:center;font-size:12px;color:var(--muted);margin-top:26px
 
       <div id="live-markets" class="lv" style="display:none">
         <div class="pi-card" id="piCard">
-          <div style="display:flex;align-items:center;gap:10px"><div class="sym">π</div><div><b>Pi Network</b><br><small>PI · live from CoinGecko</small></div></div>
+          <div style="display:flex;align-items:center;gap:10px"><div class="sym">π</div><div><b>Pi Network</b><br><small id="piSrc">PI · live price</small></div></div>
           <div class="price" id="piUsd">—</div>
           <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><span class="chg" id="piChg">—</span><small id="piOther"></small></div>
           <svg id="piSpark" viewBox="0 0 300 70" preserveAspectRatio="none"></svg>
@@ -494,7 +494,7 @@ footer.legal{text-align:center;font-size:12px;color:var(--muted);margin-top:26px
         </div>
         <h2 class="sec">Saudi Riyal rates <button onclick="openItem('converter')">Convert ›</button></h2>
         <div class="card" id="rateList"><div class="skeleton" style="margin:8px 0"></div><div class="skeleton" style="margin:8px 0"></div><div class="skeleton" style="margin:8px 0"></div></div>
-        <p class="small" style="text-align:center;margin-top:10px">Pi price: CoinGecko (updates every 60s) · FX: open.er-api.com (daily). Not financial advice.</p>
+        <p class="small" style="text-align:center;margin-top:10px">Pi price: OKX / CoinGecko (updates every 60s) · FX: open.er-api.com (daily). Not financial advice.</p>
       </div>
 
       <div id="live-events" class="lv" style="display:none">
@@ -1432,7 +1432,7 @@ function loadPi(force){
   const p = store.get('pi', null);
   if(!force && p && Date.now() - p.t < 55000) return Promise.resolve(p);
   return getJSON('/pi-price').then(function(d){
-    if(d && d.ok && d.usd){ const o = { usd:d.usd, sar:d.sar, ngn:d.ngn, change:d.change24h, spark:d.spark || [], upd:d.updated, t:Date.now() }; store.set('pi', o); return o; }
+    if(d && d.ok && d.usd){ const o = { usd:d.usd, sar:d.sar, ngn:d.ngn, change:d.change24h, spark:d.spark || [], upd:d.updated, src:d.source || '', t:Date.now() }; store.set('pi', o); return o; }
     return p;
   }).catch(function(){ return p; });
 }
@@ -1714,6 +1714,7 @@ function renderMarkets(){
     $('piOther').textContent = (p.sar ? fmt(p.sar, 4) + ' SAR' : '') + (p.ngn ? ' · ₦' + fmt(p.ngn, 2) : '');
     $('piSpark').innerHTML = sparkSVG(p.spark, ch >= 0 ? '#86EFAC' : '#FCA5A5');
     $('piUpd').textContent = '7-day chart · updated ' + ago(p.t) + ' · auto-refresh 60s';
+    if($('piSrc')) $('piSrc').textContent = 'PI · live from ' + (p.src || 'market data');
   } else { $('piUsd').textContent = '—'; $('piUpd').textContent = 'Pi price unavailable right now'; }
   const fx = store.get('fx', null);
   if(fx && fx.rates){
@@ -1972,7 +1973,7 @@ function recordPremium(paymentId, tier){
 function refreshPremiumUI(){ renderLists(); renderProfile(); if($('panel').classList.contains('open') && current && current.id === 'premium') renderPremium(); }
 function renderPremium(){
   const on = isPremium();
-  const perks = ['Unlimited Saudi AI assistant (free: 5 a day)','Umrah packing checklist','7-day Jeddah · Makkah · Madinah plan','Arrival checklist for your first 48 hours','Trip budget planner with live SAR · NGN · Pi','Premium badge ⭐ and supporter status','Supports new features and updates'];
+  const perks = ['Unlimited Saudi AI assistant (free: 10 a day)','Umrah packing checklist','7-day Jeddah · Makkah · Madinah plan','Arrival checklist for your first 48 hours','Trip budget planner with live SAR · NGN · Pi','Premium badge ⭐ and supporter status','Supports new features and updates'];
   showPanel('DigitalSaudi Premium', (on ? `<div class="lock-wrap"><div class="big">⭐</div><h3>Premium is active</h3><p class="small">${premiumLabel()}</p></div>` + ['umrahPack','travelPlan','arrival','budget'].map(rowHTML).join('') : `<div class="lock-wrap"><div class="big">⭐</div><h3>Go Premium</h3><p class="small">Unlock planners and checklists for your trip.</p></div>`) +
     `<h4>What you get</h4><ul>${perks.map(function(p){ return '<li>' + p + '</li>'; }).join('')}</ul>` +
     (getPremium() && getPremium().tier === 'lifetime' ? '' : `<h4>${on ? 'Extend or upgrade' : 'Choose a plan'}</h4>` +
@@ -1989,7 +1990,8 @@ function piLogin(){
   if(typeof Pi === 'undefined'){ toast('Please open DigitalSaudi in the Pi Browser'); return; }
   const btn = $('loginBtn'); if(btn){ btn.disabled = true; btn.innerHTML = '<div class="spinner"></div> Connecting…'; }
   Pi.init({ version:'2.0', sandbox:false });
-  Pi.authenticate(['username','payments'], onIncompletePaymentFound).then(function(auth){
+  const authTimeout = new Promise(function(_, rej){ setTimeout(function(){ rej(new Error('timeout')); }, 25000); });
+  Promise.race([Pi.authenticate(['username','payments'], onIncompletePaymentFound), authTimeout]).then(function(auth){
     piUser = auth.user; piUser.accessToken = auth.accessToken;
     store.set('lastUser', piUser.username);
     enterApp();
@@ -1999,7 +2001,7 @@ function piLogin(){
     if(pendingAction){ const a = pendingAction; pendingAction = null; a(); }
   }).catch(function(err){
     log('auth error', err);
-    toast('Sign-in failed. Please try again in the Pi Browser.');
+    toast(err && err.message === 'timeout' ? 'Sign-in is taking too long. Open DigitalSaudi from the Pi Browser app link (not the pages.dev address) and try again.' : 'Sign-in failed. Please try again in the Pi Browser.');
   }).finally(function(){ if(btn){ btn.disabled = false; btn.innerHTML = '<span>π</span> Sign in with Pi'; } });
 }
 function onIncompletePaymentFound(payment){
@@ -2848,7 +2850,7 @@ function submitBusiness(){
 }
 function piHubPanel(){
   const p = store.get('pi', null);
-  showPanel('Pi Hub', `<div class="pi-card"><div style="display:flex;align-items:center;gap:10px"><div class="sym">π</div><div><b>Pi Network</b><br><small>Live from CoinGecko</small></div></div>
+  showPanel('Pi Hub', `<div class="pi-card"><div style="display:flex;align-items:center;gap:10px"><div class="sym">π</div><div><b>Pi Network</b><br><small>Live from ${p && p.src ? esc(p.src) : 'market data'}</small></div></div>
       <div class="price">${p && p.usd ? '$' + fmt(p.usd, 4) : '—'}</div><small>${p && p.sar ? fmt(p.sar, 4) + ' SAR' : ''}${p && p.ngn ? ' · ₦' + fmt(p.ngn, 2) : ''}${p && p.change != null ? ' · ' + (p.change >= 0 ? '▲' : '▼') + Math.abs(p.change).toFixed(2) + '% 24h' : ''}</small></div>
     <div class="grid-4" style="margin-top:12px">
       <button class="tile" onclick="openItem('converter')"><div class="ic">💱</div><span>Convert</span></button>
@@ -3156,7 +3158,7 @@ function openAI(mode, prefill){
   const log = $('aiLog'); if(log && chat.length) setTimeout(function(){ $('pBody').scrollTop = $('pBody').scrollHeight; }, 50);
   if(prefill) setTimeout(function(){ aiSend(prefill); }, 150);
 }
-const AI_FREE = 5;
+let AI_FREE = 10;
 function mdLite(s){
   let h = esc(s);
   h = h.replace(/^### (.*)$/gm, '<h3>$1</h3>').replace(/^## (.*)$/gm, '<h3>$1</h3>').replace(/^# (.*)$/gm, '<h3>$1</h3>');
@@ -3182,6 +3184,7 @@ function aiSend(text){
       if(d && d.ok && d.reply){
         const c = aiChat(); c.push({ role:'assistant', content:d.reply }); store.set('aiChat_' + aiMode, c.slice(-20));
         $('aiLog').insertAdjacentHTML('beforeend', aiMsgHTML({ role:'assistant', content:d.reply }));
+        if(d.free) AI_FREE = d.free;
         if($('aiQuota') && d.remaining != null && !d.premium) $('aiQuota').textContent = d.remaining + ' free question' + (d.remaining === 1 ? '' : 's') + ' left today · unlimited with Premium';
       } else if(d && d.error === 'limit'){
         $('aiLog').insertAdjacentHTML('beforeend', `<div class="msg a">You've used your ${AI_FREE} free questions today. They reset tomorrow — or go ⭐ Premium for unlimited questions.<br><br><button class="btn btn-gold btn-sm" onclick="openItem('premium')">See Premium</button></div>`);
