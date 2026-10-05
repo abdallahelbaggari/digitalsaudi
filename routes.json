@@ -1,1 +1,1 @@
-{ "version": 1, "include": ["/approve", "/complete", "/cancel-payment", "/scores", "/news", "/pi-price", "/premium", "/places", "/directory", "/events", "/admin-api", "/ai"], "exclude": [] }
+{"version": 1, "include": ["/approve", "/complete", "/cancel-payment", "/scores", "/news", "/pi-price", "/premium", "/places", "/directory", "/events", "/admin-api", "/ai", "/tts", "/dict", "/pi-check"], "exclude": []}
