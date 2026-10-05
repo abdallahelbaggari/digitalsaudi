@@ -308,6 +308,7 @@ footer.legal{text-align:center;font-size:12px;color:var(--muted);margin-top:26px
 .bell-dot{position:absolute;top:6px;right:6px;min-width:17px;height:17px;border-radius:9px;background:var(--danger);color:#fff;font-size:10px;font-weight:900;display:flex;align-items:center;justify-content:center;padding:0 4px}
 #aiFab{position:fixed;right:16px;bottom:calc(var(--nav-h) + 16px + env(safe-area-inset-bottom));width:58px;height:58px;border-radius:50%;background:linear-gradient(135deg,#D4AF37,#B8901E);box-shadow:0 10px 26px rgba(0,0,0,.35);z-index:25;font-size:28px;display:flex;align-items:center;justify-content:center;border:2px solid rgba(255,255,255,.25)}
 #aiFab:active{transform:scale(.94)}
+#map.dark-tiles .leaflet-tile-pane{filter:invert(1) hue-rotate(180deg) brightness(.9) contrast(.9) saturate(.6)}
 #map{height:46vh;min-height:260px;border-radius:16px;overflow:hidden;border:1px solid var(--line);background:var(--bg-card-2);margin-bottom:12px;z-index:1}
 .leaflet-container{font:inherit}
 .map-pin{width:34px;height:34px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);display:flex;align-items:center;justify-content:center;border:2px solid #fff;box-shadow:0 3px 8px rgba(0,0,0,.35)}
@@ -594,6 +595,7 @@ footer.legal{text-align:center;font-size:12px;color:var(--muted);margin-top:26px
 
       <h2 class="sec">Pi & Premium</h2>
       <button class="row" onclick="openItem('premium')"><div class="ic">⭐</div><div class="tx"><b>Premium</b><small id="premStatus">Not active</small></div><span class="chev">›</span></button>
+      <button class="row" onclick="openItem('piWallet')"><div class="ic">👛</div><div class="tx"><b>Pi Wallet</b><small>Request & send Pi, history</small></div><span class="chev">›</span></button>
       <button class="row" onclick="openItem('support')"><div class="ic">💚</div><div class="tx"><b>Support DigitalSaudi</b><small>Any amount in Pi</small></div><span class="chev">›</span></button>
       <h2 class="sec">Payments & receipts</h2>
       <div class="card hist" id="payHistory"></div>
@@ -617,7 +619,7 @@ footer.legal{text-align:center;font-size:12px;color:var(--muted);margin-top:26px
       <button class="row" onclick="openItem('about')"><div class="ic">ℹ️</div><div class="tx"><b>About</b></div><span class="chev">›</span></button>
       <button class="row" onclick="location.href='/privacy.html'"><div class="ic">🔒</div><div class="tx"><b>Privacy policy</b></div><span class="chev">›</span></button>
       <button class="row" onclick="location.href='/terms.html'"><div class="ic">📄</div><div class="tx"><b>Terms of service</b></div><span class="chev">›</span></button>
-      <footer class="legal">DigitalSaudi v3.0 · Independent app, not affiliated with the Government of Saudi Arabia.</footer>
+      <footer class="legal">DigitalSaudi v3.1 · Independent app, not affiliated with the Government of Saudi Arabia.</footer>
     </section>
   </main>
 
@@ -955,7 +957,7 @@ function renderLists(){
   $('svcGov').innerHTML = GOV.map(function(v){ return rowHTML(v.id); }).join('');
   $('svcGreen').innerHTML = greenRowsHTML();
   $('deenGrid').innerHTML = ['quran','duas','tasbih','qibla','calendar','zakat','hajj','umrah','madinah','umrahPack'].map(tileHTML).join('');
-  $('finGrid').innerHTML = ['converter','vat','split','salary','gratuity','zakat','budget','piHub'].map(tileHTML).join('');
+  $('finGrid').innerHTML = ['converter','vat','split','salary','gratuity','zakat','piWallet','piHub'].map(tileHTML).join('');
   $('toolGrid').innerHTML = ['trips','transport','units','phrases','worldclock','train','travelPlan','arrival'].map(tileHTML).join('');
   $('safetyRows').innerHTML = ['safety','whatToDo','emergency'].map(rowHTML).join('');
   $('careerRows').innerHTML = ['career'].map(rowHTML).join('');
@@ -2029,7 +2031,7 @@ function submitPiPayment(amount, memo, metadata, btn){
       addHistory({ id:paymentId, amount:amount, memo:memo, status:'pending', at:Date.now() });
       fetch(PI_ENDPOINTS.approve, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ paymentId:paymentId }) })
         .then(function(r){ return r.json(); })
-        .then(function(d){ log('approved', d); })
+        .then(function(d){ log('approved', d); if(d && d.ok === false){ toast('Payment approval failed (' + (d.status || d.error || 'server') + '). Please contact support.'); } })
         .catch(function(e){ log('approve error', e); });
     },
     onReadyForServerCompletion: function(paymentId, txid){
@@ -2512,14 +2514,15 @@ function openMap(cat, nearMe, city){
     <div id="map"></div>
     <div class="small" id="mapInfo" style="margin-bottom:8px">Loading places…</div>
     <div id="mapList"></div>
-    <p class="small" style="text-align:center;margin-top:10px">Map data © OpenStreetMap contributors · Tiles © CARTO. Places are community-mapped and may be incomplete.</p>`, { id:'map', share:false });
+    <p class="small" style="text-align:center;margin-top:10px">Map data & tiles © OpenStreetMap contributors. Places are community-mapped and may be incomplete.</p>`, { id:'map', share:false });
   panelCleanup = function(){ if(mapState.map){ mapState.map.remove(); mapState.map = null; } };
   loadLeaflet().then(function(){
     if(!$('map')) return;
     const dark = document.documentElement.getAttribute('data-theme') !== 'light';
     const start = mapState.center || (CITY_COORDS[mapCity()] || CITY_COORDS.Makkah);
     mapState.map = L.map('map', { zoomControl:true, attributionControl:false }).setView(start, 14);
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/' + (dark ? 'dark_all' : 'rastertiles/voyager') + '/{z}/{x}/{y}{r}.png', { maxZoom:19, subdomains:'abcd' }).addTo(mapState.map);
+    $('map').classList.toggle('dark-tiles', dark);
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom:19, attribution:'© OpenStreetMap' }).addTo(mapState.map);
     mapState.layer = L.layerGroup().addTo(mapState.map);
     mapState.map.on('moveend', function(){ const c = mapState.map.getCenter(); mapState.pending = [c.lat, c.lng]; if(!$('mapHere') && mapState.center && haversine(mapState.pending, mapState.center) > 1.5){ $('mapInfo').insertAdjacentHTML('beforeend', ' <button class="btn btn-ghost btn-sm" id="mapHere" onclick="mapSearchHere()">🔄 Search this area</button>'); } });
     if(nearMe) mapNearMe(); else { mapState.center = start; mapState.label = HARAM[mapCity()] ? HARAM[mapCity()][2] : mapCity(); if(HARAM[mapCity()] && !mapState.me) mapState.center = [HARAM[mapCity()][0], HARAM[mapCity()][1]]; loadMapPlaces(); }
@@ -2853,7 +2856,7 @@ function piHubPanel(){
   showPanel('Pi Hub', `<div class="pi-card"><div style="display:flex;align-items:center;gap:10px"><div class="sym">π</div><div><b>Pi Network</b><br><small>Live from ${p && p.src ? esc(p.src) : 'market data'}</small></div></div>
       <div class="price">${p && p.usd ? '$' + fmt(p.usd, 4) : '—'}</div><small>${p && p.sar ? fmt(p.sar, 4) + ' SAR' : ''}${p && p.ngn ? ' · ₦' + fmt(p.ngn, 2) : ''}${p && p.change != null ? ' · ' + (p.change >= 0 ? '▲' : '▼') + Math.abs(p.change).toFixed(2) + '% 24h' : ''}</small></div>
     <div class="grid-4" style="margin-top:12px">
-      <button class="tile" onclick="openItem('converter')"><div class="ic">💱</div><span>Convert</span></button>
+      <button class="tile" onclick="openItem('piWallet')"><div class="ic">👛</div><span>Wallet</span></button>
       <button class="tile" onclick="openDirectory(true)"><div class="ic">π</div><span>Merchants</span></button>
       <button class="tile" onclick="openMap('pi',true)"><div class="ic">🗺️</div><span>Pi map</span></button>
       <button class="tile" onclick="openItem('merchantQR')"><div class="ic">▦</div><span>Merchant QR</span></button></div>
@@ -3323,6 +3326,254 @@ function v3Boot(){
   renderEventFilters(); loadEvents(); updateBell(); renderHomeTrip();
   setTimeout(checkNotifications, 4000); setInterval(checkNotifications, 60000);
 }
+
+/* =====================================================================
+   v3.1 — Arabic dictionary & phrasebook (with real audio), Pi Wallet
+   ===================================================================== */
+const PB = [
+  // [English, Arabic, transliteration, category]
+  ['Hello (peace be upon you)','السلام عليكم','as-salāmu ʿalaykum','Greetings'],
+  ['Reply to the greeting','وعليكم السلام','wa ʿalaykum as-salām','Greetings'],
+  ['Good morning','صباح الخير','ṣabāḥ al-khayr','Greetings'],
+  ['Good morning (reply)','صباح النور','ṣabāḥ an-nūr','Greetings'],
+  ['Good evening','مساء الخير','masāʾ al-khayr','Greetings'],
+  ['Good evening (reply)','مساء النور','masāʾ an-nūr','Greetings'],
+  ['Welcome','أهلاً وسهلاً','ahlan wa sahlan','Greetings'],
+  ['How are you? (Saudi)','شلونك؟','shlōnak?','Greetings'],
+  ['How are you? (formal)','كيف حالك؟','kayf ḥālak?','Greetings'],
+  ['I’m fine, praise God','بخير، الحمد لله','bikhayr, al-ḥamdu lillāh','Greetings'],
+  ['What is your name?','ما اسمك؟','mā ismak?','Greetings'],
+  ['My name is…','اسمي…','ismī…','Greetings'],
+  ['Nice to meet you','تشرفنا','tasharrafnā','Greetings'],
+  ['Goodbye','مع السلامة','maʿa as-salāma','Greetings'],
+  ['See you later','أشوفك بعدين','ashūfak baʿdēn','Greetings'],
+  ['Thank you','شكراً','shukran','Basics'],
+  ['Thank you very much','شكراً جزيلاً','shukran jazīlan','Basics'],
+  ['You’re welcome','العفو','al-ʿafw','Basics'],
+  ['Please','من فضلك','min faḍlak','Basics'],
+  ['Excuse me','لو سمحت','law samaḥt','Basics'],
+  ['Sorry','آسف','āsif','Basics'],
+  ['Yes','نعم','naʿam','Basics'],
+  ['Yes (Saudi)','إيه','ēh','Basics'],
+  ['No','لا','lā','Basics'],
+  ['OK','طيب','ṭayyib','Basics'],
+  ['God willing','إن شاء الله','in shāʾ allāh','Basics'],
+  ['Praise God','الحمد لله','al-ḥamdu lillāh','Basics'],
+  ['May God reward you','جزاك الله خيراً','jazāk allāhu khayran','Basics'],
+  ['I don’t understand','ما فهمت','mā fihimt','Basics'],
+  ['Do you speak English?','تتكلم إنجليزي؟','titkallam ingilīzi?','Basics'],
+  ['I speak a little Arabic','أتكلم عربي شوي','atkallam ʿarabi shway','Basics'],
+  ['Can you repeat, please?','ممكن تعيد لو سمحت؟','mumkin tʿīd law samaḥt?','Basics'],
+  ['Speak slowly, please','تكلم شوي شوي لو سمحت','takallam shway shway law samaḥt','Basics'],
+  ['What is this?','إيش هذا؟','ēsh hādha?','Basics'],
+  ['Where is…?','وين…؟','wēn…?','Directions'],
+  ['Where is the toilet?','وين الحمام؟','wēn al-ḥammām?','Directions'],
+  ['Where is the mosque?','وين المسجد؟','wēn al-masjid?','Directions'],
+  ['Right','يمين','yamīn','Directions'],
+  ['Left','يسار','yasār','Directions'],
+  ['Straight ahead','على طول','ʿala ṭūl','Directions'],
+  ['Near','قريب','qarīb','Directions'],
+  ['Far','بعيد','baʿīd','Directions'],
+  ['Stop here, please','وقف هنا لو سمحت','waqqif hina law samaḥt','Transport'],
+  ['Take me to…','وديني…','waddīni…','Transport'],
+  ['Airport','المطار','al-maṭār','Transport'],
+  ['Train station','محطة القطار','maḥaṭṭat al-qiṭār','Transport'],
+  ['Bus','الباص','al-bāṣ','Transport'],
+  ['Taxi','تاكسي','tāksi','Transport'],
+  ['Ticket','تذكرة','tadhkira','Transport'],
+  ['How long does it take?','كم ياخذ وقت؟','kam yākhudh waqt?','Transport'],
+  ['I have a reservation','عندي حجز','ʿindi ḥajz','Hotel'],
+  ['Room','غرفة','ghurfa','Hotel'],
+  ['Key','مفتاح','miftāḥ','Hotel'],
+  ['The AC is not working','المكيف ما يشتغل','al-mukayyif mā yishtaghil','Hotel'],
+  ['What is the Wi-Fi password?','إيش كلمة سر الواي فاي؟','ēsh kilmat sirr al-wāy fāy?','Hotel'],
+  ['How much?','بكم؟','bikam?','Shopping'],
+  ['How much is this?','بكم هذا؟','bikam hādha?','Shopping'],
+  ['Too expensive','غالي','ghāli','Shopping'],
+  ['Is there a discount?','فيه خصم؟','fīh khaṣm?','Shopping'],
+  ['I want…','أبغى…','abgha…','Shopping'],
+  ['Do you have…?','عندك…؟','ʿindak…?','Shopping'],
+  ['Cash','كاش','kāsh','Shopping'],
+  ['Card','بطاقة','biṭāqa','Shopping'],
+  ['Receipt','فاتورة','fātūra','Shopping'],
+  ['Water','ماء','māʾ','Food'],
+  ['The menu, please','المنيو لو سمحت','al-menyu law samaḥt','Food'],
+  ['The bill, please','الحساب لو سمحت','al-ḥisāb law samaḥt','Food'],
+  ['Delicious','لذيذ','ladhīdh','Food'],
+  ['Without sugar','بدون سكر','bidūn sukkar','Food'],
+  ['Not spicy','بدون حار','bidūn ḥārr','Food'],
+  ['Coffee','قهوة','qahwa','Food'],
+  ['Tea','شاي','shāy','Food'],
+  ['Dates','تمر','tamr','Food'],
+  ['Bread','خبز','khubz','Food'],
+  ['Chicken','دجاج','dajāj','Food'],
+  ['Meat','لحم','laḥm','Food'],
+  ['Rice','رز','ruzz','Food'],
+  ['Fish','سمك','samak','Food'],
+  ['I am vegetarian','أنا نباتي','ana nabāti','Food'],
+  ['I have an allergy','عندي حساسية','ʿindi ḥassāsiyya','Food'],
+  ['Help me!','ساعدني','sāʿidni','Emergency'],
+  ['Call an ambulance','اتصل بالإسعاف','ittaṣil bil-isʿāf','Emergency'],
+  ['Police','شرطة','shurṭa','Emergency'],
+  ['Hospital','مستشفى','mustashfa','Emergency'],
+  ['Pharmacy','صيدلية','ṣaydaliyya','Emergency'],
+  ['Doctor','دكتور','duktūr','Emergency'],
+  ['I am sick','أنا مريض','ana marīḍ','Emergency'],
+  ['It hurts here','يوجعني هنا','yūjiʿni hina','Emergency'],
+  ['Medicine','دواء','dawāʾ','Emergency'],
+  ['I am lost','أنا ضايع','ana ḍāyiʿ','Emergency'],
+  ['I lost my passport','ضيعت جوازي','ḍayyaʿt jawāzi','Emergency'],
+  ['Fire','حريق','ḥarīq','Emergency'],
+  ['Today','اليوم','al-yōm','Time & numbers'],
+  ['Tomorrow','بكرة','bukra','Time & numbers'],
+  ['Yesterday','أمس','ams','Time & numbers'],
+  ['Now (Saudi)','الحين','al-ḥīn','Time & numbers'],
+  ['Later','بعدين','baʿdēn','Time & numbers'],
+  ['One','واحد','wāḥid','Time & numbers'],
+  ['Two','اثنين','ithnēn','Time & numbers'],
+  ['Three','ثلاثة','thalātha','Time & numbers'],
+  ['Four','أربعة','arbaʿa','Time & numbers'],
+  ['Five','خمسة','khamsa','Time & numbers'],
+  ['Six','ستة','sitta','Time & numbers'],
+  ['Seven','سبعة','sabʿa','Time & numbers'],
+  ['Eight','ثمانية','thamānya','Time & numbers'],
+  ['Nine','تسعة','tisʿa','Time & numbers'],
+  ['Ten','عشرة','ʿashara','Time & numbers'],
+  ['One hundred','مية','mya','Time & numbers'],
+  ['One thousand','ألف','alf','Time & numbers'],
+  ['Where is the Qibla?','وين القبلة؟','wēn al-qibla?','Umrah & mosque'],
+  ['When is the prayer?','متى الصلاة؟','mata aṣ-ṣalāh?','Umrah & mosque'],
+  ['Gate','باب','bāb','Umrah & mosque'],
+  ['Zamzam water','ماء زمزم','māʾ zamzam','Umrah & mosque'],
+  ['Ihram','إحرام','iḥrām','Umrah & mosque'],
+  ['May Allah accept (from you)','تقبل الله','taqabbal allāh','Umrah & mosque'],
+  ['Eid Mubarak','عيد مبارك','ʿīd mubārak','Umrah & mosque'],
+  ['Ramadan Kareem','رمضان كريم','ramaḍān karīm','Umrah & mosque']
+];
+PHRASES.length = 0; PB.forEach(function(p){ PHRASES.push(p); });
+const PB_CATS = ['All','★ Saved'].concat(PB.map(function(p){ return p[3]; }).filter(function(c, i, a){ return a.indexOf(c) === i; }));
+
+/* ---------- audio: real Arabic voice via /tts, phone voice as backup ---------- */
+let arAudio = null;
+function playAr(text, btn){
+  text = String(text || '').split(' / ')[0].replace(/…/g, '').trim(); if(!text) return;
+  if(arAudio){ arAudio.pause(); arAudio = null; }
+  if(btn){ btn.dataset.l = btn.dataset.l || btn.textContent; btn.textContent = '⏳'; }
+  const done = function(){ if(btn) btn.textContent = btn.dataset.l || '🔊'; };
+  const fallback = function(){
+    done();
+    if('speechSynthesis' in window && speechSynthesis.getVoices){
+      speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(text); u.lang = 'ar-SA'; u.rate = 0.85; speechSynthesis.speak(u);
+    } else toast('Audio is unavailable right now — check your connection');
+  };
+  const a = new Audio('/tts?text=' + encodeURIComponent(text)); arAudio = a;
+  a.onplaying = done; a.onended = done; a.onerror = fallback;
+  a.play().catch(fallback);
+}
+speak = function(text){ playAr(text); };
+
+/* ---------- dictionary & phrasebook panel ---------- */
+const dictState = { cat:'All', q:'' };
+PANELS.phrases = function(){
+  showPanel('Arabic dictionary', `<div class="search-box"><span>🔍</span><input id="dictQ" placeholder="Type any English or Arabic word…" value="${esc(dictState.q)}" oninput="dictState.q=this.value;renderPB()" onkeydown="if(event.key==='Enter')dictLookup()" autocomplete="off"></div>
+    <button class="btn btn-primary btn-sm" style="margin:0 auto 12px" onclick="dictLookup()">📖 Look up any word</button>
+    <div id="dictOut"></div>
+    <div class="chips" id="pbCats">${PB_CATS.map(function(c){ return `<button class="chip ${c === dictState.cat ? 'on' : ''}" onclick="dictState.cat='${c}';PANELS.phrases()">${c}</button>`; }).join('')}</div>
+    <div id="pbList"></div>
+    <p class="small" style="text-align:center;margin-top:10px">${PB.length} built-in phrases · any other word via “Look up”. Tap 🔊 to hear it.</p>`, { id:'phrases' });
+  renderPB();
+};
+function pbFavs(){ return store.get('pbFav', []); }
+function renderPB(){
+  if(!$('pbList')) return;
+  const q = (dictState.q || '').trim().toLowerCase(), fav = pbFavs();
+  const list = PB.map(function(p, i){ return [p, i]; }).filter(function(x){
+    const p = x[0];
+    if(dictState.cat === '★ Saved' && fav.indexOf(p[1]) < 0) return false;
+    if(dictState.cat !== 'All' && dictState.cat !== '★ Saved' && p[3] !== dictState.cat) return false;
+    return !q || (p[0] + ' ' + p[1] + ' ' + p[2]).toLowerCase().indexOf(q) >= 0;
+  });
+  const savedWords = dictState.cat === '★ Saved' ? store.get('dictSaved', []).filter(function(w){ return !q || (w.en + ' ' + w.ar + ' ' + w.tr).toLowerCase().indexOf(q) >= 0; }) : [];
+  $('pbList').innerHTML = list.map(function(x){ return wordCard(x[0][0], x[0][1], x[0][2], x[0][3]); }).join('') + savedWords.map(function(w){ return wordCard(w.en, w.ar, w.tr, w.pos || 'Saved word'); }).join('') ||
+    `<div class="empty">${q ? 'Not in the phrasebook — tap <b>📖 Look up any word</b> to search the full dictionary.' : 'Nothing saved yet — tap ☆ on any word.'}</div>`;
+}
+function wordCard(en, ar, tr, sub){
+  const saved = pbFavs().indexOf(ar) >= 0 || store.get('dictSaved', []).some(function(w){ return w.ar === ar; });
+  const a = esc(ar).replace(/'/g, '&#39;');
+  return `<div class="phrase"><div class="t"><div class="en">${esc(en)}</div><div class="ar">${esc(ar)}</div><div class="tr">${esc(tr)}${sub ? ' · <span style="font-style:normal">' + esc(sub) + '</span>' : ''}</div></div><div style="display:flex;flex-direction:column;gap:6px"><button class="speak" onclick="playAr('${a}',this)" aria-label="Play">🔊</button><button class="speak" onclick="toggleWord('${a}',this,'${esc(en).replace(/'/g, '&#39;')}','${esc(tr).replace(/'/g, '&#39;')}')" aria-label="Save">${saved ? '★' : '☆'}</button></div></div>`;
+}
+function toggleWord(ar, el, en, tr){
+  const inPB = PB.some(function(p){ return p[1] === ar; });
+  if(inPB){ const f = pbFavs(), k = f.indexOf(ar); if(k >= 0) f.splice(k, 1); else f.push(ar); store.set('pbFav', f); el.textContent = k >= 0 ? '☆' : '★'; return; }
+  const l = store.get('dictSaved', []), k = l.findIndex(function(w){ return w.ar === ar; });
+  if(k >= 0) l.splice(k, 1); else l.unshift({ ar:ar, en:en, tr:tr }); store.set('dictSaved', l.slice(0, 300)); el.textContent = k >= 0 ? '☆' : '★';
+}
+function dictLookup(){
+  const q = ($('dictQ').value || '').trim(); if(!q) return toast('Type a word first');
+  $('dictOut').innerHTML = '<div class="phrase"><div class="t"><div class="skeleton" style="margin-bottom:8px"></div><div class="skeleton" style="width:60%"></div></div></div>';
+  getJSON('/dict?q=' + encodeURIComponent(q), 25000).then(function(d){
+    if(!$('dictOut')) return;
+    if(!d || !d.ok){ $('dictOut').innerHTML = `<div class="note">${esc((d && d.error) || 'Dictionary unavailable right now.')}</div>`; return; }
+    if(!d.results.length){ $('dictOut').innerHTML = '<div class="note">No dictionary entry found. Check the spelling.</div>'; return; }
+    award('dict');
+    $('dictOut').innerHTML = `<div class="small" style="margin:0 4px 6px;font-weight:800;color:var(--gold)">📖 “${esc(d.query)}”</div>` + d.results.map(function(r){ return wordCard(r.en, r.ar, r.tr, [r.pos, r.note].filter(Boolean).join(' · ')); }).join('') +
+      (d.examples.length ? '<div class="card" style="margin-bottom:12px"><div class="small" style="font-weight:800;margin-bottom:6px">Examples</div>' + d.examples.map(function(e){ const a = esc(e.ar).replace(/'/g, '&#39;'); return `<div style="display:flex;gap:10px;align-items:center;margin:6px 0"><div style="flex:1"><div class="ar" style="font-size:18px">${esc(e.ar)}</div><div class="small" style="font-style:italic">${esc(e.tr)}</div><div style="font-size:13.5px">${esc(e.en)}</div></div><button class="speak" onclick="playAr('${a}',this)">🔊</button></div>`; }).join('') + '</div>' : '') +
+      '<p class="small" style="margin:-4px 4px 12px">Dictionary by AI — double-check important words.</p>';
+  }).catch(function(){ if($('dictOut')) $('dictOut').innerHTML = '<div class="note">You seem to be offline. Built-in phrases still work.</div>'; });
+}
+Object.assign(META.phrases, { t:'Arabic dictionary', s:'Any word · audio · ' + PB.length + ' phrases', short:'Dictionary', ic:'📖' });
+BADGES.splice(BADGES.length - 2, 0, { id:'dict', ic:'🔤', t:'Word explorer' });
+
+/* ---------- Pi Wallet ---------- */
+function piWalletPanel(){
+  const me = piUser ? piUser.username : '';
+  const hist = store.get(histKey(), []), paid = hist.filter(function(h){ return h.status === 'completed'; }).reduce(function(s, h){ return s + Number(h.amount || 0); }, 0);
+  showPanel('Pi Wallet', `<div class="pi-card"><div style="display:flex;align-items:center;gap:10px"><div class="sym">π</div><div><b>${me ? '@' + esc(me) : 'Not signed in'}</b><br><small>Your Pi Wallet in the Pi Browser</small></div></div>
+      <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap"><span class="chg">Paid in DigitalSaudi: ${fmt(paid, 2)} π</span>${store.get('pi', null) ? '<span class="chg">1 π ≈ $' + fmt(store.get('pi').usd, 4) + '</span>' : ''}</div></div>
+    <div class="seg" style="margin-top:14px"><button class="on" id="wTabReq" onclick="walletTab('req')">📥 Request</button><button id="wTabSend" onclick="walletTab('send')">📤 Send</button><button id="wTabHist" onclick="walletTab('hist')">🧾 History</button></div>
+    <div id="wBody"></div>
+    <div class="note">🔒 For your safety, Pi apps can never see your balance, hold your Pi or send it for you. Transfers always happen in your own Pi Wallet, and only you approve them.</div>`, { id:'piWallet', share:false });
+  walletTab('req');
+}
+function walletTab(t){
+  ['Req','Send','Hist'].forEach(function(k){ const b = $('wTab' + k); if(b) b.classList.toggle('on', k.toLowerCase() === t); });
+  const me = piUser ? piUser.username : '';
+  if(t === 'req'){
+    $('wBody').innerHTML = `<p class="small" style="margin-bottom:10px">Create a payment request to show or share. The payer sends Pi from their own Pi Wallet.</p>
+      <div class="field"><label>Your Pi username or wallet address</label><input id="wrTo" value="${esc(me)}" placeholder="username or G… wallet address"></div>
+      <div class="two"><div class="field"><label>Amount (π)</label><input id="wrAmt" type="number" inputmode="decimal" step="0.01" placeholder="e.g. 2.5" oninput="wrConv()"></div><div class="field"><label>For (memo)</label><input id="wrMemo" placeholder="e.g. Coffee"></div></div>
+      <div class="small" id="wrConvOut" style="margin:-4px 0 10px"></div>
+      <button class="btn btn-primary" style="margin:0 auto" onclick="makeRequest()">Create request</button><div id="wrOut" style="text-align:center"></div>`;
+  } else if(t === 'send'){
+    $('wBody').innerHTML = stepsHTML([
+      ['Get the details', 'Ask for the receiver’s Pi username or wallet address and the exact amount. Scan their DigitalSaudi request QR if they have one.'],
+      ['Open your Pi Wallet', 'In the Pi Browser, open the Wallet from the home screen or menu, and unlock it with your passphrase or fingerprint.'],
+      ['Send', 'Tap Send / Pay, paste the username or address (or scan the QR), enter the amount and add a memo.'],
+      ['Check, then confirm', 'Double-check the receiver and amount — Pi transfers can’t be reversed.']
+    ]) + '<div class="p-actions"><button class="btn btn-ghost btn-sm" onclick="openItem(\'support\')">💚 Pay DigitalSaudi</button><button class="btn btn-ghost btn-sm" onclick="openDirectory(true)">π Find Pi merchants</button></div><div class="note">Never type your Pi passphrase into any app or website — only into the official Pi Wallet.</div>';
+  } else {
+    const list = store.get(histKey(), []);
+    $('wBody').innerHTML = list.length ? '<div class="card hist">' + list.map(function(h){ return `<button class="h" onclick="openReceipt('${esc(h.id)}')"><div><b>${esc(h.memo)}</b><div class="small">${new Date(h.at).toLocaleDateString('en-GB', { day:'numeric', month:'short', year:'numeric' })}</div></div><div style="text-align:right"><b>${h.amount} π</b><div><span class="status ${h.status === 'completed' ? 's-ok' : h.status === 'pending' ? 's-pend' : 's-bad'}">${h.status}</span></div></div></button>`; }).join('') + '</div>' : '<div class="empty"><div class="big">🧾</div>No payments in DigitalSaudi yet.</div>';
+  }
+}
+function wrConv(){ const a = parseFloat($('wrAmt').value) || 0, n = convert(a, 'PI', 'NGN'), s = convert(a, 'PI', 'SAR'); $('wrConvOut').textContent = a && s ? '≈ ' + fmt(s, 2) + ' SAR' + (n ? ' · ₦' + fmt(n, 0) : '') : ''; }
+function makeRequest(){
+  const to = $('wrTo').value.trim().replace(/^@/, ''), amt = parseFloat($('wrAmt').value), memo = $('wrMemo').value.trim();
+  if(!to) return toast('Enter your Pi username or wallet address');
+  if(!(amt > 0)) return toast('Enter an amount');
+  const isAddr = /^G[A-Z2-7]{55}$/.test(to);
+  const text = 'Pay ' + amt + ' π to ' + (isAddr ? to : '@' + to) + (memo ? ' — ' + memo : '');
+  $('wrOut').innerHTML = '<div class="spinner" style="margin:16px auto;border-color:var(--line);border-top-color:var(--accent)"></div>';
+  loadScript('https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js').then(function(){
+    if(!$('wrOut')) return;
+    $('wrOut').innerHTML = `<div class="qr" id="wrQR"></div><div style="font-size:22px;font-weight:900">${fmt(amt, 4)} π</div><div class="small">${esc(isAddr ? to.slice(0, 6) + '…' + to.slice(-6) : '@' + to)}${memo ? ' · ' + esc(memo) : ''}</div>
+      <div class="p-actions" style="justify-content:center"><button class="btn btn-primary btn-sm" onclick="shareText('Pi payment request', '${esc(text).replace(/'/g, '&#39;')}', location.origin)">📤 Share request</button><button class="btn btn-ghost btn-sm" onclick="copyText('${esc(to)}')">📋 Copy ${isAddr ? 'address' : 'username'}</button></div>`;
+    new QRCode($('wrQR'), { text:isAddr ? to : text, width:210, height:210, correctLevel:QRCode.CorrectLevel.M });
+  }).catch(function(){ if($('wrOut')) $('wrOut').innerHTML = '<div class="card" style="margin-top:12px"><b>' + esc(text) + '</b></div><button class="btn btn-ghost btn-sm" style="margin:10px auto 0" onclick="shareText(\'Pi payment request\', \'' + esc(text).replace(/'/g, '&#39;') + '\', location.origin)">📤 Share request</button>'; });
+}
+Object.assign(META, { piWallet:{ t:'Pi Wallet', ic:'👛', s:'Request & send Pi, history', short:'Wallet' } });
+PANELS.piWallet = piWalletPanel;
+NOMARK.push('piWallet');
 </script>
 </body>
 </html>
