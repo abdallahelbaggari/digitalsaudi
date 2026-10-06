@@ -2,9 +2,9 @@
 // - App shell cached on install (works offline)
 // - Network-first for GET requests, falling back to the last saved copy
 // - Payments, Premium, AI and admin are never cached
-const CACHE = 'digitalsaudi-v4';
+const CACHE = 'digitalsaudi-v5';
 const SHELL = ['/', '/index.html', '/manifest.json', '/icon.svg', '/privacy.html', '/terms.html'];
-const NEVER = ['/approve', '/complete', '/cancel-payment', '/premium', '/ai', '/admin-api', '/admin.html', '/admin'];
+const NEVER = ['/approve', '/complete', '/cancel-payment', '/premium', '/ai', '/admin-api', '/admin.html', '/admin', '/pi-check', '/dict'];
 
 self.addEventListener('install', e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL))); self.skipWaiting(); });
 self.addEventListener('activate', e => {
@@ -17,7 +17,7 @@ self.addEventListener('fetch', e => {
   const u = new URL(req.url);
   if (u.origin === location.origin && NEVER.includes(u.pathname)) return;
   if (u.hostname.endsWith('minepi.com')) return;                                   // Pi SDK always live
-  if (/basemaps\.cartocdn\.com|tile\.openstreetmap/.test(u.hostname)) return;       // map tiles: browser cache only
+  if (/basemaps\.cartocdn\.com|tile\.openstreetmap\.org/.test(u.hostname)) return;       // map tiles: browser cache only
   if (req.destination === 'image' && u.origin !== location.origin) return;          // news images / crests
   if (/\.mp3(\?|$)/.test(u.pathname)) return;                                       // Quran audio streams live
   e.respondWith(
