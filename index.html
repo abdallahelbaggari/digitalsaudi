@@ -1980,7 +1980,7 @@ function renderPremium(){
     `<h4>What you get</h4><ul>${perks.map(function(p){ return '<li>' + p + '</li>'; }).join('')}</ul>` +
     (getPremium() && getPremium().tier === 'lifetime' ? '' : `<h4>${on ? 'Extend or upgrade' : 'Choose a plan'}</h4>` +
       Object.keys(TIERS).map(function(k){ const t = TIERS[k]; return `<button class="tier ${k === 'lifetime' ? 'best' : ''}" id="tier_${k}" onclick="buyPremium('${k}')">${k === 'lifetime' ? '<span class="rib">BEST VALUE</span>' : ''}<div style="display:flex;justify-content:space-between;align-items:center"><div><b style="font-size:17px">${t.t}</b><div class="small">${t.desc}</div></div><div class="pr">${t.price} π</div></div></button>`; }).join('') +
-      '<p class="small" style="text-align:center">Requires the Pi Browser and a Pi sign-in. Premium is linked to your Pi account and restored on any device.</p>'), { id:'premium', share:false });
+      '<p class="small" style="text-align:center">Requires the Pi Browser and a Pi sign-in. Premium is linked to your Pi account and restored on any device.</p><p class="small" style="text-align:center;margin-top:8px">Seeing “Pending payment found”? <button style="color:var(--gold);font-weight:700;font-size:12.5px" onclick="clearStuckPayment()">Fix it</button></p>'), { id:'premium', share:false });
 }
 function buyPremium(tier){
   const t = TIERS[tier];
@@ -2008,12 +2008,36 @@ function piLogin(){
 }
 function onIncompletePaymentFound(payment){
   log('incomplete payment', payment);
-  const txid = payment && payment.transaction && payment.transaction.txid;
+  if(!payment || !payment.identifier) return;
+  const txid = payment.transaction && payment.transaction.txid;
   const url = txid ? PI_ENDPOINTS.complete : PI_ENDPOINTS.cancel;
+  store.set('stuckPayment', { id:payment.identifier, amount:payment.amount, memo:payment.memo, txid:txid || '', at:Date.now() });
+  addHistory({ id:payment.identifier, amount:payment.amount, memo:payment.memo || 'Earlier payment', status:'pending', at:Date.now() });
+  toast('Found an unfinished payment — ' + (txid ? 'completing' : 'clearing') + ' it…');
   fetch(url, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ paymentId:payment.identifier, txid:txid }) })
     .then(function(r){ return r.json(); })
-    .then(function(d){ log('incomplete handled', d); if(txid){ addHistory({ id:payment.identifier, amount:payment.amount, memo:payment.memo, status:'completed', txid:txid, at:Date.now() }); applyPaymentEffect(payment.metadata, payment.amount, payment.identifier); } })
-    .catch(function(e){ log('incomplete error', e); });
+    .then(function(d){
+      log('incomplete handled', d);
+      if(d && d.ok){
+        store.set('stuckPayment', null);
+        if(txid){ updateHistory(payment.identifier, 'completed', txid); applyPaymentEffect(payment.metadata, payment.amount, payment.identifier); }
+        else { updateHistory(payment.identifier, 'cancelled'); toast('✓ Unfinished payment cleared — you can pay now'); }
+      } else {
+        const why = d && (d.status || d.error) || 'server';
+        const sp = store.get('stuckPayment', {}); sp.error = String(why); store.set('stuckPayment', sp);
+        toast('Couldn’t clear the unfinished payment (Pi said: ' + why + '). ' + (why == 401 || why == 403 ? 'The app’s PI_API_KEY is wrong.' : 'Please contact support.'));
+      }
+    })
+    .catch(function(e){ log('incomplete error', e); toast('Couldn’t reach the server to clear the unfinished payment.'); });
+}
+function clearStuckPayment(){
+  if(typeof Pi === 'undefined') return toast('Open DigitalSaudi in the Pi Browser');
+  Pi.init({ version:'2.0', sandbox:false });
+  toast('Checking for unfinished payments…');
+  let found = false;
+  Pi.authenticate(['username','payments'], function(p){ found = true; onIncompletePaymentFound(p); })
+    .then(function(auth){ piUser = auth.user; piUser.accessToken = auth.accessToken; if(!found) toast('✓ No unfinished payments — you can pay now'); })
+    .catch(function(){ toast('Sign-in failed — open the app from the Pi Browser app link'); });
 }
 
 /* ================= PI PAYMENTS (Copa exact pattern) ================= */
@@ -2055,7 +2079,9 @@ function submitPiPayment(amount, memo, metadata, btn){
       log('payment error', error, payment);
       if(payment && payment.identifier) updateHistory(payment.identifier, 'failed');
       reset();
-      toast('Payment error: ' + (error && error.message ? error.message : 'please try again'));
+      const msg = error && error.message ? error.message : '';
+      if(/pending|incomplete/i.test(msg)){ toast('You have an unfinished payment — clearing it…'); setTimeout(clearStuckPayment, 600); }
+      else toast('Payment error: ' + (msg || 'please try again'));
     }
   });
 }
@@ -3532,6 +3558,7 @@ function piWalletPanel(){
       <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap"><span class="chg">Paid in DigitalSaudi: ${fmt(paid, 2)} π</span>${store.get('pi', null) ? '<span class="chg">1 π ≈ $' + fmt(store.get('pi').usd, 4) + '</span>' : ''}</div></div>
     <div class="seg" style="margin-top:14px"><button class="on" id="wTabReq" onclick="walletTab('req')">📥 Request</button><button id="wTabSend" onclick="walletTab('send')">📤 Send</button><button id="wTabHist" onclick="walletTab('hist')">🧾 History</button></div>
     <div id="wBody"></div>
+    <button class="row" onclick="clearStuckPayment()"><div class="ic">🧹</div><div class="tx"><b>Fix “Pending payment found”</b><small>Clears an unfinished payment so you can pay again</small></div><span class="chev">›</span></button>
     <div class="note">🔒 For your safety, Pi apps can never see your balance, hold your Pi or send it for you. Transfers always happen in your own Pi Wallet, and only you approve them.</div>`, { id:'piWallet', share:false });
   walletTab('req');
 }
