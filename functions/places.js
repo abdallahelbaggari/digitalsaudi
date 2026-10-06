@@ -5,7 +5,7 @@
 
 const HEADERS = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'GET, OPTIONS', 'Content-Type': 'application/json' };
 const json = (o, age) => new Response(JSON.stringify(o), { status: 200, headers: { ...HEADERS, 'Cache-Control': 'public, max-age=' + (age || 600) } });
-const ENDPOINTS = ['https://overpass-api.de/api/interpreter', 'https://overpass.kumi.systems/api/interpreter'];
+const ENDPOINTS = ['https://overpass-api.de/api/interpreter', 'https://overpass.private.coffee/api/interpreter', 'https://overpass.kumi.systems/api/interpreter', 'https://maps.mail.ru/osm/tools/overpass/api/interpreter'];
 const TTL = 86400;
 const MEM = globalThis.__dsPlaces || (globalThis.__dsPlaces = new Map());
 
@@ -60,16 +60,37 @@ function clean(el, want) {
   return { id: el.type[0] + el.id, name, cat, lat: +lat.toFixed(6), lng: +lng.toFixed(6), tags };
 }
 
+function timed(url, opts, ms) {
+  const c = new AbortController(); const t = setTimeout(() => c.abort(), ms);
+  return fetch(url, { ...opts, signal: c.signal }).finally(() => clearTimeout(t));
+}
+// Ask several Overpass mirrors at once and use the first good answer.
 async function overpass(query) {
-  let lastErr;
-  for (const url of ENDPOINTS) {
-    try {
-      const res = await fetch(url, { method: 'POST', body: 'data=' + encodeURIComponent(query), headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'User-Agent': 'DigitalSaudi/3.0 (Pi Network app; support.digitalsaudi.pi@gmail.com)' } });
-      if (!res.ok) throw new Error('Overpass ' + res.status);
-      return await res.json();
-    } catch (e) { lastErr = e; }
+  return Promise.any(ENDPOINTS.map(url => timed(url, { method: 'POST', body: 'data=' + encodeURIComponent(query), headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'User-Agent': 'DigitalSaudi/3.0 (Pi Network app; support.digitalsaudi.pi@gmail.com)' } }, 15000)
+    .then(r => { if (!r.ok) throw new Error(url.split('/')[2] + ' ' + r.status); return r.json(); })
+    .then(d => { if (!d || !Array.isArray(d.elements)) throw new Error('bad reply'); return d; })));
+}
+
+// Backup source: Photon (komoot) search, filtered to the radius.
+const PHOTON = {
+  hotels: [['hotel', 'tourism:hotel'], ['apartment', 'tourism:apartment']], food: [['restaurant', 'amenity:restaurant'], ['fast food', 'amenity:fast_food']],
+  cafes: [['cafe', 'amenity:cafe']], mosques: [['mosque', 'amenity:place_of_worship']], health: [['hospital', 'amenity:hospital'], ['clinic', 'amenity:clinic']],
+  pharmacy: [['pharmacy', 'amenity:pharmacy']], malls: [['mall', 'shop:mall']], attractions: [['museum', 'tourism:museum'], ['attraction', 'tourism:attraction']],
+  transport: [['station', 'railway:station'], ['airport', 'aeroway:aerodrome'], ['bus station', 'amenity:bus_station']], money: [['bank', 'amenity:bank'], ['atm', 'amenity:atm']], fuel: [['fuel', 'amenity:fuel']]
+};
+PHOTON.all = [].concat(PHOTON.hotels, PHOTON.food, PHOTON.cafes, PHOTON.malls, PHOTON.attractions);
+function km(a, b, c, d) { const r = Math.PI / 180, x = Math.sin((c - a) * r / 2) ** 2 + Math.cos(a * r) * Math.cos(c * r) * Math.sin((d - b) * r / 2) ** 2; return 12742 * Math.asin(Math.sqrt(x)); }
+async function photon(cat, lat, lng, r) {
+  const lists = await Promise.all(PHOTON[cat].map(([q, tag]) => timed('https://photon.komoot.io/api/?q=' + encodeURIComponent(q) + '&lat=' + lat + '&lon=' + lng + '&limit=50&osm_tag=' + tag, { headers: { 'User-Agent': 'DigitalSaudi/3.0' } }, 10000)
+    .then(x => x.ok ? x.json() : { features: [] }).catch(() => ({ features: [] }))));
+  const out = [];
+  for (const d of lists) for (const f of (d.features || [])) {
+    const p = f.properties || {}, c = (f.geometry || {}).coordinates || [];
+    if (!p.name || c.length < 2 || km(lat, lng, c[1], c[0]) * 1000 > r * 1.5) continue;
+    const t = {}; t[p.osm_key] = p.osm_value;
+    out.push(clean({ type: (p.osm_type || 'N').toLowerCase().replace('n', 'node').replace('w', 'way').replace('r', 'relation'), id: p.osm_id, lat: c[1], lon: c[0], tags: { ...t, name: p.name, 'addr:street': p.street, 'addr:district': p.district, 'addr:city': p.city } }, cat));
   }
-  throw lastErr;
+  return out.filter(Boolean);
 }
 
 export async function onRequestGet(context) {
@@ -87,15 +108,17 @@ export async function onRequestGet(context) {
   try { const hit = await caches.default.match(creq); if (hit) { const data = await hit.json(); MEM.set(key, { t: now, data }); return json(data, 3600); } } catch (e) {}
   try {
     const around = `(around:${r},${lat},${lng})`;
-    const query = `[out:json][timeout:25];(${Q[cat].map(q => q + around + ';').join('')});out center tags 250;`;
-    const d = await overpass(query);
+    const query = `[out:json][timeout:20];(${Q[cat].map(q => q + around + ';').join('')});out center tags 200;`;
+    let raw, source = 'OpenStreetMap';
+    try { raw = (await overpass(query)).elements.map(el => clean(el, cat)); }
+    catch (e) { raw = await photon(cat, lat, lng, r); source = 'OpenStreetMap (Photon)'; if (!raw.length) throw new Error('No place servers answered'); }
     const seen = new Set();
-    const places = (d.elements || []).map(el => clean(el, cat)).filter(p => {
+    const places = raw.filter(p => {
       if (!p) return false;
       const k = p.name.toLowerCase() + ':' + p.lat.toFixed(3) + ':' + p.lng.toFixed(3);
       if (seen.has(k)) return false; seen.add(k); return true;
     });
-    const data = { ok: true, cat, count: places.length, places, source: 'OpenStreetMap' };
+    const data = { ok: true, cat, count: places.length, places, source };
     MEM.set(key, { t: now, data });
     if (MEM.size > 400) MEM.delete(MEM.keys().next().value);
     try { await caches.default.put(creq, new Response(JSON.stringify(data), { headers: { 'Content-Type': 'application/json', 'Cache-Control': 'public, max-age=' + TTL } })); } catch (e) {}
