@@ -18,7 +18,7 @@ export async function onRequestPost(context) {
 
     const res = await fetch('https://api.minepi.com/v2/payments/' + paymentId + '/approve', {
       method: 'POST',
-      headers: { 'Authorization': 'Key ' + context.env.PI_API_KEY, 'Content-Type': 'application/json' },
+      headers: { 'Authorization': 'Key ' + String(context.env.PI_API_KEY).trim(), 'Content-Type': 'application/json' },
       body: JSON.stringify(PAYLOAD)
     });
     const data = await res.json().catch(() => ({}));
