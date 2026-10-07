@@ -1,0 +1,39 @@
+// DigitalSaudi — /complete  (Cloudflare Pages Function)
+// Always returns HTTP 200: a non-200 here makes Pi show "Payment Expired".
+const CORS = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+  'Access-Control-Allow-Headers': 'Content-Type',
+  'Content-Type': 'application/json'
+};
+const json = (obj) => new Response(JSON.stringify(obj), { status: 200, headers: CORS });
+
+export async function onRequestPost(context) {
+  try {
+    const body = await context.request.json();
+    const paymentId = body.paymentId;
+    const txid = body.txid;
+    if (!txid) return json({ ok: false, error: 'Missing txid' });
+    const PAYLOAD = { txid };
+    if (!paymentId) return json({ ok: false, error: 'Missing paymentId' });
+    if (!context.env.PI_API_KEY) return json({ ok: false, error: 'PI_API_KEY not set' });
+
+    const res = await fetch('https://api.minepi.com/v2/payments/' + paymentId + '/complete', {
+      method: 'POST',
+      headers: { 'Authorization': 'Key ' + String(context.env.PI_API_KEY).trim(), 'Content-Type': 'application/json' },
+      body: JSON.stringify(PAYLOAD)
+    });
+    const data = await res.json().catch(() => ({}));
+    return json({ ok: res.ok, status: res.status, data });
+  } catch (err) {
+    return json({ ok: false, error: String(err && err.message || err) });
+  }
+}
+
+export async function onRequestGet() {
+  return json({ ok: true, endpoint: '/complete', app: 'DigitalSaudi', time: new Date().toISOString() });
+}
+
+export async function onRequestOptions() {
+  return new Response(null, { status: 204, headers: CORS });
+}
