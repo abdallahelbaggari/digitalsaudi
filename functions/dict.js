@@ -27,14 +27,19 @@ function parse(text) {
   };
 }
 async function viaGemini(env, q) {
-  const res = await fetch('https://generativelanguage.googleapis.com/v1beta/models/' + (env.GEMINI_MODEL || 'gemini-flash-latest') + ':generateContent', {
-    method: 'POST', headers: { 'Content-Type': 'application/json', 'x-goog-api-key': env.GEMINI_API_KEY },
-    body: JSON.stringify({ contents: [{ role: 'user', parts: [{ text: PROMPT(q) }] }], generationConfig: { temperature: 0.2, maxOutputTokens: 2048, responseMimeType: 'application/json' } })
-  });
-  const d = await res.json().catch(() => null);
-  if (!res.ok || !d) throw new Error('gemini ' + res.status);
-  const parts = (d.candidates && d.candidates[0] && d.candidates[0].content && d.candidates[0].content.parts) || [];
-  return parse(parts.filter(p => p.text && !p.thought).map(p => p.text).join(''));
+  const models = [env.GEMINI_MODEL, 'gemini-flash-latest', 'gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-flash-lite-latest'].filter((m, i, a) => m && a.indexOf(m) === i);
+  const errs = [];
+  for (const model of models) {
+    const res = await fetch('https://generativelanguage.googleapis.com/v1beta/models/' + model + ':generateContent', {
+      method: 'POST', headers: { 'Content-Type': 'application/json', 'x-goog-api-key': String(env.GEMINI_API_KEY).trim() },
+      body: JSON.stringify({ contents: [{ role: 'user', parts: [{ text: PROMPT(q) }] }], generationConfig: { temperature: 0.2, maxOutputTokens: 2048, responseMimeType: 'application/json' } })
+    });
+    const d = await res.json().catch(() => null);
+    if (!res.ok || !d) { errs.push(model + ' ' + res.status + ' ' + (d && d.error && d.error.message || '').slice(0, 120)); continue; }
+    const parts = (d.candidates && d.candidates[0] && d.candidates[0].content && d.candidates[0].content.parts) || [];
+    try { return parse(parts.filter(p => p.text && !p.thought).map(p => p.text).join('')); } catch (e) { errs.push(model + ' bad json'); }
+  }
+  throw new Error('gemini: ' + errs.join(' | '));
 }
 async function viaWorkersAI(env, q) {
   const r = await env.AI.run(env.CF_AI_MODEL || '@cf/meta/llama-3.3-70b-instruct-fp8-fast', { messages: [{ role: 'user', content: PROMPT(q) }], max_tokens: 700, temperature: 0.2 });
@@ -58,6 +63,7 @@ export async function onRequestGet(context) {
   if (env.GEMINI_API_KEY) tries.push(() => viaGemini(env, q));
   if (env.AI && typeof env.AI.run === 'function') tries.push(() => viaWorkersAI(env, q));
   if (!tries.length) return json({ ok: false, error: 'Dictionary not configured (add GEMINI_API_KEY)' });
+  const errors = [];
   for (const t of tries) {
     try {
       const r = await t();
@@ -67,8 +73,8 @@ export async function onRequestGet(context) {
         if (env.DS_KV) context.waitUntil(env.DS_KV.put('dict:' + key, JSON.stringify(out), { expirationTtl: TTL }));
       }
       return json(out, out.results.length ? 86400 : 0);
-    } catch (e) { console.log('[dict] ' + (e && e.message)); }
+    } catch (e) { errors.push(String(e && e.message || e).slice(0, 300)); }
   }
-  return json({ ok: false, error: 'Dictionary unavailable right now' });
+  return json({ ok: false, error: 'Dictionary unavailable right now', detail: errors.join(' || ') });
 }
 export async function onRequestOptions() { return new Response(null, { status: 204, headers: HEADERS }); }
