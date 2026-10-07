@@ -2010,33 +2010,44 @@ function onIncompletePaymentFound(payment){
   log('incomplete payment', payment);
   if(!payment || !payment.identifier) return;
   const txid = payment.transaction && payment.transaction.txid;
-  const url = txid ? PI_ENDPOINTS.complete : PI_ENDPOINTS.cancel;
-  store.set('stuckPayment', { id:payment.identifier, amount:payment.amount, memo:payment.memo, txid:txid || '', at:Date.now() });
-  addHistory({ id:payment.identifier, amount:payment.amount, memo:payment.memo || 'Earlier payment', status:'pending', at:Date.now() });
-  toast('Found an unfinished payment — ' + (txid ? 'completing' : 'clearing') + ' it…');
-  fetch(url, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ paymentId:payment.identifier, txid:txid }) })
-    .then(function(r){ return r.json(); })
+  const info = { id:payment.identifier, amount:payment.amount, memo:payment.memo || 'Earlier payment', txid:txid || '', at:Date.now(), state:'working' };
+  store.set('stuckPayment', info);
+  addHistory({ id:info.id, amount:info.amount, memo:info.memo, status:'pending', at:Date.now() });
+  showStuckPayment();
+  fetch(PI_ENDPOINTS.cancel, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ paymentId:info.id, txid:txid }) })
+    .then(function(r){ return r.text().then(function(t){ try{ return JSON.parse(t); }catch(e){ throw new Error('Server replied ' + r.status + ' (not JSON) — is functions/cancel-payment.js uploaded?'); } }); })
     .then(function(d){
       log('incomplete handled', d);
+      const sp = store.get('stuckPayment', info);
       if(d && d.ok){
-        store.set('stuckPayment', null);
-        if(txid){ updateHistory(payment.identifier, 'completed', txid); applyPaymentEffect(payment.metadata, payment.amount, payment.identifier); }
-        else { updateHistory(payment.identifier, 'cancelled'); toast('✓ Unfinished payment cleared — you can pay now'); }
+        sp.state = 'fixed'; sp.detail = d.detail || 'Done'; sp.action = d.action;
+        if(d.action === 'complete'){ updateHistory(info.id, 'completed', txid || (d.payment && d.payment.txid)); applyPaymentEffect(payment.metadata || (d.payment && d.payment.metadata), payment.amount, info.id); }
+        else if(d.action === 'cancel'){ updateHistory(info.id, 'cancelled'); }
+        else updateHistory(info.id, /completed/.test(d.detail || '') ? 'completed' : 'cancelled');
       } else {
-        const why = d && (d.status || d.error) || 'server';
-        const sp = store.get('stuckPayment', {}); sp.error = String(why); store.set('stuckPayment', sp);
-        toast('Couldn’t clear the unfinished payment (Pi said: ' + why + '). ' + (why == 401 || why == 403 ? 'The app’s PI_API_KEY is wrong.' : 'Please contact support.'));
+        sp.state = 'failed'; sp.detail = (d && (d.detail || d.error)) || 'Unknown error'; sp.status = d && d.status; sp.action = d && d.action;
       }
+      store.set('stuckPayment', sp); showStuckPayment();
     })
-    .catch(function(e){ log('incomplete error', e); toast('Couldn’t reach the server to clear the unfinished payment.'); });
+    .catch(function(e){ const sp = store.get('stuckPayment', info); sp.state = 'failed'; sp.detail = (e && e.message) || 'Network error'; store.set('stuckPayment', sp); showStuckPayment(); });
+}
+function showStuckPayment(){
+  const sp = store.get('stuckPayment', null);
+  if(!sp){ showPanel('Unfinished payment', '<div class="lock-wrap"><div class="big">✅</div><h3>No unfinished payment</h3><p class="small">You can pay normally.</p></div>', { id:'stuckPay', share:false }); return; }
+  const icon = sp.state === 'fixed' ? '✅' : sp.state === 'failed' ? '⚠️' : '⏳';
+  const title = sp.state === 'fixed' ? (sp.action === 'complete' ? 'Payment completed' : 'Payment cleared') : sp.state === 'failed' ? 'Couldn’t clear it yet' : 'Fixing your unfinished payment…';
+  const msg = sp.state === 'fixed' ? (sp.action === 'complete' ? 'Your earlier payment had already been sent, so we completed it. Thank you!' : 'Your earlier unfinished payment was cancelled. No Pi was taken. You can pay again now.') : sp.state === 'failed' ? 'Pi said: <b>' + esc(sp.detail || '') + '</b>' + (sp.status ? ' (status ' + sp.status + ')' : '') + '<br><br>Please send the Payment ID below to support so it can be fixed.' : 'Checking the payment with Pi. This takes a few seconds.';
+  showPanel('Unfinished payment', `<div class="lock-wrap"><div class="big">${icon}</div><h3>${title}</h3><p class="small" style="margin:8px 0 16px">${msg}</p></div>
+    <div class="card"><div class="rate"><span>Payment ID</span><b style="word-break:break-all;text-align:right;max-width:65%;font-size:12px">${esc(sp.id)}</b></div><div class="rate"><span>Amount</span><b>${esc(sp.amount)} π</b></div><div class="rate" style="border:0"><span>For</span><b>${esc(sp.memo)}</b></div></div>
+    <div class="p-actions" style="justify-content:center"><button class="btn btn-ghost btn-sm" onclick="copyText('${esc(sp.id)}')">📋 Copy Payment ID</button>${sp.state === 'failed' ? '<button class="btn btn-primary btn-sm" onclick="clearStuckPayment()">↻ Try again</button><button class="btn btn-ghost btn-sm" onclick="openFeedback(\'Payment issue: ' + esc(sp.id) + '\')">✉️ Contact support</button>' : ''}${sp.state === 'fixed' ? '<button class="btn btn-primary btn-sm" onclick="store.set(\'stuckPayment\',null);openItem(\'premium\')">Continue</button>' : ''}</div>`, { id:'stuckPay', share:false });
 }
 function clearStuckPayment(){
   if(typeof Pi === 'undefined') return toast('Open DigitalSaudi in the Pi Browser');
   Pi.init({ version:'2.0', sandbox:false });
-  toast('Checking for unfinished payments…');
+  showPanel('Unfinished payment', '<div class="lock-wrap"><div class="big">⏳</div><h3>Checking with Pi…</h3></div>', { id:'stuckPay', share:false });
   let found = false;
   Pi.authenticate(['username','payments'], function(p){ found = true; onIncompletePaymentFound(p); })
-    .then(function(auth){ piUser = auth.user; piUser.accessToken = auth.accessToken; if(!found) toast('✓ No unfinished payments — you can pay now'); })
+    .then(function(auth){ piUser = auth.user; piUser.accessToken = auth.accessToken; if(!found){ store.set('stuckPayment', null); showStuckPayment(); } })
     .catch(function(){ toast('Sign-in failed — open the app from the Pi Browser app link'); });
 }
 
@@ -3600,7 +3611,7 @@ function makeRequest(){
 }
 Object.assign(META, { piWallet:{ t:'Pi Wallet', ic:'👛', s:'Request & send Pi, history', short:'Wallet' } });
 PANELS.piWallet = piWalletPanel;
-NOMARK.push('piWallet');
+NOMARK.push('piWallet','stuckPay');
 </script>
 </body>
 </html>
