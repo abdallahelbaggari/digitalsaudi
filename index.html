@@ -2070,15 +2070,15 @@ function submitPiPayment(amount, memo, metadata, btn){
         .catch(function(e){ log('approve error', e); });
     },
     onReadyForServerCompletion: function(paymentId, txid){
-      fetch(PI_ENDPOINTS.complete, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ paymentId:paymentId, txid:txid }) })
-        .then(function(r){ return r.json(); })
+      toast('Confirming your payment…');
+      confirmPayment(paymentId, txid, 0)
         .then(function(d){
           log('completed', d);
           updateHistory(paymentId, 'completed', txid);
           applyPaymentEffect(metadata, amount, paymentId);
           reset();
         })
-        .catch(function(e){ log('complete error', e); updateHistory(paymentId, 'pending'); reset(); toast('Payment sent — confirming. Reopen the app shortly.'); });
+        .catch(function(e){ log('complete error', e); updateHistory(paymentId, 'pending'); reset(); toast('Payment sent — still confirming. Reopen the app and it will finish automatically.'); });
     },
     onCancel: function(paymentId){
       log('cancelled', paymentId);
@@ -2104,6 +2104,25 @@ function applyPaymentEffect(metadata, amount, paymentId){
     toast('💚 Thank you for your ' + amount + ' π support!');
     if($('panel').classList.contains('open') && current && current.id === 'support') closePanel();
   }
+}
+
+/* Confirm (complete) a payment with retries; falls back to /cancel-payment, which also completes paid payments. */
+function postJSON(url, body){
+  return fetch(url, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body) })
+    .then(function(r){ return r.text().then(function(t){ try{ return JSON.parse(t); }catch(e){ throw new Error(url + ' not available (' + r.status + ')'); } }); });
+}
+function confirmPayment(paymentId, txid, attempt){
+  const body = { paymentId:paymentId, txid:txid };
+  return postJSON(PI_ENDPOINTS.complete, body)
+    .then(function(d){ if(d && (d.ok || /already/i.test(JSON.stringify(d.data || '')))) return d; throw new Error((d && (d.error || d.status)) || 'complete failed'); })
+    .catch(function(e1){
+      log('complete attempt failed', e1);
+      return postJSON(PI_ENDPOINTS.cancel, body).then(function(d){ if(d && d.ok && (d.action === 'complete' || /completed/i.test(d.detail || ''))) return d; throw new Error((d && (d.detail || d.error)) || String(e1)); });
+    })
+    .catch(function(e){
+      if(attempt < 2) return new Promise(function(res){ setTimeout(res, 2500); }).then(function(){ return confirmPayment(paymentId, txid, attempt + 1); });
+      throw e;
+    });
 }
 let supportAmt = 0;
 function selAmt(el, a){ document.querySelectorAll('.amt').forEach(function(b){ b.classList.remove('sel'); }); el.classList.add('sel'); supportAmt = a; $('supAmt').value = ''; }
