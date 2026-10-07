@@ -6,6 +6,11 @@
 const FEEDS = [
   { url: 'https://www.arabnews.com/rss.xml', source: 'Arab News' },
   { url: 'https://english.alarabiya.net/feed/rss2/en.xml', source: 'Al Arabiya' },
+  { url: 'https://feeds.bbci.co.uk/news/world/middle_east/rss.xml', source: 'BBC News' },
+  { url: 'https://www.aljazeera.com/xml/rss/all.xml', source: 'Al Jazeera' },
+  { url: 'https://news.google.com/rss/search?q=Saudi+Arabia&hl=en-SA&gl=SA&ceid=SA:en', source: 'Google News', google: true },
+  { url: 'https://news.google.com/rss/search?q=Hajj+OR+Umrah+OR+Makkah+OR+Madinah&hl=en-SA&gl=SA&ceid=SA:en', source: 'Google News', google: true },
+  { url: 'https://feeds.bbci.co.uk/sport/football/rss.xml', source: 'BBC Sport', sport: true },
   { url: 'https://cointelegraph.com/rss/tag/pi-network', source: 'Cointelegraph', crypto: true, pi: true },
   { url: 'https://cointelegraph.com/rss', source: 'Cointelegraph', crypto: true }
 ];
@@ -45,6 +50,7 @@ const SAUDI = /\b(saudi|riyadh|jeddah|ksa|neom|dammam|alula|vision 2030|crown pr
 function categorise(it, feed) {
   const text = it.title + ' ' + it.summary;
   const tags = [];
+  if (feed.sport) { tags.push('sport'); if (SAUDI.test(text)) tags.push('saudi'); return tags; }
   if (feed.crypto) { if (feed.pi || /\bpi network\b|\bpi coin\b/i.test(text)) tags.push('crypto', 'pi'); else tags.push('crypto'); }
   else {
     if (HAJJ.test(text)) tags.push('hajj');
@@ -72,7 +78,9 @@ function parseFeed(xml, feed) {
     let summary = strip(desc || content);
     if (summary.length > 420) summary = summary.slice(0, 417).replace(/\s+\S*$/, '') + '…';
     const date = Date.parse(strip(tag(raw, 'pubDate')) || strip(tag(raw, 'dc:date'))) || Date.now();
-    const it = { id: hash(link), title, link, img: img || '', summary, source: feed.source, date };
+    let src = feed.source, ttl = title;
+    if (feed.google) { const ps = strip(tag(raw, 'source')); if (ps) { src = ps; ttl = title.replace(new RegExp('\\s+-\\s+' + ps.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '$'), ''); } summary = ''; }
+    const it = { id: hash(link), title: ttl, link, img: img || '', summary, source: src, date };
     it.tags = categorise(it, feed);
     it.cat = it.tags.indexOf('hajj') >= 0 ? 'hajj' : it.tags[0];
     out.push(it);
@@ -86,13 +94,16 @@ async function loadAll() {
   const req = new Request('https://cache.digitalsaudi.internal/news/all');
   try { const hit = await caches.default.match(req); if (hit) { const items = await hit.json(); MEM.items = items; MEM.t = now; return items; } } catch (e) {}
 
+  const status = [];
   const results = await Promise.allSettled(FEEDS.map(f =>
-    fetch(f.url, { headers: { 'User-Agent': 'Mozilla/5.0 (compatible; DigitalSaudiNews/1.0)', 'Accept': 'application/rss+xml, application/xml, text/xml' }, cf: { cacheTtl: 300 } })
+    fetch(f.url, { headers: { 'User-Agent': 'Mozilla/5.0 (Linux; Android 12) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Mobile Safari/537.36', 'Accept': 'application/rss+xml, application/xml, text/xml;q=0.9, */*;q=0.8', 'Accept-Language': 'en-US,en;q=0.9' }, cf: { cacheTtl: 300 } })
       .then(r => { if (!r.ok) throw new Error(f.url + ' ' + r.status); return r.text(); })
       .then(x => parseFeed(x, f))
   ));
   const seen = new Set();
   const items = [];
+  results.forEach((r, i) => status.push({ source: FEEDS[i].source, ok: r.status === 'fulfilled', count: r.status === 'fulfilled' ? r.value.length : 0, error: r.status === 'rejected' ? String(r.reason && r.reason.message || r.reason).slice(0, 80) : undefined }));
+  globalThis.__dsNewsStatus = status;
   for (const r of results) {
     if (r.status !== 'fulfilled') continue;
     for (const it of r.value) {
@@ -116,11 +127,13 @@ export async function onRequestGet(context) {
   try {
     const all = await loadAll();
     let list;
-    if (cat === 'all') list = all.filter(it => it.tags.indexOf('crypto') < 0 || it.tags.indexOf('pi') >= 0);
+    if (cat === 'all') list = all.filter(it => (it.tags.indexOf('crypto') < 0 || it.tags.indexOf('pi') >= 0) && !(it.tags.length === 1 && it.tags[0] === 'sport'));
     else list = all.filter(it => it.tags.indexOf(cat) >= 0);
     const start = (page - 1) * PAGE_SIZE;
     const items = list.slice(start, start + PAGE_SIZE).map(({ tags, ...rest }) => rest);
-    return json({ ok: true, cat, page, total: list.length, hasMore: start + PAGE_SIZE < list.length, items });
+    const out = { ok: true, cat, page, total: list.length, hasMore: start + PAGE_SIZE < list.length, items };
+    if (url.searchParams.get('debug')) out.feeds = globalThis.__dsNewsStatus || 'cached';
+    return json(out);
   } catch (err) {
     return json({ ok: false, error: String(err && err.message || err), items: [], hasMore: false }, 10);
   }
