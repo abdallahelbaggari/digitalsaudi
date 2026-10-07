@@ -1,5 +1,6 @@
 // DigitalSaudi — /pi-price  (Cloudflare Pages Function)
-// Live Pi Network price (USD, SAR, NGN + 24h change + 7-day chart), cached 60 seconds.
+// Live Pi Network price (USD, SAR, NGN + 24h change + 7-day chart), cached ~90 seconds.
+// If every exchange is busy, the last good price is served (marked stale) instead of an error.
 // Sources, with automatic fallback:
 //   1. OKX public market API (PI-USDT) — free, no key
 //   2. CoinGecko — free; set COINGECKO_API_KEY (free "Demo" key) because CoinGecko
@@ -41,6 +42,26 @@ async function fxRates() {
   }).catch(() => ({ SAR: 3.75, NGN: null }));
 }
 
+async function fromGate() {
+  const d = await getJSON('https://api.gateio.ws/api/v4/spot/tickers?currency_pair=PI_USDT');
+  const t = Array.isArray(d) && d[0]; const last = t && parseFloat(t.last);
+  if (!last) throw new Error('Gate no price');
+  const fx = await fxRates();
+  return { usd: last, sar: last * fx.SAR, ngn: fx.NGN ? last * fx.NGN : null, change24h: parseFloat(t.change_percentage) || 0, updated: new Date().toISOString(), source: 'Gate.io' };
+}
+async function fromBitget() {
+  const d = await getJSON('https://api.bitget.com/api/v2/spot/market/tickers?symbol=PIUSDT');
+  const t = d && d.data && d.data[0]; const last = t && parseFloat(t.lastPr);
+  if (!last) throw new Error('Bitget no price');
+  const fx = await fxRates();
+  return { usd: last, sar: last * fx.SAR, ngn: fx.NGN ? last * fx.NGN : null, change24h: (parseFloat(t.change24h) || 0) * 100, updated: new Date(+t.ts || Date.now()).toISOString(), source: 'Bitget' };
+}
+async function fromMEXC() {
+  const t = await getJSON('https://api.mexc.com/api/v3/ticker/24hr?symbol=PIUSDT'); const last = t && parseFloat(t.lastPrice);
+  if (!last) throw new Error('MEXC no price');
+  const fx = await fxRates();
+  return { usd: last, sar: last * fx.SAR, ngn: fx.NGN ? last * fx.NGN : null, change24h: (parseFloat(t.priceChangePercent) || 0) * 100, updated: new Date().toISOString(), source: 'MEXC' };
+}
 async function fromOKX() {
   const d = await getJSON('https://www.okx.com/api/v5/market/ticker?instId=PI-USDT');
   const t = d && d.data && d.data[0];
@@ -80,14 +101,29 @@ async function firstOf(fns) {
 
 export async function onRequestGet(context) {
   const env = context.env;
-  const cgFirst = !!env.COINGECKO_API_KEY;
+  const sources = env.COINGECKO_API_KEY
+    ? [() => fromCoinGecko(env), fromOKX, fromGate, fromBitget, fromMEXC]
+    : [fromOKX, fromGate, fromBitget, fromMEXC, () => fromCoinGecko(env)];
+  const lastReq = new Request('https://cache.digitalsaudi.internal/pi/last-good');
   try {
-    const price = await cached('price', 60, () => firstOf(cgFirst ? [() => fromCoinGecko(env), fromOKX] : [fromOKX, () => fromCoinGecko(env)]));
+    let price;
+    try {
+      price = await cached('price', 90, () => firstOf(sources));
+      try { await caches.default.put(lastReq, new Response(JSON.stringify(price), { headers: { 'Content-Type': 'application/json', 'Cache-Control': 'public, max-age=86400' } })); } catch (e) {}
+      if (env.DS_KV) context.waitUntil(env.DS_KV.put('pi:last', JSON.stringify(price)));
+    } catch (err) {
+      // every source failed right now: serve the last good price (marked stale)
+      let last = null;
+      try { const h = await caches.default.match(lastReq); if (h) last = await h.json(); } catch (e) {}
+      if (!last && env.DS_KV) { try { last = await env.DS_KV.get('pi:last', 'json'); } catch (e) {} }
+      if (!last) throw err;
+      price = { ...last, stale: true };
+    }
     let spark = [];
-    try { spark = await cached('spark', 1800, () => firstOf(cgFirst ? [() => sparkCoinGecko(env), sparkOKX] : [sparkOKX, () => sparkCoinGecko(env)])); } catch (e) {}
-    return json({ ok: true, ...price, spark }, 30);
+    try { spark = await cached('spark', 3600, () => firstOf(env.COINGECKO_API_KEY ? [() => sparkCoinGecko(env), sparkOKX] : [sparkOKX, () => sparkCoinGecko(env)])); } catch (e) {}
+    return json({ ok: true, ...price, spark }, 60);
   } catch (err) {
-    return json({ ok: false, error: String(err && err.message || err) }, 10);
+    return json({ ok: false, error: String(err && err.message || err) }, 15);
   }
 }
 
