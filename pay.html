@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Pay with Pi · DigitalSaudi</title>
+<meta name="description" content="Pay this business with Pi. Shared from DigitalSaudi, the all-in-one Saudi companion in the Pi Browser.">
+<meta name="theme-color" content="#04150D">
+<meta property="og:title" content="Pay with Pi · DigitalSaudi">
+<meta property="og:description" content="This business accepts Pi. Open to see how to pay.">
+<meta property="og:image" content="/icon-512.png">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<style>
+:root{--bg:#04150D;--card:#0B2318;--line:rgba(255,255,255,.1);--tx:#EAF5EE;--mut:#9DB8A8;--acc:#00A859;--gold:#E7C463}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:radial-gradient(120% 60% at 50% 0%,#0E5C35 0%,var(--bg) 60%);background-color:var(--bg);color:var(--tx);font:15px/1.5 "Segoe UI",system-ui,-apple-system,Roboto,"Noto Sans","Noto Naskh Arabic",Tahoma,sans-serif;min-height:100vh;padding:20px 16px 40px}
+.wrap{max-width:440px;margin:0 auto}
+.brand{display:flex;align-items:center;gap:10px;justify-content:center;font-weight:800;font-size:18px;margin-bottom:18px}
+.brand img{width:36px;height:36px;border-radius:10px}.brand b{color:var(--gold)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:22px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+.tag{display:inline-block;background:rgba(231,196,99,.14);color:var(--gold);border:1px solid rgba(231,196,99,.35);border-radius:999px;padding:4px 12px;font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+h1{font-size:26px;line-height:1.2;margin:12px 0 4px;word-break:break-word}
+.sub{color:var(--mut);font-size:14px}
+.amt{font-size:34px;font-weight:900;color:var(--gold);margin:14px 0 2px}
+.who{margin:16px 0 6px;background:rgba(255,255,255,.05);border:1px dashed var(--line);border-radius:14px;padding:12px;font-weight:800;font-size:18px;word-break:break-all}
+.qr{background:#fff;border-radius:16px;padding:14px;display:inline-block;margin:14px auto 4px}
+.qr img,.qr canvas{display:block;width:220px!important;height:220px!important}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;min-height:50px;border-radius:14px;border:0;font:inherit;font-weight:800;font-size:15px;cursor:pointer;text-decoration:none;margin-top:10px;padding:10px 16px;text-align:center;line-height:1.35}
+.btn-p{background:linear-gradient(135deg,#008A47,var(--acc));color:#fff}
+.btn-g{background:rgba(255,255,255,.06);color:var(--tx);border:1px solid var(--line)}
+.steps{text-align:left;margin-top:22px;counter-reset:s}
+[dir=rtl] .steps{text-align:right}
+.steps li{list-style:none;display:flex;gap:12px;align-items:flex-start;margin:12px 0}
+.steps li:before{counter-increment:s;content:counter(s);flex:0 0 28px;height:28px;border-radius:50%;background:var(--gold);color:#1a1a1a;font-weight:900;display:flex;align-items:center;justify-content:center}
+.note{margin-top:16px;font-size:13px;color:var(--mut);background:rgba(231,196,99,.07);border:1px solid rgba(231,196,99,.2);border-radius:12px;padding:12px;text-align:left}
+[dir=rtl] .note{text-align:right}
+.foot{text-align:center;color:var(--mut);font-size:12px;margin-top:20px}.foot a{color:var(--gold)}
+.lang{position:absolute;top:14px;right:14px;background:rgba(255,255,255,.08);border:1px solid var(--line);color:var(--tx);border-radius:10px;padding:6px 10px;font:inherit;font-size:13px}
+[dir=rtl] .lang{right:auto;left:14px}
+#toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#111;color:#fff;padding:10px 16px;border-radius:12px;opacity:0;transition:.25s;pointer-events:none}#toast.on{opacity:1}
+</style>
+</head>
+<body>
+<button class="lang" id="langBtn" onclick="toggleLang()">العربية</button>
+<div class="wrap">
+  <div class="brand"><img src="/icon.svg" alt=""><span>Digital<b>Saudi</b></span></div>
+  <div class="card" id="card"></div>
+  <ol class="steps" id="steps"></ol>
+  <div class="note" id="note"></div>
+  <a class="btn btn-g" href="/" id="openApp"></a>
+  <div class="foot"><span id="foot"></span> · <a href="mailto:support.digitalsaudi.pi@gmail.com?subject=Report%20pay%20page" id="report"></a></div>
+</div>
+<div id="toast"></div>
+<script>
+var L = {
+  en:{ tag:'Pi accepted here', pay:'Pay with Pi', to:'Send to', copyU:'Copy username', copyA:'Copy wallet address', copied:'Copied', share:'Share this page',
+    s1:'Open the Pi Browser and tap your Pi Wallet.', s2u:'Tap Send / Pay and enter the username shown above.', s2a:'Tap Send / Pay and scan the QR code above, or paste the wallet address.', s3:'Enter the amount, check everything, then confirm.',
+    note:'🔒 Confirm the price and the receiver with the business before you pay. Pi transfers can’t be reversed. Never share your Pi passphrase with anyone.',
+    app:'Open DigitalSaudi — find more Pi merchants', foot:'Shared from DigitalSaudi · independent app', report:'Report', bad:'This payment link is incomplete or invalid.', price:'Price' },
+  ar:{ tag:'نقبل الدفع بعملة باي', pay:'ادفع بعملة باي', to:'أرسل إلى', copyU:'نسخ اسم المستخدم', copyA:'نسخ عنوان المحفظة', copied:'تم النسخ', share:'مشاركة الصفحة',
+    s1:'افتح متصفح باي ثم محفظة باي.', s2u:'اضغط إرسال / دفع واكتب اسم المستخدم الظاهر أعلاه.', s2a:'اضغط إرسال / دفع وامسح رمز QR أعلاه أو الصق عنوان المحفظة.', s3:'أدخل المبلغ وتحقق من كل شيء ثم أكّد.',
+    note:'🔒 تأكد من السعر والمستلم مع النشاط التجاري قبل الدفع. لا يمكن استرجاع تحويلات باي. لا تشارك عبارة مرور محفظتك مع أي أحد.',
+    app:'افتح ديجيتال سعودي — اكتشف تجّاراً آخرين يقبلون باي', foot:'مشاركة من ديجيتال سعودي · تطبيق مستقل', report:'إبلاغ', bad:'رابط الدفع غير مكتمل أو غير صالح.', price:'السعر' }
+};
+var q = new URLSearchParams(location.search);
+var to = (q.get('to') || '').trim().replace(/^@/, '').slice(0, 60);
+var name = (q.get('n') || '').slice(0, 40), amt = parseFloat(q.get('a')), memo = (q.get('m') || '').slice(0, 40), city = (q.get('c') || '').slice(0, 24);
+var isAddr = /^G[A-Z2-7]{55}$/.test(to), isUser = /^[A-Za-z0-9_.\-]{2,40}$/.test(to);
+var lang = (navigator.language || 'en').slice(0, 2) === 'ar' ? 'ar' : 'en';
+try { var s = localStorage.getItem('ds_lang'); if (s) lang = JSON.parse(s) === 'ar' ? 'ar' : lang; } catch (e) {}
+function e(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+function toast(m){ var t = document.getElementById('toast'); t.textContent = m; t.classList.add('on'); clearTimeout(t._h); t._h = setTimeout(function(){ t.classList.remove('on'); }, 2200); }
+function copy(v){ var T = L[lang]; if (navigator.clipboard) navigator.clipboard.writeText(v).then(function(){ toast(T.copied); }, function(){ toast(v); }); else toast(v); }
+function sharePage(){ var t = (name || 'Pi') + ' — ' + L[lang].tag; if (navigator.share) navigator.share({ title:t, text:t, url:location.href }).catch(function(){}); else copy(location.href); }
+function toggleLang(){ lang = lang === 'ar' ? 'en' : 'ar'; render(); }
+function render(){
+  var T = L[lang];
+  document.documentElement.lang = lang; document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+  document.getElementById('langBtn').textContent = lang === 'ar' ? 'English' : 'العربية';
+  var card = document.getElementById('card');
+  if (!isAddr && !isUser) { card.innerHTML = '<div style="font-size:40px">⚠️</div><p style="margin-top:10px">' + T.bad + '</p>'; document.getElementById('steps').innerHTML = ''; }
+  else {
+    card.innerHTML = '<span class="tag">π ' + T.tag + '</span><h1>' + e(name || T.pay) + '</h1>' + (city || memo ? '<div class="sub">' + e([memo, city].filter(Boolean).join(' · ')) + '</div>' : '') +
+      (amt > 0 ? '<div class="amt">' + e(+amt.toFixed(4)) + ' π</div><div class="sub">' + T.price + '</div>' : '') +
+      '<div class="sub" style="margin-top:14px">' + T.to + '</div><div class="who" dir="ltr">' + (isAddr ? e(to) : '@' + e(to)) + '</div>' +
+      (isAddr ? '<div class="qr" id="qr"></div>' : '') +
+      '<button class="btn btn-p" onclick="copy(\'' + e(to) + '\')">📋 ' + (isAddr ? T.copyA : T.copyU) + '</button>' +
+      '<button class="btn btn-g" onclick="sharePage()">📤 ' + T.share + '</button>';
+    document.getElementById('steps').innerHTML = '<li>' + T.s1 + '</li><li>' + (isAddr ? T.s2a : T.s2u) + '</li><li>' + T.s3 + '</li>';
+    if (isAddr) loadQR();
+  }
+  document.getElementById('note').textContent = T.note;
+  document.getElementById('openApp').textContent = '🧭 ' + T.app;
+  document.getElementById('foot').textContent = T.foot;
+  document.getElementById('report').textContent = T.report;
+}
+function loadQR(){
+  function draw(){ var b = document.getElementById('qr'); if (b && window.QRCode) { b.innerHTML = ''; new QRCode(b, { text:to, width:440, height:440, correctLevel:QRCode.CorrectLevel.M }); } }
+  if (window.QRCode) return draw();
+  var s = document.createElement('script'); s.src = 'https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js'; s.onload = draw; document.head.appendChild(s);
+}
+render();
+</script>
+</body>
+</html>
