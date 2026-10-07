@@ -44,23 +44,28 @@ async function verifyPi(token) {
 
 
 /* ---------- providers: each returns reply text or throws ---------- */
+const GEMINI_FALLBACKS = ['gemini-flash-latest', 'gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-flash-lite-latest'];
 async function askGemini(env, system, msgs) {
-  const model = env.GEMINI_MODEL || GEMINI_MODEL;
-  const res = await fetch('https://generativelanguage.googleapis.com/v1beta/models/' + model + ':generateContent', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'x-goog-api-key': env.GEMINI_API_KEY },
-    body: JSON.stringify({
-      systemInstruction: { parts: [{ text: system }] },
-      contents: msgs.map(m => ({ role: m.role === 'assistant' ? 'model' : 'user', parts: [{ text: m.content }] })),
-      generationConfig: { temperature: 0.6, maxOutputTokens: 2048 }
-    })
-  });
-  const d = await res.json().catch(() => null);
-  if (!res.ok || !d) throw new Error('gemini ' + res.status + ' ' + (d && d.error && d.error.message || ''));
-  const parts = (d.candidates && d.candidates[0] && d.candidates[0].content && d.candidates[0].content.parts) || [];
-  const text = parts.filter(p => p.text && !p.thought).map(p => p.text).join('').trim();
-  if (!text) throw new Error('gemini empty');
-  return text;
+  const models = [env.GEMINI_MODEL].concat(GEMINI_FALLBACKS).filter((m, i, a) => m && a.indexOf(m) === i);
+  const errs = [];
+  for (const model of models) {
+    const res = await fetch('https://generativelanguage.googleapis.com/v1beta/models/' + model + ':generateContent', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-goog-api-key': String(env.GEMINI_API_KEY).trim() },
+      body: JSON.stringify({
+        systemInstruction: { parts: [{ text: system }] },
+        contents: msgs.map(m => ({ role: m.role === 'assistant' ? 'model' : 'user', parts: [{ text: m.content }] })),
+        generationConfig: { temperature: 0.6, maxOutputTokens: 2048 }
+      })
+    });
+    const d = await res.json().catch(() => null);
+    if (!res.ok || !d) { errs.push(model + ' ' + res.status + ' ' + (d && d.error && d.error.message || '').slice(0, 120)); if (res.status === 400 && /API key/i.test(JSON.stringify(d || ''))) break; continue; }
+    const parts = (d.candidates && d.candidates[0] && d.candidates[0].content && d.candidates[0].content.parts) || [];
+    const text = parts.filter(p => p.text && !p.thought).map(p => p.text).join('').trim();
+    if (text) return text;
+    errs.push(model + ' empty');
+  }
+  throw new Error('gemini: ' + errs.join(' | '));
 }
 async function askWorkersAI(env, system, msgs) {
   const r = await env.AI.run(env.CF_AI_MODEL || CF_MODEL, { messages: [{ role: 'system', content: system }].concat(msgs), max_tokens: 900, temperature: 0.6 });
@@ -124,13 +129,17 @@ export async function onRequestPost(context) {
       if (!user) { ipUsed = parseInt(await kv.get('ai:' + today() + ':ip:' + ip), 10) || 0; if (ipUsed >= FREE * 4) return json({ ok: false, error: 'limit', remaining: 0, free: FREE }); }
     }
 
-    const system = BASE + '\n' + MODES[mode] + '\nToday (Saudi time) is ' + today() + '.';
+    const LANGS = { Arabic: 1, Urdu: 1, Indonesian: 1, Hausa: 1, French: 1 };
+    const lang = LANGS[b.lang] ? b.lang : '';
+    const system = BASE + '\n' + MODES[mode] + '\nToday (Saudi time) is ' + today() + '.' +
+      (lang ? '\nThe user has chosen ' + lang + ' as their app language. Reply in ' + lang + ' unless they write to you in another language, then reply in theirs. Keep Arabic religious terms and names of places, apps and services recognisable.' : '');
     let reply = '', via = '';
+    const errors = [];
     for (const [name, fn] of list) {
       try { reply = await fn(env, system, merged); via = name; break; }
-      catch (e) { console.log('[ai] ' + name + ' failed: ' + (e && e.message)); }
+      catch (e) { errors.push(String(e && e.message || e).slice(0, 300)); console.log('[ai] ' + name + ' failed: ' + (e && e.message)); }
     }
-    if (!reply) return json({ ok: false, error: 'upstream' });
+    if (!reply) return json({ ok: false, error: 'upstream', detail: errors.join(' || ') });
 
     if (!premium && kv) {
       await kv.put(limitKey, String(used + 1), { expirationTtl: 172800 });
@@ -140,5 +149,16 @@ export async function onRequestPost(context) {
   } catch (err) {
     return json({ ok: false, error: 'server' });
   }
+}
+// Health check: open /ai?check=1 in a browser to see whether the AI providers answer.
+export async function onRequestGet(context) {
+  const env = context.env;
+  if (!new URL(context.request.url).searchParams.get('check')) return json({ ok: true, endpoint: '/ai' });
+  const list = providers(env), out = { providers: list.map(p => p[0]), KV: !!env.DS_KV, results: {} };
+  for (const [name, fn] of list) {
+    try { const r = await fn(env, 'Reply with the single word OK.', [{ role: 'user', content: 'Say OK' }]); out.results[name] = 'OK: ' + r.slice(0, 40); }
+    catch (e) { out.results[name] = 'FAILED: ' + String(e && e.message || e).slice(0, 300); }
+  }
+  return json(out);
 }
 export async function onRequestOptions() { return new Response(null, { status: 204, headers: HEADERS }); }
