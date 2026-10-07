@@ -66,7 +66,7 @@ function timed(url, opts, ms) {
 }
 // Ask several Overpass mirrors at once and use the first good answer.
 async function overpass(query) {
-  return Promise.any(ENDPOINTS.map(url => timed(url, { method: 'POST', body: 'data=' + encodeURIComponent(query), headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'User-Agent': 'DigitalSaudi/3.0 (Pi Network app; support.digitalsaudi.pi@gmail.com)' } }, 15000)
+  return Promise.any(ENDPOINTS.map(url => timed(url, { method: 'POST', body: 'data=' + encodeURIComponent(query), headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'User-Agent': 'DigitalSaudi/3.0 (Pi Network app; support.digitalsaudi.pi@gmail.com)' } }, 14000)
     .then(r => { if (!r.ok) throw new Error(url.split('/')[2] + ' ' + r.status); return r.json(); })
     .then(d => { if (!d || !Array.isArray(d.elements)) throw new Error('bad reply'); return d; })));
 }
@@ -109,9 +109,12 @@ export async function onRequestGet(context) {
   try {
     const around = `(around:${r},${lat},${lng})`;
     const query = `[out:json][timeout:20];(${Q[cat].map(q => q + around + ';').join('')});out center tags 200;`;
+    // Overpass first; if it hasn't answered within 6 s, Photon joins the race. First useful answer wins.
     let raw, source = 'OpenStreetMap';
-    try { raw = (await overpass(query)).elements.map(el => clean(el, cat)); }
-    catch (e) { raw = await photon(cat, lat, lng, r); source = 'OpenStreetMap (Photon)'; if (!raw.length) throw new Error('No place servers answered'); }
+    const ov = overpass(query).then(d => ({ raw: d.elements.map(el => clean(el, cat)), source: 'OpenStreetMap' }));
+    const ph = new Promise(res => setTimeout(res, 6000)).then(() => photon(cat, lat, lng, r)).then(list => { if (!list.length) throw new Error('photon empty'); return { raw: list, source: 'OpenStreetMap (Photon)' }; });
+    try { const w = await Promise.any([ov, ph]); raw = w.raw; source = w.source; }
+    catch (e) { throw new Error('No place servers answered'); }
     const seen = new Set();
     const places = raw.filter(p => {
       if (!p) return false;
