@@ -8,7 +8,8 @@
 <title>DigitalSaudi</title>
 <link rel="manifest" href="/manifest.json">
 <link rel="icon" href="/icon.svg" type="image/svg+xml">
-<link rel="apple-touch-icon" href="/icon.svg">
+<link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <script src="https://sdk.minepi.com/pi-sdk.js"></script>
 <style>
 :root{
@@ -45,7 +46,10 @@ img{max-width:100%;display:block}
 /* ===== splash & onboarding ===== */
 .fullscreen{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 24px;text-align:center;
   background:radial-gradient(circle at 50% 20%,rgba(0,168,89,.28),transparent 60%),radial-gradient(circle at 80% 90%,rgba(212,175,55,.16),transparent 55%),#04150D;color:#EAF5EE;z-index:50;animation:screen-in .5s ease}
-.fullscreen .logo{width:96px;height:96px;border-radius:28px;background:linear-gradient(135deg,var(--accent-dark),var(--accent));display:flex;align-items:center;justify-content:center;font-size:40px;font-weight:900;color:#fff;box-shadow:0 20px 50px rgba(0,168,89,.35);margin-bottom:22px}
+.fullscreen .logo{width:112px;height:112px;border-radius:30px;display:block;box-shadow:0 22px 60px rgba(0,168,89,.4),0 0 0 1px rgba(231,196,99,.25);margin-bottom:22px;animation:logoIn .7s cubic-bezier(.2,.9,.3,1.3) both}
+.fullscreen .logo img{width:100%;height:100%;display:block;border-radius:30px}
+@keyframes logoIn{from{transform:scale(.6) translateY(10px);opacity:0}to{transform:none;opacity:1}}
+.splash-tag{display:inline-block;margin:-8px 0 14px;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);font-weight:800}
 .fullscreen h1{font-size:30px;letter-spacing:-.5px}
 .fullscreen h1 span{color:#D4AF37}
 .fullscreen p{color:#9BB8A6;margin:10px 0 30px;max-width:330px}
@@ -77,7 +81,7 @@ img{max-width:100%;display:block}
 #app{display:none;height:100%;flex-direction:column}
 header{display:flex;align-items:center;gap:10px;padding:calc(10px + env(safe-area-inset-top)) 14px 10px;border-bottom:1px solid var(--line);background:var(--hdr-bg);backdrop-filter:blur(10px);z-index:10}
 .brand{display:flex;align-items:center;gap:9px;font-weight:800;font-size:18px;flex:1;min-width:0}
-.brand .mark{width:36px;height:36px;border-radius:11px;background:linear-gradient(135deg,var(--accent-dark),var(--accent));display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:900;color:#fff;flex:0 0 36px}
+.brand .mark{width:36px;height:36px;border-radius:10px;flex:0 0 36px;display:block;box-shadow:0 4px 12px rgba(0,0,0,.25)}
 .brand b{color:var(--gold)}
 .hbtn{width:44px;height:44px;border-radius:13px;background:var(--bg-card);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:19px;flex:0 0 44px}
 .user-chip{display:flex;align-items:center;gap:7px;background:var(--bg-card);border:1px solid var(--line);padding:5px 10px 5px 5px;border-radius:30px;font-size:13px;font-weight:600;min-height:44px;max-width:130px}
@@ -343,14 +347,44 @@ footer.legal{text-align:center;font-size:12px;color:var(--muted);margin-top:26px
 .quiz-opt.ok{border-color:var(--ok);background:rgba(34,197,94,.12)}
 .quiz-opt.bad{border-color:var(--danger);background:rgba(239,68,68,.12)}
 .qr{background:#fff;padding:16px;border-radius:16px;width:fit-content;margin:10px auto}
+
+/* ===== v3.2 languages ===== */
+.lang-pick{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.lang-pick button{background:var(--bg-card);border:1px solid var(--line);border-radius:14px;padding:12px 10px;min-height:56px;color:var(--text);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px}
+.lang-pick button b{font-size:15px}.lang-pick button small{font-size:11px;color:var(--muted)}
+.lang-pick button.on{background:var(--accent-dark);border-color:var(--accent);color:#fff}.lang-pick button.on small{color:#D6F5E3}
+.lang-fab{position:absolute;top:calc(14px + env(safe-area-inset-top));right:14px;background:rgba(255,255,255,.08);border:1px solid var(--line);color:var(--text);border-radius:12px;padding:8px 12px;font-weight:700;font-size:13px;z-index:2}
+[dir=rtl] .lang-fab{right:auto;left:14px}
+#langSheet{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:9999;display:none;align-items:flex-end}
+#langSheet.open{display:flex}
+#langSheet .ls-in{background:var(--bg-base);width:100%;border-radius:24px 24px 0 0;padding:20px 16px calc(20px + env(safe-area-inset-bottom));max-width:560px;margin:0 auto}
+#langSheet h3{margin-bottom:14px;text-align:center}
+#trBadge{position:fixed;top:calc(8px + env(safe-area-inset-top));left:50%;transform:translateX(-50%) translateY(-60px);background:#12402A;color:#fff;border:1px solid var(--accent);border-radius:999px;padding:6px 14px;font-size:12px;font-weight:700;z-index:9998;transition:transform .25s;pointer-events:none}
+#trBadge.on{transform:translateX(-50%) translateY(0)}
+/* right-to-left (Arabic, Urdu) */
+[dir=rtl] body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Noto Naskh Arabic","Noto Nastaliq Urdu","Geeza Pro",Tahoma,Arial,sans-serif}
+.brand>div{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+[dir=rtl] .chev,[dir=rtl] .p-head>button:first-child{transform:scaleX(-1)}
+[dir=rtl] .mini,[dir=rtl] .news-card,[dir=rtl] .match,[dir=rtl] .tier,[dir=rtl] .hist .h,[dir=rtl] .xp,[dir=rtl] .near-hero,[dir=rtl] .trip-card,[dir=rtl] .quiz-opt,[dir=rtl] .tbl td.tn,[dir=rtl] .row,[dir=rtl] .card{text-align:right}
+[dir=rtl] .team .sc{text-align:left}
+[dir=rtl] .p-body ul,[dir=rtl] .p-body ol,[dir=rtl] .msg.a ul,[dir=rtl] .msg.a ol{padding-left:0;padding-right:20px}
+[dir=rtl] .search-box input{padding-left:14px;padding-right:44px}
+[dir=rtl] .search-box span{left:auto;right:15px}
+[dir=rtl] #aiFab{right:auto;left:16px}
+[dir=rtl] .xp .e{right:auto;left:14px}
+[dir=rtl] .news-card .img .cat{left:auto;right:10px}
+[dir=rtl] .tier .rib{right:auto;left:12px}
+[dir=rtl] .bell-dot{right:auto;left:6px}
+[dir=rtl] .toggle,[dir=rtl] .leaflet-container,[dir=rtl] .qr,[dir=rtl] .countdown,[dir=rtl] .price,[dir=rtl] input[type=number],[dir=rtl] input[type=tel],[dir=rtl] input[type=url],[dir=rtl] .pi-card svg{direction:ltr}
 </style>
 </head>
 <body>
 
 <!-- ============ SPLASH / LOGIN ============ -->
 <div id="splash" class="fullscreen">
-  <div class="logo">DS</div>
-  <h1>Digital<span>Saudi</span></h1>
+  <div class="logo"><img src="/icon.svg" alt="DigitalSaudi" width="112" height="112"></div>
+  <h1 class="notr" dir="ltr">Digital<span>Saudi</span></h1>
+  <div class="splash-tag">Your all-in-one Saudi companion</div>
   <p>Live news, scores and Pi price — plus Umrah, visas, Quran and everyday tools for Saudi Arabia.</p>
   <div class="stack">
     <button class="btn btn-primary" id="loginBtn" onclick="piLogin()"><span>π</span> Sign in with Pi</button>
@@ -392,7 +426,7 @@ footer.legal{text-align:center;font-size:12px;color:var(--muted);margin-top:26px
 <!-- ============ APP ============ -->
 <div id="app">
   <header>
-    <div class="brand"><div class="mark">DS</div><div>Digital<b>Saudi</b></div></div>
+    <div class="brand"><img class="mark" src="/icon.svg" alt="" width="36" height="36"><div class="notr" dir="ltr">Digital<b>Saudi</b></div></div>
     <button class="hbtn" onclick="openSearch()" aria-label="Search">🔍</button>
     <button class="hbtn" onclick="openItem('inbox')" aria-label="Notifications" style="position:relative">🔔<span id="bellDot" class="bell-dot" style="display:none"></span></button>
     <button class="user-chip" onclick="switchTab('profile')"><div class="av" id="avatar">G</div><span id="uname">Guest</span></button>
@@ -406,8 +440,8 @@ footer.legal{text-align:center;font-size:12px;color:var(--muted);margin-top:26px
         <div class="greet" id="greet">Assalamu alaikum</div>
         <h3 id="heroName">Welcome to DigitalSaudi</h3>
         <div class="hero-row">
-          <div class="pill"><small>Riyadh</small><b id="ksaTime">--:--</b></div>
-          <div class="pill"><small>Hijri</small><b id="hijri">—</b></div>
+          <div class="pill"><small>Riyadh</small><b id="ksaTime" class="notr">--:--</b></div>
+          <div class="pill"><small>Hijri</small><b id="hijri" class="notr">—</b></div>
           <div class="pill"><small>Streak</small><b id="streakPill">🔥 1</b></div>
         </div>
       </div>
@@ -619,7 +653,7 @@ footer.legal{text-align:center;font-size:12px;color:var(--muted);margin-top:26px
       <button class="row" onclick="openItem('about')"><div class="ic">ℹ️</div><div class="tx"><b>About</b></div><span class="chev">›</span></button>
       <button class="row" onclick="location.href='/privacy.html'"><div class="ic">🔒</div><div class="tx"><b>Privacy policy</b></div><span class="chev">›</span></button>
       <button class="row" onclick="location.href='/terms.html'"><div class="ic">📄</div><div class="tx"><b>Terms of service</b></div><span class="chev">›</span></button>
-      <footer class="legal">DigitalSaudi v3.1 · Independent app, not affiliated with the Government of Saudi Arabia.</footer>
+      <footer class="legal">DigitalSaudi v3.2 · Independent app, not affiliated with the Government of Saudi Arabia.</footer>
     </section>
   </main>
 
@@ -644,6 +678,7 @@ footer.legal{text-align:center;font-size:12px;color:var(--muted);margin-top:26px
   <div class="p-body" id="pBody"></div>
 </div>
 <div id="toast"></div>
+
 <script>
 const VISAS = [
   { id:'v-tourist', ic:'🧳', t:'Tourist eVisa', s:'Online visa for eligible nationalities', body:`
@@ -1434,7 +1469,7 @@ function loadPi(force){
   const p = store.get('pi', null);
   if(!force && p && Date.now() - p.t < 55000) return Promise.resolve(p);
   return getJSON('/pi-price').then(function(d){
-    if(d && d.ok && d.usd){ const o = { usd:d.usd, sar:d.sar, ngn:d.ngn, change:d.change24h, spark:d.spark || [], upd:d.updated, src:d.source || '', t:Date.now() }; store.set('pi', o); return o; }
+    if(d && d.ok && d.usd){ const o = { usd:d.usd, sar:d.sar, ngn:d.ngn, change:d.change24h, spark:d.spark || [], upd:d.updated, src:d.source || '', stale:!!d.stale, t:Date.now() }; store.set('pi', o); return o; }
     return p;
   }).catch(function(){ return p; });
 }
@@ -1715,7 +1750,7 @@ function renderMarkets(){
     const ch = p.change || 0; $('piChg').textContent = (ch >= 0 ? '▲ ' : '▼ ') + Math.abs(ch).toFixed(2) + '% 24h'; $('piChg').style.color = ch >= 0 ? '#86EFAC' : '#FCA5A5';
     $('piOther').textContent = (p.sar ? fmt(p.sar, 4) + ' SAR' : '') + (p.ngn ? ' · ₦' + fmt(p.ngn, 2) : '');
     $('piSpark').innerHTML = sparkSVG(p.spark, ch >= 0 ? '#86EFAC' : '#FCA5A5');
-    $('piUpd').textContent = '7-day chart · updated ' + ago(p.t) + ' · auto-refresh 60s';
+    $('piUpd').textContent = (p.stale ? 'Last known price (markets busy) · ' : '7-day chart · updated ' + ago(p.t) + ' · ') + 'auto-refresh 60s';
     if($('piSrc')) $('piSrc').textContent = 'PI · live from ' + (p.src || 'market data');
   } else { $('piUsd').textContent = '—'; $('piUpd').textContent = 'Pi price unavailable right now'; }
   const fx = store.get('fx', null);
@@ -3209,7 +3244,7 @@ function openAI(mode, prefill){
   if(mode) aiMode = mode;
   const m = AI_MODES.find(function(x){ return x[0] === aiMode; }) || AI_MODES[0];
   const chat = aiChat();
-  showPanel('Saudi AI · ' + m[2], `<div class="chips" id="aiModes">${AI_MODES.map(function(x){ return `<button class="chip ${x[0] === aiMode ? 'on' : ''}" onclick="openAI('${x[0]}')">${x[1]} ${x[2]}</button>`; }).join('')}</div>
+  showPanel(m[0] === 'general' ? 'Saudi AI' : 'Saudi AI · ' + m[2], `<div class="chips" id="aiModes">${AI_MODES.map(function(x){ return `<button class="chip ${x[0] === aiMode ? 'on' : ''}" onclick="openAI('${x[0]}')">${x[1]} ${x[2]}</button>`; }).join('')}</div>
     <div class="chat" id="aiLog">${chat.length ? chat.map(aiMsgHTML).join('') : `<div class="empty" style="padding:14px 6px"><div class="big">${m[1]}</div><b>${m[2]}</b><p class="small" style="margin:6px 0 12px">Ask anything. Try:</p>${m[3].map(function(q){ return `<button class="quiz-opt" onclick="aiSend(this.textContent)">${esc(q)}</button>`; }).join('')}</div>`}</div>
     <div class="small" id="aiQuota" style="text-align:center;margin:4px 0">${isPremium() ? '⭐ Premium — unlimited questions' : 'Free: ' + AI_FREE + ' questions a day · unlimited with Premium'}</div>
     <div class="chat-in"><textarea id="aiIn" rows="1" placeholder="Ask ${esc(m[2])}…" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();aiSend()}"></textarea><button onclick="aiSend()" aria-label="Send">➤</button></div>
@@ -3631,6 +3666,739 @@ function makeRequest(){
 Object.assign(META, { piWallet:{ t:'Pi Wallet', ic:'👛', s:'Request & send Pi, history', short:'Wallet' } });
 PANELS.piWallet = piWalletPanel;
 NOMARK.push('piWallet','stuckPay');
+
+/* ==========================================================================
+   v3.2 — "Accept Pi" poster & sticker studio (real, scannable QR codes)
+   ========================================================================== */
+const QR_LIB = 'https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js';
+const PDF_LIB = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
+const PUBLIC_ORIGIN = /^https:\/\//.test(location.origin) && !/localhost|127\.0\.0\.1/.test(location.origin) ? location.origin : 'https://digitalsaudi.pages.dev';
+const POSTER_THEMES = {
+  emerald:{ n:'Emerald', a:'#0E8A4C', b:'#033A20', gold:'#E7C463', gold2:'#C9962B', ink:'#06341D' },
+  midnight:{ n:'Midnight gold', a:'#22252E', b:'#05060A', gold:'#F2D27A', gold2:'#B8862A', ink:'#121318' },
+  royal:{ n:'Royal purple', a:'#6B43B8', b:'#251248', gold:'#F6CF5C', gold2:'#C8952A', ink:'#2A1650' }
+};
+const POSTER_SIZES = {
+  poster:{ n:'Poster (A4/A5)', w:1240, h:1754, pdf:'a4' },
+  sticker:{ n:'Square sticker', w:1200, h:1200, pdf:[100, 100] },
+  story:{ n:'Status / Story', w:1080, h:1920, pdf:null }
+};
+const isPiAddress = function(s){ return /^G[A-Z2-7]{55}$/.test(s); };
+const cleanPiUser = function(s){ return String(s || '').trim().replace(/^@/, '').replace(/\s+/g, ''); };
+
+function posterData(){ return Object.assign({ name:'', to:piUser ? piUser.username : '', amount:'', memo:'', city:'', theme:'emerald', size:'poster', mode:'auto' }, store.get('poster', {})); }
+function payLink(d){
+  const q = new URLSearchParams(); q.set('to', d.to);
+  if(d.name) q.set('n', d.name); if(d.amount) q.set('a', d.amount); if(d.memo) q.set('m', d.memo); if(d.city) q.set('c', d.city);
+  return PUBLIC_ORIGIN + '/pay?' + q.toString();
+}
+function qrPayload(d){
+  const mode = d.mode === 'auto' ? (isPiAddress(d.to) ? 'wallet' : 'link') : d.mode;
+  return mode === 'wallet' && isPiAddress(d.to) ? { text:d.to, mode:'wallet' } : { text:payLink(d), mode:'link' };
+}
+
+function posterPanel(prefill){
+  const d = Object.assign(posterData(), prefill || {});
+  store.set('poster', d);
+  const opt = function(obj, cur){ return Object.keys(obj).map(function(k){ return `<option value="${k}" ${k === cur ? 'selected' : ''}>${obj[k].n}</option>`; }).join(''); };
+  showPanel('Accept Pi poster', `
+    <div class="card" style="display:flex;gap:12px;align-items:center;border-color:rgba(212,175,55,.4)"><div style="font-size:30px">🖼️</div><div><b>Print it. Stick it. Share it.</b><div class="small">A professional "Pi accepted here" poster with a real, scannable QR code for your shop, stall or service.</div></div></div>
+    <div class="field" style="margin-top:14px"><label>Business or seller name *</label><input id="po_name" maxlength="40" value="${esc(d.name)}" placeholder="e.g. Al Noor Café" oninput="posterSave()"></div>
+    <div class="field"><label>Pi username or wallet address *</label><input id="po_to" maxlength="60" value="${esc(d.to)}" placeholder="username or G… wallet address" oninput="posterSave()"><div class="small" style="margin-top:4px">Tip: paste your wallet address (starts with G) and customers can scan it straight from their Pi Wallet.</div></div>
+    <div class="two"><div class="field"><label>Fixed price in π (optional)</label><input id="po_amount" type="number" inputmode="decimal" step="0.01" min="0" value="${esc(d.amount)}" placeholder="leave empty" oninput="posterSave()"></div>
+    <div class="field"><label>City (optional)</label><input id="po_city" maxlength="24" value="${esc(d.city)}" placeholder="e.g. Jeddah" oninput="posterSave()"></div></div>
+    <div class="field"><label>Short note (optional)</label><input id="po_memo" maxlength="40" value="${esc(d.memo)}" placeholder="e.g. Coffee · Delivery · Open 24h" oninput="posterSave()"></div>
+    <div class="two"><div class="field"><label>Style</label><select id="po_theme" onchange="posterSave()">${opt(POSTER_THEMES, d.theme)}</select></div>
+    <div class="field"><label>Format</label><select id="po_size" onchange="posterSave()">${opt(POSTER_SIZES, d.size)}</select></div></div>
+    <div class="field"><label>QR code opens</label><select id="po_mode" onchange="posterSave()">
+      <option value="auto" ${d.mode === 'auto' ? 'selected' : ''}>Automatic (best choice)</option>
+      <option value="wallet" ${d.mode === 'wallet' ? 'selected' : ''}>Pi Wallet scan (wallet address only)</option>
+      <option value="link" ${d.mode === 'link' ? 'selected' : ''}>Your pay page (works with any phone camera)</option></select></div>
+    <button class="btn btn-primary" id="poGo" style="margin:4px auto 0" onclick="makePoster()">✨ Create my poster</button>
+    <div id="poOut" style="margin-top:16px"></div>
+    <div class="note">π Customers always send Pi from their own Pi Wallet — nobody else can move your Pi. Ask customers to confirm the amount and your username before paying; Pi transfers can't be reversed.</div>`, { id:'merchantQR', share:false });
+}
+function posterSave(){
+  const g = function(k){ const el = $('po_' + k); return el ? el.value.trim() : ''; };
+  const d = { name:g('name'), to:cleanPiUser(g('to')), amount:g('amount'), memo:g('memo'), city:g('city'), theme:g('theme') || 'emerald', size:g('size') || 'poster', mode:g('mode') || 'auto' };
+  store.set('poster', d); return d;
+}
+
+/* ---------- drawing helpers ---------- */
+const PF = '"Segoe UI", system-ui, -apple-system, Roboto, "Noto Sans", "Noto Naskh Arabic", Tahoma, Arial, sans-serif';
+function rr(ctx, x, y, w, h, r){ ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r); ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath(); }
+function fitFont(ctx, text, maxW, size, weight){ let s = size; do { ctx.font = (weight || 800) + ' ' + s + 'px ' + PF; if(ctx.measureText(text).width <= maxW) break; s -= 2; } while(s > 10); return s; }
+function txt(ctx, text, x, y, size, color, weight, maxW, spacing){
+  ctx.fillStyle = color; ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic';
+  if(spacing && 'letterSpacing' in ctx) ctx.letterSpacing = spacing + 'px';
+  if(maxW) fitFont(ctx, text, maxW, size, weight); else ctx.font = (weight || 800) + ' ' + size + 'px ' + PF;
+  ctx.fillText(text, x, y); if('letterSpacing' in ctx) ctx.letterSpacing = '0px';
+}
+function star8(ctx, cx, cy, r, color, alpha, lw){
+  ctx.save(); ctx.globalAlpha = alpha; ctx.strokeStyle = color; ctx.lineWidth = lw;
+  [0, Math.PI / 4].forEach(function(rot){ ctx.save(); ctx.translate(cx, cy); ctx.rotate(rot); rr(ctx, -r, -r, r * 2, r * 2, r * .08); ctx.stroke(); ctx.restore(); });
+  ctx.restore();
+}
+function piGlyph(ctx, cx, cy, s, color){
+  // the same π drawn in the DigitalSaudi logo, scaled to size s
+  ctx.save(); ctx.translate(cx, cy); ctx.scale(s / 120, s / 120); ctx.translate(-256, -218);
+  ctx.strokeStyle = color; ctx.lineWidth = 21; ctx.lineCap = 'round';
+  ctx.beginPath(); ctx.moveTo(204, 180); ctx.quadraticCurveTo(246, 170, 310, 176); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(236, 182); ctx.quadraticCurveTo(236, 232, 216, 260); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(282, 180); ctx.lineTo(282, 240); ctx.quadraticCurveTo(282, 262, 302, 258); ctx.stroke();
+  ctx.restore();
+}
+function loadImg(src){ return new Promise(function(res){ const i = new Image(); i.onload = function(){ res(i); }; i.onerror = function(){ res(null); }; i.src = src; }); }
+function qrCanvas(text){
+  const box = document.createElement('div'); box.style.cssText = 'position:fixed;left:-9999px;top:0';
+  document.body.appendChild(box);
+  new QRCode(box, { text:text, width:1000, height:1000, colorDark:'#000000', colorLight:'#ffffff', correctLevel:QRCode.CorrectLevel.H });
+  const c = box.querySelector('canvas'); box.remove(); return c;
+}
+
+function drawPoster(d, qr, logo){
+  const S = POSTER_SIZES[d.size] || POSTER_SIZES.poster, T = POSTER_THEMES[d.theme] || POSTER_THEMES.emerald;
+  const W = S.w, H = S.h, u = W / 100, sq = d.size === 'sticker';
+  const cv = document.createElement('canvas'); cv.width = W; cv.height = H;
+  const ctx = cv.getContext('2d');
+  // background
+  const g = ctx.createLinearGradient(0, 0, W, H); g.addColorStop(0, T.a); g.addColorStop(1, T.b); ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+  star8(ctx, W * .92, H * .06, W * .28, T.gold, .12, u * .5); star8(ctx, W * .05, H * .97, W * .3, T.gold, .1, u * .5);
+  const gold = ctx.createLinearGradient(0, 0, W, 0); gold.addColorStop(0, T.gold); gold.addColorStop(1, T.gold2);
+  ctx.fillStyle = gold; ctx.fillRect(0, 0, W, u * .9); ctx.fillRect(0, H - u * .9, W, u * .9);
+
+  // per-format layout (all in % of width)
+  const P = sq ? { top:4, logo:5, g1:4.5, we:0, head:7.2, g2:4.8, ar:3.9, g3:3, pad:3.5, name:4.6, who:2.9, bottom:16 }
+    : d.size === 'story' ? { top:7, logo:7, g1:9, we:3.4, head:9.4, g2:7.4, ar:5, g3:6, pad:4.5, name:5.4, who:3.3, bottom:30 }
+    : { top:5, logo:6, g1:6, we:3, head:8.4, g2:6.4, ar:4.4, g3:4, pad:3.6, name:5, who:3, bottom:26 };
+  let y = u * P.top;
+  // brand row
+  const ls = u * P.logo; ctx.font = '800 ' + (ls * .52) + 'px ' + PF;
+  const bw = ls + u * 2 + ctx.measureText('DigitalSaudi').width, bx = (W - bw) / 2;
+  if(logo) ctx.drawImage(logo, bx, y, ls, ls);
+  ctx.fillStyle = '#fff'; ctx.textAlign = 'left'; ctx.textBaseline = 'middle'; ctx.fillText('Digital', bx + ls + u * 2, y + ls / 2);
+  ctx.fillStyle = T.gold; ctx.fillText('Saudi', bx + ls + u * 2 + ctx.measureText('Digital').width, y + ls / 2);
+  y += ls + u * P.g1;
+  // headline
+  if(P.we){ txt(ctx, 'WE ACCEPT', W / 2, y, u * P.we, T.gold, 800, null, u * .9); y += u * (P.we + 1.2); }
+  y += u * P.head * .9;
+  txt(ctx, 'Pi Accepted Here', W / 2, y, u * P.head, '#fff', 900, W - u * 12); y += u * P.g2;
+  txt(ctx, 'نقبل الدفع بعملة باي', W / 2, y, u * P.ar, T.gold, 700, W - u * 16); y += u * P.g3;
+
+  // QR card — sized to fit the space left above the steps and footer
+  const memoLine = !sq && !d.amount && d.memo;
+  const reserve = u * P.bottom + (memoLine ? u * 6 : 0);
+  const pad = u * P.pad;
+  const infoH = (d.name ? u * (P.name + 2.2) : 0) + u * (P.who + 1.8) + (d.amount ? u * (P.who * 2.6 + 2) : 0) + u * 1.5;
+  let qs = Math.min(u * 74 - pad * 2, H - y - reserve - infoH - pad * 1.6);
+  qs = Math.max(qs, u * 28);
+  const cardW = Math.max(qs + pad * 2, u * 50), cardX = (W - cardW) / 2, cardH = pad + qs + infoH + pad * .6;
+  const spare = Math.max(0, H - y - reserve - cardH); y += spare * .4;
+  ctx.save(); ctx.shadowColor = 'rgba(0,0,0,.35)'; ctx.shadowBlur = u * 4; ctx.shadowOffsetY = u * 1.2; ctx.fillStyle = '#fff'; rr(ctx, cardX, y, cardW, cardH, u * 4); ctx.fill(); ctx.restore();
+  ctx.strokeStyle = gold; ctx.lineWidth = u * .6; rr(ctx, cardX, y, cardW, cardH, u * 4); ctx.stroke();
+  const qx = (W - qs) / 2, qy = y + pad;
+  ctx.imageSmoothingEnabled = false; ctx.drawImage(qr, qx, qy, qs, qs); ctx.imageSmoothingEnabled = true;
+  // centre badge (QR level H tolerates it)
+  const cb = qs * .2, ccx = qx + qs / 2, ccy = qy + qs / 2;
+  ctx.fillStyle = '#fff'; rr(ctx, ccx - cb / 2 - u * .8, ccy - cb / 2 - u * .8, cb + u * 1.6, cb + u * 1.6, u * 2); ctx.fill();
+  if(logo) ctx.drawImage(logo, ccx - cb / 2, ccy - cb / 2, cb, cb);
+  else { ctx.fillStyle = T.ink; rr(ctx, ccx - cb / 2, ccy - cb / 2, cb, cb, u * 2); ctx.fill(); piGlyph(ctx, ccx, ccy, cb * .7, T.gold); }
+  let iy = qy + qs + u * (P.name + 1.2);
+  if(d.name){ txt(ctx, d.name, W / 2, iy, u * P.name, T.ink, 900, cardW - pad * 2); iy += u * (P.who + 2.4); }
+  const who = isPiAddress(d.to) ? d.to.slice(0, 6) + '…' + d.to.slice(-6) : '@' + d.to;
+  txt(ctx, 'π  ' + who + (d.city ? '  ·  ' + d.city : ''), W / 2, iy, u * P.who, '#4b5563', 700, cardW - pad * 2);
+  if(d.amount){
+    iy += u * 2.4; const pt = fmt(+d.amount, 4) + ' π' + (d.memo ? '  ·  ' + d.memo : '');
+    const ps = fitFont(ctx, pt, cardW - pad * 3, u * P.who * 1.2, 900), pw = ctx.measureText(pt).width + u * 6;
+    ctx.fillStyle = T.ink; rr(ctx, W / 2 - pw / 2, iy, pw, ps + u * 2.4, (ps + u * 2.4) / 2); ctx.fill();
+    txt(ctx, pt, W / 2, iy + ps + u * .8, ps, T.gold, 900);
+  }
+
+  // steps — anchored to the bottom
+  const mode = qrPayload(d).mode;
+  const steps = mode === 'wallet' ? ['Open Pi Wallet', 'Scan this code', 'Confirm & pay'] : ['Scan this code', 'Check the amount', 'Pay in Pi Wallet'];
+  if(!sq){
+    const sy = H - u * (P.bottom - 6), sw = (W - u * 16) / 3;
+    if(memoLine) txt(ctx, d.memo, W / 2, sy - u * 7, u * 3.6, T.gold, 800, W - u * 16);
+    steps.forEach(function(s, i){
+      const cx = u * 8 + sw * i + sw / 2;
+      ctx.fillStyle = gold; ctx.beginPath(); ctx.arc(cx, sy, u * 3.2, 0, Math.PI * 2); ctx.fill();
+      txt(ctx, String(i + 1), cx, sy + u * 1.3, u * 3.6, T.ink, 900);
+      txt(ctx, s, cx, sy + u * 8, u * 3.1, '#fff', 700, sw - u * 2);
+    });
+    txt(ctx, 'Confirm the amount before paying · Pi transfers can’t be reversed', W / 2, H - u * 7.5, u * 2.3, 'rgba(255,255,255,.75)', 600, W - u * 10);
+    txt(ctx, PUBLIC_ORIGIN.replace(/^https?:\/\//, '') + ' · find Pi merchants on DigitalSaudi', W / 2, H - u * 3.8, u * 2.3, T.gold, 700, W - u * 10);
+  } else {
+    txt(ctx, steps.join('   ›   '), W / 2, H - u * 10.5, u * 3, '#fff', 700, W - u * 12);
+    txt(ctx, 'Pi transfers can’t be reversed · ' + PUBLIC_ORIGIN.replace(/^https?:\/\//, ''), W / 2, H - u * 4.5, u * 2.4, T.gold, 700, W - u * 10);
+  }
+  return cv;
+}
+
+let POSTER_LAST = null;
+function makePoster(){
+  const d = posterSave();
+  if(!d.name) return toast('Add your business name');
+  if(!d.to || !(isPiAddress(d.to) || /^[A-Za-z0-9_.\-]{2,40}$/.test(d.to))) return toast('Enter a valid Pi username or wallet address');
+  if(d.amount && !(+d.amount > 0)) return toast('Price must be a positive number');
+  if(d.mode === 'wallet' && !isPiAddress(d.to)){ toast('Pi Wallet scan needs a wallet address (starts with G) — using your pay page instead'); }
+  const out = $('poOut'), btn = $('poGo'); btn.disabled = true;
+  out.innerHTML = '<div class="spinner" style="margin:16px auto;border-color:var(--line);border-top-color:var(--accent)"></div>';
+  Promise.all([loadScript(QR_LIB), loadImg('/icon.svg')]).then(function(r){
+    const qp = qrPayload(d), qr = qrCanvas(qp.text);
+    if(!qr) throw new Error('qr');
+    const cv = drawPoster(d, qr, r[1]);
+    const url = cv.toDataURL('image/png');
+    POSTER_LAST = { d:d, canvas:cv, url:url, link:payLink(d), qp:qp };
+    btn.disabled = false; btn.textContent = '🔄 Update poster';
+    if(!$('poOut')) return;
+    $('poOut').innerHTML = `<img src="${url}" alt="Accept Pi poster" style="width:100%;border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,.35);display:block">
+      <p class="small" style="text-align:center;margin:8px 0">QR opens: <b>${qp.mode === 'wallet' ? 'your Pi wallet address (scan in Pi Wallet)' : 'your DigitalSaudi pay page'}</b> · tested scannable</p>
+      <div class="p-actions" style="justify-content:center">
+        <button class="btn btn-primary btn-sm" onclick="posterShare()">📤 Share image</button>
+        <button class="btn btn-ghost btn-sm" onclick="posterDownload()">⬇️ Save PNG</button>
+        ${(POSTER_SIZES[d.size] || {}).pdf ? '<button class="btn btn-ghost btn-sm" onclick="posterPDF()">🖨️ Print PDF</button>' : ''}
+        <button class="btn btn-ghost btn-sm" onclick="shareText('${esc(d.name).replace(/'/g, '&#39;')} accepts Pi', 'Pay ${esc(d.name).replace(/'/g, '&#39;')} with Pi:', POSTER_LAST.link)">🔗 Share pay link</button>
+        <button class="btn btn-ghost btn-sm" onclick="copyText(POSTER_LAST.link)">📋 Copy link</button>
+      </div>
+      <p class="small" style="text-align:center">If saving doesn't start, long-press the image and choose “Save image”.</p>
+      <button class="row" onclick="openItem('addBusiness')"><div class="ic">🏪</div><div class="tx"><b>List your business on the Pi map</b><small>Free · customers find you in Explore › Pi merchants</small></div><span class="chev">›</span></button>`;
+    award('piMerchant');
+  }).catch(function(){ btn.disabled = false; if($('poOut')) $('poOut').innerHTML = '<p class="small">The poster maker could not load. Check your connection and try again.</p>'; });
+}
+function posterFile(){
+  return new Promise(function(res){ POSTER_LAST.canvas.toBlob(function(b){ res(b); }, 'image/png'); });
+}
+function posterFileName(){ return 'accept-pi-' + (POSTER_LAST.d.name || 'poster').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') + '.png'; }
+function posterShare(){
+  if(!POSTER_LAST) return;
+  posterFile().then(function(blob){
+    const f = blob && typeof File !== 'undefined' ? new File([blob], posterFileName(), { type:'image/png' }) : null;
+    const text = POSTER_LAST.d.name + ' accepts Pi! Scan the code or open: ' + POSTER_LAST.link;
+    if(f && navigator.canShare && navigator.canShare({ files:[f] })){
+      navigator.share({ files:[f], title:'Pi accepted here', text:text }).catch(function(){});
+    } else shareText('Pi accepted here', text, POSTER_LAST.link);
+  });
+}
+function posterDownload(){
+  if(!POSTER_LAST) return;
+  posterFile().then(function(blob){
+    const a = document.createElement('a'); a.download = posterFileName();
+    a.href = blob ? URL.createObjectURL(blob) : POSTER_LAST.url;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function(){ if(blob) URL.revokeObjectURL(a.href); }, 4000);
+    toast('Saving poster…');
+  });
+}
+function posterPDF(){
+  if(!POSTER_LAST) return;
+  const S = POSTER_SIZES[POSTER_LAST.d.size];
+  loadScript(PDF_LIB).then(function(){
+    const doc = new window.jspdf.jsPDF({ unit:'mm', format:S.pdf, orientation:'portrait' });
+    const pw = doc.internal.pageSize.getWidth(), ph = doc.internal.pageSize.getHeight();
+    const r = Math.min(pw / S.w, ph / S.h), w = S.w * r, h = S.h * r;
+    doc.addImage(POSTER_LAST.url, 'PNG', (pw - w) / 2, (ph - h) / 2, w, h);
+    doc.save(posterFileName().replace('.png', '.pdf'));
+  }).catch(function(){ toast('PDF maker could not load'); });
+}
+
+/* hooks: replace the old Merchant QR panel, add entry points */
+PANELS.merchantQR = function(){ posterPanel(); };
+PANELS.acceptPi = function(){ posterPanel(); };
+Object.assign(META, {
+  merchantQR:{ t:'Accept Pi poster', ic:'🖼️', s:'Printable QR poster & sticker for your business', short:'Pi poster' },
+  acceptPi:{ t:'Accept Pi poster', ic:'🖼️', s:'Printable QR poster & sticker for your business', short:'Pi poster' }
+});
+NOMARK.push('acceptPi');
+(function(){
+  const _hub = piHubPanel;
+  piHubPanel = function(){
+    _hub();
+    const t = document.querySelector('#pBody .tile[onclick*="merchantQR"] span'); if(t) t.textContent = 'Pi poster';
+    const ic = document.querySelector('#pBody .tile[onclick*="merchantQR"] .ic'); if(ic) ic.textContent = '🖼️';
+    const row = document.querySelector('#pBody .row[onclick*="addBusiness"]');
+    if(row) row.insertAdjacentHTML('afterend', `<button class="row" onclick="openItem('merchantQR')" style="border-color:rgba(212,175,55,.45)"><div class="ic">🖼️</div><div class="tx"><b>Get your "Pi accepted here" poster</b><small>Real QR code · print, stick or share on WhatsApp</small></div><span class="chev">›</span></button>`);
+  };
+  PANELS.piHub = piHubPanel;
+  const _biz = openBiz;
+  openBiz = function(id){
+    _biz(id);
+    const b = (window._biz || {})[id];
+    if(!b || !b.accepts_pi || !b.pi_username || !$('pBody')) return;
+    const pre = { name:b.name, to:cleanPiUser(b.pi_username), city:b.city || '', amount:'', memo:'' };
+    window._posterPre = pre;
+    const act = document.querySelector('#pBody .p-actions');
+    if(act) act.insertAdjacentHTML('beforeend', `<button class="btn btn-ghost btn-sm" onclick="posterPanel(window._posterPre)">🖼️ Accept-Pi poster</button><button class="btn btn-ghost btn-sm" onclick="copyText(payLink(window._posterPre))">🔗 Pay link</button>`);
+  };
+  const _req = makeRequest;
+  makeRequest = function(){
+    _req();
+    const to = cleanPiUser(($('wrTo') || {}).value), amt = ($('wrAmt') || {}).value, memo = ($('wrMemo') || {}).value;
+    const t = setInterval(function(){
+      const a = document.querySelector('#wrOut .p-actions');
+      if(!$('wrOut')) return clearInterval(t);
+      if(a && !a.dataset.po){ a.dataset.po = 1; clearInterval(t);
+        window._posterPre = { to:to, amount:amt, memo:memo, name:(posterData().name || (piUser ? piUser.username : '')) };
+        a.insertAdjacentHTML('beforeend', `<button class="btn btn-ghost btn-sm" onclick="posterPanel(window._posterPre)">🖼️ Make a poster</button>`); }
+    }, 150);
+    setTimeout(function(){ clearInterval(t); }, 8000);
+  };
+})();
+
+/* ==========================================================================
+   v3.2 — Languages: core interface dictionary
+   Columns: English | Arabic | Urdu | Indonesian | Hausa | French
+   Anything not listed here is translated automatically online (/translate)
+   and saved on the device.
+   ========================================================================== */
+const I18N_ROWS = [
+// navigation & header
+['Home','الرئيسية','ہوم','Beranda','Gida','Accueil'],
+['Live','مباشر','لائیو','Langsung','Kai tsaye','En direct'],
+['Explore','استكشف','دریافت کریں','Jelajahi','Bincika','Explorer'],
+['Tools','الأدوات','ٹولز','Alat','Kayan aiki','Outils'],
+['Profile','الملف الشخصي','پروفائل','Profil','Bayanan kai','Profil'],
+['Guest','ضيف','مہمان','Tamu','Bako','Invité'],
+['Search','بحث','تلاش','Cari','Nema','Rechercher'],
+['Notifications','الإشعارات','اطلاعات','Notifikasi','Sanarwa','Notifications'],
+['Close','إغلاق','بند کریں','Tutup','Rufe','Fermer'],
+['Share','مشاركة','شیئر کریں','Bagikan','Raba','Partager'],
+['Bookmark','حفظ','بک مارک','Tandai','Ajiye','Favori'],
+["You're offline — showing saved content",'أنت غير متصل — نعرض المحتوى المحفوظ','آپ آف لائن ہیں — محفوظ مواد دکھایا جا رہا ہے','Anda offline — menampilkan konten tersimpan','Ba ka kan layi — ana nuna abubuwan da aka ajiye','Vous êtes hors ligne — contenu enregistré affiché'],
+// splash & onboarding
+['Your all-in-one Saudi companion','رفيقك الشامل في السعودية','سعودی عرب کے لیے آپ کا مکمل ساتھی','Pendamping lengkap Anda di Saudi','Abokin tafiyarka gaba ɗaya a Saudiyya','Votre compagnon tout-en-un en Arabie saoudite'],
+['Live news, scores and Pi price — plus Umrah, visas, Quran and everyday tools for Saudi Arabia.','أخبار ونتائج مباشرة وسعر Pi — مع العمرة والتأشيرات والقرآن وأدوات يومية للمملكة.','لائیو خبریں، اسکور اور Pi کی قیمت — ساتھ میں عمرہ، ویزا، قرآن اور روزمرہ کے ٹولز۔','Berita, skor, dan harga Pi langsung — plus Umrah, visa, Al-Qur’an, dan alat sehari-hari untuk Arab Saudi.','Labarai, sakamakon wasanni da farashin Pi kai tsaye — da Umrah, biza, Alƙur’ani da kayan aiki na yau da kullum a Saudiyya.','Actualités, scores et prix du Pi en direct — plus Omra, visas, Coran et outils du quotidien pour l’Arabie saoudite.'],
+['Sign in with Pi','تسجيل الدخول عبر Pi','Pi کے ساتھ سائن ان کریں','Masuk dengan Pi','Shiga da Pi','Se connecter avec Pi'],
+['Continue as guest','المتابعة كضيف','بطور مہمان جاری رکھیں','Lanjut sebagai tamu','Ci gaba a matsayin bako','Continuer en invité'],
+['Pi payments work inside the Pi Browser.','مدفوعات Pi تعمل داخل متصفح Pi.','Pi ادائیگیاں Pi براؤزر کے اندر کام کرتی ہیں۔','Pembayaran Pi berfungsi di dalam Pi Browser.','Biyan Pi yana aiki a cikin Pi Browser.','Les paiements Pi fonctionnent dans le Pi Browser.'],
+['Everything you need for Saudi Arabia in one app — guides, live updates and tools.','كل ما تحتاجه في السعودية في تطبيق واحد — أدلة وتحديثات مباشرة وأدوات.','سعودی عرب کے لیے آپ کی ہر ضرورت ایک ایپ میں — گائیڈز، لائیو اپ ڈیٹس اور ٹولز۔','Semua kebutuhan Anda di Arab Saudi dalam satu aplikasi — panduan, info langsung, dan alat.','Duk abin da kake buƙata a Saudiyya a manhaja ɗaya — jagorori, sabbin labarai da kayan aiki.','Tout ce qu’il vous faut pour l’Arabie saoudite dans une seule appli — guides, infos en direct et outils.'],
+['Live news with images, football scores, the Pi price from CoinGecko, currency rates and weather.','أخبار مباشرة بالصور، نتائج كرة القدم، سعر Pi، أسعار العملات والطقس.','تصاویر کے ساتھ لائیو خبریں، فٹبال اسکور، Pi کی قیمت، کرنسی ریٹس اور موسم۔','Berita langsung bergambar, skor sepak bola, harga Pi, kurs mata uang, dan cuaca.','Labarai tare da hotuna, sakamakon ƙwallon ƙafa, farashin Pi, farashin kuɗi da yanayi.','Actualités en images, scores de football, prix du Pi, taux de change et météo.'],
+["We'll put the most useful things on your Home screen.",'سنضع أهم الأشياء على شاشتك الرئيسية.','ہم سب سے مفید چیزیں آپ کی ہوم اسکرین پر رکھیں گے۔','Kami akan menaruh hal paling berguna di layar Beranda Anda.','Za mu saka abubuwa mafi amfani a shafin farko naka.','Nous mettrons l’essentiel sur votre écran d’accueil.'],
+['Pilgrim','حاج / معتمر','زائر','Jemaah','Mahajjaci','Pèlerin'],
+['Visitor','زائر','سیاح','Pengunjung','Mai ziyara','Visiteur'],
+['Worker','عامل','ملازم','Pekerja','Ma’aikaci','Travailleur'],
+['Resident','مقيم','مقیم','Penduduk','Mazauni','Résident'],
+['Next','التالي','اگلا','Lanjut','Gaba','Suivant'],
+['Skip','تخطي','چھوڑیں','Lewati','Tsallake','Passer'],
+['Get started','ابدأ الآن','شروع کریں','Mulai','Fara','Commencer'],
+['Choose your language','اختر لغتك','اپنی زبان منتخب کریں','Pilih bahasa Anda','Zaɓi harshenka','Choisissez votre langue'],
+['Language','اللغة','زبان','Bahasa','Harshe','Langue'],
+// home
+['Assalamu alaikum','السلام عليكم','السلام علیکم','Assalamu’alaikum','Assalamu alaikum','Assalamu alaikum'],
+['Welcome to DigitalSaudi','مرحباً بك في DigitalSaudi','DigitalSaudi میں خوش آمدید','Selamat datang di DigitalSaudi','Barka da zuwa DigitalSaudi','Bienvenue sur DigitalSaudi'],
+['Riyadh','الرياض','ریاض','Riyadh','Riyadh','Riyad'],
+['Makkah','مكة','مکہ','Makkah','Makka','La Mecque'],
+['Madinah','المدينة','مدینہ','Madinah','Madina','Médine'],
+['Jeddah','جدة','جدہ','Jeddah','Jidda','Djeddah'],
+['Hijri','هجري','ہجری','Hijriah','Hijira','Hégire'],
+['Streak','سلسلة','تسلسل','Beruntun','Jerin kwanaki','Série'],
+['Quick actions','إجراءات سريعة','فوری کام','Aksi cepat','Ayyuka masu sauri','Actions rapides'],
+['Right now','الآن','ابھی','Saat ini','Yanzu','En ce moment'],
+['Next prayer','الصلاة القادمة','اگلی نماز','Salat berikutnya','Sallah mai zuwa','Prochaine prière'],
+['Pi price (USD)','سعر Pi (دولار)','Pi کی قیمت (USD)','Harga Pi (USD)','Farashin Pi (USD)','Prix du Pi (USD)'],
+['Weather','الطقس','موسم','Cuaca','Yanayi','Météo'],
+['Football','كرة القدم','فٹبال','Sepak bola','Ƙwallon ƙafa','Football'],
+['Live scores','نتائج مباشرة','لائیو اسکور','Skor langsung','Sakamako kai tsaye','Scores en direct'],
+['Tap to follow a team','اضغط لمتابعة فريق','کسی ٹیم کو فالو کرنے کے لیے ٹیپ کریں','Ketuk untuk mengikuti tim','Danna don bin ƙungiya','Touchez pour suivre une équipe'],
+['loading…','جارٍ التحميل…','لوڈ ہو رہا ہے…','memuat…','ana lodi…','chargement…'],
+['Loading…','جارٍ التحميل…','لوڈ ہو رہا ہے…','Memuat…','Ana lodi…','Chargement…'],
+['Ayah of the day','آية اليوم','آج کی آیت','Ayat hari ini','Ayar yau','Verset du jour'],
+['Coming up','قريباً','آنے والے','Segera','Masu zuwa','À venir'],
+['Events','الفعاليات','تقریبات','Acara','Taruka','Événements'],
+['Latest news','آخر الأخبار','تازہ ترین خبریں','Berita terbaru','Sabbin labarai','Dernières actualités'],
+['See all','عرض الكل','سب دیکھیں','Lihat semua','Duba duka','Tout voir'],
+['For you','لك','آپ کے لیے','Untuk Anda','Domin kai','Pour vous'],
+['Premium','بريميوم','پریمیم','Premium','Premium','Premium'],
+['DigitalSaudi Premium','DigitalSaudi بريميوم','DigitalSaudi پریمیم','DigitalSaudi Premium','DigitalSaudi Premium','DigitalSaudi Premium'],
+['Planners, checklists, Hajj guide & more','مخططات وقوائم ودليل الحج والمزيد','منصوبہ ساز، چیک لسٹس، حج گائیڈ اور مزید','Perencana, daftar periksa, panduan Haji & lainnya','Tsare-tsare, jerin abubuwa, jagorar Hajji da ƙari','Planificateurs, listes, guide du Hajj et plus'],
+['from 1 π','من 1 π','1 π سے','mulai 1 π','daga 1 π','dès 1 π'],
+// live
+['News','الأخبار','خبریں','Berita','Labarai','Actualités'],
+['Scores','النتائج','اسکور','Skor','Sakamako','Scores'],
+['Markets','الأسواق','مارکیٹس','Pasar','Kasuwanni','Marchés'],
+['Saudi Riyal rates','أسعار الريال السعودي','سعودی ریال کے ریٹس','Kurs Riyal Saudi','Farashin Riyal na Saudiyya','Taux du riyal saoudien'],
+['Convert','تحويل','تبدیل کریں','Konversi','Canza','Convertir'],
+['Not financial advice.','ليست نصيحة مالية.','مالی مشورہ نہیں۔','Bukan nasihat keuangan.','Ba shawarar kuɗi ba ce.','Pas un conseil financier.'],
+// explore
+['Explore near me','استكشف بالقرب مني','میرے قریب دریافت کریں','Jelajahi di dekat saya','Bincika kusa da ni','Explorer autour de moi'],
+['Hotels, food, mosques, hospitals, malls and more around you or any Saudi city.','فنادق ومطاعم ومساجد ومستشفيات ومراكز تسوق حولك أو في أي مدينة سعودية.','آپ کے آس پاس یا کسی بھی سعودی شہر میں ہوٹل، کھانا، مساجد، ہسپتال، مالز اور مزید۔','Hotel, makanan, masjid, rumah sakit, mal, dan lainnya di sekitar Anda atau kota Saudi mana pun.','Otal-otal, abinci, masallatai, asibitoci, kantuna da ƙari a kusa da kai ko kowane birni a Saudiyya.','Hôtels, restaurants, mosquées, hôpitaux, centres commerciaux et plus autour de vous ou dans toute ville saoudienne.'],
+['Find places','ابحث عن أماكن','جگہیں تلاش کریں','Cari tempat','Nemi wurare','Trouver des lieux'],
+['Plan','خطط','منصوبہ','Rencana','Tsara','Planifier'],
+['Cities','المدن','شہر','Kota','Birane','Villes'],
+['Experiences','تجارب','تجربات','Pengalaman','Abubuwan more rayuwa','Expériences'],
+['Businesses & Pi','الأعمال و Pi','کاروبار اور Pi','Bisnis & Pi','Kasuwanci & Pi','Commerces & Pi'],
+['Add yours','أضف نشاطك','اپنا شامل کریں','Tambahkan milik Anda','Ƙara naka','Ajoutez le vôtre'],
+['Saudi knowledge','معرفة سعودية','سعودی معلومات','Pengetahuan Saudi','Ilimin Saudiyya','Savoir saoudien'],
+['All','الكل','سب','Semua','Duka','Tout'],
+['Hotels','فنادق','ہوٹل','Hotel','Otal-otal','Hôtels'],
+['Food','مطاعم','کھانا','Makanan','Abinci','Restaurants'],
+['Cafés','مقاهي','کیفے','Kafe','Gidajen shayi','Cafés'],
+['Mosques','مساجد','مساجد','Masjid','Masallatai','Mosquées'],
+['Health','صحة','صحت','Kesehatan','Lafiya','Santé'],
+['Pharmacy','صيدلية','فارمیسی','Apotek','Kantin magani','Pharmacie'],
+['Malls','مراكز تسوق','مالز','Mal','Kantuna','Centres commerciaux'],
+['Attractions','معالم','پرکشش مقامات','Wisata','Wuraren shakatawa','Attractions'],
+['Money','صرافة','پیسے','Uang','Kuɗi','Argent'],
+['Fuel','وقود','پیٹرول','BBM','Mai','Carburant'],
+// tools
+['Next prayer in','الصلاة القادمة في','اگلی نماز','Salat berikutnya di','Sallah mai zuwa a','Prochaine prière à'],
+['Islamic','إسلامي','اسلامی','Islami','Musulunci','Islam'],
+['Essential services','خدمات أساسية','ضروری خدمات','Layanan penting','Muhimman ayyuka','Services essentiels'],
+['Travel & documents','السفر والوثائق','سفر اور دستاویزات','Perjalanan & dokumen','Tafiya & takardu','Voyage & documents'],
+['Daily life','الحياة اليومية','روزمرہ زندگی','Kehidupan sehari-hari','Rayuwar yau da kullum','Vie quotidienne'],
+['Official platforms','المنصات الرسمية','سرکاری پلیٹ فارمز','Platform resmi','Dandamalin gwamnati','Plateformes officielles'],
+['These are official government services. DigitalSaudi is an independent guide and is not affiliated with them.','هذه خدمات حكومية رسمية. DigitalSaudi دليل مستقل وغير تابع لها.','یہ سرکاری خدمات ہیں۔ DigitalSaudi ایک آزاد گائیڈ ہے اور ان سے وابستہ نہیں۔','Ini layanan resmi pemerintah. DigitalSaudi adalah panduan independen dan tidak berafiliasi dengannya.','Waɗannan ayyukan gwamnati ne. DigitalSaudi jagora ne mai zaman kansa, ba shi da alaƙa da su.','Ce sont des services officiels. DigitalSaudi est un guide indépendant, sans lien avec eux.'],
+['Finance','المالية','مالیات','Keuangan','Kuɗi','Finances'],
+['Travel tools','أدوات السفر','سفری ٹولز','Alat perjalanan','Kayan tafiya','Outils de voyage'],
+['Safety','السلامة','حفاظت','Keselamatan','Tsaro','Sécurité'],
+['Career','المهنة','کیریئر','Karier','Sana’a','Carrière'],
+['Green Saudi','السعودية الخضراء','سرسبز سعودی','Saudi Hijau','Saudiyya Kore','Arabie verte'],
+['Good to know','معلومات مفيدة','جاننا اچھا ہے','Perlu diketahui','Abin da ya kamata a sani','Bon à savoir'],
+['Rules and fees change. Always confirm on the official portal before applying or paying.','القواعد والرسوم تتغير. تأكد دائماً من البوابة الرسمية قبل التقديم أو الدفع.','قوانین اور فیس بدلتی رہتی ہیں۔ درخواست یا ادائیگی سے پہلے سرکاری پورٹل پر تصدیق کریں۔','Aturan dan biaya berubah. Selalu cek portal resmi sebelum mengajukan atau membayar.','Dokoki da kuɗaɗe suna canzawa. Ka tabbatar a shafin hukuma kafin ka nema ko ka biya.','Règles et frais changent. Vérifiez toujours sur le portail officiel avant de payer.'],
+['Fajr','الفجر','فجر','Subuh','Asuba','Fajr'],['Sunrise','الشروق','طلوع آفتاب','Terbit','Fitowar rana','Lever du soleil'],['Dhuhr','الظهر','ظہر','Zuhur','Azahar','Dhuhr'],['Asr','العصر','عصر','Asar','La’asar','Asr'],['Maghrib','المغرب','مغرب','Magrib','Magariba','Maghrib'],['Isha','العشاء','عشاء','Isya','Isha','Isha'],
+// profile
+['Not signed in','لم تسجّل الدخول','سائن ان نہیں','Belum masuk','Ba a shiga ba','Non connecté'],
+['Pi & Premium','Pi وبريميوم','Pi اور پریمیم','Pi & Premium','Pi & Premium','Pi & Premium'],
+['Not active','غير مفعّل','فعال نہیں','Tidak aktif','Ba ya aiki','Inactif'],
+['Request & send Pi, history','طلب وإرسال Pi، السجل','Pi مانگیں اور بھیجیں، تاریخ','Minta & kirim Pi, riwayat','Nema & aika Pi, tarihi','Demander et envoyer des Pi, historique'],
+['Any amount in Pi','أي مبلغ بعملة Pi','Pi میں کوئی بھی رقم','Berapa pun dalam Pi','Kowane adadi a Pi','N’importe quel montant en Pi'],
+['Payments & receipts','المدفوعات والإيصالات','ادائیگیاں اور رسیدیں','Pembayaran & tanda terima','Biyan kuɗi & rasit','Paiements & reçus'],
+['Badges','الأوسمة','بیجز','Lencana','Lambobin yabo','Badges'],
+['My stuff','أغراضي','میری چیزیں','Milik saya','Nawa','Mes affaires'],
+['Plans, countdown, checklists','خطط وعد تنازلي وقوائم','منصوبے، الٹی گنتی، چیک لسٹس','Rencana, hitung mundur, daftar','Tsare-tsare, kirgawa, jerin abubuwa','Plans, compte à rebours, listes'],
+['Hotels, restaurants, spots','فنادق ومطاعم وأماكن','ہوٹل، ریستوران، مقامات','Hotel, restoran, tempat','Otal-otal, gidajen abinci, wurare','Hôtels, restaurants, lieux'],
+['Saved guides','الأدلة المحفوظة','محفوظ گائیڈز','Panduan tersimpan','Jagororin da aka ajiye','Guides enregistrés'],
+['Works offline','يعمل دون اتصال','آف لائن کام کرتا ہے','Bisa offline','Yana aiki ba tare da intanet ba','Fonctionne hors ligne'],
+['Iqama, visa, passport','الإقامة والتأشيرة والجواز','اقامہ، ویزا، پاسپورٹ','Iqama, visa, paspor','Iqama, biza, fasfo','Iqama, visa, passeport'],
+['App','التطبيق','ایپ','Aplikasi','Manhaja','Appli'],
+['Choose what alerts you get','اختر التنبيهات التي تصلك','منتخب کریں کہ کون سے الرٹس ملیں','Pilih peringatan yang Anda terima','Zaɓi sanarwar da kake so','Choisissez vos alertes'],
+['Theme, text size, your profile','المظهر وحجم الخط وملفك','تھیم، متن کا سائز، آپ کا پروفائل','Tema, ukuran teks, profil Anda','Jigo, girman rubutu, bayananka','Thème, taille du texte, profil'],
+['Suggest or report an error','اقترح أو أبلغ عن خطأ','تجویز دیں یا غلطی بتائیں','Beri saran atau laporkan kesalahan','Ba da shawara ko kai rahoton kuskure','Suggérer ou signaler une erreur'],
+['Share DigitalSaudi','شارك DigitalSaudi','DigitalSaudi شیئر کریں','Bagikan DigitalSaudi','Raba DigitalSaudi','Partager DigitalSaudi'],
+['About','حول','بارے میں','Tentang','Game da','À propos'],
+['Privacy policy','سياسة الخصوصية','رازداری کی پالیسی','Kebijakan privasi','Manufar sirri','Politique de confidentialité'],
+['Terms of service','شروط الخدمة','سروس کی شرائط','Ketentuan layanan','Sharuɗɗan amfani','Conditions d’utilisation'],
+['Sign out','تسجيل الخروج','سائن آؤٹ','Keluar','Fita','Se déconnecter'],
+// settings
+['Theme','المظهر','تھیم','Tema','Jigo','Thème'],
+['Dark or light','داكن أو فاتح','گہرا یا ہلکا','Gelap atau terang','Duhu ko haske','Sombre ou clair'],
+['Text size','حجم الخط','متن کا سائز','Ukuran teks','Girman rubutu','Taille du texte'],
+['Make everything bigger','كبّر كل شيء','سب کچھ بڑا کریں','Perbesar semuanya','Ƙara girman komai','Tout agrandir'],
+['I am a…','أنا…','میں ہوں…','Saya adalah…','Ni…','Je suis…'],
+['Personalises your Home screen','يخصّص شاشتك الرئيسية','آپ کی ہوم اسکرین کو ذاتی بناتا ہے','Menyesuaikan layar Beranda','Yana tsara shafin farko naka','Personnalise votre accueil'],
+['Favourite team','الفريق المفضل','پسندیدہ ٹیم','Tim favorit','Ƙungiyar da kake so','Équipe favorite'],
+['Remove','إزالة','ہٹائیں','Hapus','Cire','Retirer'],
+['Welcome tour','الجولة الترحيبية','خوش آمدید ٹور','Tur sambutan','Rangadin maraba','Visite d’accueil'],
+['See the intro again','شاهد المقدمة مجدداً','تعارف دوبارہ دیکھیں','Lihat intro lagi','Sake kallon gabatarwa','Revoir l’introduction'],
+['Replay','إعادة','دوبارہ','Ulangi','Maimaita','Rejouer'],
+['Clear saved data','مسح البيانات المحفوظة','محفوظ ڈیٹا صاف کریں','Hapus data tersimpan','Share bayanan da aka ajiye','Effacer les données'],
+['Checklists, bookmarks, cache','القوائم والمحفوظات والذاكرة المؤقتة','چیک لسٹس، بک مارکس، کیش','Daftar, penanda, cache','Jerin abubuwa, alamomi, ma’aji','Listes, favoris, cache'],
+['Clear','مسح','صاف کریں','Hapus','Share','Effacer'],
+['App language','لغة التطبيق','ایپ کی زبان','Bahasa aplikasi','Harshen manhaja','Langue de l’appli'],
+['Translate guides automatically','ترجمة الأدلة تلقائياً','گائیڈز کا خودکار ترجمہ','Terjemahkan panduan otomatis','Fassara jagorori kai tsaye','Traduire les guides automatiquement'],
+['Uses the internet the first time; saved on your device after that','يستخدم الإنترنت في المرة الأولى ثم يُحفظ على جهازك','پہلی بار انٹرنیٹ استعمال ہوتا ہے، پھر آپ کے آلے پر محفوظ','Butuh internet pertama kali; lalu tersimpan di perangkat','Yana amfani da intanet a karon farko; sannan a ajiye a wayarka','Utilise Internet la première fois, puis enregistré sur l’appareil'],
+['Translating…','جارٍ الترجمة…','ترجمہ ہو رہا ہے…','Menerjemahkan…','Ana fassara…','Traduction…'],
+['Language changed','تم تغيير اللغة','زبان تبدیل ہو گئی','Bahasa diubah','An canza harshe','Langue modifiée'],
+// common buttons & words
+['Back','رجوع','واپس','Kembali','Koma','Retour'],
+['Save','حفظ','محفوظ کریں','Simpan','Ajiye','Enregistrer'],
+['Cancel','إلغاء','منسوخ کریں','Batal','Soke','Annuler'],
+['Done','تم','ہو گیا','Selesai','An gama','Terminé'],
+['Copy','نسخ','کاپی','Salin','Kwafa','Copier'],
+['Copied','تم النسخ','کاپی ہو گیا','Disalin','An kwafa','Copié'],
+['Try again','حاول مجدداً','دوبارہ کوشش کریں','Coba lagi','Sake gwadawa','Réessayer'],
+['Call','اتصال','کال','Telepon','Kira','Appeler'],
+['Directions','الاتجاهات','راستہ','Petunjuk arah','Hanya','Itinéraire'],
+['Website','الموقع','ویب سائٹ','Situs web','Shafin yanar gizo','Site web'],
+['Phone','الهاتف','فون','Telepon','Waya','Téléphone'],
+['Address','العنوان','پتہ','Alamat','Adireshi','Adresse'],
+['Open','مفتوح','کھلا','Buka','A buɗe','Ouvert'],
+['Closed','مغلق','بند','Tutup','A rufe','Fermé'],
+['Today','اليوم','آج','Hari ini','Yau','Aujourd’hui'],
+['Tomorrow','غداً','کل','Besok','Gobe','Demain'],
+['Free','مجاني','مفت','Gratis','Kyauta','Gratuit'],
+['Report an error','أبلغ عن خطأ','غلطی کی اطلاع دیں','Laporkan kesalahan','Kai rahoton kuskure','Signaler une erreur'],
+['Last reviewed','آخر مراجعة','آخری جائزہ','Terakhir ditinjau','Bita ta ƙarshe','Dernière révision'],
+['Accepts Pi','يقبل Pi','Pi قبول کرتا ہے','Menerima Pi','Yana karɓar Pi','Accepte le Pi'],
+['Pi merchants','تجّار Pi','Pi مرچنٹس','Pedagang Pi','’Yan kasuwar Pi','Commerçants Pi'],
+['Merchants','التجّار','مرچنٹس','Pedagang','’Yan kasuwa','Commerçants'],
+['Pi map','خريطة Pi','Pi نقشہ','Peta Pi','Taswirar Pi','Carte Pi'],
+['Stay safe with Pi','ابقَ آمناً مع Pi','Pi کے ساتھ محفوظ رہیں','Tetap aman dengan Pi','Ka kasance lafiya da Pi','Restez en sécurité avec Pi'],
+['Request','طلب','درخواست','Minta','Nema','Demander'],
+['Send','إرسال','بھیجیں','Kirim','Aika','Envoyer'],
+['History','السجل','تاریخ','Riwayat','Tarihi','Historique'],
+['Ask anything…','اسأل أي شيء…','کچھ بھی پوچھیں…','Tanya apa saja…','Tambayi komai…','Demandez n’importe quoi…'],
+// META titles & short labels
+['Visas & residency','التأشيرات والإقامة','ویزا اور رہائش','Visa & izin tinggal','Biza & zama','Visas & résidence'],
+['Government e-services','الخدمات الحكومية الإلكترونية','سرکاری ای-سروسز','Layanan e-pemerintah','Ayyukan gwamnati ta intanet','Services publics en ligne'],
+['Umrah','العمرة','عمرہ','Umrah','Umrah','Omra'],['Umrah step by step','العمرة خطوة بخطوة','عمرہ قدم بہ قدم','Umrah langkah demi langkah','Umrah mataki-mataki','La Omra étape par étape'],
+['Hajj','الحج','حج','Haji','Hajji','Hajj'],['Hajj day by day','الحج يوماً بيوم','حج دن بہ دن','Haji hari demi hari','Hajji kowace rana','Le Hajj jour par jour'],
+['Visiting Madinah','زيارة المدينة','مدینہ کی زیارت','Ziarah Madinah','Ziyarar Madina','Visiter Médine'],
+['Packing','التجهيز','سامان','Barang bawaan','Kayan tafiya','Bagages'],['Umrah packing checklist','قائمة تجهيز العمرة','عمرہ سامان کی فہرست','Daftar barang Umrah','Jerin kayan Umrah','Liste de bagages Omra'],
+['Documents','الوثائق','دستاویزات','Dokumen','Takardu','Documents'],['Document checklist','قائمة الوثائق','دستاویزات کی فہرست','Daftar dokumen','Jerin takardu','Liste des documents'],
+['Trip budget','ميزانية الرحلة','سفر کا بجٹ','Anggaran perjalanan','Kasafin tafiya','Budget du voyage'],['Trip budget planner','مخطط ميزانية الرحلة','سفر بجٹ پلانر','Perencana anggaran perjalanan','Mai tsara kasafin tafiya','Planificateur de budget'],
+['7-day plan','خطة 7 أيام','7 دن کا منصوبہ','Rencana 7 hari','Shirin kwana 7','Plan de 7 jours'],['7-day first-trip plan','خطة أول رحلة لـ 7 أيام','پہلے سفر کا 7 دن کا منصوبہ','Rencana perjalanan pertama 7 hari','Shirin tafiya ta farko na kwana 7','Plan de premier voyage en 7 jours'],
+['Arrival','الوصول','آمد','Kedatangan','Isowa','Arrivée'],['Arrival checklist','قائمة الوصول','آمد کی فہرست','Daftar kedatangan','Jerin isowa','Liste d’arrivée'],
+['Trains','القطارات','ٹرینیں','Kereta','Jiragen ƙasa','Trains'],['Trains & airports','القطارات والمطارات','ٹرینیں اور ہوائی اڈے','Kereta & bandara','Jiragen ƙasa & filayen jirgi','Trains & aéroports'],
+['Reminders','التذكيرات','یاد دہانیاں','Pengingat','Tunatarwa','Rappels'],['Expiry reminders','تذكيرات الانتهاء','میعاد ختم ہونے کی یاد دہانی','Pengingat kedaluwarsa','Tunatarwar ƙarewa','Rappels d’expiration'],
+['SOS card','بطاقة الطوارئ','SOS کارڈ','Kartu SOS','Katin SOS','Carte SOS'],['Emergency card','بطاقة الطوارئ','ایمرجنسی کارڈ','Kartu darurat','Katin gaggawa','Carte d’urgence'],
+['Emergency numbers','أرقام الطوارئ','ایمرجنسی نمبرز','Nomor darurat','Lambobin gaggawa','Numéros d’urgence'],
+['Culture & etiquette','الثقافة والآداب','ثقافت اور آداب','Budaya & etiket','Al’ada & ladabi','Culture & savoir-vivre'],
+['Climate & best time','المناخ وأفضل وقت','موسم اور بہترین وقت','Iklim & waktu terbaik','Yanayi & lokaci mafi kyau','Climat & meilleure période'],
+['Currency','العملة','کرنسی','Mata uang','Kuɗi','Devises'],['Currency converter','محوّل العملات','کرنسی کنورٹر','Konverter mata uang','Mai canza kuɗi','Convertisseur de devises'],
+['VAT','ضريبة القيمة المضافة','VAT','PPN','VAT','TVA'],['VAT calculator','حاسبة الضريبة','VAT کیلکولیٹر','Kalkulator PPN','Lissafin VAT','Calculateur de TVA'],
+['Split bill','تقسيم الفاتورة','بل تقسیم','Bagi tagihan','Raba lissafi','Partager l’addition'],['Bill splitter','مقسّم الفاتورة','بل تقسیم کار','Pembagi tagihan','Mai raba lissafi','Partage d’addition'],
+['Units','الوحدات','اکائیاں','Satuan','Ma’auni','Unités'],['Unit converter','محوّل الوحدات','یونٹ کنورٹر','Konverter satuan','Mai canza ma’auni','Convertisseur d’unités'],
+['Dictionary','القاموس','لغت','Kamus','Ƙamus','Dictionnaire'],['Arabic dictionary','قاموس عربي','عربی لغت','Kamus Arab','Ƙamus na Larabci','Dictionnaire arabe'],
+['Time zones','المناطق الزمنية','ٹائم زونز','Zona waktu','Yankunan lokaci','Fuseaux horaires'],['Time difference','فرق التوقيت','وقت کا فرق','Selisih waktu','Bambancin lokaci','Décalage horaire'],
+['Quran','القرآن','قرآن','Al-Qur’an','Alƙur’ani','Coran'],['Duas','الأدعية','دعائیں','Doa','Addu’o’i','Douas'],['Tasbih','التسبيح','تسبیح','Tasbih','Tasbihi','Tasbih'],
+['Qibla','القبلة','قبلہ','Kiblat','Alƙibla','Qibla'],['Qibla finder','محدد القبلة','قبلہ نما','Pencari kiblat','Mai nemo Alƙibla','Boussole Qibla'],
+['Calendar','التقويم','کیلنڈر','Kalender','Kalanda','Calendrier'],['Islamic calendar','التقويم الهجري','اسلامی کیلنڈر','Kalender Islam','Kalandar Musulunci','Calendrier islamique'],
+['Zakat','الزكاة','زکوٰۃ','Zakat','Zakka','Zakat'],['Zakat calculator','حاسبة الزكاة','زکوٰۃ کیلکولیٹر','Kalkulator zakat','Lissafin Zakka','Calculateur de zakat'],
+['Support DigitalSaudi','ادعم DigitalSaudi','DigitalSaudi کی مدد کریں','Dukung DigitalSaudi','Tallafa wa DigitalSaudi','Soutenir DigitalSaudi'],
+['Bookmarks','المحفوظات','بک مارکس','Penanda','Alamomi','Favoris'],['Recently viewed','شوهدت مؤخراً','حال ہی میں دیکھا','Baru dilihat','Waɗanda aka duba kwanan nan','Vus récemment'],
+['Settings','الإعدادات','ترتیبات','Pengaturan','Saituna','Paramètres'],['Feedback','ملاحظات','رائے','Masukan','Ra’ayi','Avis'],['About DigitalSaudi','حول DigitalSaudi','DigitalSaudi کے بارے میں','Tentang DigitalSaudi','Game da DigitalSaudi','À propos de DigitalSaudi'],
+['Saved checklists','القوائم المحفوظة','محفوظ فہرستیں','Daftar tersimpan','Jerin da aka ajiye','Listes enregistrées'],
+['Carbon calculator','حاسبة الكربون','کاربن کیلکولیٹر','Kalkulator karbon','Lissafin carbon','Calculateur carbone'],['Water-saving calculator','حاسبة توفير المياه','پانی بچت کیلکولیٹر','Kalkulator hemat air','Lissafin tanadin ruwa','Calculateur d’économie d’eau'],
+['Energy & bill calculator','حاسبة الطاقة والفاتورة','توانائی اور بل کیلکولیٹر','Kalkulator energi & tagihan','Lissafin wuta & kuɗi','Calculateur d’énergie et facture'],['Recycling guide','دليل إعادة التدوير','ری سائیکلنگ گائیڈ','Panduan daur ulang','Jagorar sake sarrafawa','Guide du recyclage'],
+['Sustainable living','الحياة المستدامة','پائیدار زندگی','Hidup berkelanjutan','Rayuwa mai ɗorewa','Vie durable'],['Climate education','التوعية المناخية','موسمیاتی تعلیم','Edukasi iklim','Ilimin yanayi','Éducation climatique'],['Green technology','التقنية الخضراء','سبز ٹیکنالوجی','Teknologi hijau','Fasahar muhalli','Technologie verte'],
+['Near me','بالقرب مني','میرے قریب','Di dekat saya','Kusa da ni','Autour de moi'],['Hotels & stays','الفنادق والإقامة','ہوٹل اور قیام','Hotel & penginapan','Otal-otal & masauki','Hôtels & séjours'],['Restaurants & cafés','المطاعم والمقاهي','ریستوران اور کیفے','Restoran & kafe','Gidajen abinci & shayi','Restaurants & cafés'],
+['Hotel cost','تكلفة الفندق','ہوٹل کی لاگت','Biaya hotel','Kuɗin otal','Coût de l’hôtel'],['Hotel cost calculator','حاسبة تكلفة الفندق','ہوٹل لاگت کیلکولیٹر','Kalkulator biaya hotel','Lissafin kuɗin otal','Calculateur de coût d’hôtel'],
+['Transport','المواصلات','ٹرانسپورٹ','Transportasi','Sufuri','Transports'],['Transport planner','مخطط المواصلات','ٹرانسپورٹ پلانر','Perencana transportasi','Mai tsara sufuri','Planificateur de trajets'],
+['My trips','رحلاتي','میرے سفر','Perjalanan saya','Tafiye-tafiyena','Mes voyages'],['My Saudi Trips','رحلاتي في السعودية','میرے سعودی سفر','Perjalanan Saudi saya','Tafiye-tafiyena a Saudiyya','Mes voyages en Arabie'],
+['Businesses','الأعمال','کاروبار','Bisnis','Kasuwanci','Commerces'],['Business directory','دليل الأعمال','کاروباری ڈائریکٹری','Direktori bisnis','Jerin kasuwanci','Annuaire des commerces'],
+['Pi Hub','مركز Pi','Pi ہب','Pusat Pi','Cibiyar Pi','Espace Pi'],['Add business','أضف نشاطاً','کاروبار شامل کریں','Tambah bisnis','Ƙara kasuwanci','Ajouter un commerce'],['Add your business','أضف نشاطك التجاري','اپنا کاروبار شامل کریں','Tambahkan bisnis Anda','Ƙara kasuwancinka','Ajoutez votre commerce'],
+['Pi poster','ملصق Pi','Pi پوسٹر','Poster Pi','Fastar Pi','Affiche Pi'],['Accept Pi poster','ملصق «نقبل Pi»','Pi قبول کرنے کا پوسٹر','Poster Terima Pi','Fastar karɓar Pi','Affiche « Pi accepté »'],
+['Career hub','مركز المهن','کیریئر ہب','Pusat karier','Cibiyar sana’a','Espace carrière'],['CV','السيرة الذاتية','سی وی','CV','CV','CV'],['CV builder','منشئ السيرة الذاتية','سی وی بلڈر','Pembuat CV','Mai ƙirƙirar CV','Créateur de CV'],
+['Salary','الراتب','تنخواہ','Gaji','Albashi','Salaire'],['Salary calculator','حاسبة الراتب','تنخواہ کیلکولیٹر','Kalkulator gaji','Lissafin albashi','Calculateur de salaire'],
+['Gratuity','مكافأة نهاية الخدمة','گریجویٹی','Pesangon','Garatuti','Indemnité'],['End-of-service gratuity','مكافأة نهاية الخدمة','اختتام ملازمت گریجویٹی','Pesangon akhir masa kerja','Garatutin ƙarshen aiki','Indemnité de fin de service'],
+['Skills','المهارات','مہارتیں','Keterampilan','Ƙwarewa','Compétences'],['Skills assessment','تقييم المهارات','مہارتوں کا جائزہ','Penilaian keterampilan','Gwajin ƙwarewa','Bilan de compétences'],
+['Safety center','مركز السلامة','حفاظتی مرکز','Pusat keselamatan','Cibiyar tsaro','Centre de sécurité'],['Help now','مساعدة فورية','ابھی مدد','Bantuan sekarang','Taimako yanzu','Aide immédiate'],['What should I do?','ماذا أفعل؟','مجھے کیا کرنا چاہیے؟','Apa yang harus saya lakukan?','Me zan yi?','Que dois-je faire ?'],
+['Notification settings','إعدادات الإشعارات','اطلاعات کی ترتیبات','Pengaturan notifikasi','Saitunan sanarwa','Réglages des notifications'],['Saved places','الأماكن المحفوظة','محفوظ مقامات','Tempat tersimpan','Wuraren da aka ajiye','Lieux enregistrés'],
+['Quiz','اختبار','کوئز','Kuis','Tambayoyi','Quiz'],['Saudi quiz','اختبار السعودية','سعودی کوئز','Kuis Saudi','Tambayoyin Saudiyya','Quiz saoudien'],
+['Saudi AI','الذكاء السعودي','سعودی AI','AI Saudi','AI na Saudiyya','IA saoudienne'],['Saudi AI assistant','المساعد الذكي السعودي','سعودی AI اسسٹنٹ','Asisten AI Saudi','Mataimakin AI na Saudiyya','Assistant IA saoudien'],
+['Wallet','المحفظة','والٹ','Dompet','Walat','Portefeuille'],['Pi Wallet','محفظة Pi','Pi والٹ','Dompet Pi','Walat Pi','Portefeuille Pi'],
+// poster studio
+['Print it. Stick it. Share it.','اطبعه. ألصقه. شاركه.','پرنٹ کریں۔ چسپاں کریں۔ شیئر کریں۔','Cetak. Tempel. Bagikan.','Buga shi. Manna shi. Raba shi.','Imprimez. Collez. Partagez.'],
+['Create my poster','أنشئ ملصقي','میرا پوسٹر بنائیں','Buat poster saya','Ƙirƙiri fastata','Créer mon affiche'],
+['Update poster','تحديث الملصق','پوسٹر اپ ڈیٹ کریں','Perbarui poster','Sabunta fasta','Mettre à jour'],
+['Share image','مشاركة الصورة','تصویر شیئر کریں','Bagikan gambar','Raba hoto','Partager l’image'],
+['Save PNG','حفظ PNG','PNG محفوظ کریں','Simpan PNG','Ajiye PNG','Enregistrer PNG'],
+['Print PDF','طباعة PDF','PDF پرنٹ کریں','Cetak PDF','Buga PDF','Imprimer PDF'],
+['Share pay link','مشاركة رابط الدفع','ادائیگی لنک شیئر کریں','Bagikan tautan bayar','Raba hanyar biya','Partager le lien de paiement'],
+['Copy link','نسخ الرابط','لنک کاپی کریں','Salin tautan','Kwafi hanya','Copier le lien'],
+['Style','النمط','انداز','Gaya','Salo','Style'],['Format','الصيغة','فارمیٹ','Format','Tsari','Format'],
+['QR code opens','رمز QR يفتح','QR کوڈ کھولتا ہے','Kode QR membuka','Lambar QR tana buɗe','Le QR code ouvre'],
+['Business or seller name *','اسم النشاط أو البائع *','کاروبار یا فروخت کنندہ کا نام *','Nama bisnis atau penjual *','Sunan kasuwanci ko mai sayarwa *','Nom du commerce ou vendeur *'],
+['Pi username or wallet address *','اسم مستخدم Pi أو عنوان المحفظة *','Pi یوزرنیم یا والٹ ایڈریس *','Nama pengguna Pi atau alamat dompet *','Sunan Pi ko adireshin walat *','Nom d’utilisateur Pi ou adresse *'],
+['Fixed price in π (optional)','سعر ثابت بعملة π (اختياري)','مقررہ قیمت π میں (اختیاری)','Harga tetap dalam π (opsional)','Ƙayyadadden farashi a π (zaɓi)','Prix fixe en π (facultatif)'],
+['City (optional)','المدينة (اختياري)','شہر (اختیاری)','Kota (opsional)','Birni (zaɓi)','Ville (facultatif)'],
+['Short note (optional)','ملاحظة قصيرة (اختياري)','مختصر نوٹ (اختیاری)','Catatan singkat (opsional)','Gajeren bayani (zaɓi)','Courte note (facultatif)'],
+['Get your "Pi accepted here" poster','احصل على ملصق «نقبل Pi»','اپنا "Pi یہاں قبول ہے" پوسٹر حاصل کریں','Dapatkan poster "Pi diterima di sini"','Sami fastar "Ana karɓar Pi a nan"','Obtenez votre affiche « Pi accepté ici »'],
+['Accept Pi at your business','اقبل Pi في نشاطك','اپنے کاروبار میں Pi قبول کریں','Terima Pi di bisnis Anda','Karɓi Pi a kasuwancinka','Acceptez le Pi dans votre commerce']
+];
+
+/* ==========================================================================
+   v3.2 — Languages engine
+   - English text in the page is the key; known strings swap instantly (offline)
+   - Everything else is translated online once (/translate) and saved on the device
+   - Arabic and Urdu switch the whole layout to right-to-left
+   ========================================================================== */
+const LANGS = {
+  en:{ n:'English', e:'English' },
+  ar:{ n:'العربية', e:'Arabic', rtl:true },
+  ur:{ n:'اردو', e:'Urdu', rtl:true },
+  id:{ n:'Bahasa Indonesia', e:'Indonesian' },
+  ha:{ n:'Hausa', e:'Hausa' },
+  fr:{ n:'Français', e:'French' }
+};
+const LANG_ORDER = ['en','ar','ur','id','ha','fr'];
+const I18N = {};
+LANG_ORDER.slice(1).forEach(function(l, i){ I18N[l] = {}; I18N_ROWS.forEach(function(r){ if(r[i + 1]) I18N[l][r[0]] = r[i + 1]; }); });
+function detectLang(){
+  const n = String((navigator.languages && navigator.languages[0]) || navigator.language || 'en').toLowerCase().slice(0, 2);
+  return n === 'ms' ? 'id' : (LANGS[n] ? n : 'en');
+}
+let LANG = LANGS[store.get('lang', '')] ? store.get('lang', '') : detectLang();
+let AUTO_TR = store.get('tr_' + LANG, {});
+const TR_FAILED = new Set(), TR_QUEUE = new Set();
+const TR_ORIG = new WeakMap(), TR_LAST = new WeakMap(), TR_ATTR = new WeakMap();
+const TR_SKIP = 'script,style,textarea,code,pre,.ar,.notr,[translate="no"],#newsList,#homeNews,.msg,#avatar,#bigAv,.qr,.leaflet-container,#trBadge';
+const TR_SPLIT = /^([\s\p{Extended_Pictographic}️‍⃣•·›‹←→＋+✓✔★☆▸▾▲▼|π]*)(\S[\s\S]*?)([\s›‹→←:*·\p{Extended_Pictographic}\uFE0F\u200D]*)$/u;
+let trEverChanged = LANG !== 'en';
+
+function t(s){ if(LANG === 'en') return s; const d = I18N[LANG] || {}; return d[s] || AUTO_TR[s] || s; }
+function trLookup(core){
+  const d = I18N[LANG] || {};
+  if(d[core] != null) return d[core];
+  if(AUTO_TR[core] != null) return AUTO_TR[core];
+  return null;
+}
+function trString(s){
+  if(LANG === 'en' || s.length > 700 || !/[A-Za-z]{2}/.test(s)) return null;
+  const m = s.match(TR_SPLIT); if(!m) return null;
+  const tr = trLookup(m[2]);
+  if(tr != null) return m[1] + tr + m[3];
+  trWant(m[2]); return null;
+}
+function trText(n){
+  const cur = n.nodeValue; let en = TR_ORIG.get(n);
+  if(en === undefined || TR_LAST.get(n) !== cur){ en = cur; TR_ORIG.set(n, en); }
+  let out = en;
+  const pe = n.parentElement, isName = pe && (pe.id === 'uname' || pe.id === 'profName');
+  if(LANG !== 'en' && (!isName || en.trim() === 'Guest')){ const x = trString(en); if(x != null) out = x; }
+  if(out !== cur) n.nodeValue = out;
+  TR_LAST.set(n, out);
+}
+function trAttrs(el){
+  ['placeholder','aria-label','title'].forEach(function(a){
+    if(!el.hasAttribute(a)) return;
+    let rec = TR_ATTR.get(el); if(!rec){ rec = {}; TR_ATTR.set(el, rec); }
+    const cur = el.getAttribute(a), r = rec[a];
+    const en = r && r.last === cur ? r.en : cur;
+    let out = en; if(LANG !== 'en'){ const x = trString(en); if(x != null) out = x; }
+    if(out !== cur) el.setAttribute(a, out);
+    rec[a] = { en:en, last:out };
+  });
+}
+function trSkip(el){ return !el || (el.closest && el.closest(TR_SKIP)); }
+function trWalk(root){
+  if(!root) return;
+  if(root.nodeType === 3){ if(!trSkip(root.parentElement)) trText(root); return; }
+  if(root.nodeType !== 1 || trSkip(root)) return;
+  const w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, { acceptNode:function(n){ return n.nodeValue.trim() && !trSkip(n.parentElement) ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT; } });
+  let n; while((n = w.nextNode())) trText(n);
+  if(root.hasAttribute) trAttrs(root);
+  root.querySelectorAll('[placeholder],[aria-label],[title]').forEach(function(el){ if(!trSkip(el)) trAttrs(el); });
+}
+
+/* ---------- online translation for everything not in the dictionary ---------- */
+let trBusy = false, trTimer = null;
+function trWant(s){
+  if(store.get('autoTr', true) === false || s.length < 2 || TR_FAILED.has(s) || (navigator.onLine === false)) return;
+  TR_QUEUE.add(s); if(!trTimer) trTimer = setTimeout(trFlush, 350);
+}
+function trBadge(on){
+  let b = $('trBadge');
+  if(!b){ b = document.createElement('div'); b.id = 'trBadge'; document.body.appendChild(b); }
+  b.textContent = '🌐 ' + t('Translating…'); b.classList.toggle('on', !!on);
+}
+function trFlush(){
+  trTimer = null; if(trBusy || !TR_QUEUE.size || LANG === 'en') return;
+  const lang = LANG, batch = []; let chars = 0;
+  for(const s of TR_QUEUE){ if(batch.length >= 40 || chars + s.length > 4500) break; batch.push(s); chars += s.length; }
+  batch.forEach(function(s){ TR_QUEUE.delete(s); });
+  trBusy = true; trBadge(true);
+  fetch('/translate', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ lang:lang, texts:batch }) })
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      if(!(d && d.ok && Array.isArray(d.out))) throw new Error((d && d.error) || 'translate');
+      if(lang !== LANG) return;
+      batch.forEach(function(s, i){ const x = d.out[i]; if(typeof x === 'string' && x.trim()) AUTO_TR[s] = x; else TR_FAILED.add(s); });
+      trSaveAuto(); trWalk(document.body);
+    })
+    .catch(function(){ batch.forEach(function(s){ TR_FAILED.add(s); }); })
+    .finally(function(){ trBusy = false; trBadge(false); if(TR_QUEUE.size) trTimer = setTimeout(trFlush, 200); });
+}
+function trSaveAuto(){
+  let keys = Object.keys(AUTO_TR);
+  if(keys.length > 4000){ const keep = {}; keys.slice(-3000).forEach(function(k){ keep[k] = AUTO_TR[k]; }); AUTO_TR = keep; }
+  try{ localStorage.setItem('ds_tr_' + LANG, JSON.stringify(AUTO_TR)); }
+  catch(e){ AUTO_TR = {}; try{ localStorage.removeItem('ds_tr_' + LANG); }catch(e2){} }
+}
+
+/* ---------- headings that mix text with styled words ---------- */
+const OB_HTML = {
+  '#onboard [data-i="0"] h1':{ ar:'مرحباً بك في Digital<span>Saudi</span>', ur:'Digital<span>Saudi</span> میں خوش آمدید', id:'Selamat datang di Digital<span>Saudi</span>', ha:'Barka da zuwa Digital<span>Saudi</span>', fr:'Bienvenue sur Digital<span>Saudi</span>' },
+  '#onboard [data-i="1"] h1':{ ar:'مباشر و<span>محدّث</span>', ur:'لائیو اور <span>تازہ ترین</span>', id:'Langsung & <span>terkini</span>', ha:'Kai tsaye & <span>na zamani</span>', fr:'En direct & <span>à jour</span>' },
+  '#onboard [data-i="2"] h1':{ ar:'ما الذي <span>يجلبك</span>؟', ur:'آپ <span>کیوں</span> آئے ہیں؟', id:'Apa yang membawa <span>Anda</span>?', ha:'Me ya kawo <span>ka</span>?', fr:'Qu’est-ce qui <span>vous</span> amène ?' }
+};
+function trFixedHTML(){
+  Object.keys(OB_HTML).forEach(function(sel){
+    const el = document.querySelector(sel); if(!el) return;
+    if(!el.dataset.en){ el.dataset.en = el.innerHTML; el.classList.add('notr'); }
+    el.innerHTML = LANG === 'en' ? el.dataset.en : (OB_HTML[sel][LANG] || el.dataset.en);
+  });
+}
+
+/* ---------- apply / switch ---------- */
+function applyLang(lang, quiet){
+  if(!LANGS[lang]) lang = 'en';
+  const changed = lang !== LANG; LANG = lang; store.set('lang', lang);
+  if(changed){ AUTO_TR = store.get('tr_' + lang, {}); TR_QUEUE.clear(); TR_FAILED.clear(); }
+  if(lang !== 'en') trEverChanged = true;
+  document.documentElement.lang = lang;
+  document.documentElement.dir = LANGS[lang].rtl ? 'rtl' : 'ltr';
+  document.documentElement.classList.toggle('rtl', !!LANGS[lang].rtl);
+  trFixedHTML();
+  if(trEverChanged) trWalk(document.body);
+  document.querySelectorAll('.lang-now').forEach(function(el){ el.textContent = LANGS[lang].n; });
+  if(changed && !quiet) toast(t('Language changed') + ' · ' + LANGS[lang].n);
+}
+function setLang(lang){
+  applyLang(lang);
+  document.querySelectorAll('.lang-pick button').forEach(function(b){ b.classList.toggle('on', b.dataset.l === LANG); });
+}
+function langButtonsHTML(){
+  return '<div class="lang-pick">' + LANG_ORDER.map(function(l){ return `<button class="notr ${l === LANG ? 'on' : ''}" data-l="${l}" onclick="setLang('${l}')"><b>${LANGS[l].n}</b>${l === 'en' ? '' : '<small>' + LANGS[l].e + '</small>'}</button>`; }).join('') + '</div>';
+}
+PANELS.language = function(){
+  showPanel('Language', `<p class="small" style="margin-bottom:12px">Choose your language</p>${langButtonsHTML()}
+    <div class="setting" style="margin-top:14px"><div><b>Translate guides automatically</b><div class="small">Uses the internet the first time; saved on your device after that</div></div><button class="toggle ${store.get('autoTr', true) !== false ? 'on' : ''}" onclick="this.classList.toggle('on');store.set('autoTr',this.classList.contains('on'));applyLang(LANG,true)"></button></div>
+    <p class="small notr" style="margin-top:12px">English · العربية · اردو · Bahasa Indonesia · Hausa · Français</p>`, { id:'language', share:false });
+};
+META.language = { t:'Language', ic:'🌐', s:'English, العربية, اردو, Indonesia, Hausa, Français', short:'Language' };
+NOMARK.push('language');
+
+/* ---------- entry points: splash, onboarding, settings, profile ---------- */
+(function(){
+  const sp = $('splash');
+  if(sp && !$('splashLang')) sp.insertAdjacentHTML('afterbegin', `<button id="splashLang" class="lang-fab notr" onclick="openLangSheet()">🌐 <span class="lang-now">${LANGS[LANG].n}</span></button>`);
+  const ob = document.querySelector('#onboard [data-i="0"]');
+  if(ob && !$('obLang')) ob.insertAdjacentHTML('beforeend', `<div id="obLang" style="margin-top:18px"><div class="small" style="margin-bottom:8px">🌐 Choose your language</div>${langButtonsHTML()}</div>`);
+  const notifRow = document.querySelector('#tab-profile .row[onclick*="notifSettings"]');
+  if(notifRow) notifRow.insertAdjacentHTML('beforebegin', `<button class="row" onclick="openItem('language')"><div class="ic">🌐</div><div class="tx"><b>Language</b><small class="lang-now notr">${LANGS[LANG].n}</small></div><span class="chev">›</span></button>`);
+  const _settings = PANELS.settings;
+  PANELS.settings = function(){
+    _settings();
+    const body = $('pBody'); if(!body) return;
+    body.insertAdjacentHTML('afterbegin', `<div class="setting"><div><b>App language</b><div class="small lang-now notr">${LANGS[LANG].n}</div></div><button class="btn btn-ghost btn-sm" onclick="openItem('language')">🌐 Language</button></div>`);
+    trWalk(body);
+  };
+})();
+function openLangSheet(){
+  // on the splash screen the panel sits under it, so show a light sheet instead
+  let s = $('langSheet');
+  if(!s){ s = document.createElement('div'); s.id = 'langSheet'; document.body.appendChild(s); }
+  s.innerHTML = `<div class="ls-in"><h3>🌐 ${t('Choose your language')}</h3>${langButtonsHTML()}<button class="btn btn-primary" style="margin:14px auto 0" onclick="$('langSheet').classList.remove('open')">${t('Done')}</button></div>`;
+  s.classList.add('open');
+  s.onclick = function(e){ if(e.target === s) s.classList.remove('open'); };
+}
+
+/* ---------- Saudi AI answers in the chosen language ---------- */
+(function(){
+  const f = window.fetch;
+  window.fetch = function(url, opts){
+    try{
+      if(url === '/ai' && opts && opts.method === 'POST' && typeof opts.body === 'string' && LANG !== 'en'){
+        const b = JSON.parse(opts.body); b.lang = LANGS[LANG].e; opts = Object.assign({}, opts, { body:JSON.stringify(b) });
+      }
+    }catch(e){}
+    return f.apply(this, [url, opts]);
+  };
+})();
+
+/* ---------- keep new content translated ---------- */
+const trObserver = new MutationObserver(function(muts){
+  if(!trEverChanged) return;
+  for(const m of muts){
+    if(m.type === 'characterData'){ const n = m.target; if(TR_LAST.get(n) !== n.nodeValue && !trSkip(n.parentElement)) trText(n); }
+    else m.addedNodes.forEach(trWalk);
+  }
+});
+trObserver.observe(document.body, { subtree:true, childList:true, characterData:true });
+applyLang(LANG, true);
+
 </script>
 </body>
 </html>
