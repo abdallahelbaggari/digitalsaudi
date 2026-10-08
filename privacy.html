@@ -1,12 +1,280 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>DigitalSaudi — Privacy Policy</title><style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:'DM Sans',sans-serif;background:#04060A;color:#E0E0E8;padding:1.5rem;line-height:1.65;font-size:.9rem}h1{color:#00A84F;font-size:1.4rem;margin-bottom:.3rem}h2{color:#00A84F;font-size:1rem;margin:1.2rem 0 .4rem}p{margin-bottom:.7rem;color:rgba(224,224,232,.8)}ul{margin:.4rem 0 .7rem 1.2rem;color:rgba(224,224,232,.8)}li{margin-bottom:.3rem}.meta{font-size:.75rem;color:rgba(224,224,232,.4);margin-bottom:1.2rem}a{color:#C8A951}.footer{margin-top:2rem;padding-top:1rem;border-top:1px solid rgba(0,168,79,.15);font-size:.75rem;color:rgba(224,224,232,.4);text-align:center}</style></head><body>
-<h1>DigitalSaudi</h1><p class="meta">Privacy Policy · Last updated: June 2026</p>
-<h2>1. Introduction</h2><p>DigitalSaudi ("the App") is a Saudi digital super app built for the Pi Network ecosystem. This Privacy Policy explains how we handle your information.</p>
-<h2>2. Information We Collect</h2><ul><li>Pi Network username (via Pi SDK authentication only)</li><li>City preference for prayer times and weather</li><li>App usage data stored locally on your device</li></ul>
-<h2>3. Pi Network Integration</h2><p>DigitalSaudi uses Pi SDK exclusively for authentication and payments. We do not collect passwords, private keys or wallet data.</p>
-<h2>4. Prayer Times &amp; Location</h2><p>Prayer times are calculated using the city you select. We do not collect or store your GPS location. City selection is stored locally on your device only.</p>
-<h2>5. Third-Party APIs</h2><ul><li>Aladhan API — prayer times calculation (aladhan.com)</li><li>Open-Meteo — weather data (open-meteo.com)</li><li>The Guardian API — news content</li></ul>
-<h2>6. Pi Ecosystem Compatibility</h2><p>DigitalSaudi uses Pi SDK exclusively for all authentication and transactions. No other login methods or payment currencies are supported.</p>
-<h2>7. No Gambling or Illegal Content</h2><p>DigitalSaudi does not support gambling, betting, or any illegal activities. All content is compliant with Islamic values and Saudi regulations.</p>
-<h2>8. Contact</h2><p>For privacy questions: <a href="mailto:support.digitalsaudi.pi@gmail.com">support.digitalsaudi.pi@gmail.com</a></p>
-<div class="footer">© 2026 DigitalSaudi · Built by Abdullahi Bashir Abubakar · digitalsaudi-pi.pages.dev</div>
-</body></html>
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#04150D">
+<title>Privacy Policy — DigitalSaudi</title>
+<meta name="description" content="How DigitalSaudi (digitalsaudi.pi) handles your information: what we process, why, who helps us, and your choices.">
+<style>
+:root{--bg:#04150D;--card:#0A2618;--line:#173D2A;--ink:#EAF5EE;--mute:#A9C2B3;--green:#00A859;--gold:#D4AF37;--warn:#3A2A08}
+*{box-sizing:border-box}
+body{font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.65;margin:0;padding:24px 16px 60px;font-size:16px}
+main{max-width:760px;margin:auto}
+a{color:var(--gold)}
+.back{display:inline-block;margin-bottom:18px;padding:12px 18px;background:var(--card);border-radius:12px;text-decoration:none}
+.brand{font-weight:800;letter-spacing:.2px;background:linear-gradient(90deg,#00A859,#D4AF37);-webkit-background-clip:text;background-clip:text;color:transparent}
+h1{color:var(--gold);margin:6px 0 4px;font-size:30px;line-height:1.2}
+.meta{color:var(--mute);font-size:14px;margin:0 0 18px}
+.meta b{color:var(--ink);font-weight:600}
+h2{color:var(--green);font-size:19px;margin:34px 0 8px;scroll-margin-top:16px}
+h3{color:var(--ink);font-size:16px;margin:20px 0 6px}
+ul{padding-inline-start:22px}li{margin:4px 0}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 18px;margin:14px 0}
+.alert{background:var(--warn);border:1px solid #6B5212;border-radius:14px;padding:14px 18px;margin:14px 0}
+.alert strong{color:var(--gold)}
+.toc{columns:2;column-gap:24px;margin:0;padding-inline-start:20px;font-size:14px}
+.toc li{break-inside:avoid}
+.toc a{color:var(--ink);text-decoration:none}.toc a:hover{color:var(--gold)}
+table{width:100%;border-collapse:collapse;font-size:14px;margin:10px 0}
+th,td{text-align:start;vertical-align:top;padding:8px 10px;border-bottom:1px solid var(--line)}
+th{color:var(--gold);font-weight:600}
+.closing{text-align:center;margin-top:40px;padding:22px;border-top:1px solid var(--line)}
+.closing p{margin:6px 0}
+.closing .big{font-size:20px;color:var(--gold);font-weight:700}
+.top{display:inline-block;margin-top:24px;font-size:14px}
+@media (max-width:560px){.toc{columns:1}h1{font-size:26px}}
+@media print{body{background:#fff;color:#000}.back,.top{display:none}h1,h2,a,.closing .big{color:#000}.card,.alert{background:#fff;border-color:#999}.brand{color:#000;background:none}}
+</style></head>
+<body><main id="top">
+<a class="back" href="/">← Back to DigitalSaudi</a>
+<div class="brand">DigitalSaudi · digitalsaudi.pi</div>
+<h1>Privacy Policy</h1>
+<p class="meta"><b>Effective Date:</b> October 1, 2026 &nbsp;·&nbsp; <b>Last Updated:</b> October 8, 2026</p>
+
+<p>DigitalSaudi (“DigitalSaudi,” “we,” “us,” or “our”) respects your privacy and is committed to protecting personal information through responsible, transparent, and security-conscious practices.</p>
+<p>This Privacy Policy explains what information DigitalSaudi may process, why it may be processed, how it may be protected, when it may be shared, and the choices and rights available to you when you use the DigitalSaudi application at <b>digitalsaudi.pi</b> and <a href="https://digitalsaudi.pages.dev">digitalsaudi.pages.dev</a>, and its services, features, and related experiences (collectively, the “Service”).</p>
+<p>DigitalSaudi is designed around data minimization, privacy by design, security, transparency, and user control. We seek to collect and process only information reasonably necessary to provide, secure, improve, and maintain the Service.</p>
+<p>By using DigitalSaudi, you acknowledge this Privacy Policy. Where applicable law requires your consent for a particular processing activity, we will request that consent separately.</p>
+
+<div class="card"><b>In short:</b> Most of what you do in DigitalSaudi stays on your device. Our server receives only what a feature needs to work — for example your Pi username when you sign in, payment records for Premium, business listings you submit, and the text you send to the AI assistant. We do not sell data, show third-party ads, use analytics trackers, or ever ask for your Pi Wallet passphrase.</div>
+
+<div class="card"><b>Contents</b>
+<ol class="toc">
+<li><a href="#s1">Who We Are</a></li><li><a href="#s2">Information We May Process</a></li><li><a href="#s3">How We Use Information</a></li><li><a href="#s4">Legal Bases for Processing</a></li><li><a href="#s5">Data Minimization &amp; Privacy by Design</a></li><li><a href="#s6">AI Features</a></li><li><a href="#s7">Third-Party Services</a></li><li><a href="#s8">External Websites &amp; Official Services</a></li><li><a href="#s9">Pi Integration</a></li><li><a href="#s10">Blockchain Information</a></li><li><a href="#s11">Cookies &amp; Similar Technologies</a></li><li><a href="#s12">Data Sharing</a></li><li><a href="#s13">International Data Transfers</a></li><li><a href="#s14">Data Security</a></li><li><a href="#s15">Data Retention</a></li><li><a href="#s16">Your Privacy Rights</a></li><li><a href="#s17">How to Exercise Your Rights</a></li><li><a href="#s18">Children's Privacy</a></li><li><a href="#s19">Accuracy of Information</a></li><li><a href="#s20">Religious Information</a></li><li><a href="#s21">Financial Information</a></li><li><a href="#s22">Travel, Immigration &amp; Safety</a></li><li><a href="#s23">Changes to This Policy</a></li><li><a href="#s24">Contact</a></li><li><a href="#s25">Our Privacy Commitment</a></li>
+</ol></div>
+
+<h2 id="s1">1. Who We Are</h2>
+<p>DigitalSaudi is an independent digital platform designed to provide information, discovery tools, practical utilities, AI-assisted experiences, travel and daily-life resources, Saudi-related information, and optional digital services. It is available in the Pi Browser at <b>digitalsaudi.pi</b> and on the web at <a href="https://digitalsaudi.pages.dev">digitalsaudi.pages.dev</a>.</p>
+<p>DigitalSaudi is not a government entity, government agency, embassy, immigration authority, bank, financial institution, travel authority, religious authority, or emergency service provider.</p>
+<p>DigitalSaudi is also independent of Pi Network.</p>
+<h3>Pi Network independence</h3>
+<p>DigitalSaudi is not operated by, owned by, sponsored by, endorsed by, or affiliated with Pi Network, Pi Community Company, the Pi Core Team, or any other Pi-related entity, except where an express written authorization, license, partnership, or official relationship is specifically stated.</p>
+<p>Any reference to Pi is intended only to accurately describe supported or compatible functionality where applicable and must not be interpreted as an endorsement, sponsorship, certification, or official relationship.</p>
+<p>Pi and related Pi trademarks are owned by their respective rights holders. DigitalSaudi does not claim ownership of them.</p>
+
+<h2 id="s2">2. Information We May Process</h2>
+<p>The information we process depends on how you use DigitalSaudi and which features you choose to access.</p>
+
+<h3>2.1 Information you voluntarily provide</h3>
+<p>Depending on the feature, this may include:</p>
+<ul><li>profile preferences;</li><li>language preferences;</li><li>accessibility preferences;</li><li>saved places;</li><li>saved trips;</li><li>bookmarks;</li><li>reminders;</li><li>favorite content;</li><li>feedback;</li><li>support requests;</li><li>business-directory listings you submit;</li><li>information you voluntarily submit through forms or other interactions.</li></ul>
+<p>Most of these (preferences, saved places, trips, bookmarks, reminders, favorites, CV builder details, emergency card, checklists and chat history) are kept <b>only on your device</b> — see section 2.6. Business listings you submit, together with your Pi username, are stored on our server and published only after review.</p>
+<p>We do not require you to provide personal information merely to browse general informational content where the feature can reasonably operate without it. You can use DigitalSaudi as a guest without signing in.</p>
+
+<h3>2.2 Pi authentication information</h3>
+<p>If you choose to use Pi-based authentication, DigitalSaudi may receive the information made available through the applicable Pi authentication mechanism and permitted by the relevant integration. In practice this is your <b>Pi username and Pi user ID</b>, which we use to show your name and link Premium and payments to your account.</p>
+<p>We seek to use only the information reasonably necessary to provide the requested functionality.</p>
+<div class="alert"><strong>DigitalSaudi does not request or handle wallet secrets</strong>
+<p>DigitalSaudi does not request, collect, access, transmit, receive, store, display, or ask you to disclose:</p>
+<ul><li>your Pi Wallet passphrase;</li><li>seed phrase;</li><li>private key;</li><li>wallet secret;</li><li>account password;</li><li>authentication password;</li><li>PIN;</li><li>verification code or OTP, except where a separate service legitimately provides one through its own secure authentication flow; or</li><li>other confidential wallet credentials.</li></ul>
+<p><b>Never provide your Pi Wallet passphrase or private key to DigitalSaudi, its personnel, support channels, forms, websites, or any other third party.</b></p>
+<p>Your wallet credentials are private and should remain under your control. Pi Network describes its Pi Wallet as non-custodial and states that the wallet passphrase represents the private key.</p>
+<p>If anyone claiming to represent DigitalSaudi asks for your wallet passphrase, private key, seed phrase, password, or similar secret, do not provide it and treat the request as potentially fraudulent.</p></div>
+
+<h3>2.3 Location information</h3>
+<p>Where you enable location-based functionality, DigitalSaudi may process location information necessary to provide features such as:</p>
+<ul><li>nearby places;</li><li>maps;</li><li>directions;</li><li>local discovery;</li><li>weather;</li><li>location-aware recommendations;</li><li>travel assistance;</li><li>emergency-related information.</li></ul>
+<p>Location access is requested only when you use a feature that needs it. The <b>Qibla finder</b> uses your location on your device only. <b>“Near me”</b> sends approximate coordinates to our server to look up nearby places from OpenStreetMap; we do not store them. Weather and prayer times use the coordinates of the city you select, not your own position.</p>
+<p>You may control location permissions through your device or browser settings. Disabling location access may reduce or prevent certain location-dependent features from functioning.</p>
+<p>DigitalSaudi does not use continuous background location tracking.</p>
+
+<h3>2.4 Transaction and payment information</h3>
+<p>DigitalSaudi supports Pi payments for Premium (1&nbsp;π monthly or 5&nbsp;π lifetime) and voluntary support payments. Transaction processing may involve information necessary to facilitate, verify, record, reconcile, or display the transaction, including:</p>
+<ul><li>public wallet addresses;</li><li>transaction identifiers;</li><li>payment identifiers;</li><li>transaction status;</li><li>transaction amount and plan;</li><li>timestamps;</li><li>merchant or recipient information;</li><li>blockchain-related information.</li></ul>
+<p>Payments are approved and completed through the official Pi Network API, and your Premium status is recorded against your Pi user ID. DigitalSaudi does not need and must not request your private wallet credentials to facilitate a legitimate supported transaction.</p>
+<p><b>Accept-Pi posters and pay links</b> are generated on your device. A pay link contains only what you typed (business name, Pi username or wallet address, price, note, city) inside the link itself; we do not store it. Anyone you share the poster or link with can see those details.</p>
+<p>Blockchain transactions may be publicly visible and may be permanent or difficult to reverse. Users should carefully verify transaction details before confirming them.</p>
+
+<h3>2.5 Technical and diagnostic information</h3>
+<p>When you use DigitalSaudi, certain technical information may be processed automatically by our hosting provider (Cloudflare) as part of delivering any web page, such as:</p>
+<ul><li>IP address and approximate region;</li><li>device type;</li><li>operating system;</li><li>browser or application environment;</li><li>language;</li><li>network information;</li><li>application version;</li><li>security events;</li><li>performance and diagnostic information.</li></ul>
+<p>This information may be used to maintain reliability, troubleshoot problems, prevent abuse, improve performance, and protect the Service. For example, we keep a daily count of AI questions so the free limit can apply — not the questions themselves.</p>
+<p>We do not currently use third-party analytics, advertising SDKs, or crash-reporting services, and we seek to avoid collecting unnecessary personal information through technical and diagnostic systems.</p>
+
+<h3>2.6 Locally stored information</h3>
+<p>Many DigitalSaudi features store information locally on your device, including through technologies such as:</p>
+<ul><li>Local Storage;</li><li>Session Storage;</li><li>IndexedDB;</li><li>service-worker caches;</li><li>offline storage;</li><li>application preferences.</li></ul>
+<p>Locally stored information may include preferences, language choice, saved content, trips, saved places, bookmarks, favorites, badges, reminders and expiry dates, emergency card details, CV builder details, green-calculator inputs, checklists, AI chat history, payment history, and cached resources for offline use. This information is not uploaded to our server.</p>
+<p>The exact information stored locally depends on the features enabled in the version of DigitalSaudi you use.</p>
+<p>Clearing application or browser storage — or using <b>Profile › Settings › Clear saved data</b> — removes locally stored preferences, saved content, and offline information.</p>
+
+<h2 id="s3">3. How We Use Information</h2>
+<p>We may process information for purposes including:</p>
+<h3>Providing the Service</h3><p>To provide requested features, personalization, search, discovery, maps, AI-assisted experiences, translation, saved content, notifications, payments, authentication, and other functionality.</p>
+<h3>Security and fraud prevention</h3><p>To protect users, accounts, transactions, infrastructure, and the Service from fraud, abuse, unauthorized access, phishing, malicious activity, and security threats.</p>
+<h3>Reliability and performance</h3><p>To identify errors, improve loading performance, diagnose technical problems, and maintain service availability.</p>
+<h3>Personalization</h3><p>To remember preferences and tailor the experience where you choose to use personalization features.</p>
+<h3>Communication</h3><p>To respond to support requests, service messages, security notices, or other communications you initiate or that are necessary to operate the Service.</p>
+<h3>Legal compliance</h3><p>To comply with applicable law, lawful requests, legal processes, regulatory obligations, and legitimate requests from competent authorities.</p>
+<h3>Product improvement</h3><p>To understand how features perform and improve usability, accessibility, reliability, and functionality, using appropriate safeguards and data-minimization principles.</p>
+
+<h2 id="s4">4. Legal Bases for Processing</h2>
+<p>Where applicable law requires a lawful basis for processing, DigitalSaudi may rely on one or more appropriate legal bases, including:</p>
+<ul><li>your consent;</li><li>performance of a contract or provision of requested services;</li><li>compliance with legal obligations;</li><li>protection of vital interests;</li><li>legitimate interests, where permitted by law and balanced against your rights and interests;</li><li>other lawful bases recognized by applicable data-protection legislation.</li></ul>
+<p>Where processing is based on consent, you may withdraw consent where legally applicable. Withdrawal does not necessarily affect processing that occurred lawfully before withdrawal.</p>
+
+<h2 id="s5">5. Data Minimization and Privacy by Design</h2>
+<p>DigitalSaudi follows a privacy-by-design approach. We aim to:</p>
+<ul><li>collect only information reasonably necessary for the relevant purpose;</li><li>keep personal content on your device wherever a feature can work that way;</li><li>avoid requesting sensitive information unnecessarily;</li><li>limit access to personal information;</li><li>use appropriate security controls;</li><li>avoid storing wallet secrets;</li><li>avoid exposing confidential credentials;</li><li>provide meaningful privacy choices;</li><li>retain information only as reasonably necessary;</li><li>review third-party integrations for privacy and security considerations.</li></ul>
+<p>DigitalSaudi's functionality should not depend on collecting information that is unnecessary for the feature being used.</p>
+
+<h2 id="s6">6. AI Features</h2>
+<p>DigitalSaudi provides AI-assisted features, including general assistance, travel planning, city information, translation, an Arabic dictionary with pronunciation audio, safety guidance, career assistance, financial-information tools, pilgrimage-related information, and other supported experiences.</p>
+<div class="card"><b>How AI requests are handled</b>
+<ul><li><b>AI assistant</b> — your question is sent to an AI provider (Google Gemini, Cloudflare Workers AI, or Anthropic Claude) to generate an answer. We store only a daily question count, not your conversation. Chat history stays on your device. Google's free Gemini service may use submitted content to improve its products, so please do not type personal or sensitive information.</li>
+<li><b>Translation</b> — when you choose a language other than English, the app's own interface and guide text (never your personal data, messages or inputs) is sent to an AI provider to be translated once, then cached on your device and our server.</li>
+<li><b>Arabic dictionary &amp; audio</b> — the word or phrase you look up is sent to Google Gemini to produce the meaning and pronunciation. Results are cached without any link to you.</li></ul></div>
+<p>AI-generated responses may be incomplete, inaccurate, outdated, or unsuitable for a particular situation.</p>
+<p>Do not provide an AI feature with information you do not wish to disclose unless it is necessary for the requested service.</p>
+<p>AI assistance should not be treated as a substitute for:</p>
+<ul><li>professional legal advice;</li><li>medical advice;</li><li>financial advice;</li><li>official government information;</li><li>emergency services;</li><li>qualified religious scholarship.</li></ul>
+<p>Where an AI feature uses information from your interaction to provide a response, processing will be subject to the applicable product architecture, settings, and this Privacy Policy.</p>
+
+<h2 id="s7">7. Third-Party Services</h2>
+<p>DigitalSaudi relies on carefully selected third-party providers. These are the services the app uses today:</p>
+<table>
+<tr><th>Purpose</th><th>Provider</th><th>What they receive</th></tr>
+<tr><td>Sign-in &amp; payments</td><td>Pi Network</td><td>Authentication and payment requests you approve</td></tr>
+<tr><td>Hosting, storage &amp; security</td><td>Cloudflare (Pages, KV, D1, Workers AI, cdnjs)</td><td>Standard request data; Premium records, business listings, translation cache</td></tr>
+<tr><td>AI answers, translation, dictionary</td><td>Google Gemini, Cloudflare Workers AI, Anthropic</td><td>The text of the request only</td></tr>
+<tr><td>Pi price &amp; exchange rates</td><td>OKX, Gate.io, Bitget, MEXC, CoinGecko, open.er-api.com</td><td>No personal data</td></tr>
+<tr><td>Football scores</td><td>football-data.org</td><td>No personal data</td></tr>
+<tr><td>News headlines &amp; images</td><td>BBC, Al Jazeera, Arab News, Al Arabiya, Cointelegraph, Bing News</td><td>No personal data; opening an article takes you to the publisher's site</td></tr>
+<tr><td>Weather</td><td>Open-Meteo</td><td>The selected city's coordinates</td></tr>
+<tr><td>Prayer times</td><td>Aladhan</td><td>The selected city (if unavailable, times are calculated on your device)</td></tr>
+<tr><td>Quran text &amp; audio</td><td>alquran.cloud</td><td>No personal data</td></tr>
+<tr><td>Places &amp; map tiles</td><td>OpenStreetMap, Overpass, Photon (komoot)</td><td>Map area or approximate coordinates for “Near me”</td></tr>
+</table>
+<p>Third parties may process information only as necessary to provide their services, subject to applicable contractual, legal, and security requirements. Your browser connects directly to some of these services (for example map tiles and audio), so they may also see your IP address as part of normal web traffic.</p>
+<p>Third-party services may have their own privacy policies and terms. Where you interact directly with a third-party service, that provider may independently process information under its own policies.</p>
+
+<h2 id="s8">8. External Websites and Official Services</h2>
+<p>DigitalSaudi may provide links, guides, references, or directions to external websites and services, including government and official platforms.</p>
+<p>A link or guide does not mean DigitalSaudi owns, operates, controls, endorses, or guarantees the external service.</p>
+<p>Before submitting personal information, making payments, or taking legal or administrative action through an external website, verify that you are using the correct official service.</p>
+<p>DigitalSaudi does not issue:</p>
+<ul><li>visas;</li><li>passports;</li><li>Iqamas;</li><li>permits;</li><li>licenses;</li><li>government approvals;</li><li>official identity documents;</li><li>immigration decisions;</li><li>government benefits.</li></ul>
+<p>DigitalSaudi provides information and guidance only unless an express official service relationship is clearly stated.</p>
+
+<h2 id="s9">9. Pi Integration</h2>
+<p>Where DigitalSaudi provides Pi-compatible functionality, such functionality is intended to operate through the applicable official Pi technologies and permitted integration methods, including the official Pi SDK and Pi Platform API.</p>
+<p>DigitalSaudi does not claim to represent Pi Network or the Pi Core Team.</p>
+<p>DigitalSaudi will not legitimately ask users to enter their Pi Wallet passphrase, private key, seed phrase, or other wallet secret into DigitalSaudi.</p>
+<p>Pi Network's public guidance states that applications should never request users' passphrases and that Pi Wallet credentials must remain private.</p>
+<p>DigitalSaudi will also seek to maintain distinct branding and avoid presenting itself as an official Pi product or service. Pi's current trademark guidance specifically warns against creating confusion regarding affiliation or endorsement and advises third-party apps not to use Pi's brand palette as their own app design identity.</p>
+
+<h2 id="s10">10. Blockchain Information</h2>
+<p>Blockchain networks are generally transparent by design.</p>
+<p>Where you conduct a blockchain transaction, information such as a public wallet address, transaction identifier, transaction amount, timestamp, and related blockchain information may be publicly visible depending on the network.</p>
+<p>DigitalSaudi cannot guarantee that blockchain information can be deleted, altered, or withdrawn after it has been recorded on a public blockchain.</p>
+<p>You should not publish or associate confidential personal information with a public wallet address unless you understand the potential consequences.</p>
+
+<h2 id="s11">11. Cookies and Similar Technologies</h2>
+<p>DigitalSaudi does not currently set advertising or tracking cookies and does not use tracking pixels. It uses browser storage technologies where necessary to:</p>
+<ul><li>remember preferences and language;</li><li>keep your saved content on your device;</li><li>provide functionality, including offline access;</li><li>improve security;</li><li>maintain reliability and performance.</li></ul>
+<p>These include Local Storage, Session Storage, IndexedDB, and service-worker caching. Our hosting provider may use strictly necessary cookies for security purposes.</p>
+<p>If we ever introduce non-essential technologies where consent is legally required, DigitalSaudi will seek appropriate consent or provide the legally required controls, and will update this Policy.</p>
+<p>You may control storage technologies through your browser or device settings, although disabling them may affect functionality.</p>
+
+<h2 id="s12">12. Data Sharing</h2>
+<p><b>DigitalSaudi does not sell personal information</b> and does not show third-party advertising.</p>
+<p>We may disclose information where reasonably necessary:</p>
+<ul><li>to service providers acting on our behalf;</li><li>to payment or authentication providers;</li><li>to infrastructure and security providers;</li><li>to comply with law;</li><li>to respond to valid legal processes;</li><li>to protect users, the public, or DigitalSaudi;</li><li>to investigate fraud or security incidents;</li><li>in connection with a corporate transaction, restructuring, merger, acquisition, or transfer of assets, subject to applicable law.</li></ul>
+<p>Approved business listings are public by design: their details are visible to everyone using the directory.</p>
+<p>We do not authorize third parties to use personal information for purposes incompatible with the purpose for which it was provided, except where permitted or required by law.</p>
+
+<h2 id="s13">13. International Data Transfers</h2>
+<p>DigitalSaudi uses service providers located in countries other than your country of residence, including Cloudflare's global network and AI providers based in the United States.</p>
+<p>Where personal information is transferred internationally, DigitalSaudi will seek to use appropriate safeguards required by applicable law.</p>
+<p>The safeguards may include contractual protections, recognized transfer mechanisms, adequacy arrangements, or other lawful mechanisms.</p>
+
+<h2 id="s14">14. Data Security</h2>
+<p>DigitalSaudi uses reasonable technical and organizational safeguards appropriate to the nature and risk of the information processed. These may include:</p>
+<ul><li>encryption in transit (HTTPS everywhere);</li><li>access controls;</li><li>authentication controls, including server-side verification of Pi sign-in and payments;</li><li>secret keys kept only in secure server configuration, never in the app;</li><li>secure development practices;</li><li>logging and monitoring;</li><li>vulnerability management;</li><li>least-privilege principles;</li><li>incident-response procedures;</li><li>data minimization.</li></ul>
+<p>No internet-connected service can guarantee absolute security.</p>
+<p>If we become aware of a security incident affecting personal information, we will take appropriate steps required by applicable law, which may include investigation, containment, remediation, and notification.</p>
+
+<h2 id="s15">15. Data Retention</h2>
+<p>We retain personal information only for as long as reasonably necessary for the purposes described in this Privacy Policy, including to:</p>
+<ul><li>provide requested services;</li><li>maintain accounts and preferences;</li><li>satisfy legal obligations;</li><li>resolve disputes;</li><li>enforce agreements;</li><li>prevent fraud;</li><li>maintain security;</li><li>maintain appropriate business records.</li></ul>
+<p>Retention periods vary depending on the type of information and purpose. For example, Premium records are kept while your Premium is active (lifetime Premium for as long as the app is operated); business listings are kept until you ask us to remove them or we remove them; daily AI counters expire automatically; and “Near me” coordinates are not stored.</p>
+<p>Where information is no longer required, we seek to delete, anonymize, or securely dispose of it, subject to legal and technical limitations.</p>
+<p>Public blockchain information may remain permanently recorded and is generally not subject to deletion by DigitalSaudi.</p>
+
+<h2 id="s16">16. Your Privacy Rights</h2>
+<p>Depending on your jurisdiction and applicable law, you may have rights including:</p>
+<ul><li>the right to be informed;</li><li>the right to access personal information;</li><li>the right to correct inaccurate information;</li><li>the right to request deletion or erasure;</li><li>the right to object to certain processing;</li><li>the right to restrict certain processing;</li><li>the right to data portability;</li><li>the right to withdraw consent where processing relies on consent;</li><li>rights concerning automated decision-making where applicable;</li><li>the right to lodge a complaint with a competent data-protection authority.</li></ul>
+<p>These rights are subject to applicable legal exceptions and limitations.</p>
+<p>For example, certain information may need to be retained to comply with legal obligations, prevent fraud, resolve disputes, or establish or defend legal claims.</p>
+
+<h2 id="s17">17. How to Exercise Your Rights</h2>
+<p>To submit a privacy request, contact:</p>
+<div class="card"><b>Privacy Contact:</b> <a href="mailto:support.digitalsaudi.pi@gmail.com?subject=Privacy%20request">support.digitalsaudi.pi@gmail.com</a></div>
+<p>Please provide enough information for us to understand and respond to your request, including your Pi username if your request concerns Premium, payments, or a business listing.</p>
+<p>To delete what is stored on your device, use <b>Profile › Settings › Clear saved data</b> at any time — no request is needed.</p>
+<p>For security purposes, we may need to verify your identity before fulfilling certain requests.</p>
+<p>We will respond within the timeframe required by applicable law.</p>
+<p>If you believe your privacy rights have not been respected, you may also have the right to contact the competent data-protection authority in your jurisdiction.</p>
+
+<h2 id="s18">18. Children's Privacy</h2>
+<p>DigitalSaudi is not directed at children under 13 and is not intentionally designed to collect personal information from children in violation of applicable law.</p>
+<p>Where applicable law establishes age requirements or parental-consent requirements, DigitalSaudi will apply those requirements.</p>
+<p>If you believe a child has provided personal information improperly, please contact us at:</p>
+<p><a href="mailto:support.digitalsaudi.pi@gmail.com?subject=Children%27s%20privacy">support.digitalsaudi.pi@gmail.com</a></p>
+
+<h2 id="s19">19. Accuracy of Information</h2>
+<p>DigitalSaudi provides a large amount of dynamic information, including travel, weather, news, events, prices, schedules, public information, and AI-generated content.</p>
+<p>We make reasonable efforts to maintain useful and accurate information, but information may change without notice.</p>
+<p>For important decisions, verify information with the relevant official or authoritative source.</p>
+
+<h2 id="s20">20. Religious Information</h2>
+<p>DigitalSaudi may provide Islamic, Quranic, pilgrimage, prayer, and other religious information.</p>
+<p>Such material is provided for informational and educational purposes.</p>
+<p>Religious content may involve differences of scholarly opinion, interpretation, methodology, or local practice.</p>
+<p>For matters requiring authoritative religious judgment, users should consult qualified and trusted scholars or recognized religious authorities.</p>
+
+<h2 id="s21">21. Financial Information</h2>
+<p>DigitalSaudi may provide currency conversions, market information, Pi-related information, financial calculators, salary tools, budgeting tools, or other financial utilities.</p>
+<p>Such information is provided for general informational purposes and does not constitute financial, investment, tax, legal, or professional advice.</p>
+<p>Prices, rates, calculations, and market information may be delayed, estimated, incomplete, or inaccurate.</p>
+<p>Users are responsible for independently verifying financial information before making financial decisions.</p>
+
+<h2 id="s22">22. Travel, Immigration, and Safety Information</h2>
+<p>Travel, visa, residency, immigration, pilgrimage, transportation, emergency, and safety information may change rapidly.</p>
+<p>DigitalSaudi does not guarantee that information is complete, current, or applicable to your particular circumstances.</p>
+<p>For legally significant or urgent matters, consult the relevant official authority or qualified professional.</p>
+<p>In an emergency, contact the appropriate local emergency service (in Saudi Arabia, dial <b>911</b>) rather than relying solely on DigitalSaudi.</p>
+
+<h2 id="s23">23. Changes to This Privacy Policy</h2>
+<p>We may update this Privacy Policy from time to time.</p>
+<p>When material changes are made, we may provide reasonable notice through the Service or other appropriate means.</p>
+<p>The “Last Updated” date at the top of this Policy indicates when it was most recently revised.</p>
+<p>Your continued use of DigitalSaudi after an updated Privacy Policy becomes effective constitutes acknowledgment of the revised Policy to the extent permitted by law.</p>
+
+<h2 id="s24">24. Contact</h2>
+<p>For privacy, security, data-protection, or general support inquiries:</p>
+<div class="card">
+<p style="margin:4px 0"><b>Email:</b> <a href="mailto:support.digitalsaudi.pi@gmail.com">support.digitalsaudi.pi@gmail.com</a></p>
+<p style="margin:4px 0"><b>Pi domain:</b> digitalsaudi.pi <span style="color:var(--mute)">(open in the Pi Browser)</span></p>
+<p style="margin:4px 0"><b>Website:</b> <a href="https://digitalsaudi.pages.dev">https://digitalsaudi.pages.dev</a></p>
+</div>
+<p>For security vulnerabilities, please email us with the subject line “Security” so the report is prioritized.</p>
+<div class="alert">Please do not send passwords, wallet passphrases, private keys, seed phrases, OTPs, or other confidential credentials in a support request.</div>
+
+<h2 id="s25">25. Our Privacy Commitment</h2>
+<p>DigitalSaudi is built on a simple principle:</p>
+<div class="closing">
+<p class="big">Your information belongs to you.</p>
+<p>We aim to provide useful digital experiences without asking for information that we do not reasonably need.</p>
+<p>We will continue to improve our privacy, security, accessibility, and transparency practices as DigitalSaudi evolves.</p>
+<p style="margin-top:16px"><span class="brand">DigitalSaudi — Everything Saudi. One Digital Experience.</span></p>
+<p style="color:var(--mute);font-size:14px">digitalsaudi.pi · <a href="mailto:support.digitalsaudi.pi@gmail.com">support.digitalsaudi.pi@gmail.com</a> · <a href="/terms.html">Terms of Service</a></p>
+</div>
+<a class="top" href="#top">↑ Back to top</a>
+</main></body></html>
