@@ -16,7 +16,8 @@
     "/tts",
     "/dict",
     "/pi-check",
-    "/translate"
+    "/translate",
+    "/weather"
   ],
   "exclude": []
 }
