@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<meta name="copyright" content="© 2026 DigitalSaudi. All rights reserved.">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
@@ -43,6 +44,7 @@ button{font:inherit;cursor:pointer;border:0;border-radius:10px;padding:10px 14px
       <button data-v="approved" onclick="show('approved')">Approved <span id="c_approved"></span></button>
       <button data-v="rejected" onclick="show('rejected')">Rejected <span id="c_rejected"></span></button>
       <button data-v="events" onclick="show('events')">Events</button>
+      <button data-v="payments" onclick="show('payments')">Payments</button>
     </div>
     <div id="eventForm" style="display:none">
       <h2>Add an event</h2>
@@ -57,6 +59,15 @@ button{font:inherit;cursor:pointer;border:0;border-radius:10px;padding:10px 14px
         <button class="primary" onclick="addEvent()">Publish event</button>
       </div>
       <h2>Published events</h2>
+    </div>
+    <div id="payForm" style="display:none">
+      <h2>Fix a stuck Pi payment</h2>
+      <div class="card">
+        <p class="small" style="margin-bottom:10px">Use this when a user sees “Pending payment found”. The user can find the Payment ID in the app: Profile → Payments &amp; receipts → tap the payment. DigitalSaudi checks the payment with Pi, then completes it (if the Pi was already sent) or cancels it.</p>
+        <input id="payId" placeholder="Payment ID">
+        <button class="primary" onclick="clearPay()">Check &amp; fix payment</button>
+        <div id="payOut" style="margin-top:12px"></div>
+      </div>
     </div>
     <div id="list"></div>
   </div>
@@ -84,6 +95,8 @@ function show(v){
   view = v;
   document.querySelectorAll('#tabs button').forEach(b => b.classList.toggle('on', b.dataset.v === v));
   $('eventForm').style.display = v === 'events' ? 'block' : 'none';
+  $('payForm').style.display = v === 'payments' ? 'block' : 'none';
+  if(v === 'payments'){ $('list').innerHTML = ''; return; }
   $('list').innerHTML = '<p class="small">Loading…</p>';
   api('GET', '?view=' + v).then(d => {
     if(!d.ok){ $('list').innerHTML = '<p class="small">' + esc(d.error) + '</p>'; return; }
@@ -105,6 +118,14 @@ function act(action, id){
   if(action === 'reject') body.note = prompt('Reason (optional, internal):') || '';
   api('POST', '', body).then(d => { note(d.ok ? 'Done' : d.error); show(view); });
 }
+function clearPay(){
+  const id = $('payId').value.trim(); if(!id) return note('Enter a payment ID');
+  $('payOut').innerHTML = '<p class="small">Checking with Pi…</p>';
+  api('POST', '', { action:'clearPayment', paymentId:id }).then(d => {
+    const good = d.ok;
+    $('payOut').innerHTML = `<div class="card" style="border-color:${good ? 'var(--accent)' : 'var(--danger)'}"><b>${good ? '✓ Done' : '✗ Not fixed'}</b><p style="margin-top:6px">${esc(d.detail || d.error || '')}</p><p class="small">Action: ${esc(d.action || '-')}${d.status ? ' · Pi status ' + d.status : ''}</p></div>`;
+  }).catch(() => $('payOut').innerHTML = '<p class="small">Network error</p>');
+}
 function renderEvents(list){
   $('list').innerHTML = list.length ? list.map(e => `<div class="card"><b>${esc(e.title)}</b> <span class="tag">${esc(e.category)}</span><span class="tag">${esc(e.city)}</span><div class="small">${esc(e.start)}${e.end ? ' → ' + esc(e.end) : ''}${e.venue ? ' · ' + esc(e.venue) : ''}</div>${e.description ? '<p style="margin-top:6px">' + esc(e.description) + '</p>' : ''}<div class="row"><button class="danger" onclick="if(confirm('Delete event?'))api('POST','',{action:'deleteEvent',id:${e.id}}).then(()=>show('events'))">Delete</button></div></div>`).join('') : '<p class="small">No events yet.</p>';
 }
@@ -117,5 +138,6 @@ function addEvent(){
 $('e_city').innerHTML = CITIES.map(c => '<option>' + c + '</option>').join('');
 try{ const t = sessionStorage.getItem('dsAdmin'); if(t){ $('tok').value = t; login(); } }catch(e){}
 </script>
+<p style="text-align:center;font-size:12px;color:#8B96A2;margin:18px 0 24px;font-family:system-ui,sans-serif">© 2026 DigitalSaudi. All rights reserved.</p>
 </body>
 </html>
