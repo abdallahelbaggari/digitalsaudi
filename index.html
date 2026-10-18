@@ -1453,7 +1453,7 @@ header.scrolled{box-shadow:0 1px 0 var(--line),0 10px 24px -18px rgba(0,0,0,.6)}
       <button class="row" onclick="openItem('about')"><div class="ic">ℹ️</div><div class="tx"><b>About</b></div><span class="chev">›</span></button>
       <button class="row" onclick="location.href='/privacy.html'"><div class="ic">🔒</div><div class="tx"><b>Privacy policy</b></div><span class="chev">›</span></button>
       <button class="row" onclick="location.href='/terms.html'"><div class="ic">📄</div><div class="tx"><b>Terms of service</b></div><span class="chev">›</span></button>
-      <footer class="legal"><span class="notr" dir="ltr">digitalsaudi.pi · DigitalSaudi v6.4</span><br><span class="notr" dir="ltr">© 2026 DigitalSaudi.</span> <span>All rights reserved.</span><br><span>Independent app, not affiliated with the Government of Saudi Arabia or Pi Network.</span><br><a href="/terms.html">Terms of service</a> · <a href="/privacy.html">Privacy policy</a> · <a href="mailto:support.digitalsaudi.pi@gmail.com" class="notr">support.digitalsaudi.pi@gmail.com</a></footer>
+      <footer class="legal"><span class="notr" dir="ltr">digitalsaudi.pi · DigitalSaudi v6.5</span><br><span class="notr" dir="ltr">© 2026 DigitalSaudi.</span> <span>All rights reserved.</span><br><span>Independent app, not affiliated with the Government of Saudi Arabia or Pi Network.</span><br><a href="/terms.html">Terms of service</a> · <a href="/privacy.html">Privacy policy</a> · <a href="mailto:support.digitalsaudi.pi@gmail.com" class="notr">support.digitalsaudi.pi@gmail.com</a></footer>
     </section>
   </main>
 
@@ -2508,6 +2508,25 @@ body.panel-open #toast{bottom:calc(22px + env(safe-area-inset-bottom))}
 .ds-wallet p{margin:0 0 10px;font-size:13.5px;color:var(--text-2);line-height:1.45}
 .ds-wallet .btn{margin:0 auto;display:inline-flex;gap:8px;align-items:center}
 .ds-wallet .btn .i{width:18px;height:18px}
+/* v6.5 Send form */
+.dsw{background:var(--bg-card);border:1px solid var(--line);border-radius:18px;padding:16px;margin:12px 0}
+.dsw-h{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.dsw-h b{font-size:17px}
+.dsw-h .btn{display:inline-flex;gap:6px;align-items:center}.dsw-h .btn .i{width:16px;height:16px}
+.dsw-cs{margin:-4px 0 12px;flex-wrap:wrap}
+.dsw-go{width:100%;display:flex;gap:8px;align-items:center;justify-content:center}.dsw-go .i{width:18px;height:18px}
+.dsw-go:disabled{opacity:.45}
+.dsw-safe{margin-top:10px;text-align:center}
+.dsw-sheet .dsw-sum{border:1px solid var(--line);border-radius:14px;overflow:hidden;margin:6px 0 14px}
+.dsw-sum div{display:flex;align-items:center;gap:10px;padding:12px 14px;border-bottom:1px solid var(--line)}
+.dsw-sum div:last-child{border-bottom:0}
+.dsw-sum small{width:64px;color:var(--muted);font-size:12.5px}
+.dsw-sum b{flex:1;font-size:15.5px;word-break:break-all}
+.dsw-sum button{border:0;background:var(--bg-soft,#EEF2EF);color:var(--text);border-radius:10px;padding:7px 12px;font-weight:700;font-size:13px}
+.dsw-steps{margin:0 0 16px;padding-inline-start:20px;color:var(--text-2);font-size:14px;line-height:1.55}
+.ds-confirm .dsw-open{background:var(--accent,#0A7A4B)}
+.dsw-cs{display:flex;gap:8px}
+.dsw-cs button{border:1px solid var(--line);background:var(--bg-soft,#EEF2EF);color:var(--text);border-radius:999px;padding:7px 12px;font-weight:700;font-size:13px;cursor:pointer}
 
 </style>
 
@@ -3260,7 +3279,7 @@ function openFeedback(subject){
 function sendFeedback(){
   const t = $('fbT').value, s = $('fbS').value, m = $('fbM').value;
   if(!m.trim()){ toast('Please write a message'); return; }
-  const body = m + '\n\n—\nApp: DigitalSaudi v6.4\nUser: ' + (piUser ? '@' + piUser.username : 'guest');
+  const body = m + '\n\n—\nApp: DigitalSaudi v6.5\nUser: ' + (piUser ? '@' + piUser.username : 'guest');
   location.href = 'mailto:' + CONTACT_EMAIL + '?subject=' + encodeURIComponent('[' + t + '] ' + (s || 'DigitalSaudi feedback')) + '&body=' + encodeURIComponent(body);
 }
 function editEcard(){
@@ -10287,6 +10306,172 @@ function dsOpenPiWallet(){
     ['Open my Pi Wallet','افتح محفظة Pi','میرا Pi Wallet کھولیں','Buka Pi Wallet saya','Buɗe Pi Wallet ɗina','Ouvrir mon Pi Wallet'],
     ['Details','التفاصيل','تفصیلات','Detail','Bayani','Détails'],
     ['real places from OpenStreetMap','أماكن حقيقية من OpenStreetMap','OpenStreetMap سے حقیقی مقامات','tempat nyata dari OpenStreetMap','wurare na gaske daga OpenStreetMap','lieux réels d’OpenStreetMap']
+  ];
+  R.forEach(function(r){ LANG_ORDER.slice(1).forEach(function(l, i){ if(I18N[l]) I18N[l][r[0]] = r[i + 1]; }); });
+})();
+
+/* ==========================================================================
+   v6.5 — Send and Request inside DigitalSaudi; the money moves in the Pi Wallet.
+   Pi rules: an app can never hold, see or send someone's Pi. So DigitalSaudi prepares
+   everything (who, how much, what for), checks it, copies it, and opens the Pi Wallet,
+   where the person confirms with their own passphrase or fingerprint.
+   ========================================================================== */
+const DSW = {
+  inPi: function(){ return typeof Pi !== 'undefined' && /PiBrowser|; wv\)/i.test(navigator.userAgent); },
+  isAddr: function(s){ return /^G[A-Z2-7]{55}$/.test(s); },
+  isUser: function(s){ return /^[A-Za-z0-9_.-]{2,40}$/.test(s); },
+  contacts: function(){ return store.get('w_contacts_' + userKey(), []); },
+  sent: function(){ return store.get('w_sent_' + userKey(), []); }
+};
+function dsCopy(text, done){
+  const ok = function(){ if(done) done(true); };
+  const fallback = function(){
+    try{ const ta = document.createElement('textarea'); ta.value = text; ta.setAttribute('readonly', ''); ta.style.cssText = 'position:fixed;top:-100px;opacity:0'; document.body.appendChild(ta); ta.select(); const r = document.execCommand('copy'); ta.remove(); if(done) done(r); }catch(e){ if(done) done(false); }
+  };
+  try{ if(navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(text).then(ok).catch(fallback); else fallback(); }catch(e){ fallback(); }
+}
+/* read a scanned or pasted request: pay link, "Pay 2 π to @name — memo", @name or a G… address */
+function dswParse(raw){
+  raw = String(raw || '').trim(); const o = {};
+  try{ const u = new URL(raw); if(/pay\.html$/.test(u.pathname) || u.searchParams.get('to')){ o.to = (u.searchParams.get('to') || '').replace(/^@/, ''); o.amt = u.searchParams.get('a') || ''; o.memo = u.searchParams.get('m') || u.searchParams.get('n') || ''; return o; } }catch(e){}
+  let m = raw.match(/Pay\s+([\d.]+)\s*π\s+to\s+@?([A-Za-z0-9_.-]+|G[A-Z2-7]{55})(?:\s+—\s+(.+))?/i);
+  if(m){ o.amt = m[1]; o.to = m[2]; o.memo = m[3] || ''; return o; }
+  m = raw.match(/G[A-Z2-7]{55}/); if(m){ o.to = m[0]; return o; }
+  m = raw.match(/^@?([A-Za-z0-9_.-]{2,40})$/); if(m){ o.to = m[1]; return o; }
+  return null;
+}
+
+function dswSendHTML(pre){
+  pre = pre || {};
+  const cs = DSW.contacts().slice(0, 6), sent = DSW.sent().slice(0, 5);
+  return `<div class="dsw">
+    <div class="dsw-h"><b>${esc(t('Send Pi'))}</b><button class="btn btn-ghost btn-sm" onclick="dswScan()">${ico('image')}${esc(t('Scan QR'))}</button></div>
+    <div class="field"><label>${esc(t('To — Pi username or wallet address'))}</label><input id="wsTo" value="${esc(pre.to || '')}" placeholder="@username or G…" autocomplete="off" autocapitalize="off" spellcheck="false" oninput="dswCheck()"></div>
+    ${cs.length ? `<div class="chips dsw-cs">${cs.map(function(c){ return `<button onclick="$('wsTo').value='${esc(c)}';dswCheck()">${esc(DSW.isAddr(c) ? c.slice(0, 5) + '…' + c.slice(-4) : '@' + c)}</button>`; }).join('')}</div>` : ''}
+    <div class="two"><div class="field"><label>${esc(t('Amount (π)'))}</label><input id="wsAmt" type="number" inputmode="decimal" step="0.0000001" min="0" value="${esc(pre.amt || '')}" placeholder="0.00" oninput="dswCheck()"></div>
+      <div class="field"><label>${esc(t('For (memo)'))}</label><input id="wsMemo" maxlength="28" value="${esc(pre.memo || '')}" placeholder="${esc(t('e.g. Coffee'))}"></div></div>
+    <div class="small" id="wsInfo" style="margin:-4px 0 10px"></div>
+    <button class="btn btn-primary dsw-go" id="wsGo" onclick="dswSend()" disabled>${ico('pi')}${esc(t('Continue in Pi Wallet'))}</button>
+    <p class="small dsw-safe">🔒 ${esc(t('DigitalSaudi never holds or moves your Pi. You confirm the transfer in your own Pi Wallet, and Pi transfers can’t be reversed.'))}</p>
+  </div>
+  ${sent.length ? `<h4>${esc(t('Recently prepared'))}</h4><div class="card hist">${sent.map(function(s){ return `<button class="h" onclick="walletTab('send');setTimeout(function(){ $('wsTo').value='${esc(s.to)}'; $('wsAmt').value='${esc(String(s.amt))}'; $('wsMemo').value='${esc(s.memo || '')}'; dswCheck(); },50)"><div><b>${esc(s.amt + ' π → ' + (DSW.isAddr(s.to) ? s.to.slice(0, 5) + '…' + s.to.slice(-4) : '@' + s.to))}</b><div class="small">${esc(s.memo || '')}${s.memo ? ' · ' : ''}${new Date(s.at).toLocaleString('en-GB', { day:'numeric', month:'short', hour:'2-digit', minute:'2-digit' })} · ${esc(t('confirm it in your Pi Wallet'))}</div></div><span class="chev">↻</span></button>`; }).join('')}</div>` : ''}`;
+}
+function dswCheck(){
+  const to = ($('wsTo').value || '').trim().replace(/^@/, ''), amt = parseFloat($('wsAmt').value), info = $('wsInfo'), go = $('wsGo');
+  let msg = '', ok = false;
+  if(to && !DSW.isAddr(to) && !DSW.isUser(to)) msg = t(to[0] === 'G' && to.length > 20 ? 'A wallet address has 56 characters and starts with G.' : 'Check the username or address.');
+  else if(to && !(amt > 0)) msg = t('Enter the amount to send.');
+  else if(to && amt > 0){ ok = true; const s = convert(amt, 'PI', 'SAR'); msg = s ? '≈ ' + fmt(s, 2) + ' SAR' : ''; }
+  info.textContent = msg; info.style.color = ok || !to ? '' : 'var(--danger)';
+  go.disabled = !ok;
+}
+function dswSend(){
+  const to = $('wsTo').value.trim().replace(/^@/, ''), amt = parseFloat($('wsAmt').value), memo = $('wsMemo').value.trim();
+  if(!(to && amt > 0)) return;
+  const c = DSW.contacts().filter(function(x){ return x !== to; }); c.unshift(to); store.set('w_contacts_' + userKey(), c.slice(0, 8));
+  const s = DSW.sent(); s.unshift({ to:to, amt:amt, memo:memo, at:Date.now() }); store.set('w_sent_' + userKey(), s.slice(0, 20));
+  dsCopy(to, function(){});
+  const who = DSW.isAddr(to) ? to.slice(0, 6) + '…' + to.slice(-6) : '@' + to;
+  const d = document.createElement('div'); d.className = 'ds-confirm'; d.setAttribute('role', 'dialog');
+  d.innerHTML = `<div class="box dsw-sheet">
+    <h4>${esc(t('Ready to send'))}</h4>
+    <div class="dsw-sum"><div><small>${esc(t('To'))}</small><b class="notr">${esc(who)}</b><button onclick="dsCopy('${esc(to)}',function(o){toast(o?t('Copied'):'${esc(to)}')})">${esc(t('Copy'))}</button></div>
+      <div><small>${esc(t('Amount'))}</small><b>${fmt(amt, 7).replace(/\.?0+$/, '')} π</b><button onclick="dsCopy('${amt}',function(o){toast(o?t('Copied'):'${amt}')})">${esc(t('Copy'))}</button></div>
+      ${memo ? `<div><small>${esc(t('Memo'))}</small><b>${esc(memo)}</b><button onclick="dsCopy('${esc(memo).replace(/'/g, '&#39;')}',function(o){toast(o?t('Copied'):'')})">${esc(t('Copy'))}</button></div>` : ''}</div>
+    <ol class="dsw-steps"><li>${esc(t('Tap “Open Pi Wallet” and unlock it.'))}</li><li>${esc(t('Tap Send / Pay and paste the receiver — we copied it for you.'))}</li><li>${esc(t('Enter the amount, check everything, then confirm.'))}</li></ol>
+    <div class="row2"><button class="no">${esc(t('Close'))}</button><button class="yes dsw-open" onclick="dsOpenPiWallet()">${esc(t('Open Pi Wallet'))}</button></div></div>`;
+  document.body.appendChild(d); requestAnimationFrame(function(){ d.classList.add('open'); });
+  const close = function(){ d.classList.remove('open'); setTimeout(function(){ d.remove(); }, 220); };
+  d.addEventListener('click', function(e){ if(e.target === d) close(); });
+  d.querySelector('.no').onclick = close;
+  toast(t('Receiver copied'));
+}
+
+/* scan a request QR with the camera (photo), then fill the form */
+function dswScan(){
+  let inp = $('dswFile');
+  if(!inp){ inp = document.createElement('input'); inp.type = 'file'; inp.accept = 'image/*'; inp.capture = 'environment'; inp.id = 'dswFile'; inp.style.display = 'none'; document.body.appendChild(inp);
+    inp.onchange = function(){ const f = inp.files && inp.files[0]; inp.value = ''; if(f) dswDecode(f); }; }
+  inp.click();
+}
+function dswDecode(file){
+  toast(t('Reading the QR code…'));
+  const fill = function(text){
+    const o = dswParse(text);
+    if(!o || !o.to){ toast(t('No Pi request found in this picture. Try again closer to the code.')); return; }
+    walletTab('send');
+    setTimeout(function(){ $('wsTo').value = o.to; if(o.amt) $('wsAmt').value = o.amt; if(o.memo) $('wsMemo').value = o.memo; dswCheck(); toast(t('Request filled in — check it, then continue')); }, 60);
+  };
+  const viaJsQR = function(bmp){
+    loadScript('https://cdnjs.cloudflare.com/ajax/libs/jsQR/1.4.0/jsQR.min.js').then(function(){
+      const c = document.createElement('canvas'), sc = Math.min(1, 1200 / Math.max(bmp.width, bmp.height));
+      c.width = Math.round(bmp.width * sc); c.height = Math.round(bmp.height * sc);
+      const g = c.getContext('2d'); g.drawImage(bmp, 0, 0, c.width, c.height);
+      const r = window.jsQR(g.getImageData(0, 0, c.width, c.height).data, c.width, c.height);
+      if(r && r.data) fill(r.data); else toast(t('No Pi request found in this picture. Try again closer to the code.'));
+    }).catch(function(){ toast(t('The QR reader could not load. Check your connection.')); });
+  };
+  const img = new Image(); img.onload = function(){
+    if('BarcodeDetector' in window){ try{ new BarcodeDetector({ formats:['qr_code'] }).detect(img).then(function(c){ if(c && c[0]) fill(c[0].rawValue); else viaJsQR(img); }).catch(function(){ viaJsQR(img); }); return; }catch(e){} }
+    viaJsQR(img);
+  };
+  img.src = URL.createObjectURL(file);
+}
+
+/* the tabs: Send is now a real form; Request makes a link + QR anyone can open */
+(function(){
+  const _wt = walletTab;
+  walletTab = function(tab){
+    if(tab !== 'send') return _wt.apply(this, arguments);
+    ['Req','Send','Hist'].forEach(function(k){ const b = $('wTab' + k); if(b) b.classList.toggle('on', k.toLowerCase() === 'send'); });
+    const b = $('wBody'); if(!b) return;
+    b.innerHTML = dswSendHTML(); dswCheck();
+  };
+  // Request: the QR now opens a payment page with the amount (cameras and the Pi Browser can open it)
+  const _mr = makeRequest;
+  makeRequest = function(){
+    const r = _mr.apply(this, arguments);
+    const to = ($('wrTo').value || '').trim().replace(/^@/, ''), amt = parseFloat($('wrAmt').value), memo = ($('wrMemo').value || '').trim();
+    if(!to || !(amt > 0)) return r;
+    const link = location.origin + '/pay.html?to=' + encodeURIComponent(to) + '&a=' + encodeURIComponent(amt) + (memo ? '&n=' + encodeURIComponent(memo) : '');
+    const wait = setInterval(function(){
+      const q = $('wrQR'); if(!q) return; if(!q.querySelector('img,canvas')) return; clearInterval(wait);
+      if(!DSW.isAddr(to) && window.QRCode){ q.innerHTML = ''; new QRCode(q, { text:link, width:210, height:210, correctLevel:QRCode.CorrectLevel.M }); }
+      const acts = q.parentNode.querySelector('.p-actions');
+      if(acts && !acts.querySelector('.dsw-link')) acts.insertAdjacentHTML('beforeend', `<button class="btn btn-ghost btn-sm dsw-link" onclick="dsCopy('${esc(link)}',function(o){toast(o?t('Link copied'):'${esc(link)}')})">🔗 ${esc(t('Copy link'))}</button>`);
+    }, 150);
+    setTimeout(function(){ clearInterval(wait); }, 8000);
+    return r;
+  };
+})();
+
+(function(){
+  const R = [
+    ['Send Pi','إرسال Pi','Pi بھیجیں','Kirim Pi','Aika Pi','Envoyer des Pi'],
+    ['Scan QR','مسح QR','QR اسکین کریں','Pindai QR','Duba QR','Scanner un QR'],
+    ['To — Pi username or wallet address','إلى — اسم مستخدم Pi أو عنوان المحفظة','وصول کنندہ — Pi یوزرنیم یا والٹ ایڈریس','Ke — nama pengguna Pi atau alamat dompet','Zuwa — sunan Pi ko adireshin walat','À — nom Pi ou adresse de portefeuille'],
+    ['Continue in Pi Wallet','المتابعة في محفظة Pi','Pi Wallet میں جاری رکھیں','Lanjutkan di Pi Wallet','Ci gaba a Pi Wallet','Continuer dans le Pi Wallet'],
+    ['DigitalSaudi never holds or moves your Pi. You confirm the transfer in your own Pi Wallet, and Pi transfers can’t be reversed.','لا يحتفظ DigitalSaudi بعملات Pi ولا ينقلها أبداً. تؤكد التحويل في محفظتك، ولا يمكن استرجاع تحويلات Pi.','DigitalSaudi کبھی آپ کا Pi نہیں رکھتا نہ منتقل کرتا ہے۔ آپ اپنے Pi Wallet میں تصدیق کرتے ہیں، اور Pi کی منتقلی واپس نہیں ہوتی۔','DigitalSaudi tidak pernah menyimpan atau memindahkan Pi Anda. Anda mengonfirmasi di Pi Wallet sendiri, dan transfer Pi tidak bisa dibatalkan.','DigitalSaudi ba ta taɓa riƙe ko motsa Pi ɗinka ba. Kai ne ke tabbatarwa a Pi Wallet ɗinka, kuma ba a iya dawo da tura Pi.','DigitalSaudi ne détient ni ne déplace jamais vos Pi. Vous confirmez dans votre propre Pi Wallet, et les transferts Pi sont irréversibles.'],
+    ['Recently prepared','أُعدّت مؤخراً','حال ہی میں تیار کردہ','Baru disiapkan','Waɗanda aka shirya kwanan nan','Préparés récemment'],
+    ['confirm it in your Pi Wallet','أكّده في محفظة Pi','اپنے Pi Wallet میں تصدیق کریں','konfirmasi di Pi Wallet Anda','tabbatar a Pi Wallet ɗinka','à confirmer dans votre Pi Wallet'],
+    ['A wallet address has 56 characters and starts with G.','عنوان المحفظة 56 حرفاً ويبدأ بحرف G.','والٹ ایڈریس 56 حروف کا ہوتا ہے اور G سے شروع ہوتا ہے۔','Alamat dompet terdiri dari 56 karakter dan diawali G.','Adireshin walat yana da haruffa 56 kuma yana farawa da G.','Une adresse compte 56 caractères et commence par G.'],
+    ['Check the username or address.','تحقّق من اسم المستخدم أو العنوان.','یوزرنیم یا ایڈریس چیک کریں۔','Periksa nama pengguna atau alamat.','Duba sunan ko adireshin.','Vérifiez le nom ou l’adresse.'],
+    ['Enter the amount to send.','أدخل المبلغ المراد إرساله.','بھیجنے کی رقم درج کریں۔','Masukkan jumlah yang dikirim.','Shigar da adadin da za a aika.','Saisissez le montant à envoyer.'],
+    ['Ready to send','جاهز للإرسال','بھیجنے کے لیے تیار','Siap dikirim','A shirye don aikawa','Prêt à envoyer'],
+    ['To','إلى','کو','Ke','Zuwa','À'], ['Amount','المبلغ','رقم','Jumlah','Adadi','Montant'], ['Memo','ملاحظة','میمو','Memo','Bayani','Mémo'],
+    ['Copy','نسخ','کاپی','Salin','Kwafi','Copier'], ['Copied','تم النسخ','کاپی ہو گیا','Disalin','An kwafa','Copié'], ['Close','إغلاق','بند کریں','Tutup','Rufe','Fermer'],
+    ['Tap “Open Pi Wallet” and unlock it.','اضغط «افتح محفظة Pi» وافتح القفل.','«Pi Wallet کھولیں» دبائیں اور اسے کھولیں۔','Ketuk “Buka Pi Wallet” lalu buka kuncinya.','Taɓa “Buɗe Pi Wallet” ka buɗe ta.','Touchez « Ouvrir le Pi Wallet » et déverrouillez-le.'],
+    ['Tap Send / Pay and paste the receiver — we copied it for you.','اضغط إرسال / دفع والصق المستلم — نسخناه لك.','Send / Pay دبائیں اور وصول کنندہ پیسٹ کریں — ہم نے کاپی کر دیا ہے۔','Ketuk Send / Pay dan tempel penerima — sudah kami salin.','Taɓa Send / Pay ka liƙa mai karɓa — mun kwafa maka.','Touchez Send / Pay et collez le destinataire — nous l’avons copié.'],
+    ['Enter the amount, check everything, then confirm.','أدخل المبلغ وتحقّق من كل شيء ثم أكّد.','رقم درج کریں، سب کچھ چیک کریں، پھر تصدیق کریں۔','Masukkan jumlah, periksa semuanya, lalu konfirmasi.','Shigar da adadi, duba komai, sannan ka tabbatar.','Saisissez le montant, vérifiez tout, puis confirmez.'],
+    ['Open Pi Wallet','افتح محفظة Pi','Pi Wallet کھولیں','Buka Pi Wallet','Buɗe Pi Wallet','Ouvrir le Pi Wallet'],
+    ['Receiver copied','تم نسخ المستلم','وصول کنندہ کاپی ہو گیا','Penerima disalin','An kwafa mai karɓa','Destinataire copié'],
+    ['Reading the QR code…','جارٍ قراءة رمز QR…','QR کوڈ پڑھا جا رہا ہے…','Membaca kode QR…','Ana karanta lambar QR…','Lecture du QR code…'],
+    ['No Pi request found in this picture. Try again closer to the code.','لم يُعثر على طلب Pi في الصورة. حاول مجدداً بالاقتراب من الرمز.','اس تصویر میں Pi درخواست نہیں ملی۔ کوڈ کے قریب سے دوبارہ کوشش کریں۔','Tidak ada permintaan Pi di gambar ini. Coba lagi lebih dekat ke kode.','Ba a sami buƙatar Pi a wannan hoton ba. Sake gwadawa kusa da lambar.','Aucune demande Pi trouvée. Réessayez plus près du code.'],
+    ['Request filled in — check it, then continue','تمت تعبئة الطلب — تحقّق منه ثم تابع','درخواست بھر دی گئی — چیک کر کے جاری رکھیں','Permintaan terisi — periksa, lalu lanjutkan','An cike buƙatar — duba ta, sannan ci gaba','Demande remplie — vérifiez puis continuez'],
+    ['The QR reader could not load. Check your connection.','تعذّر تحميل قارئ QR. تحقّق من الاتصال.','QR ریڈر لوڈ نہیں ہو سکا۔ کنکشن چیک کریں۔','Pembaca QR gagal dimuat. Periksa koneksi.','Mai karanta QR bai lodu ba. Duba haɗin intanet.','Le lecteur QR n’a pas pu se charger. Vérifiez votre connexion.'],
+    ['Link copied','تم نسخ الرابط','لنک کاپی ہو گیا','Tautan disalin','An kwafa hanyar','Lien copié'],
+    ['Copy link','نسخ الرابط','لنک کاپی کریں','Salin tautan','Kwafi hanyar','Copier le lien'],
+    ['e.g. Coffee','مثلاً: قهوة','مثلاً: کافی','mis. Kopi','misali: Kofi','ex. Café']
   ];
   R.forEach(function(r){ LANG_ORDER.slice(1).forEach(function(l, i){ if(I18N[l]) I18N[l][r[0]] = r[i + 1]; }); });
 })();

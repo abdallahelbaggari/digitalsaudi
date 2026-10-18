@@ -87,6 +87,7 @@ function render(){
       '<div class="sub" style="margin-top:14px">' + T.to + '</div><div class="who" dir="ltr">' + (isAddr ? e(to) : '@' + e(to)) + '</div>' +
       (isAddr ? '<div class="qr" id="qr"></div>' : '') +
       '<button class="btn btn-p" onclick="copy(\'' + e(to) + '\')">📋 ' + (isAddr ? T.copyA : T.copyU) + '</button>' +
+      (/PiBrowser|; wv\)/i.test(navigator.userAgent) ? '<button class="btn btn-p" onclick="copy(\'' + e(to) + '\');setTimeout(function(){location.href=\'https://wallet.pinet.com\'},400)">π ' + (lang === 'ar' ? 'انسخ وافتح محفظة Pi' : 'Copy & open Pi Wallet') + '</button>' : '') +
       '<button class="btn btn-g" onclick="sharePage()">📤 ' + T.share + '</button>';
     document.getElementById('steps').innerHTML = '<li>' + T.s1 + '</li><li>' + (isAddr ? T.s2a : T.s2u) + '</li><li>' + T.s3 + '</li>';
     if (isAddr) loadQR();
