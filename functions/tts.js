@@ -27,7 +27,7 @@ const isWav = u => u.length > 12 && u[0] === 0x52 && u[1] === 0x49 && u[2] === 0
 async function viaInteractions(key, model, text) {
   const res = await fetch('https://generativelanguage.googleapis.com/v1beta/interactions', {
     method: 'POST', headers: { 'Content-Type': 'application/json', 'x-goog-api-key': key },
-    body: JSON.stringify({ model, input: [{ type: 'user_input', content: [{ type: 'text', text, annotations: [{ type: 'speech_metadata', style: 'clear, slow and natural, like a friendly Arabic teacher' }] }] }], response_format: { type: 'audio' }, generation_config: { speech_config: [{ voice: VOICE }] } })
+    body: JSON.stringify({ model, input: [{ type: 'user_input', content: [{ type: 'text', text, annotations: [{ type: 'speech_metadata', style: 'clear and natural, at a normal conversational pace' }] }] }], response_format: { type: 'audio' }, generation_config: { speech_config: [{ voice: VOICE }] } })
   });
   const d = await res.json().catch(() => null);
   if (!res.ok || !d) throw new Error(model + ' ' + res.status + ' ' + (d && d.error && d.error.message || ''));
@@ -41,7 +41,7 @@ async function viaInteractions(key, model, text) {
 async function viaGenerate(key, model, text) {
   const res = await fetch('https://generativelanguage.googleapis.com/v1beta/models/' + model + ':generateContent', {
     method: 'POST', headers: { 'Content-Type': 'application/json', 'x-goog-api-key': key },
-    body: JSON.stringify({ contents: [{ parts: [{ text: 'Say clearly and slowly: ' + text }] }], generationConfig: { responseModalities: ['AUDIO'], speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: VOICE } } } } })
+    body: JSON.stringify({ contents: [{ parts: [{ text: 'Say clearly at a natural, normal pace: ' + text }] }], generationConfig: { responseModalities: ['AUDIO'], speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: VOICE } } } } })
   });
   const d = await res.json().catch(() => null);
   if (!res.ok || !d) throw new Error(model + ' ' + res.status);
@@ -57,7 +57,7 @@ export async function onRequestGet(context) {
   const text = (new URL(context.request.url).searchParams.get('text') || '').trim().slice(0, 160);
   if (!text) return err('Missing text', 400);
   if (!env.GEMINI_API_KEY) return err('GEMINI_API_KEY not set', 503);
-  const id = await sha(text);
+  const id = await sha('v2|' + text);   // v2 = normal speaking speed (v1 audio was generated too slow)
   const creq = new Request('https://cache.digitalsaudi.internal/tts/' + id);
 
   try { const hit = await caches.default.match(creq); if (hit) return audio(await hit.arrayBuffer()); } catch (e) {}

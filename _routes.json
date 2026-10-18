@@ -17,7 +17,10 @@
     "/dict",
     "/pi-check",
     "/translate",
-    "/weather"
+    "/weather",
+    "/poster-file",
+    "/quran",
+    "/match"
   ],
   "exclude": []
 }

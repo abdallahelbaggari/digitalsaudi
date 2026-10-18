@@ -970,7 +970,7 @@ header.scrolled{box-shadow:0 1px 0 var(--line),0 10px 24px -18px rgba(0,0,0,.6)}
 <body>
 
 <!-- ============ CINEMATIC ONBOARDING (first visit) ============ -->
-<script>try{if(localStorage.getItem('ds_intro_done')!=='true')document.documentElement.classList.add('intro-first')}catch(e){document.documentElement.classList.add('intro-first')}</script>
+<script>try{if(sessionStorage.getItem('ds_film_session')!=='1')document.documentElement.classList.add('intro-first')}catch(e){document.documentElement.classList.add('intro-first')}</script>
 <section id="ovid" aria-label="Welcome to DigitalSaudi">
   <video id="ovVideo" muted playsinline preload="none" poster="/onboarding/ovid-poster.jpg?v=59" disablepictureinpicture disableremoteplayback aria-hidden="true"></video>
   <div class="ov-shade" aria-hidden="true"></div>
@@ -1453,7 +1453,7 @@ header.scrolled{box-shadow:0 1px 0 var(--line),0 10px 24px -18px rgba(0,0,0,.6)}
       <button class="row" onclick="openItem('about')"><div class="ic">ℹ️</div><div class="tx"><b>About</b></div><span class="chev">›</span></button>
       <button class="row" onclick="location.href='/privacy.html'"><div class="ic">🔒</div><div class="tx"><b>Privacy policy</b></div><span class="chev">›</span></button>
       <button class="row" onclick="location.href='/terms.html'"><div class="ic">📄</div><div class="tx"><b>Terms of service</b></div><span class="chev">›</span></button>
-      <footer class="legal"><span class="notr" dir="ltr">digitalsaudi.pi · DigitalSaudi v5.9</span><br><span class="notr" dir="ltr">© 2026 DigitalSaudi.</span> <span>All rights reserved.</span><br><span>Independent app, not affiliated with the Government of Saudi Arabia or Pi Network.</span><br><a href="/terms.html">Terms of service</a> · <a href="/privacy.html">Privacy policy</a> · <a href="mailto:support.digitalsaudi.pi@gmail.com" class="notr">support.digitalsaudi.pi@gmail.com</a></footer>
+      <footer class="legal"><span class="notr" dir="ltr">digitalsaudi.pi · DigitalSaudi v6.0</span><br><span class="notr" dir="ltr">© 2026 DigitalSaudi.</span> <span>All rights reserved.</span><br><span>Independent app, not affiliated with the Government of Saudi Arabia or Pi Network.</span><br><a href="/terms.html">Terms of service</a> · <a href="/privacy.html">Privacy policy</a> · <a href="mailto:support.digitalsaudi.pi@gmail.com" class="notr">support.digitalsaudi.pi@gmail.com</a></footer>
     </section>
   </main>
 
@@ -2309,6 +2309,71 @@ header .brand div{font-size:19px;letter-spacing:-.02em;white-space:nowrap}
 [dir=rtl] .xp-ai{right:auto;left:10px}
 #splash .sp-copy{margin:4px 0 0;text-align:center;font-size:11.5px;color:#8A949E}
 
+/* v6.0 — full-screen news reader */
+#newsReel{position:fixed;inset:0;z-index:9000;background:#050B08;color:#fff;display:none}
+#newsReel.open{display:block}
+html.nr-lock,html.nr-lock body{overflow:hidden}
+.nr-top{position:absolute;top:0;left:0;right:0;z-index:3;display:flex;align-items:center;gap:10px;
+  padding:calc(10px + env(safe-area-inset-top)) 14px 10px;background:linear-gradient(180deg,rgba(0,0,0,.55),rgba(0,0,0,0))}
+.nr-ib{width:42px;height:42px;border-radius:50%;border:0;background:rgba(0,0,0,.42);color:#fff;display:flex;align-items:center;justify-content:center;
+  -webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);cursor:pointer;flex:0 0 auto}
+.nr-ttl{flex:1;min-width:0;text-align:center;line-height:1.2;text-shadow:0 1px 6px rgba(0,0,0,.6)}
+.nr-ttl b{display:block;font-size:15px}
+.nr-ttl span{font-size:12px;opacity:.8;font-variant-numeric:tabular-nums}
+.nr-track{position:absolute;inset:0;overflow-y:auto;scroll-snap-type:y mandatory;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.nr-track::-webkit-scrollbar{display:none}
+.nr-slide{position:relative;height:100%;min-height:100%;scroll-snap-align:start;scroll-snap-stop:always;overflow:hidden;background:#0B2A1C}
+.nr-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:saturate(1.08) contrast(1.04)}
+.nr-slide.noimg{background:radial-gradient(120% 80% at 20% 10%,#14774B 0,#0B4A2E 45%,#05231A 100%)}
+.nr-brand{display:none}
+.nr-slide.noimg .nr-brand{display:block;position:absolute;left:24px;right:24px;top:24%;font-size:clamp(34px,11vw,56px);font-weight:800;letter-spacing:-.02em;opacity:.16;line-height:1}
+.nr-shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.35) 0,rgba(0,0,0,0) 18%,rgba(0,0,0,0) 38%,rgba(0,0,0,.6) 58%,rgba(0,0,0,.9) 100%)}
+.nr-body{position:absolute;left:0;right:0;bottom:0;padding:0 20px calc(26px + env(safe-area-inset-bottom));max-width:640px;margin:0 auto}
+.nr-meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:13px;opacity:.92;margin-bottom:10px}
+.nr-chip{background:#10B981;color:#04140D;font-weight:800;font-size:11.5px;padding:4px 9px;border-radius:999px;letter-spacing:.02em}
+.nr-h{margin:0;font-size:clamp(23px,6.6vw,32px);line-height:1.18;font-weight:800;letter-spacing:-.015em;text-wrap:balance}
+.nr-p{margin:12px 0 0;font-size:15.5px;line-height:1.55;color:rgba(255,255,255,.88);display:-webkit-box;-webkit-line-clamp:5;-webkit-box-orient:vertical;overflow:hidden}
+.nr-read{margin-top:18px;height:48px;padding:0 20px;border-radius:14px;border:0;background:#fff;color:#062A1B;font:inherit;font-size:15.5px;font-weight:800;cursor:pointer;display:inline-flex;align-items:center;gap:8px}
+.nr-hint{margin-top:16px;font-size:12.5px;opacity:.7;animation:nr-bob 1.8s ease-in-out infinite}
+@keyframes nr-bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+.nr-end{display:flex;align-items:center;justify-content:center;background:radial-gradient(120% 80% at 50% 20%,#0F5E3C,#05231A)}
+.nr-endbox{text-align:center;padding:24px;display:grid;justify-items:center;gap:12px}
+.nr-endbox h3{margin:0;font-size:20px}
+.nr-tick{width:56px;height:56px;border-radius:50%;background:#10B981;color:#04140D;font-size:28px;font-weight:900;display:flex;align-items:center;justify-content:center}
+.nr-ib:focus-visible,.nr-read:focus-visible{outline:2px solid #E3B341;outline-offset:3px}
+.nr-open{display:inline-flex;align-items:center;gap:6px;margin:0 0 10px;height:36px;padding:0 14px;border-radius:999px;border:1px solid var(--line,#dfe5e2);
+  background:var(--bg-card,#fff);color:var(--accent,#0A7A4B);font:inherit;font-size:13.5px;font-weight:700;cursor:pointer}
+@media (prefers-reduced-motion:reduce){.nr-hint{animation:none}.nr-track{scroll-behavior:auto}}
+@media (min-width:700px){.nr-h{font-size:34px}}
+
+
+/* v6.0 — match events & line-ups */
+.mx-live{display:inline-block;background:#DC2626;color:#fff;font-weight:800;font-size:12px;padding:3px 9px;border-radius:999px;letter-spacing:.02em;animation:mx-pulse 1.6s ease-in-out infinite}
+@keyframes mx-pulse{50%{opacity:.75}}
+.mx-ev{display:grid;gap:6px}
+.mx-row{display:grid;grid-template-columns:44px 30px 1fr;align-items:center;gap:6px;padding:8px 10px;border-radius:12px;background:var(--bg-card,#fff);border:1px solid var(--line,#e3e8e5);font-size:14px}
+.mx-row.away{background:var(--bg-soft,#f4f7f5)}
+.mx-min{font-weight:800;font-variant-numeric:tabular-nums;color:var(--accent,#0A7A4B)}
+.mx-ic{text-align:center}
+.mx-ic small{font-size:9px;font-weight:800;margin-left:1px}
+.mx-dim{color:var(--text-3,#6b7680);font-size:12.5px}
+.mx-lu{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.mx-team{min-width:0;background:var(--bg-card,#fff);border:1px solid var(--line,#e3e8e5);border-radius:14px;padding:12px}
+.mx-th{display:flex;align-items:center;justify-content:space-between;gap:6px;margin-bottom:8px}
+.mx-th b{font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mx-form{font-size:12px;font-weight:800;background:#E8F3EE;color:#065F46;padding:2px 8px;border-radius:999px;flex:0 0 auto}
+.mx-sub{font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--text-3,#6b7680);margin:4px 0}
+.mx-pl{display:grid;grid-template-columns:24px 1fr auto;gap:6px;align-items:center;font-size:13px;padding:4px 0;border-bottom:1px solid var(--line,#eef1ef)}
+.mx-pl:last-child{border-bottom:0}
+.mx-pl span:nth-child(2){min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mx-no{font-weight:800;font-variant-numeric:tabular-nums;color:var(--accent,#0A7A4B);text-align:right}
+.mx-pos{font-size:11px;color:var(--text-3,#6b7680);font-weight:700}
+.mx-subs{margin-top:8px}
+.mx-subs summary{cursor:pointer;font-size:12.5px;font-weight:700;color:var(--accent,#0A7A4B);padding:4px 0}
+.mx-coach{margin-top:8px;font-size:12.5px;color:var(--text-2,#4b5560)}
+@media (max-width:360px){.mx-lu{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){.mx-live{animation:none}}
+
 </style>
 
 <script>
@@ -2607,7 +2672,7 @@ function getJSON(url, ms){
 }
 function speak(text, lang){
   if(!('speechSynthesis' in window)){ toast('Audio not supported on this device'); return; }
-  speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(text); u.lang = lang || 'ar-SA'; u.rate = 0.85; speechSynthesis.speak(u);
+  speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(text); u.lang = lang || 'ar-SA'; u.rate = 1; speechSynthesis.speak(u);
 }
 function reviewedHTML(title){
   return `<div class="reviewed"><span class="tick">✓</span> Last reviewed: ${REVIEWED} · <button style="color:var(--gold);font-weight:700;font-size:12px" onclick="openFeedback('Error in: ${esc(title).replace(/'/g,'')}')">Report an error</button></div>`;
@@ -3060,7 +3125,7 @@ function openFeedback(subject){
 function sendFeedback(){
   const t = $('fbT').value, s = $('fbS').value, m = $('fbM').value;
   if(!m.trim()){ toast('Please write a message'); return; }
-  const body = m + '\n\n—\nApp: DigitalSaudi v5.9\nUser: ' + (piUser ? '@' + piUser.username : 'guest');
+  const body = m + '\n\n—\nApp: DigitalSaudi v6.0\nUser: ' + (piUser ? '@' + piUser.username : 'guest');
   location.href = 'mailto:' + CONTACT_EMAIL + '?subject=' + encodeURIComponent('[' + t + '] ' + (s || 'DigitalSaudi feedback')) + '&body=' + encodeURIComponent(body);
 }
 function editEcard(){
@@ -3230,10 +3295,11 @@ function setNewsCat(c){ news.cat = c; renderNewsCats(); newsReset(); }
 function newsSkeleton(){ return '<div class="news-card"><div class="skeleton sk-img" style="border-radius:0;margin:0;height:auto;aspect-ratio:16/9"></div><div class="bd"><div class="skeleton" style="width:40%;margin-bottom:8px"></div><div class="skeleton"></div></div></div>'; }
 function newsReset(){ news.page = 1; news.done = false; news.items = []; $('newsList').innerHTML = newsSkeleton() + newsSkeleton(); $('sentinel').innerHTML = ''; loadNews(); }
 function loadNews(){
-  if(news.loading || news.done) return;
+  if(news.loading) return news.pending || Promise.resolve();
+  if(news.done) return Promise.resolve();
   news.loading = true; const cat = news.cat;
   if(news.page > 1) $('sentinel').innerHTML = '<div class="spinner" style="border-color:var(--line);border-top-color:var(--accent)"></div>';
-  getJSON('/news?cat=' + cat + '&page=' + news.page).then(function(d){
+  return news.pending = getJSON('/news?cat=' + cat + '&page=' + news.page).then(function(d){
     if(cat !== news.cat) return;
     if(news.page === 1) $('newsList').innerHTML = '';
     const items = (d && d.items) || [];
@@ -3557,7 +3623,7 @@ function renderEvents(){ $('deenEvents').innerHTML = eventsHTML(4) + `<button cl
 function calcHijri(){ const v = $('hjIn').value; if(!v) return; $('hjOut').textContent = hijriOf(new Date(v + 'T12:00:00')); }
 
 /* ================= QURAN ================= */
-let qAudio = null;
+let qAudio = null, qNext = null;
 function openQuranList(){
   showPanel('Quran', `<div class="search-box"><span>🔍</span><input placeholder="Search surah name or number" oninput="filterSurah(this.value)"></div>
     ${store.get('lastRead', null) ? `<button class="row" onclick="openSurah(${store.get('lastRead').n})" style="border-color:var(--gold)"><div class="ic">📌</div><div class="tx"><b>Continue reading</b><small>${esc(store.get('lastRead').name)}</small></div><span class="chev">›</span></button>` : ''}
@@ -3576,10 +3642,16 @@ function openSurah(n){
   showPanel('Surah ' + n, '<div class="ayah"><div class="skeleton" style="height:30px;margin-bottom:10px"></div><div class="skeleton"></div></div><div class="ayah"><div class="skeleton" style="height:30px;margin-bottom:10px"></div><div class="skeleton"></div></div>', { id:'surah' });
   panelCleanup = stopQuranAudio;
   const key = 'surah_' + n, c = store.get(key, null);
-  (c ? Promise.resolve(c) : getJSON('https://api.alquran.cloud/v1/surah/' + n + '/editions/quran-uthmani,en.sahih,ar.alafasy', 20000).then(function(d){
-    const s = { n:n, name:d.data[0].englishName, tr:d.data[0].englishNameTranslation, ar:d.data[0].name, ayahs:d.data[0].ayahs.map(function(a, i){ return { k:a.numberInSurah, ar:a.text, en:d.data[1].ayahs[i].text, au:(d.data[2].ayahs[i].audio || '') }; }) };
-    try{ store.set(key, s); }catch(e){} return s;
-  })).then(function(s){
+  // v6.0: our /quran endpoint (small, cached) first; the public API directly as a backup
+  const AU = function(g){ return 'https://cdn.islamic.network/quran/audio/128/ar.alafasy/' + g + '.mp3'; };
+  const viaOwn = function(){ return getJSON('/quran?surah=' + n, 30000).then(function(d){
+    if(!d || !d.ok) throw new Error('quran');
+    return { n:n, name:d.name, tr:d.tr, ar:d.ar, ayahs:d.ayahs.map(function(a){ return { k:a.k, ar:a.ar, en:a.en, au:AU(a.g) }; }) };
+  }); };
+  const viaApi = function(){ return getJSON('https://api.alquran.cloud/v1/surah/' + n + '/editions/quran-uthmani,en.sahih', 45000).then(function(d){
+    return { n:n, name:d.data[0].englishName, tr:d.data[0].englishNameTranslation, ar:d.data[0].name, ayahs:d.data[0].ayahs.map(function(a, i){ return { k:a.numberInSurah, ar:a.text, en:d.data[1].ayahs[i].text, au:AU(a.number) }; }) };
+  }); };
+  (c ? Promise.resolve(c) : viaOwn().catch(viaApi).then(function(s){ try{ store.set(key, s); }catch(e){} return s; })).then(function(s){
     window._surah = s; store.set('lastRead', { n:n, name:s.name }); award('quran');
     if(!current || current.id !== 'surah') return;
     $('pTitle').textContent = s.name;
@@ -3592,13 +3664,16 @@ function openSurah(n){
 function playAyah(i, cont){
   const s = window._surah; if(!s || !s.ayahs[i] || !s.ayahs[i].au) return;
   stopQuranAudio(true);
-  qAudio = new Audio(s.ayahs[i].au);
+  qAudio = (qNext && qNext.i === i) ? qNext.a : new Audio(s.ayahs[i].au);
+  qNext = null;
+  // load the next verse while this one plays, so "Play all" has no long pauses
+  if(cont && s.ayahs[i + 1] && s.ayahs[i + 1].au){ const na = new Audio(); na.preload = 'auto'; na.src = s.ayahs[i + 1].au; try{ na.load(); }catch(e){} qNext = { i:i + 1, a:na }; }
   document.querySelectorAll('.ayah.playing').forEach(function(x){ x.classList.remove('playing'); });
   const el = $('ay' + i); if(el){ el.classList.add('playing'); el.scrollIntoView({ behavior:'smooth', block:'center' }); }
   qAudio.onended = function(){ if(el) el.classList.remove('playing'); if(cont && i + 1 < s.ayahs.length && $('ay' + (i + 1))) playAyah(i + 1, true); };
   qAudio.play().catch(function(){ toast('Audio could not play'); });
 }
-function stopQuranAudio(keep){ if(qAudio){ qAudio.pause(); qAudio = null; } if(!keep) document.querySelectorAll('.ayah.playing').forEach(function(x){ x.classList.remove('playing'); }); }
+function stopQuranAudio(keep){ if(qAudio){ qAudio.pause(); qAudio = null; } if(!keep && qNext){ try{ qNext.a.src = ''; }catch(e){} qNext = null; } if(!keep) document.querySelectorAll('.ayah.playing').forEach(function(x){ x.classList.remove('playing'); }); }
 function loadDailyAyah(){
   const key = 'ayah_' + ksaDate(), c = store.get(key, null);
   const render = function(a){ $('dailyAyah').innerHTML = `<div class="ar">${a.ar}</div><p style="margin:8px 0 6px;color:var(--text-2);font-size:14.5px">${esc(a.en)}</p><div style="display:flex;justify-content:space-between;align-items:center"><span class="small">${esc(a.ref)}</span><button class="btn btn-ghost btn-sm" onclick="openSurah(${a.s})">Read surah ›</button></div>`; };
@@ -5251,7 +5326,7 @@ function playAr(text, btn){
   const fallback = function(){
     done();
     if('speechSynthesis' in window && speechSynthesis.getVoices){
-      speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(text); u.lang = 'ar-SA'; u.rate = 0.85; speechSynthesis.speak(u);
+      speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(text); u.lang = 'ar-SA'; u.rate = 1; speechSynthesis.speak(u);
     } else toast('Audio is unavailable right now — check your connection');
   };
   const a = new Audio('/tts?text=' + encodeURIComponent(text)); arAudio = a;
@@ -5577,15 +5652,39 @@ function posterShare(){
     } else shareText('Pi accepted here', text, POSTER_LAST.link);
   });
 }
+/* v6.0 — saving that also works inside Pi Browser.
+   Pi Browser ignores download links made inside the page, so there the file is uploaded to
+   /poster-file (kept 24 h) and opened in the phone's own browser, which saves it normally. */
+function inPiBrowser(){ const ua = navigator.userAgent || ''; return /PiBrowser/i.test(ua) || /; wv\)/.test(ua); }   // Pi Browser or another in-app (WebView) browser
+function saveFileSheet(url, name){
+  const abs = location.origin + url;
+  showPanel('Save your poster', `<p>Your file <b>${esc(name)}</b> is ready.</p>
+    <a class="btn btn-primary" style="width:100%;margin-top:6px" href="${esc(abs)}" target="_blank" rel="noopener">⬇️ Download ${esc(name.split('.').pop().toUpperCase())}</a>
+    <button class="btn btn-ghost" style="width:100%;margin-top:10px" onclick="copyText('${esc(abs)}')">📋 Copy download link</button>
+    <p class="small" style="margin-top:12px">If nothing downloads, copy the link and open it in Chrome or Safari. The link works for 24 hours.</p>`, { id:'posterSave' });
+}
+function saveBlob(blob, name){
+  if(!blob) return toast('Could not create the file');
+  if(!inPiBrowser()){
+    const a = document.createElement('a'); a.download = name; a.href = URL.createObjectURL(blob);
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function(){ URL.revokeObjectURL(a.href); }, 6000);
+    return toast('Saving ' + name + '…');
+  }
+  toast('Preparing your download…');
+  fetch('/poster-file?name=' + encodeURIComponent(name), { method:'POST', headers:{ 'Content-Type': blob.type || 'image/png' }, body: blob })
+    .then(function(r){ return r.json(); })
+    .then(function(j){
+      if(!j || !j.ok || !j.url) throw new Error((j && j.error) || 'upload');
+      const abs = location.origin + j.url;
+      try{ if(window.Pi && typeof window.Pi.openUrlInSystemBrowser === 'function'){ window.Pi.openUrlInSystemBrowser(abs); toast('Opening your browser to save the file…'); setTimeout(function(){ saveFileSheet(j.url, name); }, 900); return; } }catch(e){}
+      saveFileSheet(j.url, name);
+    })
+    .catch(function(){ toast('Could not prepare the download. Long-press the poster and choose “Save image”.'); });
+}
 function posterDownload(){
   if(!POSTER_LAST) return;
-  posterFile().then(function(blob){
-    const a = document.createElement('a'); a.download = posterFileName();
-    a.href = blob ? URL.createObjectURL(blob) : POSTER_LAST.url;
-    document.body.appendChild(a); a.click(); a.remove();
-    setTimeout(function(){ if(blob) URL.revokeObjectURL(a.href); }, 4000);
-    toast('Saving poster…');
-  });
+  posterFile().then(function(blob){ saveBlob(blob, posterFileName()); });
 }
 function posterPDF(){
   if(!POSTER_LAST) return;
@@ -5594,8 +5693,9 @@ function posterPDF(){
     const doc = new window.jspdf.jsPDF({ unit:'mm', format:S.pdf, orientation:'portrait' });
     const pw = doc.internal.pageSize.getWidth(), ph = doc.internal.pageSize.getHeight();
     const r = Math.min(pw / S.w, ph / S.h), w = S.w * r, h = S.h * r;
-    doc.addImage(POSTER_LAST.url, 'PNG', (pw - w) / 2, (ph - h) / 2, w, h);
-    doc.save(posterFileName().replace('.png', '.pdf'));
+    // high-quality JPEG inside the PDF keeps the file small (≈1 MB instead of ≈9 MB) and the QR sharp
+    doc.addImage(POSTER_LAST.canvas.toDataURL('image/jpeg', 0.93), 'JPEG', (pw - w) / 2, (ph - h) / 2, w, h);
+    saveBlob(doc.output('blob'), posterFileName().replace('.png', '.pdf'));
   }).catch(function(){ toast('PDF maker could not load'); });
 }
 
@@ -7039,6 +7139,7 @@ function obGo(i){ obI = Math.max(0, Math.min(OB_N - 1, i)); obRender(); if(typeo
 function obStep(d){ obGo(obI + d); }
 function obTogglePause(){ obUserPause = !obUserPause; obSync(); }
 function obClose(){
+  try{ sessionStorage.setItem('ds_film_session', '1'); }catch(e){}
   store.set('intro_done', true); store.set('onboarded', true);
   if(!store.get('persona', null)) store.set('persona', 'visitor');
   const el = obEl(); if(!el) return;
@@ -8897,7 +8998,7 @@ function srAllLangs(text){
    • Headlines are live text synced to the video clock (translated, accessible).
    • Pi scene shows the real price from /pi-price with source and update time,
      or says plainly that the live rate is unavailable — never a made-up number.
-   • Shown once: returning users go straight to the login page.
+   • v6.0: plays each time the app is opened (once per visit); Skip is always visible.
      Settings › Welcome tour plays it again.
    • Data-saver / 2G / reduced motion / video failure → the light photo version.
    ========================================================================== */
@@ -8996,6 +9097,7 @@ function srAllLangs(text){
     try{ if(window.dsAmb) dsAmb.stop(); }catch(e){}
     const sb = $('ovSound'); if(sb){ sb.classList.remove('on'); sb.setAttribute('aria-pressed', 'false'); }
     document.removeEventListener('keydown', keys);
+    try{ sessionStorage.setItem('ds_film_session', '1'); }catch(e){}
     store.set('intro_done', true); store.set('onboarded', true); if(!store.get('persona', null)) store.set('persona', 'visitor');
     document.documentElement.classList.remove('intro-first');
     el.classList.add('leaving');
@@ -9062,7 +9164,9 @@ function srAllLangs(text){
 
   /* start: first visit → film; returning visit → login page */
   showOnboarding = function(){ ovStart(true); };
-  if(!store.get('intro_done', false)) ovStart(false);
+  // v6.0: the film plays every time the app is opened (once per visit), not only on the very first visit
+  let filmSeen = false; try{ filmSeen = sessionStorage.getItem('ds_film_session') === '1'; }catch(e){}
+  if(!filmSeen) ovStart(false);
   else { document.documentElement.classList.remove('intro-first'); el.classList.add('off'); }
 })();
 
@@ -9090,6 +9194,224 @@ function srAllLangs(text){
   if(document.readyState === 'complete') setTimeout(fit, 50); else window.addEventListener('load', function(){ setTimeout(fit, 50); });
   setTimeout(fit, 400);
   const _al = applyLang; applyLang = function(){ const r = _al.apply(this, arguments); setTimeout(fit, 30); return r; };
+})();
+
+/* ==========================================================================
+   v6.0 — full-screen news reader
+   • Tap any story (or "Full screen") → one story per screen, swipe up for the next.
+   • Endless: more stories load as you get near the end; at the very end it offers
+     the newest stories again.
+   • Large, sharp photos edge to edge; stories without a photo get a clean branded card.
+   • Back button / Esc closes it. Works in all six languages.
+   ========================================================================== */
+(function(){
+  const R = [
+    ['Full screen','ملء الشاشة','فل اسکرین','Layar penuh','Cikakken allo','Plein écran'],
+    ['Read full article','اقرأ المقال كاملاً','پورا مضمون پڑھیں','Baca artikel lengkap','Karanta cikakken labari','Lire l’article complet'],
+    ['Swipe up for the next story','اسحب للأعلى للخبر التالي','اگلی خبر کے لیے اوپر سوائپ کریں','Geser ke atas untuk berita berikutnya','Ja sama don labari na gaba','Glissez vers le haut pour l’article suivant'],
+    ['You’ve seen every story for now','شاهدت كل الأخبار حتى الآن','آپ نے فی الحال تمام خبریں دیکھ لیں','Anda sudah melihat semua berita saat ini','Ka ga duk labarai a yanzu','Vous avez vu tous les articles pour le moment'],
+    ['Show the latest news','اعرض أحدث الأخبار','تازہ ترین خبریں دکھائیں','Tampilkan berita terbaru','Nuna sabbin labarai','Afficher les dernières actualités'],
+    ['Loading more stories…','جارٍ تحميل المزيد…','مزید خبریں لوڈ ہو رہی ہیں…','Memuat berita lainnya…','Ana loda ƙarin labarai…','Chargement d’autres articles…'],
+    ['Close','إغلاق','بند کریں','Tutup','Rufe','Fermer'],
+    ['Share','مشاركة','شیئر','Bagikan','Raba','Partager']
+  ];
+  R.forEach(function(r){ LANG_ORDER.slice(1).forEach(function(l, i){ if(I18N[l]) I18N[l][r[0]] = r[i + 1]; }); });
+
+  const reel = document.createElement('div');
+  reel.id = 'newsReel'; reel.setAttribute('role', 'dialog'); reel.setAttribute('aria-modal', 'true'); reel.setAttribute('aria-label', 'News');
+  reel.innerHTML = `<div class="nr-top"><button class="nr-ib" id="nrClose" aria-label="Close"><svg viewBox="0 0 24 24" width="22" height="22"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" fill="none"/></svg></button>
+      <div class="nr-ttl"><b id="nrCat"></b><span id="nrCount"></span></div>
+      <button class="nr-ib" id="nrShare" aria-label="Share"><svg viewBox="0 0 24 24" width="20" height="20"><path d="M12 3v12M7 8l5-5 5 5M5 14v5a2 2 0 002 2h10a2 2 0 002-2v-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg></button></div>
+    <div class="nr-track" id="nrTrack"></div>`;
+  document.body.appendChild(reel);
+  const track = reel.querySelector('#nrTrack');
+  let open = false, pushed = false, idx = 0, rendered = 0, endSlide = null;
+
+  function slideHTML(it, i){
+    const photo = it.img ? `<img class="nr-img" src="${esc(it.img)}" alt="" ${i > 1 ? 'loading="lazy"' : ''} decoding="async" referrerpolicy="no-referrer" onerror="this.parentNode.classList.add('noimg');this.remove()">` : '';
+    return `<article class="nr-slide ${it.img ? '' : 'noimg'}" data-i="${i}" data-id="${esc(it.id)}">
+      ${photo}<div class="nr-brand notr" dir="ltr">${esc(it.source)}</div><div class="nr-shade"></div>
+      <div class="nr-body">
+        <div class="nr-meta"><span class="nr-chip">${esc(t(catName(it.cat)))}</span><span class="notr">${esc(it.source)}</span> · ${esc(ago(it.date))}</div>
+        <h2 class="nr-h">${esc(it.title)}</h2>
+        ${it.summary ? `<p class="nr-p">${esc(it.summary)}</p>` : ''}
+        <button class="nr-read" onclick="readFull('${esc(it.id)}')">${esc(t('Read full article'))} <span aria-hidden="true">›</span></button>
+        ${i === 0 ? `<div class="nr-hint">${esc(t('Swipe up for the next story'))} ↑</div>` : ''}
+      </div></article>`;
+  }
+  function renderMore(){
+    if(endSlide){ endSlide.remove(); endSlide = null; }
+    const frag = news.items.slice(rendered).map(function(it, k){ return slideHTML(it, rendered + k); }).join('');
+    if(frag) track.insertAdjacentHTML('beforeend', frag);
+    rendered = news.items.length;
+    const end = document.createElement('div'); end.className = 'nr-slide nr-end';
+    end.innerHTML = news.done
+      ? `<div class="nr-endbox"><div class="nr-tick">✓</div><h3>${esc(t('You’ve seen every story for now'))}</h3><button class="nr-read" id="nrFresh">${esc(t('Show the latest news'))} ↻</button></div>`
+      : `<div class="nr-endbox"><div class="spinner" style="border-color:rgba(255,255,255,.25);border-top-color:#fff"></div><p>${esc(t('Loading more stories…'))}</p></div>`;
+    track.appendChild(end); endSlide = end;
+    const fr = end.querySelector('#nrFresh');
+    if(fr) fr.onclick = function(){ refresh(); };
+    count();
+  }
+  function count(){
+    $('nrCat').textContent = t(catName(news.cat === 'all' ? 'all' : news.cat));
+    $('nrCount').textContent = rendered ? (Math.min(idx + 1, rendered) + ' / ' + rendered + (news.done ? '' : '+')) : '';
+  }
+  function more(){
+    if(news.done || news.loading) return;
+    loadNews().then(function(){ if(open) renderMore(); });
+  }
+  function refresh(){
+    track.innerHTML = ''; rendered = 0; endSlide = null; idx = 0;
+    newsReset();
+    (news.pending || Promise.resolve()).then(function(){ if(open){ renderMore(); track.scrollTop = 0; } });
+  }
+  // which slide is on screen
+  let ticking = false;
+  track.addEventListener('scroll', function(){
+    if(ticking) return; ticking = true;
+    requestAnimationFrame(function(){
+      ticking = false;
+      const h = track.clientHeight || 1; idx = Math.round(track.scrollTop / h); count();
+      if(idx >= rendered - 3) more();
+    });
+  }, { passive:true });
+
+  window.openNewsReel = function(id){
+    if(!news.items.length) return false;
+    let start = id ? news.items.findIndex(function(x){ return x.id === id; }) : 0;
+    if(start < 0) return false;
+    track.innerHTML = ''; rendered = 0; endSlide = null;
+    renderMore();
+    open = true; reel.classList.add('open'); document.documentElement.classList.add('nr-lock');
+    try{ history.pushState({ newsReel:1 }, ''); pushed = true; }catch(e){}
+    idx = start;
+    requestAnimationFrame(function(){ track.scrollTop = start * track.clientHeight; count(); });
+    if(start >= rendered - 3) more();
+    const r = store.get('readCount', 0) + 1; store.set('readCount', r); if(r >= 5 && typeof award === 'function') award('reader');
+    return true;
+  };
+  function close(viaPop){
+    if(!open) return;
+    open = false; reel.classList.remove('open'); document.documentElement.classList.remove('nr-lock');
+    if(!viaPop && pushed){ pushed = false; try{ history.back(); }catch(e){} }
+    pushed = false;
+  }
+  window.closeNewsReel = close;
+  $('nrClose').onclick = function(){ close(false); };
+  $('nrShare').onclick = function(){ const it = news.items[idx]; if(it) shareText(it.title, it.title + ' — via DigitalSaudi', it.link); };
+  window.addEventListener('popstate', function(){ if(open) close(true); });
+  document.addEventListener('keydown', function(e){
+    if(!open) return;
+    if(e.key === 'Escape') close(false);
+    if(e.key === 'ArrowDown' || e.key === 'PageDown'){ e.preventDefault(); track.scrollBy({ top: track.clientHeight, behavior:'smooth' }); }
+    if(e.key === 'ArrowUp' || e.key === 'PageUp'){ e.preventDefault(); track.scrollBy({ top: -track.clientHeight, behavior:'smooth' }); }
+  });
+
+  // stories in the News list open the full-screen reader
+  const _open = openArticle;
+  openArticle = function(id){ if(!window.openNewsReel(id)) _open(id); };
+
+  // "Full screen" button above the categories
+  const cats = $('newsCats');
+  if(cats && !$('nrOpenBtn')){
+    const b = document.createElement('button'); b.id = 'nrOpenBtn'; b.className = 'nr-open';
+    b.innerHTML = '<svg viewBox="0 0 24 24" width="16" height="16"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg><span>' + esc(t('Full screen')) + '</span>';
+    b.onclick = function(){ if(news.items.length) openNewsReel(news.items[0].id); else { newsReset(); (news.pending || Promise.resolve()).then(function(){ if(news.items.length) openNewsReel(news.items[0].id); }); } };
+    cats.parentNode.insertBefore(b, cats);
+  }
+})();
+
+/* ==========================================================================
+   v6.0 — live minute, goals & cards, and line-ups inside each match
+   Data from /match (API-Football). Refreshes every 60 s while a match is live and open.
+   If the service isn't set up or has nothing yet, the section stays hidden or says when
+   line-ups usually appear — never invented data.
+   ========================================================================== */
+(function(){
+  const R = [
+    ['Line-ups','التشكيلات','لائن اپس','Susunan pemain','Jerin ’yan wasa','Compositions'],
+    ['Starting XI','التشكيلة الأساسية','ابتدائی الیون','Starting XI','’Yan wasa 11 na farko','Titulaires'],
+    ['Substitutes','البدلاء','متبادل کھلاڑی','Pemain cadangan','’Yan canji','Remplaçants'],
+    ['Coach','المدرب','کوچ','Pelatih','Koci','Entraîneur'],
+    ['Match events','أحداث المباراة','میچ کے واقعات','Kejadian pertandingan','Abubuwan wasa','Faits de match'],
+    ['Line-ups usually appear about an hour before kick-off.','تظهر التشكيلات عادةً قبل ساعة تقريباً من بداية المباراة.','لائن اپس عموماً میچ سے تقریباً ایک گھنٹہ پہلے آتے ہیں۔','Susunan pemain biasanya muncul sekitar satu jam sebelum kick-off.','Jerin ’yan wasa yakan fito kusan awa ɗaya kafin fara wasa.','Les compositions paraissent environ une heure avant le coup d’envoi.'],
+    ['Live data: API-Football','بيانات مباشرة: API-Football','لائیو ڈیٹا: API-Football','Data langsung: API-Football','Bayanai kai tsaye: API-Football','Données en direct : API-Football'],
+    ['No goals or cards yet.','لا أهداف أو بطاقات بعد.','ابھی کوئی گول یا کارڈ نہیں۔','Belum ada gol atau kartu.','Babu ƙwallo ko kati tukuna.','Pas encore de but ni de carton.']
+  ];
+  R.forEach(function(r){ LANG_ORDER.slice(1).forEach(function(l, i){ if(I18N[l]) I18N[l][r[0]] = r[i + 1]; }); });
+
+  let timer = 0;
+  const ICON = function(e){
+    if(e.type === 'Goal') return e.detail === 'Own Goal' ? '⚽<small>OG</small>' : e.detail === 'Missed Penalty' ? '❌' : '⚽';
+    if(e.type === 'Card') return /red/i.test(e.detail) ? '🟥' : '🟨';
+    if(e.type === 'subst') return '🔁';
+    if(e.type === 'Var') return '📺';
+    return '•';
+  };
+  function evHTML(d){
+    const ev = (d.events || []).filter(function(e){ return e.type === 'Goal' || e.type === 'Card' || e.type === 'subst' || e.type === 'Var'; });
+    if(!ev.length) return `<p class="small">${esc(t('No goals or cards yet.'))}</p>`;
+    return '<div class="mx-ev">' + ev.map(function(e){
+      const min = (e.min != null ? e.min : '') + (e.plus ? '+' + e.plus : '') + '′';
+      const who = e.type === 'subst' ? `${esc(e.assist || '')} <span class="mx-dim">↔ ${esc(e.player || '')}</span>` : esc(e.player || '') + (e.assist && e.type === 'Goal' ? ` <span class="mx-dim">(${esc(e.assist)})</span>` : '');
+      return `<div class="mx-row ${e.side}"><span class="mx-min">${min}</span><span class="mx-ic">${ICON(e)}</span><span class="mx-who notr">${who}</span></div>`;
+    }).join('') + '</div>';
+  }
+  function luHTML(d){
+    if(!d.lineups || !d.lineups.length) return `<p class="small">${esc(t('Line-ups usually appear about an hour before kick-off.'))}</p>`;
+    const col = function(l){
+      return `<div class="mx-team"><div class="mx-th"><b class="notr">${esc(l.team || '')}</b>${l.formation ? `<span class="mx-form">${esc(l.formation)}</span>` : ''}</div>
+        <div class="mx-sub">${esc(t('Starting XI'))}</div>
+        ${l.start.map(function(p){ return `<div class="mx-pl"><span class="mx-no">${p.n != null ? p.n : ''}</span><span class="notr">${esc(p.name)}</span><span class="mx-pos">${esc(p.pos || '')}</span></div>`; }).join('')}
+        ${l.subs.length ? `<details class="mx-subs"><summary>${esc(t('Substitutes'))} (${l.subs.length})</summary>${l.subs.map(function(p){ return `<div class="mx-pl"><span class="mx-no">${p.n != null ? p.n : ''}</span><span class="notr">${esc(p.name)}</span><span class="mx-pos">${esc(p.pos || '')}</span></div>`; }).join('')}</details>` : ''}
+        ${l.coach ? `<div class="mx-coach">${esc(t('Coach'))}: <span class="notr">${esc(l.coach)}</span></div>` : ''}</div>`;
+    };
+    const h = d.lineups.find(function(l){ return l.side === 'home'; }) || d.lineups[0];
+    const a = d.lineups.find(function(l){ return l.side === 'away'; }) || d.lineups[1];
+    return `<div class="mx-lu">${h ? col(h) : ''}${a ? col(a) : ''}</div>`;
+  }
+  function paint(m, d){
+    const box = $('mxLive'); if(!box) return;
+    if(!d || !d.ok){
+      if(d && d.reason === 'not_configured'){ box.innerHTML = ''; return; }
+      box.innerHTML = `<h4>${esc(t('Line-ups'))}</h4><p class="small">${esc(t('Line-ups usually appear about an hour before kick-off.'))}</p>`;
+      return;
+    }
+    // fresher score and minute at the top of the match card
+    const sc = $('mxScore'), stt = $('mxStatus');
+    if(sc && d.score && d.score.home != null) sc.textContent = d.score.home + ' – ' + d.score.away;
+    if(stt){ stt.innerHTML = d.live ? `<span class="mx-live">● LIVE ${d.status === 'HT' ? 'HT' : (d.elapsed || 0) + (d.extra ? '+' + d.extra : '') + '′'}</span>` : esc(d.statusText || ''); }
+    box.innerHTML = `<h4>${esc(t('Match events'))}</h4>${evHTML(d)}<h4>${esc(t('Line-ups'))}</h4>${luHTML(d)}<p class="small" style="margin-top:10px">${esc(t('Live data: API-Football'))}</p>`;
+  }
+  function load(m){
+    const kick = new Date(m.utc);
+    const q = '/match?date=' + kick.toISOString().slice(0, 10) + '&home=' + encodeURIComponent(m.home.name) + '&away=' + encodeURIComponent(m.away.name) + '&kick=' + encodeURIComponent(m.utc);
+    getJSON(q, 15000).then(function(d){
+      if(!current || current.id !== 'match') return;
+      paint(m, d);
+      clearTimeout(timer);
+      if(d && d.ok && d.live) timer = setTimeout(function(){ if(current && current.id === 'match') load(m); }, 60000);
+    }).catch(function(){ const b = $('mxLive'); if(b) b.innerHTML = ''; });
+  }
+  const _open = openMatch;
+  openMatch = function(id){
+    _open(id);
+    const m = matchCache[id]; if(!m || !current || current.id !== 'match') return;
+    // mark the score and status so live data can update them
+    const card = document.querySelector('#pBody .card');
+    if(card){
+      const st = card.querySelector('.small'); if(st) st.id = 'mxStatus';
+      const sc = card.querySelector('div[style*="font-size:34px"]'); if(sc) sc.id = 'mxScore';
+    }
+    const fav = [].slice.call(document.querySelectorAll('#pBody h4')).find(function(h){ return /Favourite team/.test(h.textContent) || h.textContent === t('Favourite team'); });
+    const box = document.createElement('div'); box.id = 'mxLive';
+    box.innerHTML = '<div class="skeleton" style="height:60px;margin:14px 0"></div>';
+    if(fav) fav.parentNode.insertBefore(box, fav); else $('pBody').appendChild(box);
+    const prevCleanup = typeof panelCleanup === 'function' ? panelCleanup : null;
+    panelCleanup = function(){ clearTimeout(timer); if(prevCleanup) try{ prevCleanup(); }catch(e){} };
+    load(m);
+  };
 })();
 
 </script>
