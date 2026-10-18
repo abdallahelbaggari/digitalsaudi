@@ -20,7 +20,7 @@ async function clearPayment(key, paymentId, txidHint) {
   const look = await pi(key, encodeURIComponent(paymentId));
   if (!look.ok) return { ok: false, action: 'lookup', status: look.status, detail: (look.data && (look.data.error_message || look.data.error)) || look.text };
   const p = look.data || {}, st = p.status || {};
-  const txid = (p.transaction && p.transaction.txid) || txidHint || '';
+  const txid = (p.transaction && p.transaction.txid) || (/^[A-Za-z0-9]{16,128}$/.test(String(txidHint || '')) ? String(txidHint) : '');
   if (st.developer_completed) return { ok: true, action: 'none', detail: 'Payment was already completed', payment: { amount: p.amount, memo: p.memo, txid } };
   if (st.cancelled || st.user_cancelled) return { ok: true, action: 'none', detail: 'Payment was already cancelled' };
   if (txid) {
@@ -36,6 +36,7 @@ export async function onRequestPost(context) {
     const body = await context.request.json().catch(() => ({}));
     const paymentId = body.paymentId;
     if (!paymentId) return json({ ok: false, error: 'Missing paymentId' });
+    if (!/^[A-Za-z0-9_-]{6,128}$/.test(String(paymentId))) return json({ ok: false, error: 'Invalid paymentId' });
     const key = context.env.PI_API_KEY ? String(context.env.PI_API_KEY).trim() : '';
     if (!key) return json({ ok: false, error: 'PI_API_KEY not set' });
     const res = await clearPayment(key, paymentId, body.txid);

@@ -66,9 +66,16 @@ export async function onRequestGet(context) {
 
 export async function onRequestPost(context) {
   if (!authorised(context)) return json({ ok: false, error: 'unauthorised' });
+  const b = await context.request.json().catch(() => ({}));
+  if (b.action === 'clearPayment') {   // works even when the database is not bound
+    const key = context.env.PI_API_KEY ? String(context.env.PI_API_KEY).trim() : '';
+    if (!key) return json({ ok: false, error: 'PI_API_KEY not set' });
+    const pid = s(b.paymentId, 120);
+    if (!/^[A-Za-z0-9_-]{6,128}$/.test(pid)) return json({ ok: false, error: 'Enter a valid payment ID' });
+    return json({ ...(await clearPayment(key, pid)), paymentId: pid });
+  }
   const db = context.env.DS_DB; if (!db) return json({ ok: false, error: 'DS_DB not bound' });
   await schema(db);
-  const b = await context.request.json().catch(() => ({}));
   const id = parseInt(b.id, 10) || 0;
   switch (b.action) {
     case 'approve':

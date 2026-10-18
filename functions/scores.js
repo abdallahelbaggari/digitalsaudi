@@ -4,6 +4,7 @@
 //   /scores?type=window                 matches yesterday..tomorrow, all competitions (live + today)
 //   /scores?type=upcoming&comp=PL       next 10 days
 //   /scores?type=results&comp=PL        last 10 days
+//   /scores?type=upcoming&comp=ALL      every competition, next 7 days (results&comp=ALL: last 7 days)
 //   /scores?type=standings&comp=PL      league table
 //   /scores?type=team&id=57             one team's recent + next matches
 
@@ -87,7 +88,7 @@ export async function onRequestGet(context) {
   const key = context.env.FOOTBALL_API_KEY || context.env.FD_API_KEY;
 
   if (!key) return json({ ok: false, error: 'FOOTBALL_API_KEY (or FD_API_KEY) not set' });
-  if (type !== 'window' && type !== 'team' && COMPS.indexOf(comp) < 0) return json({ ok: false, error: 'Unknown competition' });
+  if (type !== 'window' && type !== 'team' && !(comp === 'ALL' && (type === 'upcoming' || type === 'results')) && COMPS.indexOf(comp) < 0) return json({ ok: false, error: 'Unknown competition' });
 
   try {
     if (type === 'window') {
@@ -101,7 +102,9 @@ export async function onRequestGet(context) {
     if (type === 'upcoming' || type === 'results') {
       const up = type === 'upcoming';
       const data = await cached(type + ':' + comp, up ? 1800 : 900, async () => {
-        const d = await fd('/competitions/' + comp + '/matches?dateFrom=' + (up ? day(0) : day(-10)) + '&dateTo=' + (up ? day(10) : day(0)), key);
+        const span = comp === 'ALL' ? 7 : 10;   // football-data allows up to 10 days; all competitions use 7 to keep it light
+        const range = 'dateFrom=' + (up ? day(0) : day(-span)) + '&dateTo=' + (up ? day(span) : day(0));
+        const d = await fd(comp === 'ALL' ? '/matches?competitions=' + COMPS.join(',') + '&' + range : '/competitions/' + comp + '/matches?' + range, key);
         const ok = up ? ['SCHEDULED', 'TIMED', 'POSTPONED'] : ['FINISHED'];
         return { ok: true, matches: (d.matches || []).filter(m => ok.indexOf(m.status) >= 0).map(trimMatch).sort((a, b) => a.utc < b.utc ? -1 : 1), updated: new Date().toISOString() };
       });

@@ -4,12 +4,13 @@
 //   /news?cat=all|saudi|hajj|business|sport|crypto|world&page=1
 
 const FEEDS = [
-  { url: 'https://www.arabnews.com/rss.xml', source: 'Arab News' },
-  { url: 'https://english.alarabiya.net/feed/rss2/en.xml', source: 'Al Arabiya' },
   { url: 'https://feeds.bbci.co.uk/news/world/middle_east/rss.xml', source: 'BBC News' },
   { url: 'https://www.aljazeera.com/xml/rss/all.xml', source: 'Al Jazeera' },
-  { url: 'https://news.google.com/rss/search?q=Saudi+Arabia&hl=en-SA&gl=SA&ceid=SA:en', source: 'Google News', google: true },
-  { url: 'https://news.google.com/rss/search?q=Hajj+OR+Umrah+OR+Makkah+OR+Madinah&hl=en-SA&gl=SA&ceid=SA:en', source: 'Google News', google: true },
+  { url: 'https://www.arabnews.com/cat/1/rss.xml', source: 'Arab News', force: 'saudi' },
+  { url: 'https://www.bing.com/news/search?q=Saudi+Arabia&format=rss&mkt=en-US', source: 'Bing News', bing: true, force: 'saudi' },
+  { url: 'https://www.bing.com/news/search?q=Hajj+OR+Umrah+OR+Makkah+OR+Madinah&format=rss&mkt=en-US', source: 'Bing News', bing: true, force: 'hajj' },
+  { url: 'https://www.bing.com/news/search?q=Saudi+economy+OR+Saudi+business+OR+Aramco&format=rss&mkt=en-US', source: 'Bing News', bing: true, force: 'business' },
+  { url: 'https://www.bing.com/news/search?q=%22Pi+Network%22&format=rss&mkt=en-US', source: 'Bing News', bing: true, crypto: true, pi: true },
   { url: 'https://feeds.bbci.co.uk/sport/football/rss.xml', source: 'BBC Sport', sport: true },
   { url: 'https://cointelegraph.com/rss/tag/pi-network', source: 'Cointelegraph', crypto: true, pi: true },
   { url: 'https://cointelegraph.com/rss', source: 'Cointelegraph', crypto: true }
@@ -50,6 +51,7 @@ const SAUDI = /\b(saudi|riyadh|jeddah|ksa|neom|dammam|alula|vision 2030|crown pr
 function categorise(it, feed) {
   const text = it.title + ' ' + it.summary;
   const tags = [];
+  if (feed.force) { tags.push(feed.force); if (feed.force !== 'saudi' && SAUDI.test(text)) tags.push('saudi'); if (feed.force !== 'hajj' && HAJJ.test(text)) tags.push('hajj'); return tags; }
   if (feed.sport) { tags.push('sport'); if (SAUDI.test(text)) tags.push('saudi'); return tags; }
   if (feed.crypto) { if (feed.pi || /\bpi network\b|\bpi coin\b/i.test(text)) tags.push('crypto', 'pi'); else tags.push('crypto'); }
   else {
@@ -79,6 +81,11 @@ function parseFeed(xml, feed) {
     if (summary.length > 420) summary = summary.slice(0, 417).replace(/\s+\S*$/, '') + '…';
     const date = Date.parse(strip(tag(raw, 'pubDate')) || strip(tag(raw, 'dc:date'))) || Date.now();
     let src = feed.source, ttl = title;
+    if (feed.bing) {
+      try { const real = new URL(link).searchParams.get('url'); if (real && /^https?:\/\//.test(real)) link = real; } catch (e) {}
+      const bs = strip(tag(raw, 'News:Source')); if (bs) src = bs;
+      const bi = strip(tag(raw, 'News:Image')); if (bi && !img) img = bi.replace(/^http:\/\//, 'https://') + (bi.indexOf('?') > 0 ? '&' : '?') + 'w=640&h=360&c=7';
+    }
     if (feed.google) { const ps = strip(tag(raw, 'source')); if (ps) { src = ps; ttl = title.replace(new RegExp('\\s+-\\s+' + ps.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '$'), ''); } summary = ''; }
     const it = { id: hash(link), title: ttl, link, img: img || '', summary, source: src, date };
     it.tags = categorise(it, feed);

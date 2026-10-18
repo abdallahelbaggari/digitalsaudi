@@ -1,0 +1,18 @@
+DigitalSaudi
+Copyright (c) 2026 DigitalSaudi. All rights reserved.
+digitalsaudi.pi · support.digitalsaudi.pi@gmail.com
+
+The DigitalSaudi name, logo, app design, source code, text, videos, illustrations
+and other original content in this repository are the property of DigitalSaudi.
+No licence is granted to copy, modify, publish, distribute or sell any part of it
+without prior written permission. Viewing the code here does not grant any rights.
+
+Third-party content keeps its own owners and licences, including:
+- Map data © OpenStreetMap contributors (ODbL 1.0)
+- Weather data from MET Norway (CC BY 4.0)
+- Currency rates by ExchangeRate-API; Pi prices from the exchange named in the app
+- News headlines and images belong to their publishers
+- Quran text and audio from alquran.cloud; prayer times from Aladhan
+- Open-source libraries loaded from cdnjs keep their own licences
+- Pi and related trademarks belong to their owners; DigitalSaudi is independent of Pi Network
+- Some illustrative images were generated with AI tools and are labelled in the app

@@ -63,6 +63,13 @@ export async function onRequestGet(context) {
   try { const hit = await caches.default.match(creq); if (hit) return audio(await hit.arrayBuffer()); } catch (e) {}
   if (env.DS_KV) { try { const kvHit = await env.DS_KV.get('tts:' + id, 'arrayBuffer'); if (kvHit) { context.waitUntil(caches.default.put(creq, audio(kvHit.slice(0)))); return audio(kvHit); } } catch (e) {} }
 
+  // per-IP daily limit for NEW audio (cached phrases above are free and unlimited)
+  if (env.DS_KV) {
+    const ip = context.request.headers.get('CF-Connecting-IP') || '0', k = 'ttsn:' + new Date().toISOString().slice(0, 10) + ':' + ip;
+    const n = parseInt(await env.DS_KV.get(k), 10) || 0;
+    if (n >= (parseInt(env.TTS_NEW_PER_DAY, 10) || 60)) return err('Daily audio limit reached — try again tomorrow', 429);
+    context.waitUntil(env.DS_KV.put(k, String(n + 1), { expirationTtl: 172800 }));
+  }
   const models = env.GEMINI_TTS_MODEL ? [env.GEMINI_TTS_MODEL].concat(MODELS) : MODELS;
   const errors = [];
   for (const m of models) {

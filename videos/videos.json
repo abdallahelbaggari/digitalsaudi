@@ -1,0 +1,124 @@
+{
+  "_how_to": [
+    "This file lists the real videos shown in Why Pi in Saudi?. The app reads it each time the section opens.",
+    "To publish a film: copy its files into /videos (and subtitles into /videos/subs), then fill in its \"src\" below.",
+    "An entry with an empty \"src\" is ignored, so its story card keeps showing 'Filming soon'.",
+    "kind must be honest: \"filmed\" = real people, \"screen\" = a recording of the app, \"generated\" = made with AI tools.",
+    "story links a film to its story card: friends, business, street, travellers, innovation.",
+    "Files: keep each MP4 under 20 MB (Cloudflare Pages allows 25 MB per file). src_sd is the small data-saver copy.",
+    "The five app tours are built into the app; you do not need to list them here.",
+    "Your own recording of a built-in app tour in another language: add { \"id\": \"tour-why\", \"by_lang\": { \"ar\": { \"src\": \"/videos/tour-why.ar.mp4\", \"src_sd\": \"/videos/tour-why.ar-sd.mp4\", \"poster\": \"/videos/tour-why.ar.jpg\" } } } — Arabic viewers then see it instead of the English one."
+  ],
+  "videos": [
+    {
+      "id": "s1-friends",
+      "story": "friends",
+      "kind": "filmed",
+      "title": {
+        "en": "Friends discovering Pi",
+        "ar": "أصدقاء يكتشفون Pi"
+      },
+      "summary": {
+        "en": "A Riyadh café, three friends, one phone",
+        "ar": "مقهى في الرياض، ثلاثة أصدقاء، وهاتف واحد"
+      },
+      "src": "",
+      "src_sd": "",
+      "poster": "/videos/s1-friends.jpg",
+      "subtitles": {
+        "ar": "/videos/subs/s1-friends.ar.vtt",
+        "en": "/videos/subs/s1-friends.en.vtt"
+      },
+      "duration": 0,
+      "recorded": ""
+    },
+    {
+      "id": "s2-business",
+      "story": "business",
+      "kind": "filmed",
+      "title": {
+        "en": "Business owners exploring ideas",
+        "ar": "أصحاب أعمال يستكشفون الأفكار"
+      },
+      "summary": {
+        "en": "Two shop owners talk customers and digital commerce",
+        "ar": "صاحبا متجرين يتحدثان عن الزبائن والتجارة الرقمية"
+      },
+      "src": "",
+      "src_sd": "",
+      "poster": "/videos/s2-business.jpg",
+      "subtitles": {
+        "ar": "/videos/subs/s2-business.ar.vtt",
+        "en": "/videos/subs/s2-business.en.vtt"
+      },
+      "duration": 0,
+      "recorded": ""
+    },
+    {
+      "id": "s3-street",
+      "story": "street",
+      "kind": "filmed",
+      "title": {
+        "en": "Discovering DigitalSaudi on the street",
+        "ar": "اكتشاف DigitalSaudi في الشارع"
+      },
+      "summary": {
+        "en": "Walking, talking, opening the app",
+        "ar": "مشي وحديث وفتح للتطبيق"
+      },
+      "src": "",
+      "src_sd": "",
+      "poster": "/videos/s3-street.jpg",
+      "subtitles": {
+        "ar": "/videos/subs/s3-street.ar.vtt",
+        "en": "/videos/subs/s3-street.en.vtt"
+      },
+      "duration": 0,
+      "recorded": ""
+    },
+    {
+      "id": "s4-travellers",
+      "story": "travellers",
+      "kind": "filmed",
+      "title": {
+        "en": "Travellers exploring Saudi",
+        "ar": "مسافرون يستكشفون السعودية"
+      },
+      "summary": {
+        "en": "Visitors, a local friend and a city guide",
+        "ar": "زوّار وصديق محلي ودليل للمدينة"
+      },
+      "src": "",
+      "src_sd": "",
+      "poster": "/videos/s4-travellers.jpg",
+      "subtitles": {
+        "ar": "/videos/subs/s4-travellers.ar.vtt",
+        "en": "/videos/subs/s4-travellers.en.vtt"
+      },
+      "duration": 0,
+      "recorded": ""
+    },
+    {
+      "id": "s5-innovation",
+      "story": "innovation",
+      "kind": "filmed",
+      "title": {
+        "en": "From conversation to innovation",
+        "ar": "من الحوار إلى الابتكار"
+      },
+      "summary": {
+        "en": "An idea, a whiteboard and a plan to test it",
+        "ar": "فكرة وسبّورة وخطة لتجربتها"
+      },
+      "src": "",
+      "src_sd": "",
+      "poster": "/videos/s5-innovation.jpg",
+      "subtitles": {
+        "ar": "/videos/subs/s5-innovation.ar.vtt",
+        "en": "/videos/subs/s5-innovation.en.vtt"
+      },
+      "duration": 0,
+      "recorded": ""
+    }
+  ]
+}

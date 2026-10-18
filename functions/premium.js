@@ -34,9 +34,10 @@ export async function onRequestPost(context) {
     const body = await context.request.json();
     const paymentId = body.paymentId;
     if (!paymentId) return json({ ok: false, error: 'Missing paymentId' });
+    if (!/^[A-Za-z0-9_-]{6,128}$/.test(String(paymentId))) return json({ ok: false, error: 'Invalid paymentId' });
 
     // Verify the payment directly with Pi — never trust the client.
-    const res = await fetch('https://api.minepi.com/v2/payments/' + paymentId, { headers: { 'Authorization': 'Key ' + context.env.PI_API_KEY } });
+    const res = await fetch('https://api.minepi.com/v2/payments/' + encodeURIComponent(paymentId), { headers: { 'Authorization': 'Key ' + String(context.env.PI_API_KEY).trim() } });
     const p = await res.json().catch(() => null);
     if (!res.ok || !p) return json({ ok: false, error: 'Payment not found' });
     const st = p.status || {};

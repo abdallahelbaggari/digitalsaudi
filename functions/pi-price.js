@@ -77,6 +77,16 @@ async function sparkOKX() {
   return rows.map(r => +parseFloat(r[4]).toFixed(6)).reverse();   // close prices, oldest first
 }
 
+async function sparkGate() {
+  const rows = await getJSON('https://api.gateio.ws/api/v4/spot/candlesticks?currency_pair=PI_USDT&interval=4h&limit=42');
+  if (!Array.isArray(rows) || !rows.length) throw new Error('Gate no candles');
+  return rows.map(r => +parseFloat(r[2]).toFixed(6)).filter(v => v > 0);   // [time, volume, close, ...] oldest first
+}
+async function sparkMEXC() {
+  const rows = await getJSON('https://api.mexc.com/api/v3/klines?symbol=PIUSDT&interval=4h&limit=42');
+  if (!Array.isArray(rows) || !rows.length) throw new Error('MEXC no candles');
+  return rows.map(r => +parseFloat(r[4]).toFixed(6)).filter(v => v > 0);
+}
 function cgHeaders(env) { return env.COINGECKO_API_KEY ? { 'x-cg-demo-api-key': env.COINGECKO_API_KEY } : {}; }
 async function fromCoinGecko(env) {
   const d = await getJSON('https://api.coingecko.com/api/v3/simple/price?ids=pi-network&vs_currencies=usd,sar,ngn&include_24hr_change=true&include_last_updated_at=true', cgHeaders(env));
@@ -120,7 +130,7 @@ export async function onRequestGet(context) {
       price = { ...last, stale: true };
     }
     let spark = [];
-    try { spark = await cached('spark', 3600, () => firstOf(env.COINGECKO_API_KEY ? [() => sparkCoinGecko(env), sparkOKX] : [sparkOKX, () => sparkCoinGecko(env)])); } catch (e) {}
+    try { spark = await cached('spark', 3600, () => firstOf(env.COINGECKO_API_KEY ? [() => sparkCoinGecko(env), sparkOKX, sparkGate, sparkMEXC] : [sparkOKX, sparkGate, sparkMEXC, () => sparkCoinGecko(env)])); } catch (e) {}
     return json({ ok: true, ...price, spark }, 60);
   } catch (err) {
     return json({ ok: false, error: String(err && err.message || err) }, 15);
