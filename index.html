@@ -1453,7 +1453,7 @@ header.scrolled{box-shadow:0 1px 0 var(--line),0 10px 24px -18px rgba(0,0,0,.6)}
       <button class="row" onclick="openItem('about')"><div class="ic">ℹ️</div><div class="tx"><b>About</b></div><span class="chev">›</span></button>
       <button class="row" onclick="location.href='/privacy.html'"><div class="ic">🔒</div><div class="tx"><b>Privacy policy</b></div><span class="chev">›</span></button>
       <button class="row" onclick="location.href='/terms.html'"><div class="ic">📄</div><div class="tx"><b>Terms of service</b></div><span class="chev">›</span></button>
-      <footer class="legal"><span class="notr" dir="ltr">digitalsaudi.pi · DigitalSaudi v6.1</span><br><span class="notr" dir="ltr">© 2026 DigitalSaudi.</span> <span>All rights reserved.</span><br><span>Independent app, not affiliated with the Government of Saudi Arabia or Pi Network.</span><br><a href="/terms.html">Terms of service</a> · <a href="/privacy.html">Privacy policy</a> · <a href="mailto:support.digitalsaudi.pi@gmail.com" class="notr">support.digitalsaudi.pi@gmail.com</a></footer>
+      <footer class="legal"><span class="notr" dir="ltr">digitalsaudi.pi · DigitalSaudi v6.2</span><br><span class="notr" dir="ltr">© 2026 DigitalSaudi.</span> <span>All rights reserved.</span><br><span>Independent app, not affiliated with the Government of Saudi Arabia or Pi Network.</span><br><a href="/terms.html">Terms of service</a> · <a href="/privacy.html">Privacy policy</a> · <a href="mailto:support.digitalsaudi.pi@gmail.com" class="notr">support.digitalsaudi.pi@gmail.com</a></footer>
     </section>
   </main>
 
@@ -2374,6 +2374,94 @@ html.nr-lock,html.nr-lock body{overflow:hidden}
 @media (max-width:360px){.mx-lu{grid-template-columns:1fr}}
 @media (prefers-reduced-motion:reduce){.mx-live{animation:none}}
 
+/* v6.2 — Why Pi in Saudi? film library and player */
+.wf{position:fixed;inset:0;z-index:9000;background:#05231A;color:#fff;display:flex;flex-direction:column;transform:translateY(100%);visibility:hidden;transition:transform .38s cubic-bezier(.2,.8,.2,1),visibility 0s .38s}
+.wf.open{transform:none;visibility:visible;transition:transform .38s cubic-bezier(.2,.8,.2,1)}
+.wf-top{display:flex;align-items:center;gap:10px;padding:calc(10px + env(safe-area-inset-top)) 12px 10px;background:linear-gradient(180deg,#05231A 70%,rgba(5,35,26,0))}
+.wf-top h2{flex:1;margin:0;font-size:18px;font-weight:800;text-align:center;color:#fff}
+.wf-ib{width:42px;height:42px;border-radius:50%;border:0;background:rgba(255,255,255,.1);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:13px;letter-spacing:.04em;cursor:pointer;flex:none}
+.wf-ib .i{width:20px;height:20px}
+.wf-ib[aria-pressed="false"]{opacity:.5;text-decoration:line-through}
+.wf-body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:4px 16px calc(28px + env(safe-area-inset-bottom))}
+.wf-hero{position:relative;border-radius:24px;overflow:hidden;aspect-ratio:4/5;max-height:62vh;width:100%;cursor:pointer;box-shadow:0 24px 50px -20px rgba(0,0,0,.7)}
+.wf-hero img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 20%;animation:wfKen 14s ease-in-out infinite alternate}
+@keyframes wfKen{from{transform:scale(1.02)}to{transform:scale(1.12)}}
+.wf-hg{position:absolute;inset:0;background:linear-gradient(180deg,rgba(5,35,26,0) 35%,rgba(5,35,26,.75) 72%,#05231A 100%)}
+.wf-ht{position:absolute;left:18px;right:18px;bottom:18px}
+.wf-ht h1{margin:0;font-size:30px;line-height:1.1;font-weight:900;color:#fff}
+.wf-ht p{margin:6px 0 14px;color:rgba(255,255,255,.82);font-size:15px;line-height:1.4}
+.wf-btn{display:inline-flex;align-items:center;gap:8px;height:48px;padding:0 20px;border-radius:999px;background:#34D399;color:#04140D;font-weight:800;font-size:16px;border:0;cursor:pointer}
+.wf-btn .i{width:18px;height:18px}
+.wf-btn em{font-style:normal;font-weight:700;opacity:.65;margin-inline-start:4px}
+.wf-sec{margin:24px 2px 12px;font-size:13px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#E3B341}
+.wf-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.wf-card{display:flex;flex-direction:column;gap:8px;text-align:start;background:none;border:0;padding:0;color:#fff;cursor:pointer}
+.wf-th{position:relative;display:block;border-radius:18px;overflow:hidden;aspect-ratio:9/14;background:#0C3B2A}
+.wf-th img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.wf-pp{position:absolute;left:50%;top:50%;width:46px;height:46px;margin:-23px 0 0 -23px;border-radius:50%;background:rgba(255,255,255,.92);color:#0A7A4B;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 20px rgba(0,0,0,.35)}
+.wf-pp .i{width:20px;height:20px;margin-inline-start:2px}
+.wf-d{position:absolute;right:8px;bottom:8px;padding:3px 8px;border-radius:8px;background:rgba(0,0,0,.6);font-size:12px;font-weight:700}
+.wf-tx b{display:block;font-size:15px;line-height:1.25}
+.wf-tx small{display:block;margin-top:2px;font-size:13px;color:rgba(255,255,255,.7)}
+.wf-today{display:flex;flex-direction:column;gap:8px}
+.wf-today button{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:16px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.06);color:#fff;text-align:start;cursor:pointer}
+.wf-today .ti{width:40px;height:40px;border-radius:12px;background:rgba(52,211,153,.16);color:#34D399;display:flex;align-items:center;justify-content:center;flex:none}
+.wf-today .ti .i{width:20px;height:20px}
+.wf-today b{display:block;font-size:15px}
+.wf-today small{display:block;font-size:13px;color:rgba(255,255,255,.7)}
+.wf-today span:nth-child(2){flex:1}
+.wf-today .go{font-size:22px;opacity:.5}
+.wf-copy{margin:26px 0 0;text-align:center;font-size:12px;color:rgba(255,255,255,.45)}
+
+/* player */
+.wfp{position:fixed;inset:0;z-index:9100;background:#000;display:none}
+.wfp.open{display:block}
+.wfp video{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#05231A}
+@media (max-aspect-ratio:10/16){.wfp video{object-fit:cover}}
+.wfp-shade{position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,rgba(0,0,0,.45) 0,rgba(0,0,0,0) 16%,rgba(0,0,0,0) 58%,rgba(0,0,0,.55) 100%)}
+.wfp-bar{position:absolute;left:14px;right:14px;top:calc(8px + env(safe-area-inset-top));height:3px;border-radius:2px;background:rgba(255,255,255,.28);overflow:hidden;z-index:3}
+.wfp-bar i{display:block;height:100%;width:0;background:#fff}
+.wfp-head{position:absolute;left:0;right:0;top:calc(18px + env(safe-area-inset-top));display:flex;align-items:center;gap:10px;padding:0 12px;z-index:3}
+.wfp-head b{flex:1;text-align:center;font-size:15px;color:#fff;text-shadow:0 1px 6px rgba(0,0,0,.6);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wfp-head .wf-ib{background:rgba(0,0,0,.35);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.wfp-tap{position:absolute;inset:80px 0 0 0;z-index:1}
+.wfp-paused{position:absolute;left:50%;top:50%;width:84px;height:84px;margin:-42px 0 0 -42px;border-radius:50%;background:rgba(0,0,0,.45);color:#fff;display:none;align-items:center;justify-content:center;z-index:2;pointer-events:none}
+.wfp-paused .i{width:38px;height:38px;margin-inline-start:4px}
+.wfp.paused:not(.ended) .wfp-paused{display:flex}
+.wfp.loading:not(.paused) .wfp-paused{display:flex;background:none;border:4px solid rgba(255,255,255,.25);border-top-color:#fff;animation:wfSpin 1s linear infinite;width:54px;height:54px;margin:-27px 0 0 -27px}
+.wfp.loading:not(.paused) .wfp-paused .i{display:none}
+@keyframes wfSpin{to{transform:rotate(360deg)}}
+.wfp-cap{position:absolute;left:18px;right:18px;bottom:calc(46px + env(safe-area-inset-bottom));z-index:2;text-align:center;pointer-events:none}
+.wfp-cap span{display:inline-block;max-width:520px;padding:10px 16px;border-radius:14px;background:rgba(3,18,12,.72);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);color:#fff;font-size:20px;line-height:1.4;font-weight:700;animation:wfCap .45s cubic-bezier(.2,.8,.2,1)}
+@keyframes wfCap{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.wfp.nocc .wfp-cap{display:none}
+.wfp-end{position:absolute;inset:0;z-index:4;display:none;align-items:flex-end;justify-content:center;padding:0 18px calc(34px + env(safe-area-inset-bottom));background:linear-gradient(180deg,rgba(3,18,12,0) 30%,rgba(3,18,12,.92) 75%)}
+.wfp.ended .wfp-end{display:flex}
+.wfp.ended .wfp-cap{display:none}
+.wfp-endc{width:100%;max-width:440px;display:flex;flex-direction:column;gap:12px;align-items:stretch;animation:wfCap .5s ease}
+.wfp-endc .wf-btn{justify-content:center}
+.wfp-next{display:flex;align-items:center;gap:12px;padding:10px;border-radius:18px;border:0;background:rgba(255,255,255,.12);color:#fff;text-align:start;cursor:pointer}
+.wfp-next img{width:54px;height:84px;border-radius:10px;object-fit:cover;flex:none}
+.wfp-next span{flex:1}
+.wfp-next small{display:block;font-size:12px;opacity:.7;text-transform:uppercase;letter-spacing:.06em;font-weight:700}
+.wfp-next b{display:block;font-size:16px;margin-top:2px}
+.wfp-next .i{width:22px;height:22px}
+.wf-ghost{height:46px;border-radius:999px;border:1px solid rgba(255,255,255,.35);background:none;color:#fff;font-weight:700;font-size:15px;cursor:pointer}
+
+/* home / Pi Hub promo */
+.wf-promo{position:relative;display:block;width:100%;height:150px;border:0;padding:0;border-radius:22px;overflow:hidden;background:#05231A;cursor:pointer;text-align:start;margin:4px 0 14px;box-shadow:0 14px 30px -16px rgba(0,0,0,.5)}
+.wf-promo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 25%}
+.wf-pg{position:absolute;inset:0;background:linear-gradient(90deg,rgba(5,35,26,.94) 0,rgba(5,35,26,.7) 55%,rgba(5,35,26,.1) 100%)}
+[dir="rtl"] .wf-pg{background:linear-gradient(270deg,rgba(5,35,26,.94) 0,rgba(5,35,26,.7) 55%,rgba(5,35,26,.1) 100%)}
+.wf-promo .tx{position:absolute;inset-inline-start:16px;top:16px;bottom:16px;width:66%;display:flex;flex-direction:column;justify-content:center;color:#fff}
+.wf-promo small{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:800;color:#34D399;letter-spacing:.04em;text-transform:uppercase}
+.wf-promo small .i{width:14px;height:14px}
+.wf-promo b{font-size:20px;font-weight:900;margin-top:4px}
+.wf-promo .tx>span{font-size:13px;color:rgba(255,255,255,.8);margin-top:4px;line-height:1.35}
+.wf-promo .pp{position:absolute;inset-inline-end:16px;top:50%;width:48px;height:48px;margin-top:-24px;border-radius:50%;background:#fff;color:#0A7A4B;display:flex;align-items:center;justify-content:center}
+.wf-promo .pp .i{width:20px;height:20px;margin-inline-start:2px}
+@media (prefers-reduced-motion:reduce){.wf-hero img{animation:none}.wf,.wf.open{transition:none}}
+
 </style>
 
 <script>
@@ -3125,7 +3213,7 @@ function openFeedback(subject){
 function sendFeedback(){
   const t = $('fbT').value, s = $('fbS').value, m = $('fbM').value;
   if(!m.trim()){ toast('Please write a message'); return; }
-  const body = m + '\n\n—\nApp: DigitalSaudi v6.1\nUser: ' + (piUser ? '@' + piUser.username : 'guest');
+  const body = m + '\n\n—\nApp: DigitalSaudi v6.2\nUser: ' + (piUser ? '@' + piUser.username : 'guest');
   location.href = 'mailto:' + CONTACT_EMAIL + '?subject=' + encodeURIComponent('[' + t + '] ' + (s || 'DigitalSaudi feedback')) + '&body=' + encodeURIComponent(body);
 }
 function editEcard(){
@@ -8293,375 +8381,6 @@ function renderWhyPromo(){
   }
 })();
 
-/* v4.8 — real videos, stories and app tours: words in every language (EN, AR, UR, ID, HA, FR) */
-(function(){
-const R = [
-["Story","القصة","کہانی","Cerita","Labari","Histoire"],
-["stories","قصص","کہانیاں","cerita","labarai","histoires"],
-["Filming soon","التصوير قريبًا","جلد فلم بندی","Segera direkam","Za a ɗauka nan ba da daɗewa ba","Tournage bientôt"],
-["Real stories","قصص حقيقية","سچی کہانیاں","Kisah nyata","Labarai na gaske","Histoires vraies"],
-["Five stories of people in Saudi Arabia discovering DigitalSaudi and the Pi ecosystem.","خمس قصص لأشخاص في السعودية يكتشفون DigitalSaudi ومنظومة Pi.","سعودی عرب کے لوگوں کی پانچ کہانیاں جو DigitalSaudi اور Pi ایکو سسٹم کو دریافت کرتے ہیں۔","Lima kisah orang-orang di Arab Saudi yang menemukan DigitalSaudi dan ekosistem Pi.","Labarai biyar na mutane a Saudiyya da ke gano DigitalSaudi da tsarin Pi.","Cinq histoires de personnes en Arabie saoudite qui découvrent DigitalSaudi et l’écosystème Pi."],
-["App tours","جولات في التطبيق","ایپ کا دورہ","Tur aplikasi","Rangadin manhaja","Visites de l’appli"],
-["Real recordings of the app","تسجيلات حقيقية للتطبيق","ایپ کی اصل ریکارڈنگز","Rekaman asli aplikasi","Rikodin manhajar na gaske","Enregistrements réels de l’appli"],
-["Data saver","توفير البيانات","ڈیٹا کی بچت","Hemat data","Tattalin data","Économie de données"],
-["Use less mobile data","استخدم بيانات أقل","کم موبائل ڈیٹا استعمال کریں","Gunakan lebih sedikit data seluler","Yi amfani da ƙaramin data","Utiliser moins de données mobiles"],
-["Smaller videos, nothing loads until you press play.","فيديوهات أصغر، ولا يُحمَّل شيء حتى تضغط تشغيل.","چھوٹی ویڈیوز، چلائیں دبانے تک کچھ لوڈ نہیں ہوتا۔","Video lebih kecil, tidak ada yang dimuat sampai Anda menekan putar.","Ƙananan bidiyoyi, babu abin da zai sauka sai ka danna kunna.","Vidéos plus légères, rien ne se charge avant que vous appuyiez sur lecture."],
-["Data saver on","تم تفعيل توفير البيانات","ڈیٹا کی بچت آن","Hemat data aktif","An kunna tattalin data","Économie de données activée"],
-["Data saver off","تم إيقاف توفير البيانات","ڈیٹا کی بچت بند","Hemat data nonaktif","An kashe tattalin data","Économie de données désactivée"],
-["Real people, real places and the real app — no actors pretending to be customers.","أشخاص حقيقيون وأماكن حقيقية والتطبيق الحقيقي — دون ممثلين يتظاهرون بأنهم زبائن.","اصل لوگ، اصل جگہیں اور اصل ایپ — گاہک بن کر اداکاری کرنے والے کوئی اداکار نہیں۔","Orang nyata, tempat nyata dan aplikasi asli — tanpa aktor yang berpura-pura menjadi pelanggan.","Mutane na gaske, wurare na gaske da ainihin manhaja — babu ’yan wasan kwaikwayo da ke yin kamar abokan ciniki.","De vraies personnes, de vrais lieux et la vraie appli — pas d’acteurs qui jouent les clients."],
-["In this story they explore","في هذه القصة يستكشفون","اس کہانی میں وہ دیکھتے ہیں","Dalam cerita ini mereka menjelajahi","A wannan labari suna bincika","Dans cette histoire, ils explorent"],
-["Watch the animated version","شاهد النسخة المتحركة","اینیمیٹڈ ورژن دیکھیں","Tonton versi animasi","Kalli sigar zane mai motsi","Voir la version animée"],
-["Help us film this story","ساعدنا في تصوير هذه القصة","یہ کہانی فلمانے میں ہماری مدد کریں","Bantu kami merekam cerita ini","Taimaka mana mu ɗauki wannan labari","Aidez-nous à tourner cette histoire"],
-["Close","إغلاق","بند کریں","Tutup","Rufe","Fermer"],
-["Sound","الصوت","آواز","Suara","Sauti","Son"],
-["This video isn’t available right now","هذا الفيديو غير متاح الآن","یہ ویڈیو ابھی دستیاب نہیں","Video ini belum tersedia saat ini","Wannan bidiyo ba ya samuwa yanzu","Cette vidéo n’est pas disponible pour le moment"],
-["You’re offline. Connect to the internet to watch real videos.","أنت غير متصل. اتصل بالإنترنت لمشاهدة الفيديوهات الحقيقية.","آپ آف لائن ہیں۔ اصل ویڈیوز دیکھنے کے لیے انٹرنیٹ سے جڑیں۔","Anda sedang offline. Sambungkan ke internet untuk menonton video asli.","Ba ka da intanet. Haɗa intanet don kallon bidiyoyi na gaske.","Vous êtes hors ligne. Connectez-vous pour regarder les vraies vidéos."],
-["Check your connection and try again.","تحقق من اتصالك وحاول مرة أخرى.","اپنا کنکشن چیک کریں اور دوبارہ کوشش کریں۔","Periksa koneksi Anda dan coba lagi.","Duba haɗin intanet ɗinka ka sake gwadawa.","Vérifiez votre connexion et réessayez."],
-["Try again","حاول مجددًا","دوبارہ کوشش کریں","Coba lagi","Sake gwadawa","Réessayer"],
-["Data saver is on — press play to load this video","توفير البيانات مفعّل — اضغط تشغيل لتحميل هذا الفيديو","ڈیٹا کی بچت آن ہے — یہ ویڈیو لوڈ کرنے کے لیے چلائیں دبائیں","Hemat data aktif — tekan putar untuk memuat video ini","Tattalin data yana kunne — danna kunna don sauke wannan bidiyo","Économie de données activée — appuyez sur lecture pour charger la vidéo"],
-["Tap Sound to hear this video","اضغط «الصوت» لسماع هذا الفيديو","یہ ویڈیو سننے کے لیے «آواز» دبائیں","Ketuk Suara untuk mendengar video ini","Danna Sauti don jin wannan bidiyo","Touchez Son pour entendre cette vidéo"],
-["Real footage","تصوير حقيقي","اصل فوٹیج","Rekaman nyata","Bidiyo na gaske","Images réelles"],
-["Filmed with real people in Saudi Arabia.","صُوّر مع أشخاص حقيقيين في السعودية.","سعودی عرب میں اصل لوگوں کے ساتھ فلمایا گیا۔","Direkam bersama orang-orang nyata di Arab Saudi.","An ɗauka tare da mutane na gaske a Saudiyya.","Tourné avec de vraies personnes en Arabie saoudite."],
-["App recording","تسجيل من التطبيق","ایپ ریکارڈنگ","Rekaman aplikasi","Rikodin manhaja","Enregistrement de l’appli"],
-["A genuine screen recording of the DigitalSaudi app. Sample details are marked.","تسجيل حقيقي لشاشة تطبيق DigitalSaudi. البيانات التجريبية موضّحة.","DigitalSaudi ایپ کی اصل اسکرین ریکارڈنگ۔ نمونے کی تفصیلات واضح کی گئی ہیں۔","Rekaman layar asli aplikasi DigitalSaudi. Data contoh diberi tanda.","Rikodin allo na gaske na manhajar DigitalSaudi. An nuna bayanan misali.","Un véritable enregistrement d’écran de l’appli DigitalSaudi. Les exemples sont signalés."],
-["AI-generated scene","مشهد مُولَّد بالذكاء الاصطناعي","AI سے بنایا گیا منظر","Adegan buatan AI","Hoton da AI ta ƙirƙira","Scène générée par IA"],
-["Made with AI video tools for illustration — not real people or events.","صُنع بأدوات فيديو بالذكاء الاصطناعي للتوضيح — ليسوا أشخاصًا أو أحداثًا حقيقية.","وضاحت کے لیے AI ویڈیو ٹولز سے بنایا گیا — اصل لوگ یا واقعات نہیں۔","Dibuat dengan alat video AI sebagai ilustrasi — bukan orang atau peristiwa nyata.","An yi da kayan aikin bidiyo na AI don misali — ba mutane ko abubuwa na gaske ba.","Réalisé avec des outils vidéo d’IA pour illustrer — ni vraies personnes ni vrais événements."],
-["This story is written and ready to be filmed.","هذه القصة مكتوبة وجاهزة للتصوير.","یہ کہانی لکھی جا چکی ہے اور فلم بندی کے لیے تیار ہے۔","Cerita ini sudah ditulis dan siap direkam.","An rubuta wannan labari kuma a shirye yake a ɗauka.","Cette histoire est écrite et prête à être tournée."],
-["Friends discovering Pi","أصدقاء يكتشفون Pi","دوست Pi دریافت کرتے ہیں","Sahabat menemukan Pi","Abokai suna gano Pi","Des amis découvrent Pi"],
-["A Riyadh café, three friends, one phone","مقهى في الرياض، ثلاثة أصدقاء، وهاتف واحد","ریاض کا ایک کیفے، تین دوست، ایک فون","Kafe di Riyadh, tiga sahabat, satu ponsel","Kantin shayi a Riyadh, abokai uku, waya ɗaya","Un café à Riyad, trois amis, un téléphone"],
-["Café in Riyadh","مقهى في الرياض","ریاض میں کیفے","Kafe di Riyadh","Kantin shayi a Riyadh","Café à Riyad"],
-["Business owners exploring ideas","أصحاب أعمال يستكشفون الأفكار","کاروباری مالکان خیالات پر غور کرتے ہیں","Pemilik usaha menjajaki ide","Masu kasuwanci suna nazarin ra’ayoyi","Des commerçants explorent des idées"],
-["Two shop owners talk customers and digital commerce","صاحبا متجرين يتحدثان عن الزبائن والتجارة الرقمية","دو دکاندار گاہکوں اور ڈیجیٹل تجارت پر بات کرتے ہیں","Dua pemilik toko membahas pelanggan dan perdagangan digital","Masu shaguna biyu suna magana kan abokan ciniki da kasuwancin zamani","Deux commerçants parlent clients et commerce numérique"],
-["Souq in Jeddah’s Al-Balad","سوق في البلد بجدة","جدہ کے البلد کا بازار","Pasar di Al-Balad, Jeddah","Kasuwa a Al-Balad na Jidda","Souk d’Al-Balad à Djeddah"],
-["Discovering DigitalSaudi on the street","اكتشاف DigitalSaudi في الشارع","سڑک پر DigitalSaudi کی دریافت","Menemukan DigitalSaudi di jalan","Gano DigitalSaudi a kan titi","Découvrir DigitalSaudi dans la rue"],
-["Walking, talking, opening the app","مشي وحديث وفتح للتطبيق","چلتے ہوئے، باتیں کرتے، ایپ کھولتے","Berjalan, mengobrol, membuka aplikasi","Tafiya, hira, buɗe manhaja","On marche, on discute, on ouvre l’appli"],
-["Commercial street in Riyadh","شارع تجاري في الرياض","ریاض کی ایک تجارتی سڑک","Jalan komersial di Riyadh","Titin kasuwanci a Riyadh","Rue commerçante à Riyad"],
-["Travellers exploring Saudi","مسافرون يستكشفون السعودية","مسافر سعودی عرب کی سیر کرتے ہیں","Wisatawan menjelajahi Saudi","Matafiya suna bincika Saudiyya","Des voyageurs explorent l’Arabie saoudite"],
-["Visitors, a local friend and a city guide","زوّار وصديق محلي ودليل للمدينة","سیاح، ایک مقامی دوست اور شہر کی گائیڈ","Wisatawan, teman lokal dan panduan kota","Masu ziyara, abokin gida da jagorar birni","Des visiteurs, un ami local et un guide de la ville"],
-["Jeddah Corniche and Al-Balad","كورنيش جدة والبلد","جدہ کورنیش اور البلد","Corniche Jeddah dan Al-Balad","Corniche na Jidda da Al-Balad","La corniche de Djeddah et Al-Balad"],
-["From conversation to innovation","من الحوار إلى الابتكار","گفتگو سے جدت تک","Dari obrolan ke inovasi","Daga hira zuwa ƙirƙira","De la conversation à l’innovation"],
-["An idea, a whiteboard and a plan to test it","فكرة وسبّورة وخطة لتجربتها","ایک خیال، ایک وائٹ بورڈ اور اسے آزمانے کا منصوبہ","Sebuah ide, papan tulis dan rencana untuk mengujinya","Ra’ayi, allo da shirin gwada shi","Une idée, un tableau blanc et un plan pour la tester"],
-["Co-working space in Riyadh","مساحة عمل مشتركة في الرياض","ریاض میں کو ورکنگ اسپیس","Ruang kerja bersama di Riyadh","Wurin aiki tare a Riyadh","Espace de coworking à Riyad"],
-["App tour: Why Pi in Saudi?","جولة في التطبيق: لماذا Pi في السعودية؟","ایپ کا دورہ: سعودی عرب میں Pi کیوں؟","Tur aplikasi: Mengapa Pi di Saudi?","Rangadin manhaja: Me yasa Pi a Saudiyya?","Visite : Pourquoi Pi en Arabie saoudite ?"],
-["Find the videos, the labels and the stories","اعثر على الفيديوهات والتصنيفات والقصص","ویڈیوز، لیبل اور کہانیاں تلاش کریں","Temukan video, label dan ceritanya","Nemo bidiyoyi, alamomi da labarai","Trouver les vidéos, les étiquettes et les histoires"],
-["Everything in Why Pi in Saudi? is free, works offline and carries an honest label.","كل ما في «لماذا Pi في السعودية؟» مجاني ويعمل دون اتصال ويحمل تصنيفًا صادقًا.","«سعودی عرب میں Pi کیوں؟» میں سب کچھ مفت ہے، آف لائن چلتا ہے اور دیانت دار لیبل رکھتا ہے۔","Semua di Mengapa Pi di Saudi? gratis, berjalan offline dan diberi label yang jujur.","Komai a «Me yasa Pi a Saudiyya?» kyauta ne, yana aiki ba tare da intanet ba kuma yana da alama ta gaskiya.","Tout dans Pourquoi Pi en Arabie saoudite ? est gratuit, fonctionne hors ligne et porte une étiquette honnête."],
-["DigitalSaudi in the Pi Browser or any modern browser.","DigitalSaudi في متصفح Pi أو أي متصفح حديث.","Pi براؤزر یا کسی بھی جدید براؤزر میں DigitalSaudi۔","DigitalSaudi di Pi Browser atau peramban modern apa pun.","DigitalSaudi a Pi Browser ko kowace burauza ta zamani.","DigitalSaudi dans le Pi Browser ou tout navigateur récent."],
-["App tour: make an Accept-Pi poster","جولة في التطبيق: صمّم ملصق «نقبل Pi»","ایپ کا دورہ: «Pi قبول ہے» پوسٹر بنائیں","Tur aplikasi: buat poster Terima Pi","Rangadin manhaja: ƙirƙiri fostar «Muna karɓar Pi»","Visite : créer une affiche « Pi accepté »"],
-["A real tool, shown with sample details","أداة حقيقية، معروضة ببيانات تجريبية","ایک اصل ٹول، نمونے کی تفصیلات کے ساتھ","Alat asli, ditampilkan dengan data contoh","Kayan aiki na gaske, an nuna da bayanan misali","Un vrai outil, présenté avec des exemples"],
-["A business can make its own Accept-Pi poster in about a minute. Payments always go to its own wallet.","يمكن لأي نشاط تجاري تصميم ملصق «نقبل Pi» في نحو دقيقة. وتذهب المدفوعات دائمًا إلى محفظته.","کوئی بھی کاروبار تقریباً ایک منٹ میں اپنا «Pi قبول ہے» پوسٹر بنا سکتا ہے۔ ادائیگیاں ہمیشہ اس کے اپنے والیٹ میں جاتی ہیں۔","Usaha dapat membuat poster Terima Pi sendiri dalam sekitar satu menit. Pembayaran selalu masuk ke dompetnya sendiri.","Kasuwanci zai iya ƙirƙirar fostar «Muna karɓar Pi» a kusan minti ɗaya. Kuɗi koyaushe suna zuwa walat ɗinsa.","Un commerce peut créer son affiche « Pi accepté » en une minute environ. Les paiements vont toujours dans son propre portefeuille."],
-["A Pi username or wallet address for a business you represent.","اسم مستخدم Pi أو عنوان محفظة لنشاط تجاري تمثّله.","کسی ایسے کاروبار کا Pi یوزرنیم یا والیٹ ایڈریس جس کی آپ نمائندگی کرتے ہوں۔","Nama pengguna Pi atau alamat dompet untuk usaha yang Anda wakili.","Sunan Pi ko adireshin walat na kasuwancin da kake wakilta.","Un identifiant Pi ou une adresse de portefeuille pour un commerce que vous représentez."],
-["App tour: Umrah guide and prayer times","جولة في التطبيق: دليل العمرة وأوقات الصلاة","ایپ کا دورہ: عمرہ گائیڈ اور اوقاتِ نماز","Tur aplikasi: panduan Umrah dan waktu salat","Rangadin manhaja: jagorar Umrah da lokutan salla","Visite : guide de l’Omra et horaires de prière"],
-["Step by step, from Ihram to Taqsir","خطوة بخطوة، من الإحرام إلى التقصير","قدم بہ قدم، احرام سے تقصیر تک","Langkah demi langkah, dari Ihram hingga Taqsir","Mataki-mataki, daga Harami zuwa Taƙsir","Pas à pas, de l’Ihram au Taqsir"],
-["Guidance in your pocket — with official sources linked for permits and bookings.","إرشاد في جيبك — مع روابط للمصادر الرسمية للتصاريح والحجوزات.","آپ کی جیب میں رہنمائی — اجازت ناموں اور بکنگ کے لیے سرکاری ذرائع کے لنک کے ساتھ۔","Panduan di saku Anda — dengan tautan sumber resmi untuk izin dan pemesanan.","Jagora a aljihunka — tare da hanyoyin hukuma don izini da ajiya.","Un guide dans votre poche — avec des liens officiels pour les permis et réservations."],
-["Nothing — the guide works offline.","لا شيء — الدليل يعمل دون اتصال.","کچھ نہیں — گائیڈ آف لائن کام کرتی ہے۔","Tidak ada — panduan berjalan offline.","Babu komai — jagorar tana aiki ba tare da intanet ba.","Rien — le guide fonctionne hors ligne."],
-["App tour: explore Saudi cities","جولة في التطبيق: استكشف مدن السعودية","ایپ کا دورہ: سعودی شہروں کی سیر","Tur aplikasi: jelajahi kota-kota Saudi","Rangadin manhaja: bincika biranen Saudiyya","Visite : explorer les villes saoudiennes"],
-["City guides and experiences","أدلة المدن والتجارب","شہروں کی گائیڈز اور تجربات","Panduan kota dan pengalaman","Jagororin birane da abubuwan more rayuwa","Guides des villes et expériences"],
-["Every city guide links to official tourism sources.","كل دليل مدينة مرتبط بمصادر السياحة الرسمية.","ہر شہر کی گائیڈ سرکاری سیاحتی ذرائع سے منسلک ہے۔","Setiap panduan kota menautkan ke sumber pariwisata resmi.","Kowace jagorar birni tana da hanyar zuwa majiyoyin yawon buɗe ido na hukuma.","Chaque guide renvoie aux sources touristiques officielles."],
-["Nothing — guides work offline.","لا شيء — الأدلة تعمل دون اتصال.","کچھ نہیں — گائیڈز آف لائن کام کرتی ہیں۔","Tidak ada — panduan berjalan offline.","Babu komai — jagorori suna aiki ba tare da intanet ba.","Rien — les guides fonctionnent hors ligne."],
-["App tour: find anything with search","جولة في التطبيق: ابحث عن أي شيء","ایپ کا دورہ: سرچ سے کچھ بھی تلاش کریں","Tur aplikasi: temukan apa saja dengan pencarian","Rangadin manhaja: nemo komai da bincike","Visite : tout trouver avec la recherche"],
-["Guides, tools and Pi in one search","أدلة وأدوات وPi في بحث واحد","گائیڈز، ٹولز اور Pi ایک ہی سرچ میں","Panduan, alat dan Pi dalam satu pencarian","Jagorori, kayan aiki da Pi a bincike ɗaya","Guides, outils et Pi en une seule recherche"],
-["One search box finds guides, tools, phrases and videos.","مربع بحث واحد يجد الأدلة والأدوات والعبارات والفيديوهات.","ایک سرچ باکس گائیڈز، ٹولز، جملے اور ویڈیوز ڈھونڈ لیتا ہے۔","Satu kotak pencarian menemukan panduan, alat, frasa dan video.","Akwatin bincike ɗaya yana nemo jagorori, kayan aiki, jimloli da bidiyoyi.","Une seule barre de recherche trouve guides, outils, phrases et vidéos."],
-["Nothing — search works offline.","لا شيء — البحث يعمل دون اتصال.","کچھ نہیں — سرچ آف لائن کام کرتی ہے۔","Tidak ada — pencarian berjalan offline.","Babu komai — bincike yana aiki ba tare da intanet ba.","Rien — la recherche fonctionne hors ligne."],
-["Recorded from the real app in October 2026. Live numbers such as prices are not shown in this recording.","سُجّل من التطبيق الحقيقي في أكتوبر 2026. لا تظهر الأرقام المباشرة مثل الأسعار في هذا التسجيل.","اکتوبر 2026 میں اصل ایپ سے ریکارڈ کیا گیا۔ قیمتوں جیسے لائیو اعداد اس ریکارڈنگ میں نہیں دکھائے گئے۔","Direkam dari aplikasi asli pada Oktober 2026. Angka langsung seperti harga tidak ditampilkan dalam rekaman ini.","An ɗauka daga ainihin manhaja a Oktoba 2026. Ba a nuna lambobi masu canzawa kamar farashi a wannan rikodin ba.","Enregistré depuis la vraie appli en octobre 2026. Les chiffres en direct, comme les prix, n’apparaissent pas ici."],
-["Open the Explore tab","افتح تبويب «استكشف»","«دریافت» ٹیب کھولیں","Buka tab Jelajahi","Buɗe shafin Bincika","Ouvrez l’onglet Explorer"],
-["Tap “Why Pi in Saudi?”","اضغط «لماذا Pi في السعودية؟»","«سعودی عرب میں Pi کیوں؟» دبائیں","Ketuk “Mengapa Pi di Saudi?”","Danna «Me yasa Pi a Saudiyya?»","Touchez « Pourquoi Pi en Arabie saoudite ? »"],
-["Discover: the Pi advantage and what works today","اكتشف: ميزة Pi وما يعمل اليوم","دریافت: Pi کا فائدہ اور آج کیا کام کرتا ہے","Jelajahi: keunggulan Pi dan yang sudah berjalan hari ini","Gano: fa’idar Pi da abin da ke aiki yau","Découvrir : l’atout Pi et ce qui marche aujourd’hui"],
-["Videos: filter by topic","الفيديوهات: صفِّ حسب الموضوع","ویڈیوز: موضوع کے لحاظ سے فلٹر کریں","Video: saring menurut topik","Bidiyoyi: tace ta jigo","Vidéos : filtrer par thème"],
-["Every video is labelled honestly","كل فيديو مصنّف بصدق","ہر ویڈیو پر دیانت دار لیبل ہے","Setiap video diberi label yang jujur","Kowane bidiyo yana da alama ta gaskiya","Chaque vidéo est étiquetée honnêtement"],
-["About: key takeaway and what it needs","حول الفيديو: الخلاصة وما يتطلبه","تعارف: اہم نکتہ اور کیا درکار ہے","Tentang: poin utama dan yang dibutuhkan","Game da shi: babban darasi da abin da ake buƙata","À propos : à retenir et ce qu’il faut"],
-["Search for “poster”","ابحث عن «poster»","«poster» تلاش کریں","Cari “poster”","Nemo «poster»","Recherchez « poster »"],
-["Open the Accept-Pi poster tool","افتح أداة ملصق «نقبل Pi»","«Pi قبول ہے» پوسٹر ٹول کھولیں","Buka alat poster Terima Pi","Buɗe kayan aikin fostar «Muna karɓar Pi»","Ouvrez l’outil d’affiche « Pi accepté »"],
-["Sample details for this demo","بيانات تجريبية لهذا العرض","اس ڈیمو کے لیے نمونے کی تفصیلات","Data contoh untuk demo ini","Bayanan misali don wannan nunin","Exemples pour cette démonstration"],
-["Create the poster — it is drawn on your phone","أنشئ الملصق — يُرسم على هاتفك","پوسٹر بنائیں — یہ آپ کے فون پر بنتا ہے","Buat poster — dibuat langsung di ponsel Anda","Ƙirƙiri fosta — ana zana ta a wayarka","Créez l’affiche — elle est dessinée sur votre téléphone"],
-["Download, print or share it","نزّله أو اطبعه أو شاركه","ڈاؤن لوڈ، پرنٹ یا شیئر کریں","Unduh, cetak atau bagikan","Sauke, buga ko raba","Téléchargez, imprimez ou partagez"],
-["Open Tools","افتح «الأدوات»","«ٹولز» کھولیں","Buka Alat","Buɗe Kayan aiki","Ouvrez Outils"],
-["Prayer times for your city","أوقات الصلاة لمدينتك","آپ کے شہر کے اوقاتِ نماز","Waktu salat untuk kota Anda","Lokutan salla na birninka","Horaires de prière de votre ville"],
-["Open the Umrah guide","افتح دليل العمرة","عمرہ گائیڈ کھولیں","Buka panduan Umrah","Buɗe jagorar Umrah","Ouvrez le guide de l’Omra"],
-["Always confirm rules on official platforms","تحقّق دائمًا من الأنظمة عبر المنصات الرسمية","قواعد ہمیشہ سرکاری پلیٹ فارمز پر تصدیق کریں","Selalu pastikan aturan di platform resmi","Koyaushe tabbatar da dokoki a dandamalin hukuma","Vérifiez toujours les règles sur les plateformes officielles"],
-["Pick a city guide","اختر دليل مدينة","کسی شہر کی گائیڈ چنیں","Pilih panduan kota","Zaɓi jagorar birni","Choisissez un guide de ville"],
-["What to see, how to get around, tips","ماذا ترى، وكيف تتنقل، ونصائح","کیا دیکھیں، کیسے گھومیں، مشورے","Apa yang dilihat, cara berkeliling, tips","Abin da za a gani, yadda ake zirga-zirga, shawarwari","Que voir, comment se déplacer, conseils"],
-["Experiences across Saudi Arabia","تجارب في أنحاء السعودية","سعودی عرب بھر کے تجربات","Pengalaman di seluruh Arab Saudi","Abubuwan more rayuwa a faɗin Saudiyya","Des expériences dans toute l’Arabie saoudite"],
-["Tap search","اضغط البحث","سرچ دبائیں","Ketuk pencarian","Danna bincike","Touchez la recherche"],
-["Type what you need — “umrah”","اكتب ما تحتاجه — «umrah»","جو چاہیے لکھیں — «umrah»","Ketik yang Anda perlukan — “umrah”","Rubuta abin da kake buƙata — «umrah»","Tapez ce qu’il vous faut — « umrah »"],
-["Or a tool — “prayer”","أو أداة — «prayer»","یا کوئی ٹول — «prayer»","Atau alat — “prayer”","Ko kayan aiki — «prayer»","Ou un outil — « prayer »"],
-["Or Pi — “why pi”","أو Pi — «why pi»","یا Pi — «why pi»","Atau Pi — “why pi”","Ko Pi — «why pi»","Ou Pi — « why pi »"],
-["One tap opens it","ضغطة واحدة تفتحه","ایک ٹیپ سے کھل جاتا ہے","Sekali ketuk untuk membuka","Danna sau ɗaya ya buɗe","Un toucher suffit pour l’ouvrir"]
-];
-R.forEach(function(r){ LANG_ORDER.slice(1).forEach(function(l, i){ if(r[i + 1]) I18N[l][r[0]] = r[i + 1]; }); });
-})();
-
-/* ==========================================================================
-   v4.8 — "Why Pi in Saudi?" real videos
-   - Plays real MP4s: filmed stories, genuine app screen recordings, AI clips
-   - Five story collections, ready for filming (placeholders until footage)
-   - Videos are listed in /videos/videos.json — add a file, add a line, done
-   - Data saver: smaller files, nothing preloaded
-   Honest labels: Real footage · App recording · AI-generated scene · Filming soon
-   ========================================================================== */
-Object.assign(WHY_LABELS, {
-  filmed:   { t:'Real footage',       ic:'film',  d:'Filmed with real people in Saudi Arabia.' },
-  screen:   { t:'App recording',      ic:'phone', d:'A genuine screen recording of the DigitalSaudi app. Sample details are marked.' },
-  generated:{ t:'AI-generated scene', ic:'spark', d:'Made with AI video tools for illustration — not real people or events.' },
-  soon:     { t:'Filming soon',       ic:'clock', d:'This story is written and ready to be filmed.' }
-});
-WHY_CATS.splice(1, 0, ['tours', 'App tours', 'phone']);
-function whyStoriesReady(){ return WHY_STORIES.filter(function(s){ return s.ready.length; }); }
-function whyStoriesCat(){ if(whyStoriesReady().length && !WHY_CATS.some(function(c){ return c[0] === 'stories'; })) WHY_CATS.splice(1, 0, ['stories', 'Real stories', 'family']); }
-
-/* five connected stories — the scripts are in the production kit */
-const WHY_STORIES = [
-  { id:'friends',    n:1, t:'Friends discovering Pi',           s:'A Riyadh café, three friends, one phone',          place:'Café in Riyadh',                     anim:'intro',    tours:['tour-why','tour-search'] },
-  { id:'business',   n:2, t:'Business owners exploring ideas',  s:'Two shop owners talk customers and digital commerce', place:'Souq in Jeddah’s Al-Balad',  anim:'merchant', tours:['tour-poster','tour-search'] },
-  { id:'street',     n:3, t:'Discovering DigitalSaudi on the street', s:'Walking, talking, opening the app',       place:'Commercial street in Riyadh',         anim:'shop',     tours:['tour-search','tour-why'] },
-  { id:'travellers', n:4, t:'Travellers exploring Saudi',       s:'Visitors, a local friend and a city guide',          place:'Jeddah Corniche and Al-Balad',        anim:'travel',   tours:['tour-explore','tour-umrah'] },
-  { id:'innovation', n:5, t:'From conversation to innovation',  s:'An idea, a whiteboard and a plan to test it',        place:'Co-working space in Riyadh',          anim:'dev',      tours:['tour-why','tour-poster'] }
-];
-
-/* genuine app screen recordings shipped with this version (recorded October 2026, DigitalSaudi v4.8) */
-const WHY_TOURS = [
-  { id:'tour-why', t:'App tour: Why Pi in Saudi?', s:'Find the videos, the labels and the stories', dur:22.4, cues:[[0,'Open the Explore tab'],[3.1,'Tap “Why Pi in Saudi?”'],[5.8,'Discover: the Pi advantage and what works today'],[10.5,'Videos: filter by topic'],[12.3,'Every video is labelled honestly'],[18.4,'About: key takeaway and what it needs']],
-    k:'Everything in Why Pi in Saudi? is free, works offline and carries an honest label.', n:'DigitalSaudi in the Pi Browser or any modern browser.' },
-  { id:'tour-poster', t:'App tour: make an Accept-Pi poster', s:'A real tool, shown with sample details', dur:19.3, cues:[[0,'Search for “poster”'],[3.0,'Open the Accept-Pi poster tool'],[4.7,'Sample details for this demo'],[10.3,'Create the poster — it is drawn on your phone'],[15.5,'Download, print or share it']],
-    k:'A business can make its own Accept-Pi poster in about a minute. Payments always go to its own wallet.', n:'A Pi username or wallet address for a business you represent.' },
-  { id:'tour-umrah', t:'App tour: Umrah guide and prayer times', s:'Step by step, from Ihram to Taqsir', dur:15.2, cues:[[0,'Open Tools'],[1.8,'Prayer times for your city'],[5.2,'Open the Umrah guide'],[7.4,'Step by step, from Ihram to Taqsir'],[13.4,'Always confirm rules on official platforms']],
-    k:'Guidance in your pocket — with official sources linked for permits and bookings.', n:'Nothing — the guide works offline.' },
-  { id:'tour-explore', t:'App tour: explore Saudi cities', s:'City guides and experiences', dur:12.8, cues:[[0,'Open the Explore tab'],[3.3,'Pick a city guide'],[5.8,'What to see, how to get around, tips'],[10.6,'Experiences across Saudi Arabia']],
-    k:'Every city guide links to official tourism sources.', n:'Nothing — guides work offline.' },
-  { id:'tour-search', t:'App tour: find anything with search', s:'Guides, tools and Pi in one search', dur:14.1, cues:[[0,'Tap search'],[1.2,'Type what you need — “umrah”'],[4.6,'Or a tool — “prayer”'],[8.2,'Or Pi — “why pi”'],[11.4,'One tap opens it']],
-    k:'One search box finds guides, tools, phrases and videos.', n:'Nothing — search works offline.' }
-];
-WHY_TOURS.forEach(function(v){
-  Object.assign(v, { cat:'tours', lb:'screen', kind:'screen', src:'/videos/' + v.id + '.mp4', src_sd:'/videos/' + v.id + '-sd.mp4', webm:'/videos/' + v.id + '.webm', webm_sd:'/videos/' + v.id + '-sd.webm', poster:'/videos/' + v.id + '.jpg', audio:false, sc:[['_real', '']], real:'Recorded from the real app in October 2026. Live numbers such as prices are not shown in this recording.' });
-  WHY_VIDEOS.push(v);
-  META['wv-' + v.id] = { t:v.t, ic:'🎬', s:v.s };
-  PANELS['wv-' + v.id] = function(){ closePanel(); whyPlay(v.id); };
-});
-
-/* ---------- /videos/videos.json — your list of real videos ---------- */
-let WHY_MANIFEST = null;
-function whyText(x){ if(x == null) return ''; if(typeof x === 'string') return x; return x.en || x[Object.keys(x)[0]] || ''; }
-function whyLearn(obj){   // put the other languages from the file into the dictionary
-  if(!obj || typeof obj !== 'object' || !obj.en) return;
-  LANG_ORDER.slice(1).forEach(function(l){ if(obj[l]) I18N[l][obj.en] = obj[l]; });
-}
-function whyLoadManifest(){
-  if(WHY_MANIFEST) return Promise.resolve(WHY_MANIFEST);
-  return fetch('/videos/videos.json', { cache:'no-cache' }).then(function(r){ if(!r.ok) throw 0; return r.json(); }).then(function(m){
-    WHY_MANIFEST = m || {};
-    (m.videos || []).forEach(function(e){
-      if(e && e.id && !e.src && e.by_lang && whyVid(e.id)){ whyVid(e.id).by_lang = e.by_lang; return; }   // e.g. an Arabic recording of a built-in tour
-      if(!e || !e.id || !e.src) return;                                  // only real files are listed
-      const kind = ['filmed', 'screen', 'generated'].indexOf(e.kind) >= 0 ? e.kind : 'filmed';
-      ['title', 'summary', 'takeaway', 'needs'].forEach(function(k){ whyLearn(e[k]); });
-      const v = whyVid(e.id) || {};
-      Object.assign(v, {
-        id:e.id, t:whyText(e.title) || v.t || e.id, s:whyText(e.summary) || v.s || '', k:whyText(e.takeaway) || v.k || '', n:whyText(e.needs) || v.n || '',
-        cat:e.story ? 'stories' : (e.category || (kind === 'screen' ? 'tours' : v.cat || 'eco')), lb:kind, kind:kind, story:e.story || v.story,
-        src:e.src, src_sd:e.src_sd || '', webm:e.webm || '', webm_sd:e.webm_sd || '', poster:e.poster || v.poster || '', subtitles:e.subtitles || null, audio:kind === 'filmed' || !!e.audio,
-        dur:+e.duration || v.dur || 0, sc:[['_real', '']], recorded:e.recorded || '', credit:e.credit || '', by_lang:e.by_lang || v.by_lang || null
-      });
-      if(WHY_VIDEOS.indexOf(v) < 0){ WHY_VIDEOS.push(v); META['wv-' + v.id] = { t:v.t, ic:'🎬', s:v.s }; PANELS['wv-' + v.id] = function(){ closePanel(); whyPlay(v.id); }; }
-      if(e.story){ const st = WHY_STORIES.find(function(s){ return s.id === e.story; }); if(st && st.ready.indexOf(v.id) < 0) st.ready.push(v.id); }
-    });
-    if(typeof srIndexCache !== 'undefined') srIndexCache = null;
-    whyStoriesCat();
-    return WHY_MANIFEST;
-  }).catch(function(){ WHY_MANIFEST = {}; return WHY_MANIFEST; });
-}
-WHY_STORIES.forEach(function(s){ s.ready = []; });
-
-function whySaver(){ const v = store.get('why_saver', null); if(v != null) return !!v; return !!(navigator.connection && navigator.connection.saveData); }
-
-/* ---------- cards ---------- */
-const _whyTotal = whyTotal;
-whyTotal = function(v){ return v && v.src ? (v.dur || 0) : _whyTotal(v); };
-const _whyCard = whyCardHTML;
-whyCardHTML = function(v, list){
-  if(!v || !v.src) return _whyCard(v, list);
-  const saved = whySaved().indexOf(v.id) >= 0;
-  const th = v.poster ? `<img src="${esc(v.poster)}" alt="" loading="lazy" decoding="async" onerror="this.remove()">` : WVK.build('brand', { still:true });
-  return `<button class="vc vc-real" onclick="whyPlay('${v.id}','${list || ''}')" aria-label="${esc(t('Play'))}: ${esc(t(v.t))}">
-    <div class="th">${th}${v.dur ? `<span class="dur">${whyFmt(v.dur)}</span>` : ''}<span class="pl">${ico('play')}</span>${saved ? `<span class="sv">${ico('bookmark')}</span>` : ''}</div>
-    <b>${esc(t(v.t))}</b><small>${esc(t(v.s))}</small>${whyLbl(v.lb)}</button>`;
-};
-function whyStoryCardHTML(s){
-  const ready = s.ready.length ? whyVid(s.ready[0]) : null;
-  const th = ready && ready.poster ? `<img src="${esc(ready.poster)}" alt="" loading="lazy" onerror="this.remove()">` : WVK.build(whyVid(s.anim).poster, { still:true });
-  return `<button class="vc vc-story" onclick="${ready ? `whyPlay('${ready.id}','story')` : `whyStory('${s.id}')`}" aria-label="${esc(t('Story'))} ${s.n}: ${esc(t(s.t))}">
-    <div class="th">${th}<span class="dur">${esc(t('Story'))} ${s.n}</span>${ready ? `<span class="pl">${ico('play')}</span>` : `<span class="soon">${ico('clock')}${esc(t('Filming soon'))}</span>`}</div>
-    <b>${esc(t(s.t))}</b><small>${esc(t(s.s))}</small>${whyLbl(ready ? ready.lb : 'soon')}</button>`;
-}
-
-/* ---------- screens: stories and tours on Discover, a Stories view in Videos, data saver ---------- */
-const _whyRender = whyRender;
-whyRender = function(){
-  const b = $('whyBody'); if(!b) return;
-  if(WHY.tab === 'videos' && WHY.cat === 'stories' && !whyStoriesReady().length) WHY.cat = 'all';
-  if(WHY.tab === 'videos' && WHY.cat === 'stories'){
-    // built directly (no render-then-replace) so nothing flashes through the page translator
-    document.querySelectorAll('#whyTabs button').forEach(function(x){ const on = x.dataset.t === WHY.tab; x.classList.toggle('on', on); x.setAttribute('aria-selected', on ? 'true' : 'false'); });
-    b.innerHTML = `<div class="why-chips" role="tablist">${WHY_CATS.map(function(c){ return `<button class="${WHY.cat === c[0] ? 'on' : ''}" role="tab" aria-selected="${WHY.cat === c[0]}" onclick="WHY.cat='${c[0]}';whyRender()">${ico(c[2])}${esc(t(c[1]))}</button>`; }).join('')}</div>
-      <div class="why-sec">${esc(t('Real stories'))}<small>${whyStoriesReady().length} ${esc(t(whyStoriesReady().length === 1 ? 'Story' : 'stories'))}</small></div>
-      <div class="why-grid">${whyStoriesReady().map(whyStoryCardHTML).join('')}</div>`;
-    return;
-  }
-  _whyRender.apply(this, arguments);
-  if(WHY.tab === 'discover'){
-    const hero = b.querySelector('.why-hero');
-    const ready = whyStoriesReady();
-    const html = (ready.length ? `<div class="why-sec">${esc(t('Real stories'))}<button onclick="WHY.cat='stories';whyTab('videos')">${esc(t('See all'))} ›</button></div>
-      <div class="why-rail">${ready.map(whyStoryCardHTML).join('')}</div>` : '') + `
-      <div class="why-sec">${esc(t('App tours'))}<small>${esc(t('Real recordings of the app'))}</small></div>
-      <div class="why-rail">${WHY_VIDEOS.filter(function(v){ return v.cat === 'tours'; }).map(function(v){ return whyCardHTML(v, 'tours'); }).join('')}</div>`;
-    const anchor = b.querySelector('.why-rail') && b.querySelectorAll('.why-sec')[0];
-    if(anchor) anchor.insertAdjacentHTML('beforebegin', html); else if(hero) hero.insertAdjacentHTML('afterend', html);
-    const legend = b.querySelector('.legend');
-    if(legend) legend.insertAdjacentHTML('afterend', `<div class="why-sec">${esc(t('Data saver'))}</div>
-      <div class="why-pad"><label class="why-switch"><span><b>${esc(t('Use less mobile data'))}</b><small>${esc(t('Smaller videos, nothing loads until you press play.'))}</small></span><input type="checkbox" ${whySaver() ? 'checked' : ''} onchange="store.set('why_saver',this.checked);toast(t(this.checked?'Data saver on':'Data saver off'))"><i></i></label></div>`);
-  }
-};
-const _whyOpen = whyOpen;
-whyOpen = function(){ const r = _whyOpen.apply(this, arguments); whyLoadManifest().then(function(){ if(WHY.open) whyRender(); }); return r; };
-
-/* ---------- story page (until footage arrives) ---------- */
-function whyStory(id){
-  const s = WHY_STORIES.find(function(x){ return x.id === id; }); if(!s) return;
-  let box = $('whyStoryBox');
-  if(!box){ $('why').insertAdjacentHTML('beforeend', '<div class="ws-scrim" id="whyStoryScrim" onclick="whyStoryClose()"></div><div class="ws-sheet" id="whyStoryBox" role="dialog" aria-modal="true"></div>'); box = $('whyStoryBox'); }
-  const anim = whyVid(s.anim), tours = s.tours.map(whyVid).filter(Boolean);
-  box.setAttribute('aria-label', t(s.t));
-  box.innerHTML = `<div class="grab"></div><div class="ws-art">${WVK.build(anim.poster, { dur:12 })}<span class="ws-n">${esc(t('Story'))} ${s.n} / 5</span></div>
-    ${whyLbl('soon')}<h3>${esc(t(s.t))}</h3><p class="ws-sub">${esc(t(s.s))}</p>
-    <div class="ws-meta"><span>${ico('pin')}${esc(t(s.place))}</span></div>
-    <p class="ws-p">${esc(t(WHY_LABELS.soon.d))} ${esc(t('Real people, real places and the real app — no actors pretending to be customers.'))}</p>
-    <h4>${esc(t('In this story they explore'))}</h4><div class="ws-tours">${tours.map(function(v){ return whyCardHTML(v, 'tours').replace("onclick=\"whyPlay('" + v.id + "','tours')\"", "onclick=\"whyStoryClose();whyPlay('" + v.id + "','tours')\""); }).join('')}</div>
-    <div class="ws-acts"><button class="why-btn" onclick="whyStoryClose();whyPlay('${anim.id}')">${ico('play')}${esc(t('Watch the animated version'))}</button>
-    <button class="why-btn soft" onclick="whyStoryClose();whyClose(true);openFeedback('Why Pi in Saudi — help film story ${s.n}: ${esc(s.t)}')">${ico('film')}${esc(t('Help us film this story'))}</button>
-    <button class="why-btn soft" onclick="whyStoryClose()">${esc(t('Close'))}</button></div>`;
-  box.classList.add('open'); $('whyStoryScrim').classList.add('open');
-  setTimeout(function(){ const f = box.querySelector('.why-btn'); if(f) f.focus({ preventScroll:true }); }, 80);
-}
-function whyStoryClose(){ const b = $('whyStoryBox'); if(b){ b.classList.remove('open'); $('whyStoryScrim').classList.remove('open'); } }
-document.addEventListener('keydown', function(e){ const b = $('whyStoryBox'); if(e.key === 'Escape' && b && b.classList.contains('open')){ e.preventDefault(); whyStoryClose(); } }, true);
-
-/* ---------- player: real video mode ---------- */
-const _whyEnsure = whyEnsure;
-whyEnsure = function(){
-  const first = !$('wp'); _whyEnsure.apply(this, arguments);
-  if(first){
-    $('wpListen').insertAdjacentHTML('afterend', `<button class="sound" id="wpSound" onclick="whySound()" aria-pressed="false" hidden><i>${ico('volume')}</i><span>${esc(t('Sound'))}</span></button>`);
-    $('wpStage').insertAdjacentHTML('afterend', `<div class="wp-spin" id="wpSpin" aria-hidden="true"></div><div class="wp-fail" id="wpFail" hidden></div>`);
-  }
-};
-function whyVideoOff(){
-  const v = WHY.video; WHY.video = null; if($('wp')) $('wp').classList.remove('screen');
-  if(v){ try{ v.pause(); v.removeAttribute('src'); v.querySelectorAll('source').forEach(function(s){ s.removeAttribute('src'); }); v.load(); }catch(e){} }
-  if($('wpSpin')) $('wpSpin').classList.remove('on'); if($('wpFail')) $('wpFail').hidden = true;
-  if($('wpSound')) $('wpSound').hidden = true; if($('wpListen')) $('wpListen').hidden = false;
-}
-const _whyLoad = whyLoad;
-whyLoad = function(si){
-  const v = whyCur();
-  whyVideoOff();
-  if(!v || !v.src) return _whyLoad(si);
-  whyHideNext(); whySheet(false, true);
-  $('wpLbl').innerHTML = whyLbl(v.lb); $('wpCat').textContent = whyCatName(v.cat);
-  $('wpTitle').textContent = t(v.t); $('wpSub').textContent = t(v.s);
-  $('wpProg').innerHTML = '<span><i></i></span>';
-  const like = whyLiked().indexOf(v.id) >= 0, save = whySaved().indexOf(v.id) >= 0;
-  $('wpLike').classList.toggle('on', like); $('wpLike').setAttribute('aria-pressed', like); $('wpLike').querySelector('span').textContent = t(like ? 'Liked' : 'Like');
-  $('wpSave').classList.toggle('on', save); $('wpSave').setAttribute('aria-pressed', save); $('wpSave').querySelector('span').textContent = t(save ? 'Saved' : 'Save');
-  $('wpListen').hidden = true; $('wpSound').hidden = !v.audio;
-  const saver = whySaver(), L = v.by_lang && v.by_lang[LANG];     // a version recorded in the viewer's language, if there is one
-  const srcs = L && L.src ? (saver ? [L.src_sd || L.src] : [L.src]) : (saver ? [v.webm_sd || v.webm, v.src_sd || v.src] : [v.webm, v.src]).filter(Boolean);
-  const tracks = v.subtitles ? Object.keys(v.subtitles).map(function(l){ return `<track kind="subtitles" srclang="${esc(l)}" label="${esc((LANGS[l] || {}).n || l)}" src="${esc(v.subtitles[l])}">`; }).join('') : '';
-  const st = $('wpStage'); st.innerHTML = `<video class="wpv${v.kind === 'screen' ? ' fit' : ''}" playsinline webkit-playsinline preload="${saver ? 'none' : 'auto'}" ${(L && L.poster) || v.poster ? `poster="${esc((L && L.poster) || v.poster)}"` : ''} ${v.audio ? '' : 'muted'} disablepictureinpicture controlslist="nodownload noplaybackrate">${srcs.map(function(u){ return `<source src="${esc(u)}" type="video/${/\.webm(\?|$)/.test(u) ? 'webm' : 'mp4'}">`; }).join('')}${tracks}</video>`;
-  const vid = st.querySelector('video'); WHY.video = vid; WHY.si = 0; WHY.el = 0;
-  $('wp').classList.toggle('screen', v.kind === 'screen');
-  vid.muted = !v.audio || !!store.get('why_muted', false);
-  $('wpSound').classList.toggle('on', !vid.muted); $('wpSound').setAttribute('aria-pressed', !vid.muted);
-  $('wpCap').innerHTML = '';
-  let lastCap = null;
-  const setCap = function(text){ if(text === lastCap) return; lastCap = text; $('wpCap').innerHTML = text ? '<span>' + esc(text) + '</span>' : ''; };
-  // subtitle files (filmed stories): pick the app language, then English, then Arabic
-  const pickTrack = function(){
-    const tr = vid.textTracks; if(!tr || !tr.length) return null;
-    let best = null; for(let i = 0; i < tr.length; i++){ tr[i].mode = 'disabled'; }
-    [LANG, 'en', 'ar'].some(function(l){ for(let i = 0; i < tr.length; i++) if(tr[i].language === l){ best = tr[i]; return true; } return false; });
-    if(best){ best.mode = 'hidden'; best.oncuechange = function(){ const c = best.activeCues && best.activeCues[0]; setCap(c ? c.text.replace(/<[^>]+>/g, '') : ''); }; }
-    return best;
-  };
-  vid.addEventListener('loadedmetadata', function(){ if(!v.dur && vid.duration && isFinite(vid.duration)) v.dur = vid.duration; pickTrack(); });
-  vid.addEventListener('timeupdate', function(){
-    const d = vid.duration || v.dur || 1, bar = $('wpProg').querySelector('i');
-    if(bar) bar.style.width = Math.min(100, vid.currentTime / d * 100).toFixed(1) + '%';
-    WHY.el = vid.currentTime;
-    if(v.cues && !(L && L.src && L.nocues)){ let c = null; v.cues.forEach(function(q){ if(vid.currentTime >= q[0]) c = q; }); setCap(c ? t(c[1]) : ''); }
-  });
-  vid.addEventListener('waiting', function(){ $('wpSpin').classList.add('on'); });
-  vid.addEventListener('playing', function(){ $('wpSpin').classList.remove('on'); });
-  vid.addEventListener('ended', function(){ if(WHY.video === vid) whyEnd(); });
-  const fail = function(){
-    if(WHY.video !== vid) return; whyPause(); $('wp').classList.remove('paused'); $('wpSpin').classList.remove('on');
-    const st2 = v.story ? WHY_STORIES.find(function(s){ return s.id === v.story; }) : null, anim = st2 ? st2.anim : (v.cat === 'tours' ? null : 'intro');
-    const box = $('wpFail'); box.hidden = false;
-    box.innerHTML = `<b>${esc(t('This video isn’t available right now'))}</b><p>${esc(t(navigator.onLine === false ? 'You’re offline. Connect to the internet to watch real videos.' : 'Check your connection and try again.'))}</p>
-      <div class="row2"><button class="why-btn" onclick="whyLoad(0)">${ico('replay')}${esc(t('Try again'))}</button>${anim ? `<button class="why-btn ghost" onclick="whyPlay('${anim}')">${esc(t('Watch the animated version'))}</button>` : ''}</div>`;
-  };
-  vid.addEventListener('error', fail); const sl = vid.querySelectorAll('source'); if(sl.length) sl[sl.length - 1].addEventListener('error', fail);   // only when every source has failed
-  store.set('why_last', { id:v.id, si:0 });
-  if(saver){ $('wp').classList.add('paused'); WHY.playing = false; $('wpPP').innerHTML = ico('play'); whyTip(t('Data saver is on — press play to load this video')); }
-  else whyResume();
-};
-const _whyResume = whyResume, _whyPause = whyPause;
-whyResume = function(){
-  const vid = WHY.video; if(!vid) return _whyResume.apply(this, arguments);
-  WHY.playing = true; $('wp').classList.remove('paused'); $('wpPP').innerHTML = ico('pause'); $('wpPP').setAttribute('aria-label', t('Pause'));
-  const p = vid.play();
-  if(p && p.catch) p.catch(function(){
-    // the browser blocked sound: play muted and offer sound
-    if(!vid.muted){ vid.muted = true; $('wpSound').classList.remove('on'); vid.play().catch(function(){ whyPause(); }); whyTip(t('Tap Sound to hear this video')); }
-    else whyPause();
-  });
-};
-whyPause = function(){
-  const vid = WHY.video; if(!vid) return _whyPause.apply(this, arguments);
-  WHY.playing = false; $('wp').classList.add('paused'); try{ vid.pause(); }catch(e){}
-  $('wpPP').innerHTML = ico('play'); $('wpPP').setAttribute('aria-label', t('Play'));
-};
-const _whyAdvance = whyAdvance;
-whyAdvance = function(d){
-  const vid = WHY.video; if(!vid) return _whyAdvance.apply(this, arguments);
-  const dur = vid.duration || 0;
-  if(d < 0 && vid.currentTime < 1.5){ if(WHY.vi > 0) whyGoVideo(-1); else vid.currentTime = 0; return; }
-  if(d > 0 && dur && vid.currentTime + 10 >= dur){ whyEnd(); return; }
-  vid.currentTime = Math.max(0, vid.currentTime + (d > 0 ? 10 : -10));
-  whyTip(d > 0 ? '+10 s' : '−10 s');
-};
-const _whyStop = whyStop;
-whyStop = function(){ whyVideoOff(); return _whyStop.apply(this, arguments); };
-const _whyTransition = whyTransition;
-whyTransition = function(){ whyVideoOff(); return _whyTransition.apply(this, arguments); };
-function whySound(){
-  const vid = WHY.video; if(!vid) return;
-  vid.muted = !vid.muted; store.set('why_muted', vid.muted);
-  $('wpSound').classList.toggle('on', !vid.muted); $('wpSound').setAttribute('aria-pressed', !vid.muted);
-  if(!WHY.playing) whyResume();
-}
-/* only videos that can actually play go into "up next" lists */
-const _whyListFor = whyListFor;
-whyListFor = function(kind){
-  if(kind === 'tours') return WHY_VIDEOS.filter(function(v){ return v.cat === 'tours'; }).map(function(v){ return v.id; });
-  if(kind === 'story') return WHY_STORIES.reduce(function(a, s){ return a.concat(s.ready); }, []);
-  return _whyListFor.apply(this, arguments);
-};
-/* the legend lists only labels that are actually used by something in the app */
-whyLegendHTML = function(){
-  const used = {}; WHY_VIDEOS.forEach(function(v){ used[v.lb] = 1; });
-  const keys = Object.keys(WHY_LABELS).filter(function(k){ return used[k]; });
-  return `<div class="why-sec">${esc(t('How we label videos'))}</div><div class="legend">${keys.map(function(k){ return `<div>${whyLbl(k)}<p>${esc(t(WHY_LABELS[k].d))}</p></div>`; }).join('')}</div>`;
-};
-
 /* ==========================================================================
    v4.9 — Pi price on the prayer card (the clock moved next to the city)
    ========================================================================== */
@@ -9469,6 +9188,246 @@ function srAllLangs(text){
       }, 300);
     }, 600);
   }, 400);
+})();
+
+/* ==========================================================================
+   v6.2 — "Why Pi in Saudi?" rebuilt as a small film library.
+   Five real motion films (films/*.mp4, made from DigitalSaudi's own screens and photos).
+   Captions are overlaid by the app, timed to the film, in all six languages.
+   Replaces the drawn SVG stories, "Filming soon" placeholders and the old screen tours.
+   ========================================================================== */
+const WF_FILMS = [
+  { id:'intro', t:'Why Pi in Saudi?', s:'The story in 30 seconds', d:30, cap:[
+    [0.4, 'Saudi Arabia is going digital.'],
+    [6.4, 'Pi is a digital currency built by a global community.'],
+    [12.4, 'DigitalSaudi brings Pi into everyday life: prayer times, places, prices and payments.'],
+    [18.4, 'Made for businesses, visitors and pilgrims.'],
+    [24.4, 'DigitalSaudi — Pi in Saudi, made simple.'] ] },
+  { id:'shop', t:'Paying with Pi in a shop', s:'Scan, check, approve', d:32, act:['Find Pi businesses', 'directory'], cap:[
+    [0.4, 'You see an “Accept Pi” poster at a shop.'],
+    [6.4, 'Scan the QR code with your phone.'],
+    [12.4, 'The pay page shows the shop and the price. Check both.'],
+    [18.4, 'Send from your Pi Wallet and confirm. Only you can approve.'],
+    [25.4, 'Done. The payment is recorded on the Pi blockchain.'] ] },
+  { id:'merchant', t:'Accept Pi in 3 steps', s:'For shops, cafés and freelancers', d:30, act:['Make my poster', 'merchantQR'], cap:[
+    [0.4, 'Step 1 · Open the “Accept Pi” poster tool in DigitalSaudi.'],
+    [7.4, 'Step 2 · Add your Pi username and price. Your poster is ready.'],
+    [15.4, 'Step 3 · Print it, or share your pay link with customers.'],
+    [22.4, 'Payments go straight to your own wallet. Never share your passphrase.'] ] },
+  { id:'travel', t:'Explore Saudi with Pi', s:'Heritage, cities and trips', d:28, act:['Plan a trip', 'trips'], cap:[
+    [0.4, 'Plan your journey across Saudi Arabia.'],
+    [6.4, 'Discover heritage sites like AlUla and Hegra.'],
+    [12.4, 'Find breathtaking views and hidden gems.'],
+    [18.4, 'City guides, a trip planner and a Pi business directory — in one app.'],
+    [24.4, 'Explore Saudi with DigitalSaudi.'] ] },
+  { id:'safety', t:'Stay safe with Pi', s:'Simple rules that protect you', d:30, act:['Open the Safety center', 'safety'], cap:[
+    [0.4, 'Stay safe with Pi.'],
+    [7.4, 'Never share your wallet passphrase — with anyone.'],
+    [15.4, 'Before you pay, check the name and amount. Pi payments can’t be reversed.'],
+    [22.4, 'DigitalSaudi will never ask for your passphrase.'] ] }
+];
+
+(function(){
+  const R = [
+    ['Saudi Arabia is going digital.','المملكة العربية السعودية تتجه نحو الرقمنة.','سعودی عرب ڈیجیٹل دور کی طرف بڑھ رہا ہے۔','Arab Saudi sedang bergerak ke era digital.','Saudiyya na tafiya zuwa zamanin dijital.','L’Arabie saoudite passe au numérique.'],
+    ['Pi is a digital currency built by a global community.','Pi عملة رقمية يبنيها مجتمع عالمي.','Pi ایک ڈیجیٹل کرنسی ہے جسے ایک عالمی کمیونٹی بنا رہی ہے۔','Pi adalah mata uang digital yang dibangun oleh komunitas global.','Pi kuɗin dijital ne da al’ummar duniya ke ginawa.','Pi est une monnaie numérique construite par une communauté mondiale.'],
+    ['DigitalSaudi brings Pi into everyday life: prayer times, places, prices and payments.','يجلب DigitalSaudi عملة Pi إلى الحياة اليومية: أوقات الصلاة، والأماكن، والأسعار، والمدفوعات.','DigitalSaudi، Pi کو روزمرہ زندگی میں لاتا ہے: نماز کے اوقات، مقامات، قیمتیں اور ادائیگیاں۔','DigitalSaudi membawa Pi ke kehidupan sehari-hari: waktu salat, tempat, harga, dan pembayaran.','DigitalSaudi na kawo Pi cikin rayuwar yau da kullum: lokutan sallah, wurare, farashi da biyan kuɗi.','DigitalSaudi intègre Pi au quotidien : heures de prière, lieux, cours et paiements.'],
+    ['Made for businesses, visitors and pilgrims.','مصمَّم للأعمال والزوار والحجاج والمعتمرين.','کاروبار، سیاحوں اور زائرین کے لیے بنایا گیا۔','Dibuat untuk pelaku usaha, wisatawan, dan jemaah.','An yi shi don ’yan kasuwa, baƙi da mahajjata.','Pensé pour les commerces, les visiteurs et les pèlerins.'],
+    ['DigitalSaudi — Pi in Saudi, made simple.','DigitalSaudi — عملة Pi في السعودية، بكل بساطة.','DigitalSaudi — سعودی عرب میں Pi، آسان انداز میں۔','DigitalSaudi — Pi di Saudi, jadi mudah.','DigitalSaudi — Pi a Saudiyya, cikin sauƙi.','DigitalSaudi — Pi en Arabie saoudite, en toute simplicité.'],
+    ['You see an “Accept Pi” poster at a shop.','ترى ملصق «نقبل Pi» في أحد المتاجر.','آپ کسی دکان پر «Pi قبول ہے» کا پوسٹر دیکھتے ہیں۔','Anda melihat poster “Terima Pi” di sebuah toko.','Ka ga fosta “Ana karɓar Pi” a wani shago.','Vous voyez une affiche « Pi accepté » dans une boutique.'],
+    ['Scan the QR code with your phone.','امسح رمز QR بهاتفك.','اپنے فون سے QR کوڈ اسکین کریں۔','Pindai kode QR dengan ponsel Anda.','Duba lambar QR da wayarka.','Scannez le QR code avec votre téléphone.'],
+    ['The pay page shows the shop and the price. Check both.','تعرض صفحة الدفع اسم المتجر والسعر. تحقّق من الاثنين.','ادائیگی کے صفحے پر دکان اور قیمت نظر آتی ہے۔ دونوں چیک کریں۔','Halaman bayar menampilkan toko dan harganya. Periksa keduanya.','Shafin biya yana nuna shagon da farashin. Duba duka biyun.','La page de paiement affiche la boutique et le prix. Vérifiez les deux.'],
+    ['Send from your Pi Wallet and confirm. Only you can approve.','أرسل من محفظة Pi وأكّد. أنت وحدك من يوافق.','اپنے Pi Wallet سے بھیجیں اور تصدیق کریں۔ منظوری صرف آپ دے سکتے ہیں۔','Kirim dari Pi Wallet Anda lalu konfirmasi. Hanya Anda yang bisa menyetujui.','Aika daga Pi Wallet ɗinka ka tabbatar. Kai kaɗai ke iya amincewa.','Envoyez depuis votre Pi Wallet et confirmez. Vous seul pouvez valider.'],
+    ['Done. The payment is recorded on the Pi blockchain.','تم. تُسجَّل الدفعة على بلوكشين Pi.','ہو گیا۔ ادائیگی Pi بلاک چین پر درج ہو جاتی ہے۔','Selesai. Pembayaran tercatat di blockchain Pi.','An gama. An rubuta biyan a blockchain na Pi.','C’est fait. Le paiement est enregistré sur la blockchain Pi.'],
+    ['Step 1 · Open the “Accept Pi” poster tool in DigitalSaudi.','الخطوة 1 · افتح أداة ملصق «نقبل Pi» في DigitalSaudi.','مرحلہ 1 · DigitalSaudi میں «Pi قبول ہے» پوسٹر ٹول کھولیں۔','Langkah 1 · Buka alat poster “Terima Pi” di DigitalSaudi.','Mataki na 1 · Buɗe kayan aikin fosta “Ana karɓar Pi” a DigitalSaudi.','Étape 1 · Ouvrez l’outil d’affiche « Pi accepté » dans DigitalSaudi.'],
+    ['Step 2 · Add your Pi username and price. Your poster is ready.','الخطوة 2 · أضف اسم مستخدم Pi والسعر. ملصقك جاهز.','مرحلہ 2 · اپنا Pi یوزرنیم اور قیمت درج کریں۔ آپ کا پوسٹر تیار ہے۔','Langkah 2 · Masukkan nama pengguna Pi dan harga. Poster Anda siap.','Mataki na 2 · Saka sunan Pi ɗinka da farashi. Fostarka ta shirya.','Étape 2 · Ajoutez votre nom d’utilisateur Pi et le prix. Votre affiche est prête.'],
+    ['Step 3 · Print it, or share your pay link with customers.','الخطوة 3 · اطبعه أو شارك رابط الدفع مع عملائك.','مرحلہ 3 · اسے پرنٹ کریں یا ادائیگی کا لنک گاہکوں کے ساتھ شیئر کریں۔','Langkah 3 · Cetak, atau bagikan tautan bayar Anda ke pelanggan.','Mataki na 3 · Buga ta, ko raba hanyar biyanka da kwastomomi.','Étape 3 · Imprimez-la ou partagez votre lien de paiement avec vos clients.'],
+    ['Payments go straight to your own wallet. Never share your passphrase.','تصل المدفوعات مباشرة إلى محفظتك. لا تشارك عبارة المرور أبداً.','ادائیگیاں سیدھی آپ کے اپنے والٹ میں آتی ہیں۔ اپنا پاس فریز کبھی شیئر نہ کریں۔','Pembayaran langsung masuk ke dompet Anda sendiri. Jangan pernah membagikan frasa sandi.','Kuɗi na shiga walat ɗinka kai tsaye. Kada ka taɓa raba kalmomin sirrinka.','Les paiements arrivent directement dans votre portefeuille. Ne partagez jamais votre phrase secrète.'],
+    ['Plan your journey across Saudi Arabia.','خطّط لرحلتك في أرجاء المملكة.','سعودی عرب بھر میں اپنے سفر کی منصوبہ بندی کریں۔','Rencanakan perjalanan Anda di seluruh Arab Saudi.','Tsara tafiyarka a faɗin Saudiyya.','Préparez votre voyage à travers l’Arabie saoudite.'],
+    ['Discover heritage sites like AlUla and Hegra.','اكتشف مواقع التراث مثل العُلا والحِجر.','العُلا اور حِجر جیسے تاریخی مقامات دریافت کریں۔','Temukan situs warisan seperti AlUla dan Hegra.','Gano wuraren tarihi kamar AlUla da Hegra.','Découvrez des sites historiques comme AlUla et Hégra.'],
+    ['Find breathtaking views and hidden gems.','اعثر على إطلالات خلّابة وأماكن مميزة.','دلکش نظارے اور چھپے ہوئے خوبصورت مقامات تلاش کریں۔','Temukan pemandangan menakjubkan dan tempat tersembunyi.','Nemo kyawawan wurare da wuraren ɓoye masu ban sha’awa.','Trouvez des panoramas superbes et des lieux secrets.'],
+    ['City guides, a trip planner and a Pi business directory — in one app.','أدلة المدن، ومخطِّط الرحلات، ودليل أعمال Pi — في تطبيق واحد.','شہری گائیڈز، ٹرپ پلانر اور Pi کاروباری ڈائریکٹری — ایک ہی ایپ میں۔','Panduan kota, perencana perjalanan, dan direktori bisnis Pi — dalam satu aplikasi.','Jagororin birane, mai tsara tafiya da jerin kasuwancin Pi — a manhaja ɗaya.','Guides de ville, planificateur de voyage et annuaire des commerces Pi — dans une seule app.'],
+    ['Explore Saudi with DigitalSaudi.','استكشف السعودية مع DigitalSaudi.','DigitalSaudi کے ساتھ سعودی عرب دریافت کریں۔','Jelajahi Saudi bersama DigitalSaudi.','Bincika Saudiyya tare da DigitalSaudi.','Explorez l’Arabie saoudite avec DigitalSaudi.'],
+    ['Stay safe with Pi.','ابقَ آمناً مع Pi.','Pi کے ساتھ محفوظ رہیں۔','Tetap aman bersama Pi.','Ka kasance lafiya da Pi.','Restez en sécurité avec Pi.'],
+    ['Never share your wallet passphrase — with anyone.','لا تشارك عبارة مرور محفظتك أبداً — مع أي شخص.','اپنے والٹ کا پاس فریز کبھی کسی کے ساتھ شیئر نہ کریں۔','Jangan pernah membagikan frasa sandi dompet Anda — kepada siapa pun.','Kada ka taɓa raba kalmomin sirrin walat ɗinka — da kowa.','Ne partagez jamais la phrase secrète de votre portefeuille — avec personne.'],
+    ['Before you pay, check the name and amount. Pi payments can’t be reversed.','قبل الدفع، تحقّق من الاسم والمبلغ. لا يمكن استرجاع مدفوعات Pi.','ادائیگی سے پہلے نام اور رقم چیک کریں۔ Pi کی ادائیگیاں واپس نہیں ہو سکتیں۔','Sebelum membayar, periksa nama dan jumlahnya. Pembayaran Pi tidak bisa dibatalkan.','Kafin ka biya, duba suna da adadin. Ba a iya dawo da biyan Pi.','Avant de payer, vérifiez le nom et le montant. Les paiements Pi sont irréversibles.'],
+    ['DigitalSaudi will never ask for your passphrase.','لن يطلب DigitalSaudi عبارة المرور الخاصة بك أبداً.','DigitalSaudi آپ سے کبھی آپ کا پاس فریز نہیں مانگے گا۔','DigitalSaudi tidak akan pernah meminta frasa sandi Anda.','DigitalSaudi ba za ta taɓa neman kalmomin sirrinka ba.','DigitalSaudi ne vous demandera jamais votre phrase secrète.'],
+    ['The story in 30 seconds','القصة في 30 ثانية','30 سیکنڈ میں پوری کہانی','Ceritanya dalam 30 detik','Labarin cikin daƙiƙa 30','L’histoire en 30 secondes'],
+    ['Paying with Pi in a shop','الدفع بعملة Pi في المتجر','دکان میں Pi سے ادائیگی','Membayar dengan Pi di toko','Biyan kuɗi da Pi a shago','Payer en Pi dans une boutique'],
+    ['Scan, check, approve','امسح، تحقّق، وافق','اسکین کریں، چیک کریں، منظور کریں','Pindai, periksa, setujui','Duba, tabbatar, amince','Scanner, vérifier, valider'],
+    ['Accept Pi in 3 steps','اقبل Pi في 3 خطوات','3 مراحل میں Pi قبول کریں','Terima Pi dalam 3 langkah','Karɓi Pi cikin matakai 3','Accepter Pi en 3 étapes'],
+    ['For shops, cafés and freelancers','للمتاجر والمقاهي والمستقلين','دکانوں، کیفے اور فری لانسرز کے لیے','Untuk toko, kafe, dan pekerja lepas','Don shaguna, gidajen shayi da masu aikin kansu','Pour boutiques, cafés et indépendants'],
+    ['Explore Saudi with Pi','استكشف السعودية مع Pi','Pi کے ساتھ سعودی عرب دریافت کریں','Jelajahi Saudi dengan Pi','Bincika Saudiyya da Pi','Explorer l’Arabie saoudite avec Pi'],
+    ['Heritage, cities and trips','تراث ومدن ورحلات','ورثہ، شہر اور سفر','Warisan, kota, dan perjalanan','Tarihi, birane da tafiye-tafiye','Patrimoine, villes et voyages'],
+    ['Stay safe with Pi','ابقَ آمناً مع Pi','Pi کے ساتھ محفوظ رہیں','Tetap aman bersama Pi','Ka kasance lafiya da Pi','Restez en sécurité avec Pi'],
+    ['Simple rules that protect you','قواعد بسيطة تحميك','آسان اصول جو آپ کی حفاظت کرتے ہیں','Aturan sederhana yang melindungi Anda','Dokoki masu sauƙi da ke kare ka','Des règles simples qui vous protègent'],
+    ['Watch the film','شاهد الفيلم','فلم دیکھیں','Tonton filmnya','Kalli fim ɗin','Voir le film'],
+    ['All films','جميع الأفلام','تمام فلمیں','Semua film','Duk fina-finai','Tous les films'],
+    ['Watch next','التالي','اگلی فلم','Tonton berikutnya','Na gaba','À suivre'],
+    ['Replay','إعادة التشغيل','دوبارہ چلائیں','Putar ulang','Sake kunnawa','Revoir'],
+    ['Find Pi businesses','ابحث عن أعمال تقبل Pi','Pi قبول کرنے والے کاروبار تلاش کریں','Cari bisnis Pi','Nemo kasuwancin Pi','Trouver des commerces Pi'],
+    ['Make my poster','أنشئ ملصقي','میرا پوسٹر بنائیں','Buat poster saya','Ƙirƙiri fostata','Créer mon affiche'],
+    ['Plan a trip','خطّط لرحلة','سفر کا منصوبہ بنائیں','Rencanakan perjalanan','Tsara tafiya','Préparer un voyage'],
+    ['Open the Safety center','افتح مركز الأمان','سیفٹی سینٹر کھولیں','Buka Pusat Keamanan','Buɗe Cibiyar Tsaro','Ouvrir le centre de sécurité'],
+    ['Short films about Pi in everyday Saudi life','أفلام قصيرة عن Pi في الحياة اليومية بالسعودية','سعودی عرب کی روزمرہ زندگی میں Pi پر مختصر فلمیں','Film pendek tentang Pi dalam kehidupan sehari-hari di Saudi','Gajerun fina-finai game da Pi a rayuwar yau da kullum a Saudiyya','Courts films sur Pi dans la vie quotidienne en Arabie saoudite'],
+    ['Captions','الترجمة','کیپشن','Teks','Rubutu','Sous-titres'],
+    ['Video could not play. Check your connection and try again.','تعذّر تشغيل الفيديو. تحقّق من الاتصال وحاول مجدداً.','ویڈیو نہیں چل سکی۔ کنکشن چیک کر کے دوبارہ کوشش کریں۔','Video tidak dapat diputar. Periksa koneksi dan coba lagi.','Bidiyo bai kunna ba. Duba haɗin intanet ka sake gwadawa.','La vidéo n’a pas pu être lue. Vérifiez votre connexion et réessayez.']
+  ];
+  R.forEach(function(r){ LANG_ORDER.slice(1).forEach(function(l, i){ if(I18N[l]) I18N[l][r[0]] = r[i + 1]; }); });
+})();
+
+const WF = { pushed:0, skipPop:false, film:null, raf:0, cap:-1, opener:null };
+function wfFilm(id){ return WF_FILMS.find(function(f){ return f.id === id; }); }
+function wfSrc(id){
+  let sd = (window.innerWidth * (window.devicePixelRatio || 1)) < 900;
+  try{ if(navigator.connection && (navigator.connection.saveData || /2g/.test(navigator.connection.effectiveType || ''))) sd = true; }catch(e){}
+  return 'films/' + id + (sd ? '-sd' : '') + wfExt() + '?v=62';
+}
+function wfExt(){
+  // H.264 MP4 plays almost everywhere (iPhone, Android, Pi Browser); WebM VP9 covers browsers without H.264
+  try{ const v = document.createElement('video');
+    if(v.canPlayType('video/mp4; codecs="avc1.640028"')) return '.mp4';
+    if(v.canPlayType('video/webm; codecs="vp9"')) return '.webm'; }catch(e){}
+  return '.mp4';
+}
+function wfDur(f){ return '0:' + String(f.d).padStart(2, '0'); }
+function wfCardHTML(f){
+  return `<button class="wf-card" onclick="whyPlay('${f.id}')"><span class="wf-th"><img src="films/${f.id}.jpg?v=62" alt="" loading="lazy" decoding="async"><span class="wf-pp">${ico('play')}</span><span class="wf-d">${wfDur(f)}</span></span><span class="wf-tx"><b>${esc(t(f.t))}</b><small>${esc(t(f.s))}</small></span></button>`;
+}
+function wfLibHTML(){
+  const hero = WF_FILMS[0];
+  return `<div class="wf-hero" onclick="whyPlay('intro')" role="button" tabindex="0" aria-label="${esc(t('Watch the film'))}">
+      <img src="films/intro.jpg?v=62" alt="">
+      <div class="wf-hg"></div>
+      <div class="wf-ht"><h1>${esc(t(hero.t))}</h1><p>${esc(t('Short films about Pi in everyday Saudi life'))}</p>
+        <span class="wf-btn">${ico('play')}${esc(t('Watch the film'))}<em>${wfDur(hero)}</em></span></div></div>
+    <div class="wf-sec">${esc(t('All films'))}</div>
+    <div class="wf-grid">${WF_FILMS.slice(1).map(wfCardHTML).join('')}</div>
+    ${typeof WHY_TODAY !== 'undefined' ? `<div class="wf-sec">${esc(t('Available today in DigitalSaudi'))}</div><div class="wf-today">${WHY_TODAY.map(function(x, i){ return `<button onclick="WHY_TODAY[${i}][3]()"><span class="ti">${ico(x[0])}</span><span><b>${esc(t(x[1]))}</b><small>${esc(t(x[2]))}</small></span><span class="go">›</span></button>`; }).join('')}</div>` : ''}
+    <p class="wf-copy">© 2026 DigitalSaudi</p>`;
+}
+function wfEnsure(){
+  if($('wf')) return;
+  document.body.insertAdjacentHTML('beforeend', `<div id="wf" class="wf notr" role="dialog" aria-modal="true" aria-labelledby="wfTitle">
+      <div class="wf-top"><button class="wf-ib" onclick="whyClose()" aria-label="${esc(t('Back'))}">${ico('back')}</button><h2 id="wfTitle">${esc(t('Why Pi in Saudi?'))}</h2><button class="wf-ib" onclick="whyShareApp()" aria-label="${esc(t('Share'))}">${ico('share')}</button></div>
+      <div class="wf-body" id="wfBody"></div></div>
+    <div id="wfp" class="wfp notr" role="dialog" aria-modal="true" aria-label="${esc(t('Video player'))}">
+      <video id="wfv" playsinline webkit-playsinline muted preload="auto" disablepictureinpicture></video>
+      <div class="wfp-shade"></div>
+      <div class="wfp-bar"><i id="wfpBar"></i></div>
+      <div class="wfp-head"><button class="wf-ib" onclick="whyStop()" aria-label="${esc(t('Close video'))}">${ico('close')}</button><b id="wfpTitle"></b><button class="wf-ib" id="wfpCC" onclick="wfToggleCC()" aria-pressed="true" aria-label="${esc(t('Captions'))}">CC</button></div>
+      <div class="wfp-tap" onclick="wfPP()"></div>
+      <div class="wfp-paused" aria-hidden="true">${ico('play')}</div>
+      <div class="wfp-cap" id="wfpCap" aria-live="polite"></div>
+      <div class="wfp-end" id="wfpEnd"></div>
+    </div>`);
+  const v = $('wfv');
+  v.addEventListener('timeupdate', wfTick);
+  v.addEventListener('ended', wfEnded);
+  v.addEventListener('playing', function(){ $('wfp').classList.remove('paused', 'loading'); });
+  v.addEventListener('waiting', function(){ $('wfp').classList.add('loading'); });
+  v.addEventListener('error', function(){
+    if(v.dataset.tried !== '1' && WF.film){ v.dataset.tried = '1'; v.src = 'films/' + WF.film.id + '-sd' + (wfExt() === '.mp4' ? '.webm' : '.mp4') + '?v=62'; v.play().catch(function(){}); return; }
+    toast(t('Video could not play. Check your connection and try again.'));
+  });
+}
+function whyRender(){ const b = $('wfBody'); if(b) b.innerHTML = wfLibHTML(); }
+whyOpen = function(){
+  wfEnsure(); WF.opener = document.activeElement;
+  whyRender();
+  $('wf').classList.add('open');
+  document.documentElement.style.overflow = 'hidden';
+  try{ history.pushState({ wf:1 }, ''); WF.pushed++; }catch(e){}
+  if(typeof haptic === 'function') haptic(6);
+};
+whyClose = function(silent, viaPop){
+  if($('wfp') && $('wfp').classList.contains('open')) whyStop(true);
+  const el = $('wf'); if(el && el.classList.contains('open')){
+    el.classList.remove('open');
+    if(!silent && WF.opener && WF.opener.focus) try{ WF.opener.focus({ preventScroll:true }); }catch(e){}
+  }
+  document.documentElement.style.overflow = '';
+  if(!viaPop && WF.pushed > 0){ const n = WF.pushed; WF.pushed = 0; WF.skipPop = true; try{ history.go(-n); }catch(e){} }
+  if(viaPop) WF.pushed = 0;
+};
+whyPlay = function(id){
+  const f = wfFilm(id) || WF_FILMS[0];
+  wfEnsure(); WF.film = f; WF.cap = -1;
+  const p = $('wfp'), v = $('wfv');
+  v.dataset.tried = '';
+  v.poster = 'films/' + f.id + '.jpg?v=62';
+  v.src = wfSrc(f.id);
+  $('wfpTitle').textContent = t(f.t);
+  $('wfpCap').innerHTML = ''; $('wfpEnd').innerHTML = ''; $('wfpBar').style.width = '0';
+  p.classList.remove('ended', 'paused'); p.classList.add('open', 'loading');
+  p.classList.toggle('nocc', store.get('wf_cc', true) === false);
+  document.documentElement.style.overflow = 'hidden';
+  if(!(history.state && history.state.wfp)){ try{ history.pushState({ wfp:1 }, ''); WF.pushed++; }catch(e){} }
+  v.currentTime = 0;
+  v.play().catch(function(){ p.classList.add('paused'); p.classList.remove('loading'); });
+  cancelAnimationFrame(WF.raf); const loop = function(){ wfTick(); if(p.classList.contains('open')) WF.raf = requestAnimationFrame(loop); }; WF.raf = requestAnimationFrame(loop);
+  store.set('why_last', { id:f.id });
+};
+whyStop = function(viaPop){
+  const p = $('wfp'); if(!p || !p.classList.contains('open')) return;
+  const v = $('wfv'); try{ v.pause(); }catch(e){}
+  v.removeAttribute('src'); try{ v.load(); }catch(e){}
+  p.classList.remove('open'); cancelAnimationFrame(WF.raf);
+  if(!($('wf') && $('wf').classList.contains('open'))) document.documentElement.style.overflow = '';
+  if(!viaPop && history.state && history.state.wfp && WF.pushed > 0){ WF.pushed--; WF.skipPop = true; try{ history.back(); }catch(e){} }
+};
+function wfPP(){
+  const v = $('wfv'), p = $('wfp');
+  if(p.classList.contains('ended')) return;
+  if(v.paused){ v.play().catch(function(){}); p.classList.remove('paused'); }
+  else { v.pause(); p.classList.add('paused'); }
+}
+function wfToggleCC(){ const p = $('wfp'); const off = !p.classList.contains('nocc'); p.classList.toggle('nocc', off); store.set('wf_cc', !off); $('wfpCC').setAttribute('aria-pressed', off ? 'false' : 'true'); }
+function wfTick(){
+  const f = WF.film, v = $('wfv'); if(!f || !v) return;
+  const tm = v.currentTime || 0, d = v.duration || f.d;
+  $('wfpBar').style.width = Math.min(100, tm / d * 100) + '%';
+  let i = -1; f.cap.forEach(function(c, k){ if(tm >= c[0]) i = k; });
+  if(i !== WF.cap){
+    WF.cap = i; const box = $('wfpCap');
+    box.innerHTML = i >= 0 ? `<span dir="auto">${esc(t(f.cap[i][1]))}</span>` : '';
+  }
+}
+function wfEnded(){
+  const f = WF.film; if(!f) return;
+  const p = $('wfp'); p.classList.add('ended');
+  const nx = WF_FILMS[(WF_FILMS.indexOf(f) + 1) % WF_FILMS.length];
+  $('wfpEnd').innerHTML = `<div class="wfp-endc">
+      ${f.act ? `<button class="wf-btn" onclick="wfAct('${f.id}')">${esc(t(f.act[0]))}</button>` : ''}
+      <button class="wfp-next" onclick="whyPlay('${nx.id}')"><img src="films/${nx.id}.jpg?v=62" alt=""><span><small>${esc(t('Watch next'))}</small><b>${esc(t(nx.t))}</b></span>${ico('play')}</button>
+      <button class="wf-ghost" onclick="whyPlay('${f.id}')">↺ ${esc(t('Replay'))}</button></div>`;
+}
+function wfAct(id){ const f = wfFilm(id); if(!f || !f.act) return; whyClose(true); setTimeout(function(){ openItem(f.act[1]); }, 120); }
+window.addEventListener('popstate', function(){
+  if(WF.skipPop){ WF.skipPop = false; return; }
+  if($('wfp') && $('wfp').classList.contains('open')){ if(WF.pushed > 0) WF.pushed--; whyStop(true); return; }
+  if($('wf') && $('wf').classList.contains('open')){ WF.pushed = 0; whyClose(true, true); }
+});
+
+/* entry points: home promo and Pi Hub banner use a real film frame instead of a drawing */
+function wfPromoHTML(){
+  return `<button class="wf-promo" onclick="whyOpen()" aria-label="${esc(t('Why Pi in Saudi?'))}"><img src="films/intro.jpg?v=62" alt="" loading="lazy"><span class="wf-pg"></span>
+    <span class="tx"><small>${ico('film')}${esc(t('All films'))} · 5</small><b>${esc(t('Why Pi in Saudi?'))}</b><span>${esc(t('Short films about Pi in everyday Saudi life'))}</span></span><span class="pp">${ico('play')}</span></button>`;
+}
+renderWhyPromo = function(){ const box = $('whyPromo'); if(box) box.innerHTML = wfPromoHTML(); };
+renderWhyPromo();
+(function(){
+  const _ph = piHubPanel;
+  piHubPanel = function(){ _ph.apply(this, arguments); const b = $('pBody'); const w = b && b.querySelector('.why-banner'); if(w) w.innerHTML = wfPromoHTML(); };
+  PANELS.piHub = piHubPanel;
+  const _apply = applyLang;
+  applyLang = function(){ const r = _apply.apply(this, arguments);
+    const lib = $('wf') && $('wf').classList.contains('open'), pl = $('wfp') && $('wfp').classList.contains('open');
+    if($('wf') && !lib && !pl){ $('wf').remove(); $('wfp').remove(); }
+    else { if(lib){ $('wfTitle').textContent = t('Why Pi in Saudi?'); whyRender(); } if(pl && WF.film){ $('wfpTitle').textContent = t(WF.film.t); WF.cap = -1; wfTick(); } }
+    return r; };
+  META.whyPi.s = 'Short films about Pi in everyday Saudi life';
+  WF_FILMS.forEach(function(f){ META['wv-' + f.id] = { t:f.t, ic:'🎬', s:f.s }; PANELS['wv-' + f.id] = function(){ closePanel(); whyPlay(f.id); }; });
 })();
 
 </script>
