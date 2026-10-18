@@ -20,7 +20,8 @@
     "/weather",
     "/poster-file",
     "/quran",
-    "/match"
+    "/match",
+    "/quran-audio"
   ],
   "exclude": []
 }

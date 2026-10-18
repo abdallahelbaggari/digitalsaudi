@@ -970,7 +970,7 @@ header.scrolled{box-shadow:0 1px 0 var(--line),0 10px 24px -18px rgba(0,0,0,.6)}
 <body>
 
 <!-- ============ CINEMATIC ONBOARDING (first visit) ============ -->
-<script>try{if(sessionStorage.getItem('ds_film_session')!=='1')document.documentElement.classList.add('intro-first')}catch(e){document.documentElement.classList.add('intro-first')}</script>
+<script>try{if(location.hash.indexOf('#mkposter=')===0)sessionStorage.setItem('ds_film_session','1');if(sessionStorage.getItem('ds_film_session')!=='1')document.documentElement.classList.add('intro-first')}catch(e){document.documentElement.classList.add('intro-first')}</script>
 <section id="ovid" aria-label="Welcome to DigitalSaudi">
   <video id="ovVideo" muted playsinline preload="none" poster="/onboarding/ovid-poster.jpg?v=59" disablepictureinpicture disableremoteplayback aria-hidden="true"></video>
   <div class="ov-shade" aria-hidden="true"></div>
@@ -995,7 +995,7 @@ header.scrolled{box-shadow:0 1px 0 var(--line),0 10px 24px -18px rgba(0,0,0,.6)}
   <div class="ov-bottom">
     <div class="ov-copy"><div class="ov-txt on" data-i="0"><h2><span>Everything Saudi.</span><span class="ov-acc">One Digital Experience.</span></h2><p>Your gateway to places, services and more.</p></div><div class="ov-txt" data-i="1"><h2><span>Your Journey</span><span class="ov-acc">Starts Here.</span></h2><p>Hajj and Umrah guides, travel tools and essential services.</p></div><div class="ov-txt" data-i="2"><h2><span>Discover More.</span><span class="ov-acc">Do More.</span></h2><p>Local businesses, shopping and useful tools in one app.</p></div><div class="ov-txt" data-i="3"><h2><span>Explore the</span><span class="ov-acc">Pi Ecosystem.</span></h2><p>Pi is a digital currency from the Pi Network app.</p></div></div>
     <button class="ov-start" type="button" onclick="ovEnd()"><span>Get Started</span><svg class="i"><use href="#i-arrow"/></svg></button>
-    <p class="ov-legal">By continuing, you agree to the <a href="/terms.html">Terms of service</a> · <a href="/privacy.html">Privacy policy</a></p><p class="ov-ai"><span class="notr" dir="ltr">© 2026 DigitalSaudi · </span>Illustrative images · some AI-generated</p>
+    <p class="ov-legal">By continuing, you agree to the <a href="/terms.html">Terms of service</a> · <a href="/privacy.html">Privacy policy</a></p><p class="ov-ai"><span class="notr" dir="ltr">© 2026 DigitalSaudi</span></p>
   </div>
   <div class="sr-only" aria-live="polite" id="ovLive"></div>
 </section>
@@ -1163,7 +1163,7 @@ header.scrolled{box-shadow:0 1px 0 var(--line),0 10px 24px -18px rgba(0,0,0,.6)}
       <div class="st-nav"><button class="st-skip" type="button" onclick="obFinish()">Skip</button><button class="st-btn st-pri st-next" type="button" onclick="obStep(1)"><span>Next</span><svg class="i"><use href="#i-arrow"/></svg></button></div>
       <div class="st-final"><button class="st-btn st-pri st-start" type="button" onclick="obFinish()"><span id="obGuestT" class="notr">Get Started</span><svg class="i"><use href="#i-arrow"/></svg></button></div>
       <p class="st-legal">By continuing, you agree to the <a href="/terms.html">Terms of service</a> · <a href="/privacy.html">Privacy policy</a></p>
-      <p class="st-ai"><span class="notr" dir="ltr">© 2026 DigitalSaudi · </span>Illustrative images · some AI-generated</p>
+      <p class="st-ai"><span class="notr" dir="ltr">© 2026 DigitalSaudi</span></p>
     </div></div>
   </div>
   </div>
@@ -1329,7 +1329,7 @@ header.scrolled{box-shadow:0 1px 0 var(--line),0 10px 24px -18px rgba(0,0,0,.6)}
         </div>
         <h2 class="sec">Saudi Riyal rates <button onclick="openItem('converter')">Convert ›</button></h2>
         <div class="card" id="rateList"><div class="skeleton" style="margin:8px 0"></div><div class="skeleton" style="margin:8px 0"></div><div class="skeleton" style="margin:8px 0"></div></div>
-        <p class="small" style="text-align:center;margin-top:10px">Pi price: live from major exchanges (updates every 60s) · Currency rates by ExchangeRate-API (daily). Not financial advice.</p>
+        <p class="small" style="text-align:center;margin-top:10px">Not financial advice · <a href="https://www.exchangerate-api.com" target="_blank" rel="noopener" style="color:inherit">Rates By Exchange Rate API</a></p>
       </div>
 
       <div id="live-events" class="lv" style="display:none">
@@ -1453,7 +1453,7 @@ header.scrolled{box-shadow:0 1px 0 var(--line),0 10px 24px -18px rgba(0,0,0,.6)}
       <button class="row" onclick="openItem('about')"><div class="ic">ℹ️</div><div class="tx"><b>About</b></div><span class="chev">›</span></button>
       <button class="row" onclick="location.href='/privacy.html'"><div class="ic">🔒</div><div class="tx"><b>Privacy policy</b></div><span class="chev">›</span></button>
       <button class="row" onclick="location.href='/terms.html'"><div class="ic">📄</div><div class="tx"><b>Terms of service</b></div><span class="chev">›</span></button>
-      <footer class="legal"><span class="notr" dir="ltr">digitalsaudi.pi · DigitalSaudi v6.0</span><br><span class="notr" dir="ltr">© 2026 DigitalSaudi.</span> <span>All rights reserved.</span><br><span>Independent app, not affiliated with the Government of Saudi Arabia or Pi Network.</span><br><a href="/terms.html">Terms of service</a> · <a href="/privacy.html">Privacy policy</a> · <a href="mailto:support.digitalsaudi.pi@gmail.com" class="notr">support.digitalsaudi.pi@gmail.com</a></footer>
+      <footer class="legal"><span class="notr" dir="ltr">digitalsaudi.pi · DigitalSaudi v6.1</span><br><span class="notr" dir="ltr">© 2026 DigitalSaudi.</span> <span>All rights reserved.</span><br><span>Independent app, not affiliated with the Government of Saudi Arabia or Pi Network.</span><br><a href="/terms.html">Terms of service</a> · <a href="/privacy.html">Privacy policy</a> · <a href="mailto:support.digitalsaudi.pi@gmail.com" class="notr">support.digitalsaudi.pi@gmail.com</a></footer>
     </section>
   </main>
 
@@ -2724,7 +2724,7 @@ function renderLists(){
   $('trvCities').innerHTML = CITIES.map(function(c, i){ return cardHTML(c.id, i); }).join('');
   if($('placeCats')) $('placeCats').innerHTML = PLACE_CATS.filter(function(c){ return c.id !== 'all'; }).map(function(c, i){ return `<button class="tile" style="animation-delay:${i*0.02}s" onclick="openMap('${c.id}')"><div class="ic">${c.ic}</div><span>${c.t}</span></button>`; }).join('');
   if($('expPlan')) $('expPlan').innerHTML = ['trips','hotels','food','transport'].map(rowHTML).join('');
-  if($('expList')) $('expList').innerHTML = EXPERIENCES.map(function(x){ return x.img ? `<button class="xp xp-photo" style="background-image:linear-gradient(180deg,rgba(6,20,14,0) 35%,rgba(6,20,14,.78) 100%),url(${x.img});background-color:#0E3B26" onclick="openItem('${x.id}')"><span class="xp-ai">AI image</span><b>${x.t}</b><small>${x.s}</small></button>` : `<button class="xp" style="background:${x.bg}" onclick="openItem('${x.id}')"><span class="e">${x.ic}</span><b>${x.t}</b><small>${x.s}</small></button>`; }).join('');
+  if($('expList')) $('expList').innerHTML = EXPERIENCES.map(function(x){ return x.img ? `<button class="xp xp-photo" style="background-image:linear-gradient(180deg,rgba(6,20,14,0) 35%,rgba(6,20,14,.78) 100%),url(${x.img});background-color:#0E3B26" onclick="openItem('${x.id}')"><b>${x.t}</b><small>${x.s}</small></button>` : `<button class="xp" style="background:${x.bg}" onclick="openItem('${x.id}')"><span class="e">${x.ic}</span><b>${x.t}</b><small>${x.s}</small></button>`; }).join('');
   if($('expBiz')) $('expBiz').innerHTML = ['directory','piHub','addBusiness'].map(rowHTML).join('');
   if($('knowGrid')) $('knowGrid').innerHTML = KNOW.map(function(k, i){ return cardHTML(k.id, i); }).join('') + cardHTML('knowQuiz', KNOW.length);
   const persona = store.get('persona', 'visitor');
@@ -3125,7 +3125,7 @@ function openFeedback(subject){
 function sendFeedback(){
   const t = $('fbT').value, s = $('fbS').value, m = $('fbM').value;
   if(!m.trim()){ toast('Please write a message'); return; }
-  const body = m + '\n\n—\nApp: DigitalSaudi v6.0\nUser: ' + (piUser ? '@' + piUser.username : 'guest');
+  const body = m + '\n\n—\nApp: DigitalSaudi v6.1\nUser: ' + (piUser ? '@' + piUser.username : 'guest');
   location.href = 'mailto:' + CONTACT_EMAIL + '?subject=' + encodeURIComponent('[' + t + '] ' + (s || 'DigitalSaudi feedback')) + '&body=' + encodeURIComponent(body);
 }
 function editEcard(){
@@ -3507,8 +3507,8 @@ function renderMarkets(){
     const ch = p.change || 0; $('piChg').textContent = (ch >= 0 ? '▲ ' : '▼ ') + Math.abs(ch).toFixed(2) + '% 24h'; $('piChg').style.color = ch >= 0 ? '#86EFAC' : '#FCA5A5';
     $('piOther').textContent = (p.sar ? fmt(p.sar, 4) + ' SAR' : '') + (p.ngn ? ' · ₦' + fmt(p.ngn, 2) : '');
     $('piSpark').innerHTML = sparkSVG(p.spark, '#FFFFFF');   // white line on the green card; the badge shows up/down
-    $('piUpd').textContent = (p.stale ? 'Last known price (markets busy) · ' : '7-day chart · updated ' + ago(p.t) + ' · ') + (p.src ? 'Source: ' + p.src + ' · ' : '') + 'auto-refresh 60s';
-    if($('piSrc')) $('piSrc').textContent = 'PI · live from ' + (p.src || 'market data');
+    $('piUpd').textContent = (p.stale ? 'Last known price' : '7-day chart · updated ' + ago(p.t)) + (p.src === 'CoinGecko' ? ' · Data: CoinGecko' : '');
+    if($('piSrc')) $('piSrc').textContent = 'PI · live price';
   } else { $('piUsd').textContent = '—'; $('piUpd').textContent = 'Pi price unavailable right now'; }
   const fx = store.get('fx', null);
   if(fx && fx.rates){
@@ -3661,17 +3661,37 @@ function openSurah(n){
       '<p class="small" style="text-align:center">Translation: Saheeh International · Recitation: Mishary Alafasy · via alquran.cloud</p>';
   }).catch(function(){ if(!current || current.id !== 'surah') return; $('pBody').innerHTML = '<div class="empty"><div class="big">📖</div>Couldn’t load this surah. Check your connection.<br><button class="btn btn-ghost btn-sm" style="margin:12px auto 0" onclick="openSurah(' + n + ')">Try again</button></div>'; });
 }
+// v6.0: three places to get each verse; if one doesn't play, the next is tried automatically
+function ayahSources(s, i){
+  const a = s.ayahs[i], pad = function(x){ return ('00' + x).slice(-3); }, out = [];
+  if(a.au) out.push(a.au);
+  out.push('https://everyayah.com/data/Alafasy_128kbps/' + pad(s.n) + pad(a.k) + '.mp3');
+  out.push('/quran-audio?s=' + s.n + '&a=' + a.k);
+  return out.filter(function(u, k, arr){ return arr.indexOf(u) === k; });
+}
 function playAyah(i, cont){
-  const s = window._surah; if(!s || !s.ayahs[i] || !s.ayahs[i].au) return;
+  const s = window._surah; if(!s || !s.ayahs[i]) return;
   stopQuranAudio(true);
-  qAudio = (qNext && qNext.i === i) ? qNext.a : new Audio(s.ayahs[i].au);
-  qNext = null;
-  // load the next verse while this one plays, so "Play all" has no long pauses
-  if(cont && s.ayahs[i + 1] && s.ayahs[i + 1].au){ const na = new Audio(); na.preload = 'auto'; na.src = s.ayahs[i + 1].au; try{ na.load(); }catch(e){} qNext = { i:i + 1, a:na }; }
+  const srcs = ayahSources(s, i);
+  let k = 0, gave = false;
+  const el = $('ay' + i);
   document.querySelectorAll('.ayah.playing').forEach(function(x){ x.classList.remove('playing'); });
-  const el = $('ay' + i); if(el){ el.classList.add('playing'); el.scrollIntoView({ behavior:'smooth', block:'center' }); }
-  qAudio.onended = function(){ if(el) el.classList.remove('playing'); if(cont && i + 1 < s.ayahs.length && $('ay' + (i + 1))) playAyah(i + 1, true); };
-  qAudio.play().catch(function(){ toast('Audio could not play'); });
+  if(el){ el.classList.add('playing'); el.scrollIntoView({ behavior:'smooth', block:'center' }); }
+  const next = function(){
+    if(gave) return;
+    if(k >= srcs.length){ gave = true; if(el) el.classList.remove('playing'); toast('Audio could not play. Check your connection and try again.'); return; }
+    const a = (k === 0 && qNext && qNext.i === i) ? qNext.a : new Audio(srcs[k]);
+    if(k === 0) qNext = null;
+    k++; qAudio = a;
+    let failed = false;
+    const fail = function(){ if(failed || qAudio !== a) return; failed = true; try{ a.pause(); }catch(e){} next(); };
+    a.onerror = fail;
+    a.onended = function(){ if(qAudio !== a) return; if(el) el.classList.remove('playing'); if(cont && i + 1 < s.ayahs.length && $('ay' + (i + 1))) playAyah(i + 1, true); };
+    const pr = a.play(); if(pr && pr.catch) pr.catch(function(e){ if(e && e.name === 'AbortError') return; if(e && e.name === 'NotAllowedError'){ gave = true; toast('Tap ▶ again to play'); return; } fail(); });
+  };
+  next();
+  // load the next verse while this one plays, so "Play all" has no long pauses
+  if(cont && s.ayahs[i + 1]){ const na = new Audio(); na.preload = 'auto'; na.src = ayahSources(s, i + 1)[0]; try{ na.load(); }catch(e){} qNext = { i:i + 1, a:na }; }
 }
 function stopQuranAudio(keep){ if(qAudio){ qAudio.pause(); qAudio = null; } if(!keep && qNext){ try{ qNext.a.src = ''; }catch(e){} qNext = null; } if(!keep) document.querySelectorAll('.ayah.playing').forEach(function(x){ x.classList.remove('playing'); }); }
 function loadDailyAyah(){
@@ -5680,7 +5700,18 @@ function saveBlob(blob, name){
       try{ if(window.Pi && typeof window.Pi.openUrlInSystemBrowser === 'function'){ window.Pi.openUrlInSystemBrowser(abs); toast('Opening your browser to save the file…'); setTimeout(function(){ saveFileSheet(j.url, name); }, 900); return; } }catch(e){}
       saveFileSheet(j.url, name);
     })
-    .catch(function(){ toast('Could not prepare the download. Long-press the poster and choose “Save image”.'); });
+    .catch(function(){ posterHandoff(/\.pdf$/.test(name) ? 'pdf' : 'png'); });
+}
+/* Backup when the upload can't be used: open DigitalSaudi in the phone's own browser with the poster
+   details in the address; it redraws the same poster there and saves it (Chrome/Safari allow that). */
+function posterHandoff(fmt){
+  if(!POSTER_LAST) return;
+  const url = location.origin + '/#mkposter=' + encodeURIComponent(JSON.stringify(Object.assign({}, POSTER_LAST.d, { f: fmt || 'png' })));
+  try{ if(window.Pi && typeof window.Pi.openUrlInSystemBrowser === 'function'){ window.Pi.openUrlInSystemBrowser(url); toast('Opening your browser to save the poster…'); return; } }catch(e){}
+  showPanel('Save your poster', `<p>Pi Browser can't save files directly. Open this link in Chrome or Safari and your poster downloads there:</p>
+    <div class="result" style="word-break:break-all;font-size:12.5px">${esc(url)}</div>
+    <button class="btn btn-primary" style="width:100%;margin-top:10px" onclick="copyText('${esc(url).replace(/'/g, '%27')}')">📋 Copy link</button>
+    <p class="small" style="margin-top:10px">Or long-press the poster image and choose “Save image”.</p>`, { id:'posterSave' });
 }
 function posterDownload(){
   if(!POSTER_LAST) return;
@@ -6716,7 +6747,7 @@ function wxCalc(){
   const fx = store.get('fx', null), pi = store.get('pi', null), stamps = [];
   if(fx && f !== 'PI' || fx && t !== 'PI') stamps.push(ago(fx.t));
   if((f === 'PI' || t === 'PI') && pi) stamps[0] = 'Pi ' + ago(pi.t);
-  $('wxUpd').textContent = (stamps[0] || 'offline') + (fx ? ' · Rates By Exchange Rate API' : '') + (pi && pi.src && (f === 'PI' || t === 'PI') ? ' · Pi: ' + pi.src : '');
+  $('wxUpd').textContent = (stamps[0] || 'offline') + (fx ? ' · Rates By Exchange Rate API' : '');
 }
 function wxSwap(){
   const f = $('wxFrom'), t = $('wxTo'), v = f.value; f.value = t.value; t.value = v;
@@ -8712,7 +8743,7 @@ function renderHeroPi(){
   chg.textContent = (up ? '▲ ' : '▼ ') + Math.abs(ch).toFixed(2) + '% · 24h';
   const sar = p.sar || (p.usd * 3.75);
   sub.textContent = '≈ ' + fmt(sar, 4) + ' SAR  ·  1 SAR ≈ ' + fmt(1 / sar, 2) + ' π';
-  if(src) src.textContent = (p.stale ? t('Last known price') + ' · ' : '') + (p.src ? p.src : '');
+  if(src) src.textContent = (p.stale ? t('Last known price') : '') + (p.src === 'CoinGecko' ? (p.stale ? ' · ' : '') + 'Data: CoinGecko' : '');   // exchange names hidden; CoinGecko requires a credit
   if(svg){
     const a = (p.spark || []).map(Number).filter(function(x){ return isFinite(x); });
     if(a.length < 3){ svg.innerHTML = ''; svg.classList.add('empty'); return; }
@@ -9042,8 +9073,8 @@ function srAllLangs(text){
     usd.textContent = '$' + fmt(p.usd, 4);
     const ch = +p.change || 0, up = ch >= 0; chg.className = up ? 'up' : 'down'; chg.textContent = (up ? '▲ ' : '▼ ') + Math.abs(ch).toFixed(2) + '% · 24h';
     const sv = p.sar || p.usd * 3.75;
-    sar.textContent = '≈ ' + fmt(sv, 4) + ' SAR · ' + t('estimate (USD price × USD→SAR rate)');
-    src.textContent = t('Source') + ': ' + (p.src || '—') + ' · ' + t('Updated') + ' ' + fmtTime(p.upd || p.t) + ' ' + t('Saudi time');
+    sar.textContent = '≈ ' + fmt(sv, 4) + ' SAR';
+    src.textContent = t('Updated') + ' ' + fmtTime(p.upd || p.t) + ' ' + t('Saudi time') + (p.src === 'CoinGecko' ? ' · Data: CoinGecko' : '');
     const a = (p.spark || []).map(Number).filter(isFinite);
     if(a.length > 2){
       const mn = Math.min.apply(null, a), mx = Math.max.apply(null, a), r = (mx - mn) || 1;
@@ -9382,7 +9413,7 @@ function srAllLangs(text){
     const sc = $('mxScore'), stt = $('mxStatus');
     if(sc && d.score && d.score.home != null) sc.textContent = d.score.home + ' – ' + d.score.away;
     if(stt){ stt.innerHTML = d.live ? `<span class="mx-live">● LIVE ${d.status === 'HT' ? 'HT' : (d.elapsed || 0) + (d.extra ? '+' + d.extra : '') + '′'}</span>` : esc(d.statusText || ''); }
-    box.innerHTML = `<h4>${esc(t('Match events'))}</h4>${evHTML(d)}<h4>${esc(t('Line-ups'))}</h4>${luHTML(d)}<p class="small" style="margin-top:10px">${esc(t('Live data: API-Football'))}</p>`;
+    box.innerHTML = `<h4>${esc(t('Match events'))}</h4>${evHTML(d)}<h4>${esc(t('Line-ups'))}</h4>${luHTML(d)}`;
   }
   function load(m){
     const kick = new Date(m.utc);
@@ -9412,6 +9443,32 @@ function srAllLangs(text){
     panelCleanup = function(){ clearTimeout(timer); if(prevCleanup) try{ prevCleanup(); }catch(e){} };
     load(m);
   };
+})();
+
+/* v6.0 — finish a poster download that Pi Browser handed to the phone's own browser */
+(function(){
+  const h = location.hash || '';
+  if(h.indexOf('#mkposter=') !== 0) return;
+  let d = null; try{ d = JSON.parse(decodeURIComponent(h.slice(10))); }catch(e){}
+  try{ history.replaceState(null, '', location.pathname); }catch(e){}
+  if(!d || !d.name || !d.to) return;
+  const fmt = d.f === 'pdf' ? 'pdf' : 'png'; delete d.f;
+  setTimeout(function(){
+    store.set('onboarded', true); store.set('intro_done', true);
+    try{ if(typeof ovEnd === 'function') ovEnd(); }catch(e){}
+    try{ if(!(typeof entered !== 'undefined' && entered)) enterApp(); }catch(e){}
+    setTimeout(function(){
+      posterPanel(d); setTimeout(function(){ POSTER_LAST = null; makePoster(); }, 300);
+      let n = 0; const wait = setInterval(function(){
+        n++;
+        if(POSTER_LAST && POSTER_LAST.canvas){
+          clearInterval(wait);
+          if(fmt === 'pdf') posterPDF(); else posterDownload();
+          toast('Your poster is downloading. Check your Downloads folder.');
+        } else if(n > 40){ clearInterval(wait); toast('Tap “Save PNG” to download your poster'); }
+      }, 300);
+    }, 600);
+  }, 400);
 })();
 
 </script>
