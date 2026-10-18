@@ -1341,7 +1341,7 @@ header.scrolled{box-shadow:0 1px 0 var(--line),0 10px 24px -18px rgba(0,0,0,.6)}
       <div id="live-weather" class="lv" style="display:none">
         <select id="wxCity" onchange="setWxCity(this.value)"></select>
         <div class="card" style="margin-top:12px" id="wxBox"><div class="skeleton" style="height:60px"></div></div>
-        <p class="small" style="text-align:center;margin-top:10px">Weather data: Open-Meteo</p>
+        <p class="small" style="text-align:center;margin-top:10px">Weather data: <a href="https://www.met.no/en" target="_blank" rel="noopener">MET Norway</a> · CC BY 4.0</p>
       </div>
     </section>
 
@@ -1453,7 +1453,7 @@ header.scrolled{box-shadow:0 1px 0 var(--line),0 10px 24px -18px rgba(0,0,0,.6)}
       <button class="row" onclick="openItem('about')"><div class="ic">ℹ️</div><div class="tx"><b>About</b></div><span class="chev">›</span></button>
       <button class="row" onclick="location.href='/privacy.html'"><div class="ic">🔒</div><div class="tx"><b>Privacy policy</b></div><span class="chev">›</span></button>
       <button class="row" onclick="location.href='/terms.html'"><div class="ic">📄</div><div class="tx"><b>Terms of service</b></div><span class="chev">›</span></button>
-      <footer class="legal"><span class="notr" dir="ltr">digitalsaudi.pi · DigitalSaudi v6.2</span><br><span class="notr" dir="ltr">© 2026 DigitalSaudi.</span> <span>All rights reserved.</span><br><span>Independent app, not affiliated with the Government of Saudi Arabia or Pi Network.</span><br><a href="/terms.html">Terms of service</a> · <a href="/privacy.html">Privacy policy</a> · <a href="mailto:support.digitalsaudi.pi@gmail.com" class="notr">support.digitalsaudi.pi@gmail.com</a></footer>
+      <footer class="legal"><span class="notr" dir="ltr">digitalsaudi.pi · DigitalSaudi v6.3</span><br><span class="notr" dir="ltr">© 2026 DigitalSaudi.</span> <span>All rights reserved.</span><br><span>Independent app, not affiliated with the Government of Saudi Arabia or Pi Network.</span><br><a href="/terms.html">Terms of service</a> · <a href="/privacy.html">Privacy policy</a> · <a href="mailto:support.digitalsaudi.pi@gmail.com" class="notr">support.digitalsaudi.pi@gmail.com</a></footer>
     </section>
   </main>
 
@@ -2462,6 +2462,47 @@ html.nr-lock,html.nr-lock body{overflow:hidden}
 .wf-promo .pp .i{width:20px;height:20px;margin-inline-start:2px}
 @media (prefers-reduced-motion:reduce){.wf-hero img{animation:none}.wf,.wf.open{transition:none}}
 
+/* v6.3 — quality pass: readable toasts, full panel titles, contrast, small-screen fixes */
+#toast{width:max-content;max-width:min(92vw,460px);left:50%;line-height:1.35;padding:12px 18px;box-shadow:0 12px 30px -10px rgba(0,0,0,.45)}
+body.panel-open #toast{bottom:calc(22px + env(safe-area-inset-bottom))}
+/* long panel titles wrap to two lines instead of being cut ("Healthcare informa…") */
+.p-head h3{white-space:normal!important;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;line-height:1.2}
+.p-head h3.long{font-size:15.5px!important}
+#pShare .i,#pMark .i{width:19px;height:19px}
+/* small day-count badges were 10.5px */
+.row .badge,.badge{font-size:11.5px}
+/* Explore tiles: long French/Hausa words no longer spill out on small phones */
+.tile span,.tile b,.tile small{overflow-wrap:anywhere;hyphens:auto}
+@media (max-width:360px){.tile{padding-left:4px;padding-right:4px}.tile span{font-size:11.5px;line-height:1.2}}
+/* contrast fixes (WCAG AA) */
+.tier .rib{background:#B7791F;color:#fff}
+.recycle-yes,[data-theme=light] .recycle-yes{color:#15803D!important}
+[data-theme=light] .setting .btn-ghost[style*="danger"]{color:#B91C1C!important}
+[data-theme=light] .g-src a,[data-theme=light] .p-body a:not(.btn){color:#0B6B43}
+[data-theme=dark] .seg button.on,[data-theme=dark] .lang-grid .on,[data-theme=dark] .tb-counts button.on,[data-theme=dark] button.on{color:#fff}
+/* in-app confirm sheet (replaces the browser's grey "confirm" box) */
+.ds-confirm{position:fixed;inset:0;z-index:9500;display:flex;align-items:flex-end;justify-content:center;background:rgba(0,0,0,.45);opacity:0;transition:opacity .2s}
+.ds-confirm.open{opacity:1}
+.ds-confirm .box{width:100%;max-width:480px;background:var(--bg-card,#fff);color:var(--text);border-radius:24px 24px 0 0;padding:22px 20px calc(20px + env(safe-area-inset-bottom));transform:translateY(30px);transition:transform .25s}
+.ds-confirm.open .box{transform:none}
+.ds-confirm h4{margin:0 0 6px;font-size:18px}
+.ds-confirm p{margin:0 0 18px;color:var(--text-2);font-size:14.5px;line-height:1.45}
+.ds-confirm .row2{display:flex;gap:10px}
+.ds-confirm .row2 button{flex:1;height:50px;border-radius:14px;border:0;font-weight:800;font-size:15.5px;cursor:pointer}
+.ds-confirm .no{background:var(--bg-soft,#EEF2EF);color:var(--text)}
+.ds-confirm .yes{background:#DC2626;color:#fff}
+/* status line used when live data can't load */
+.ds-retry{display:inline-flex;align-items:center;gap:6px;margin-top:6px;padding:6px 12px;border-radius:999px;border:0;background:rgba(255,255,255,.18);color:inherit;font-weight:700;font-size:13px;cursor:pointer}
+.ds-retry-light{background:var(--bg-soft,#EEF2EF)}
+.ds-off{font-size:13.5px;color:var(--text-2);padding:8px 2px}
+/* notification settings: the π row icon lines up with the emoji icons */
+.notif-pi{display:inline-flex;width:24px;justify-content:center;font-weight:900}
+/* small phones in longer languages: badge names and home labels stay inside their boxes */
+.bdg{min-width:0;overflow-wrap:anywhere;hyphens:auto}
+.bdg-prog{min-width:0;overflow-wrap:anywhere}
+@media(max-width:340px){.hp-st small{font-size:10.5px!important}}
+#piChg:empty{display:none}
+
 </style>
 
 <script>
@@ -3213,7 +3254,7 @@ function openFeedback(subject){
 function sendFeedback(){
   const t = $('fbT').value, s = $('fbS').value, m = $('fbM').value;
   if(!m.trim()){ toast('Please write a message'); return; }
-  const body = m + '\n\n—\nApp: DigitalSaudi v6.2\nUser: ' + (piUser ? '@' + piUser.username : 'guest');
+  const body = m + '\n\n—\nApp: DigitalSaudi v6.3\nUser: ' + (piUser ? '@' + piUser.username : 'guest');
   location.href = 'mailto:' + CONTACT_EMAIL + '?subject=' + encodeURIComponent('[' + t + '] ' + (s || 'DigitalSaudi feedback')) + '&body=' + encodeURIComponent(body);
 }
 function editEcard(){
@@ -3429,7 +3470,7 @@ function loadHomeNews(){
     $('homeNews').innerHTML = items.length ? items.map(newsRowHTML).join('') : '<p class="small">No news right now.</p>';
   }).catch(function(){
     const c = store.get('news_home', []); c.forEach(function(it){ news.byId[it.id] = it; });
-    $('homeNews').innerHTML = c.length ? c.map(newsRowHTML).join('') : '<p class="small">News unavailable offline.</p>';
+    $('homeNews').innerHTML = c.length ? c.map(newsRowHTML).join('') : `<div class="ds-off">${esc(t('Couldn’t load news.'))} <button class="ds-retry ds-retry-light" onclick="loadHomeNews()">↻ ${esc(t('Try again'))}</button></div>`;
   });
 }
 function setupInfinite(){
@@ -3792,7 +3833,7 @@ function loadDailyAyah(){
     const a = { ar:d.data[0].text, en:d.data[1].text, ref:d.data[0].surah.englishName + ' ' + d.data[0].surah.number + ':' + d.data[0].numberInSurah, s:d.data[0].surah.number };
     try{ Object.keys(localStorage).filter(function(k){ return k.indexOf('ds_ayah_') === 0; }).forEach(function(k){ localStorage.removeItem(k); }); }catch(e){}
     store.set(key, a); render(a);
-  }).catch(function(){ $('dailyAyah').innerHTML = '<p class="small">Ayah of the day is unavailable offline.</p>'; });
+  }).catch(function(){ if(typeof dsAyahFallback === 'function') dsAyahFallback(); else $('dailyAyah').innerHTML = '<p class="small">Ayah of the day is unavailable offline.</p>'; });
 }
 
 /* ================= TASBIH ================= */
@@ -4300,7 +4341,7 @@ Object.assign(PANELS, {
   recycle: function(){
     showPanel('Recycling guide', `<p style="margin-bottom:12px">Recycling saves energy, water and landfill space. Here’s what to do with common waste.</p>` +
       RECYCLE.map(function(r){ return `<div class="ayah"><div style="display:flex;align-items:center;gap:10px;margin-bottom:6px"><span style="font-size:26px">${r.ic}</span><b style="font-size:16px">${r.t}</b></div>
-        <div class="small" style="color:var(--ok);font-weight:800">✓ YES</div><ul>${r.yes.map(function(x){ return '<li>' + x + '</li>'; }).join('')}</ul>
+        <div class="small recycle-yes" style="color:var(--ok);font-weight:800">✓ YES</div><ul>${r.yes.map(function(x){ return '<li>' + x + '</li>'; }).join('')}</ul>
         <div class="small" style="color:var(--danger);font-weight:800;margin-top:6px">✗ NO</div><ul>${r.no.map(function(x){ return '<li>' + x + '</li>'; }).join('')}</ul>
         <p class="small" style="margin-top:6px">💡 ${r.tip}</p></div>`; }).join('') +
       `<h4>Where to recycle</h4><ul><li>Collection points and reverse-vending machines at many supermarkets and malls</li><li>Recycling bins in some compounds, universities and offices</li><li>Retailer take-back for phones and electronics</li><li>Your municipality (via Balady) for bulky items</li></ul>
@@ -4944,7 +4985,9 @@ function calcSalary(){
   const gross = s.basic + s.housing + s.transport + s.other, ded = Math.min(s.basic + s.housing, 45000) * s.gosi / 100, net = gross - ded;
   $('slG').textContent = fmt(gross, 0); $('slN').textContent = fmt(net, 0);
   const c = function(x){ const r = convert(net, 'SAR', x); return r == null ? '—' : fmt(r, 0); };
-  $('slX').innerHTML = `<div class="rate"><span>GOSI deduction</span><b>−${fmt(ded, 0)} SAR</b></div><div class="rate"><span>Net per year</span><b>${fmt(net * 12, 0)} SAR</b></div><div class="rate"><span>Net / month in NGN</span><b>₦${c('NGN')}</b></div><div class="rate" style="border:0"><span>Net / month in USD</span><b>$${c('USD')}</b></div>`;
+  const ngn = c('NGN'), usd = c('USD');   // v6.3: no "−0" and no "₦—" rows when a rate is missing
+  $('slX').innerHTML = `<div class="rate"><span>${t('GOSI deduction')}</span><b>${ded > 0 ? '−' : ''}${fmt(ded, 0)} SAR</b></div><div class="rate"${ngn === '—' && usd === '—' ? ' style="border:0"' : ''}><span>${t('Net per year')}</span><b>${fmt(net * 12, 0)} SAR</b></div>` +
+    (ngn !== '—' ? `<div class="rate"><span>${t('Net / month in NGN')}</span><b>₦${ngn}</b></div>` : '') + (usd !== '—' ? `<div class="rate" style="border:0"><span>${t('Net / month in USD')}</span><b>$${usd}</b></div>` : '');
 }
 function gratuityPanel(){
   const g = store.get('gratuity', { start:'2020-01-01', end:ksaDate(), wage:8000, reason:'end' });
@@ -4967,7 +5010,7 @@ function calcGratuity(){
   let factor = 1, note = 'Full award';
   if(r === 'resign'){ if(yrs < 2){ factor = 0; note = 'Less than 2 years: no award on resignation'; } else if(yrs < 5){ factor = 1 / 3; note = '2–5 years: one-third of the award'; } else if(yrs < 10){ factor = 2 / 3; note = '5–10 years: two-thirds of the award'; } else note = '10+ years: full award'; }
   $('grOut').textContent = fmt(full * factor, 0) + ' SAR'; $('grYrs').textContent = fmt(yrs, 2) + ' years of service';
-  $('grHow').innerHTML = `<div class="rate"><span>First 5 years (½ month/year)</span><b>${fmt(first, 0)}</b></div><div class="rate"><span>After 5 years (1 month/year)</span><b>${fmt(rest, 0)}</b></div><div class="rate"><span>Full award</span><b>${fmt(full, 0)}</b></div><div class="rate" style="border:0"><span>${note}</span><b>× ${factor === 1 ? '1' : factor === 0 ? '0' : factor < .5 ? '⅓' : '⅔'}</b></div>`;
+  $('grHow').innerHTML = `<div class="rate"><span>First 5 years (½ month/year)</span><b>${fmt(first, 0)}</b></div><div class="rate"><span>After 5 years (1 month/year)</span><b>${fmt(rest, 0)}</b></div><div class="rate"${r === 'resign' ? '' : ' style="border:0"'}><span>${t('Full award')}</span><b>${fmt(full, 0)}</b></div>` + (r === 'resign' ? `<div class="rate" style="border:0"><span>${t(note)}</span><b>${factor === 1 ? t('100%') : factor === 0 ? t('None') : factor < .5 ? '⅓' : '⅔'}</b></div>` : '');   // v6.3: the "Full award × 1" row repeated itself
 }
 const SKILLS = [['Communication','I explain ideas clearly in writing and speaking'],['Digital','I use Excel, email and online tools confidently'],['English','I can work fully in English'],['Arabic','I can communicate in Arabic'],['Teamwork','I work well in diverse teams'],['Problem solving','I find practical solutions under pressure'],['Leadership','I have led a team, project or group'],['Technical','I have strong skills in my field']];
 function skillsPanel(){
@@ -5149,13 +5192,14 @@ function aiSend(text){
   const chat = aiChat(); chat.push({ role:'user', content:text }); store.set('aiChat_' + aiMode, chat.slice(-20));
   const log = $('aiLog'); if(chat.length === 1) log.innerHTML = '';
   log.insertAdjacentHTML('beforeend', aiMsgHTML({ role:'user', content:text }) + '<div class="msg a" id="aiTyping"><span class="typing"><span></span><span></span><span></span></span></div>');
-  $('pBody').scrollTop = $('pBody').scrollHeight; aiBusy = true; award('aiChat');
+  $('pBody').scrollTop = $('pBody').scrollHeight; aiBusy = true;   // v6.3: the AI badge is earned on a real answer, not on a failed request
   fetch('/ai', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ mode:aiMode, messages:chat.slice(-10), accessToken:piUser ? piUser.accessToken : null, guest:store.get('guestId', null) || (function(){ const g = 'g' + Math.random().toString(36).slice(2) + Date.now().toString(36); store.set('guestId', g); return g; })() }) })
     .then(function(r){ return r.json(); })
     .then(function(d){
       const t = $('aiTyping'); if(t) t.remove();
       if(!$('aiLog')){ if(d && d.ok && d.reply){ const c = aiChat(); c.push({ role:'assistant', content:d.reply }); store.set('aiChat_' + aiMode, c.slice(-20)); } return; }
       if(d && d.ok && d.reply){
+        award('aiChat');
         const c = aiChat(); c.push({ role:'assistant', content:d.reply }); store.set('aiChat_' + aiMode, c.slice(-20));
         $('aiLog').insertAdjacentHTML('beforeend', aiMsgHTML({ role:'assistant', content:d.reply }));
         if(d.free) AI_FREE = d.free;
@@ -7151,14 +7195,21 @@ function sourcesFor(id){
     let c = allContent().find(function(x){ return x.id === id; });
     if(!c && GUIDE_PANELS[id] && META[id]) c = { id:id, t:META[id].t, s:META[id].s, body:body ? body.innerHTML : '' };
     if(!c || !body || !current || current.id !== id || body.querySelector('.g-hero')) return r;
-    const cat = GUIDE_PANELS[id] || GUIDE_CAT[/^[a-z]-/.test(id) ? id[0] : ''] || ['Guide', 'book', 'var(--accent)'];
+    let cat = GUIDE_PANELS[id] || GUIDE_CAT[/^[a-z]-/.test(id) ? id[0] : ''] || ['Guide', 'book', 'var(--accent)'];
+    if(/^c-/.test(id)) cat = /cv|interview|roadmap|jobs/.test(id) ? ['Career', 'briefcase', 'var(--t-lav)'] : ['Cities', 'city', 'var(--t-lav)'];   // v6.3: cities and career were sharing one label
     const words = (c.body || '').replace(/<[^>]+>/g, ' ').split(/\s+/).filter(Boolean).length, mins = Math.max(1, Math.round(words / 200));
     const steps = body.querySelectorAll('h4').length;
-    body.insertAdjacentHTML('afterbegin', `<div class="g-hero" style="--ic:${cat[2]}"><div class="g-art" aria-hidden="true"><span class="g-ic">${ico(cat[1])}</span></div><div class="g-tx"><small>${cat[0]} · ${mins} min read${steps > 2 ? ' · ' + steps + ' sections' : ''}</small><h2>${esc(c.t)}</h2>${c.s ? '<p>' + esc(c.s) + '</p>' : ''}</div></div>`);
+    body.insertAdjacentHTML('afterbegin', `<div class="g-hero" style="--ic:${cat[2]}"><div class="g-art" aria-hidden="true"><span class="g-ic">${ico(cat[1])}</span></div><div class="g-tx"><small>${esc(t(cat[0]))} · ${mins} ${esc(t('min read'))}${steps > 2 ? ' · ' + steps + ' ' + esc(t('sections')) : ''}</small><h2>${esc(c.t)}</h2>${c.s ? '<p>' + esc(c.s) + '</p>' : ''}</div></div>`);
+    // v6.3: drop the plain "Official source: xyz" lines that repeat the sources card below
     const src = sourcesFor(id);
     if(src.length){
+      body.querySelectorAll('h4').forEach(function(h){ if(/^Official source$/i.test(h.textContent.trim())){ const n = h.nextElementSibling; if(n && n.tagName === 'P' && /^[\w.-]+\.(sa|com)$/i.test(n.textContent.trim())) n.remove(); h.remove(); } });
+      body.querySelectorAll('p').forEach(function(q){ const x = q.textContent.trim(); if(/^[\w.-]+\.(sa|com)$/i.test(x) && src.some(function(k){ return OFFICIAL[k][0] === x; })) q.remove(); });
+    }
+    if(src.length){
       const rv = body.querySelector('.reviewed');
-      const html = `<div class="g-src"><b>Official sources</b>${src.map(function(k){ const o = OFFICIAL[k]; return `<a href="${o[1]}" target="_blank" rel="noopener"><span>${ico('shield')}</span><span><b>${o[0]}</b><small>${o[2]}</small></span><span class="chev">›</span></a>`; }).join('')}<small class="g-src-n">Rules and fees change — always confirm on the official site before you apply or pay.</small></div>`;
+      const note = src.every(function(k){ return k === 'visit'; }) ? 'Opening times and prices change — check the official site before you go.' : 'Rules and fees change — always confirm on the official site before you apply or pay.';
+      const html = `<div class="g-src"><b>${esc(t('Official sources'))}</b>${src.map(function(k){ const o = OFFICIAL[k]; return `<a href="${o[1]}" target="_blank" rel="noopener"><span>${ico('shield')}</span><span><b class="notr">${o[0]}</b><small>${esc(t(o[2]))}</small></span><span class="chev">›</span></a>`; }).join('')}<small class="g-src-n">${esc(t(note))}</small></div>`;
       if(rv) rv.insertAdjacentHTML('beforebegin', html); else body.insertAdjacentHTML('beforeend', html);
     }
     return r;
@@ -9428,6 +9479,610 @@ renderWhyPromo();
     return r; };
   META.whyPi.s = 'Short films about Pi in everyday Saudi life';
   WF_FILMS.forEach(function(f){ META['wv-' + f.id] = { t:f.t, ic:'🎬', s:f.s }; PANELS['wv-' + f.id] = function(){ closePanel(); whyPlay(f.id); }; });
+})();
+
+/* ==========================================================================
+   v6.3 — quality pass. Each block fixes one problem found while testing every
+   screen in six languages, light and dark, on small and large phones.
+   ========================================================================== */
+
+/* 1 · Dates and weekdays in the user's language (they were always English) */
+const DS_LOCALE = { en:'en-GB', ar:'ar-SA-u-ca-gregory-nu-latn', ur:'ur-PK-u-nu-latn', id:'id-ID', ha:'ha-NG', fr:'fr-FR' };
+function dsLocale(){ const l = DS_LOCALE[typeof LANG !== 'undefined' ? LANG : 'en'] || 'en-GB'; try{ new Intl.DateTimeFormat(l); return l; }catch(e){ return 'en-GB'; } }
+(function(){
+  ['toLocaleDateString', 'toLocaleString'].forEach(function(fn){
+    const orig = Date.prototype[fn];
+    Date.prototype[fn] = function(loc, o){
+      // only text dates (month or weekday names) change; plain times stay 24-hour as before
+      if(loc === 'en-GB' && o && (o.weekday || o.month === 'short' || o.month === 'long')) loc = dsLocale();
+      return orig.call(this, loc, o);
+    };
+  });
+})();
+
+/* 2 · Day counts ("113d", "113 days") and "Nationwide" in the right language */
+(function(){
+  const R = [
+    ['days','يوماً','دن','hari','kwanaki','jours'], ['d','ي','د','h','k','j'], ['Now','الآن','ابھی','Sekarang','Yanzu','Maintenant'],
+    ['Nationwide','على مستوى المملكة','ملک بھر میں','Seluruh negeri','Ko’ina a ƙasar','Tout le pays']
+  ];
+  R.forEach(function(r){ LANG_ORDER.slice(1).forEach(function(l, i){ if(I18N[l]) I18N[l][r[0]] = r[i + 1]; }); });
+  if(typeof eventRowHTML === 'function'){
+    const _row = eventRowHTML;
+    eventRowHTML = function(e){
+      return _row.apply(this, arguments).replace(/<span class="badge">(\d+)d<\/span>/, function(m, n){ return '<span class="badge">' + n + ' ' + esc(t('days')) + '</span>'; })
+        .replace('<span class="badge">Now</span>', '<span class="badge">' + esc(t('Now')) + '</span>').replace(/ · Nationwide/g, ' · ' + esc(t('Nationwide')));
+    };
+  }
+})();
+
+/* 3 · Panels: icon share button, full two-line titles, body flag so toasts sit low */
+(function(){
+  const sh = $('pShare'); if(sh) sh.innerHTML = ico('share');
+  const _show = showPanel;
+  showPanel = function(title){
+    const r = _show.apply(this, arguments);
+    const h = $('pTitle'); if(h) h.classList.toggle('long', (h.textContent || '').length > 22);
+    document.body.classList.add('panel-open');
+    return r;
+  };
+  const _close = closePanel;
+  closePanel = function(){ document.body.classList.remove('panel-open'); return _close.apply(this, arguments); };
+})();
+
+/* 4 · One toast at a time, never stacked; badge toasts wait their turn */
+(function(){
+  const q = []; let busy = false;
+  const _toast = toast;
+  function next(){ if(!q.length){ busy = false; return; } busy = true; const m = q.shift(); _toast(m); setTimeout(next, 2900); }
+  toast = function(msg){
+    msg = t(String(msg));
+    if(q.indexOf(msg) >= 0) return;                 // same message twice → show once
+    if(/^🏅/.test(msg)){ q.push(msg); if(!busy) next(); return; }
+    q.length = 0; busy = true; _toast(msg); clearTimeout(toast._n); toast._n = setTimeout(function(){ busy = false; next(); }, 2900);
+  };
+})();
+
+/* 5 · In-app confirm instead of the browser's grey box (which shows a web address in Pi Browser) */
+function dsConfirm(title, text, yes, onYes){
+  const d = document.createElement('div'); d.className = 'ds-confirm'; d.setAttribute('role', 'dialog'); d.setAttribute('aria-modal', 'true');
+  d.innerHTML = `<div class="box"><h4>${esc(t(title))}</h4><p>${esc(t(text))}</p><div class="row2"><button class="no">${esc(t('Cancel'))}</button><button class="yes">${esc(t(yes))}</button></div></div>`;
+  document.body.appendChild(d); requestAnimationFrame(function(){ d.classList.add('open'); });
+  const close = function(){ d.classList.remove('open'); setTimeout(function(){ d.remove(); }, 220); };
+  d.addEventListener('click', function(e){ if(e.target === d) close(); });
+  d.querySelector('.no').onclick = close;
+  d.querySelector('.yes').onclick = function(){ close(); onYes(); };
+  setTimeout(function(){ d.querySelector('.no').focus(); }, 50);
+}
+(function(){
+  if(typeof deleteTrip === 'function'){
+    deleteTrip = function(id){ dsConfirm('Delete this trip?', 'Its dates, checklist and notes will be removed from this device.', 'Delete', function(){ store.set('trips', trips().filter(function(x){ return x.id !== id; })); renderHomeTrip(); openItem('trips'); }); };
+  }
+  if(typeof clearData === 'function'){
+    const _clear = clearData;
+    clearData = function(){
+      const _c = window.confirm; window.confirm = function(){ return true; };
+      dsConfirm('Clear saved data?', 'Clear checklists, bookmarks, reminders and cached data on this device? Premium bought with Pi is restored when you sign in again.', 'Clear', function(){ try{ _clear(); } finally { window.confirm = _c; } });
+      setTimeout(function(){ if(window.confirm !== _c && !document.querySelector('.ds-confirm')) window.confirm = _c; }, 60000);
+    };
+  }
+})();
+
+/* 6 · Live data that fails: say so clearly, offer a retry, keep the last known value */
+function dsRetryBtn(fn, light){ return `<button class="ds-retry${light ? ' ds-retry-light' : ''}" onclick="${fn}">↻ ${esc(t('Try again'))}</button>`; }
+(function(){
+  // Home Pi card: "Loading live price…" stayed forever when the price service was down
+  let tries = 0;
+  const _hero = renderHeroPi;
+  renderHeroPi = function(){
+    const r = _hero.apply(this, arguments);
+    const p = store.get('pi', null), sub = $('hpPiSar');
+    if(!(p && p.usd) && sub && dsPiFailed){ sub.innerHTML = esc(t('Pi price is unavailable right now.')) + '<br>' + dsRetryBtn('dsRetryPi()'); }
+    return r;
+  };
+  let dsPiFailed = false;
+  window.dsRetryPi = function(){ const sub = $('hpPiSar'); if(sub) sub.textContent = t('Loading live price…'); dsPiFailed = false; loadPi(true).then(function(){ renderMarkets(); dsAfterPi(); }); };
+  function dsAfterPi(){ const p = store.get('pi', null); if(!(p && p.usd)){ dsPiFailed = true; tries++; if(tries < 4) setTimeout(function(){ loadPi(true).then(function(){ renderMarkets(); dsAfterPi(); }); }, 15000 * tries); } else dsPiFailed = false; try{ renderHeroPi(); }catch(e){} }
+  const _mk = renderMarkets;
+  renderMarkets = function(){
+    const r = _mk.apply(this, arguments);
+    const p = store.get('pi', null), fx = store.get('fx', null);
+    if(!(p && p.usd)){
+      if($('piUpd')) $('piUpd').textContent = t('Pi price is unavailable right now.');
+      if($('piChg')) $('piChg').textContent = '';
+      if($('hPiChg')) $('hPiChg').textContent = t('unavailable');
+    }
+    if(!(fx && fx.rates) && $('rateList') && $('rateList').querySelector('.skeleton') && dsFxTried){
+      $('rateList').innerHTML = `<div class="ds-off">${esc(t('Exchange rates are unavailable right now.'))}</div>${dsRetryBtn("dsFxTried=false;loadFx(true).then(function(){dsFxTried=true;renderMarkets();})", true)}`;
+    }
+    return r;
+  };
+  window.dsFxTried = false;
+  const _lfx = loadFx;
+  loadFx = function(){ return _lfx.apply(this, arguments).then(function(v){ window.dsFxTried = true; return v; }); };
+  // first round: after the first attempt finishes, show the clear state
+  setTimeout(function(){ loadPi().then(function(){ dsAfterPi(); renderMarkets(); }); }, 2500);
+})();
+
+/* 7 · Home news and Ayah of the day when offline */
+(function(){
+  // a short offline set so the card is never empty (Arabic text with Pickthall's public-domain English)
+  const AYAT = [
+    { ar:'فَإِنَّ مَعَ ٱلْعُسْرِ يُسْرًا', en:'But lo! with hardship goeth ease.', ref:'Ash-Sharh 94:5', s:94 },
+    { ar:'وَقُل رَّبِّ زِدْنِى عِلْمًا', en:'And say: My Lord! Increase me in knowledge.', ref:'Taa-Haa 20:114', s:20 },
+    { ar:'أَلَا بِذِكْرِ ٱللَّهِ تَطْمَئِنُّ ٱلْقُلُوبُ', en:'Verily in the remembrance of Allah do hearts find rest!', ref:'Ar-Ra\'d 13:28', s:13 },
+    { ar:'لَا يُكَلِّفُ ٱللَّهُ نَفْسًا إِلَّا وُسْعَهَا', en:'Allah tasketh not a soul beyond its scope.', ref:'Al-Baqara 2:286', s:2 },
+    { ar:'وَٱللَّهُ يُحِبُّ ٱلْمُحْسِنِينَ', en:'Allah loveth the good.', ref:'Aal-i-Imraan 3:134', s:3 },
+    { ar:'إِنَّ ٱللَّهَ مَعَ ٱلصَّـٰبِرِينَ', en:'Lo! Allah is with the steadfast.', ref:'Al-Baqara 2:153', s:2 },
+    { ar:'فَٱذْكُرُونِىٓ أَذْكُرْكُمْ', en:'Therefore remember Me, I will remember you.', ref:'Al-Baqara 2:152', s:2 }
+  ];
+  window.dsAyahFallback = function(){
+    const box = $('dailyAyah'); if(!box) return;
+    const a = AYAT[new Date().getDate() % AYAT.length];
+    box.innerHTML = `<div class="ar">${a.ar}</div><p style="margin:8px 0 6px;color:var(--text-2);font-size:14.5px">${esc(a.en)}</p><div style="display:flex;justify-content:space-between;align-items:center"><span class="small notr">${esc(a.ref)}</span><button class="btn btn-ghost btn-sm" onclick="openSurah(${a.s})">${esc(t('Read surah'))} ›</button></div>`;
+  };
+})();
+
+/* 8 · Quran: the list of 114 surahs is built in, so it always opens (verses still load online) */
+const DS_SURAHS = 'Al-Faatiha|The Opening|7|M|الفاتحة;Al-Baqara|The Cow|286|D|البقرة;Aal-i-Imraan|The Family of Imraan|200|D|آل عمران;An-Nisaa|The Women|176|D|النساء;Al-Maaida|The Table|120|D|المائدة;Al-An\'aam|The Cattle|165|M|الأنعام;Al-A\'raaf|The Heights|206|M|الأعراف;Al-Anfaal|The Spoils of War|75|D|الأنفال;At-Tawba|The Repentance|129|D|التوبة;Yunus|Jonah|109|M|يونس;Hud|Hud|123|M|هود;Yusuf|Joseph|111|M|يوسف;Ar-Ra\'d|The Thunder|43|D|الرعد;Ibrahim|Abraham|52|M|إبراهيم;Al-Hijr|The Rock|99|M|الحجر;An-Nahl|The Bee|128|M|النحل;Al-Israa|The Night Journey|111|M|الإسراء;Al-Kahf|The Cave|110|M|الكهف;Maryam|Mary|98|M|مريم;Taa-Haa|Taa-Haa|135|M|طه;Al-Anbiyaa|The Prophets|112|M|الأنبياء;Al-Hajj|The Pilgrimage|78|D|الحج;Al-Muminoon|The Believers|118|M|المؤمنون;An-Noor|The Light|64|D|النور;Al-Furqaan|The Criterion|77|M|الفرقان;Ash-Shu\'araa|The Poets|227|M|الشعراء;An-Naml|The Ant|93|M|النمل;Al-Qasas|The Stories|88|M|القصص;Al-Ankaboot|The Spider|69|M|العنكبوت;Ar-Room|The Romans|60|M|الروم;Luqman|Luqman|34|M|لقمان;As-Sajda|The Prostration|30|M|السجدة;Al-Ahzaab|The Clans|73|D|الأحزاب;Saba|Sheba|54|M|سبأ;Faatir|The Originator|45|M|فاطر;Yaseen|Yaseen|83|M|يس;As-Saaffaat|Those drawn up in Ranks|182|M|الصافات;Saad|The letter Saad|88|M|ص;Az-Zumar|The Groups|75|M|الزمر;Ghafir|The Forgiver|85|M|غافر;Fussilat|Explained in detail|54|M|فصلت;Ash-Shura|Consultation|53|M|الشورى;Az-Zukhruf|Ornaments of gold|89|M|الزخرف;Ad-Dukhaan|The Smoke|59|M|الدخان;Al-Jaathiya|Crouching|37|M|الجاثية;Al-Ahqaf|The Dunes|35|M|الأحقاف;Muhammad|Muhammad|38|D|محمد;Al-Fath|The Victory|29|D|الفتح;Al-Hujuraat|The Inner Apartments|18|D|الحجرات;Qaaf|The letter Qaaf|45|M|ق;Adh-Dhaariyat|The Winnowing Winds|60|M|الذاريات;At-Tur|The Mount|49|M|الطور;An-Najm|The Star|62|M|النجم;Al-Qamar|The Moon|55|M|القمر;Ar-Rahmaan|The Beneficent|78|D|الرحمن;Al-Waaqia|The Inevitable|96|M|الواقعة;Al-Hadid|The Iron|29|D|الحديد;Al-Mujaadila|The Pleading Woman|22|D|المجادلة;Al-Hashr|The Exile|24|D|الحشر;Al-Mumtahana|She that is to be examined|13|D|الممتحنة;As-Saff|The Ranks|14|D|الصف;Al-Jumu\'a|Friday|11|D|الجمعة;Al-Munaafiqoon|The Hypocrites|11|D|المنافقون;At-Taghaabun|Mutual Disillusion|18|D|التغابن;At-Talaaq|Divorce|12|D|الطلاق;At-Tahrim|The Prohibition|12|D|التحريم;Al-Mulk|The Sovereignty|30|M|الملك;Al-Qalam|The Pen|52|M|القلم;Al-Haaqqa|The Reality|52|M|الحاقة;Al-Ma\'aarij|The Ascending Stairways|44|M|المعارج;Nooh|Noah|28|M|نوح;Al-Jinn|The Jinn|28|M|الجن;Al-Muzzammil|The Enshrouded One|20|M|المزمل;Al-Muddaththir|The Cloaked One|56|M|المدثر;Al-Qiyaama|The Resurrection|40|M|القيامة;Al-Insaan|Man|31|D|الإنسان;Al-Mursalaat|The Emissaries|50|M|المرسلات;An-Naba|The Announcement|40|M|النبأ;An-Naazi\'aat|Those who drag forth|46|M|النازعات;Abasa|He frowned|42|M|عبس;At-Takwir|The Overthrowing|29|M|التكوير;Al-Infitaar|The Cleaving|19|M|الانفطار;Al-Mutaffifin|Defrauding|36|M|المطففين;Al-Inshiqaaq|The Splitting Open|25|M|الانشقاق;Al-Burooj|The Constellations|22|M|البروج;At-Taariq|The Morning Star|17|M|الطارق;Al-A\'laa|The Most High|19|M|الأعلى;Al-Ghaashiya|The Overwhelming|26|M|الغاشية;Al-Fajr|The Dawn|30|M|الفجر;Al-Balad|The City|20|M|البلد;Ash-Shams|The Sun|15|M|الشمس;Al-Lail|The Night|21|M|الليل;Ad-Dhuhaa|The Morning Hours|11|M|الضحى;Ash-Sharh|The Consolation|8|M|الشرح;At-Tin|The Fig|8|M|التين;Al-Alaq|The Clot|19|M|العلق;Al-Qadr|The Power|5|M|القدر;Al-Bayyina|The Evidence|8|D|البينة;Az-Zalzala|The Earthquake|8|D|الزلزلة;Al-Aadiyaat|The Chargers|11|M|العاديات;Al-Qaari\'a|The Calamity|11|M|القارعة;At-Takaathur|Competition|8|M|التكاثر;Al-Asr|The Declining Day|3|M|العصر;Al-Humaza|The Traducer|9|M|الهمزة;Al-Fil|The Elephant|5|M|الفيل;Quraish|Quraysh|4|M|قريش;Al-Maa\'un|Almsgiving|7|M|الماعون;Al-Kawthar|Abundance|3|M|الكوثر;Al-Kaafiroon|The Disbelievers|6|M|الكافرون;An-Nasr|Divine Support|3|D|النصر;Al-Masad|The Palm Fibre|5|M|المسد;Al-Ikhlaas|Sincerity|4|M|الإخلاص;Al-Falaq|The Dawn|5|M|الفلق;An-Naas|Mankind|6|M|الناس'
+  .split(';').map(function(r, i){ const a = r.split('|'); return { number:i + 1, englishName:a[0], englishNameTranslation:a[1], numberOfAyahs:+a[2], revelationType:a[3] === 'M' ? 'Meccan' : 'Medinan', name:a[4] }; });
+(function(){ try{ if(!store.get('surahs', null)) store.set('surahs', DS_SURAHS); }catch(e){} })();
+
+/* 9 · Qibla: bearing from your chosen city straight away; GPS makes it exact */
+(function(){
+  if(!PANELS.qibla) return;
+  const _q = PANELS.qibla;
+  PANELS.qibla = function(){
+    const r = _q.apply(this, arguments);
+    const city = typeof prayerCity === 'function' ? prayerCity() : 'Makkah', c = CITY_COORDS[city];
+    if(c && $('qOut')){
+      if(city === 'Makkah'){ $('qOut').textContent = t('In Makkah — face the Kaaba'); return r; }
+      const R = Math.PI / 180, lat = c[0] * R, lon = c[1] * R, kLat = 21.4225 * R, kLon = 39.8262 * R;
+      const b = (Math.atan2(Math.sin(kLon - lon), Math.cos(lat) * Math.tan(kLat) - Math.sin(lat) * Math.cos(kLon - lon)) / R + 360) % 360;
+      qiblaBearing = b; $('qOut').textContent = b.toFixed(1) + '°'; $('qNeedle').style.transform = 'rotate(' + b + 'deg)';
+      const sm = $('qOut').parentNode.querySelector('small'); if(sm) sm.textContent = t('Qibla bearing from North') + ' · ' + t(city);
+    }
+    return r;
+  };
+})();
+
+/* 10 · Settings › Favourite team opens Scores instead of only telling you where to go */
+(function(){
+  const _s = PANELS.settings; if(!_s) return;
+  PANELS.settings = function(){
+    const r = _s.apply(this, arguments);
+    [].slice.call(document.querySelectorAll('#pBody .setting')).forEach(function(row){
+      if(/Favourite team|الفريق|Équipe|Tim favorit|Kungiya|پسندیدہ/.test(row.textContent) && !row.querySelector('button')){
+        row.insertAdjacentHTML('beforeend', `<button class="btn btn-ghost btn-sm" onclick="closePanel();switchTab('live');openLive('scores')">${esc(t('Choose'))}</button>`);
+      }
+    });
+    return r;
+  };
+})();
+
+/* 11 · Returning Pi users: one tap less — sign in automatically after the welcome film */
+(function(){
+  let tried = false;
+  function inPi(){ return typeof Pi !== 'undefined' && /PiBrowser|; wv\)/i.test(navigator.userAgent); }
+  function check(){
+    if(tried || (typeof entered !== 'undefined' && entered)) return;
+    const sp = $('splash'), ov = $('ovid'), last = store.get('lastUser', null);
+    if(!last || !inPi() || !sp || getComputedStyle(sp).display === 'none') return;
+    if(ov && ov.classList.contains('open')) return;
+    tried = true;
+    const b = $('loginBtn'); if(b) b.innerHTML = '<span>π</span> ' + esc(t('Continue as')) + ' @' + esc(last);
+    setTimeout(function(){ if(!(typeof entered !== 'undefined' && entered)) piLogin(); }, 350);
+  }
+  const iv = setInterval(function(){ check(); if(tried || (typeof entered !== 'undefined' && entered)) clearInterval(iv); }, 500);
+  setTimeout(function(){ clearInterval(iv); }, 120000);
+})();
+
+/* 12 · Why Pi promo uses a clean frame without the film's labels */
+(function(){
+  if(typeof wfPromoHTML !== 'function') return;
+  const _p = wfPromoHTML;
+  wfPromoHTML = function(){ return _p.apply(this, arguments).replace('films/intro.jpg?v=62', 'films/cover.jpg?v=63'); };
+  try{ renderWhyPromo(); }catch(e){}
+})();
+
+/* 13 · Words for everything above */
+(function(){
+  const R = [
+    ['Pi price is unavailable right now.','سعر Pi غير متاح الآن.','Pi کی قیمت ابھی دستیاب نہیں۔','Harga Pi sedang tidak tersedia.','Farashin Pi ba ya samuwa yanzu.','Le cours du Pi est indisponible pour le moment.'],
+    ['Exchange rates are unavailable right now.','أسعار الصرف غير متاحة الآن.','شرحِ مبادلہ ابھی دستیاب نہیں۔','Kurs tukar sedang tidak tersedia.','Farashin musayar kuɗi ba ya samuwa yanzu.','Les taux de change sont indisponibles pour le moment.'],
+    ['unavailable','غير متاح','دستیاب نہیں','tidak tersedia','ba ya samuwa','indisponible'],
+    ['Try again','حاول مجدداً','دوبارہ کوشش کریں','Coba lagi','Sake gwadawa','Réessayer'],
+    ['Couldn’t load news.','تعذّر تحميل الأخبار.','خبریں لوڈ نہیں ہو سکیں۔','Berita gagal dimuat.','An kasa loda labarai.','Impossible de charger les actualités.'],
+    ['Read surah','اقرأ السورة','سورت پڑھیں','Baca surah','Karanta sura','Lire la sourate'],
+    ['In Makkah — face the Kaaba','في مكة — استقبل الكعبة','مکہ میں — کعبہ کی طرف رخ کریں','Di Makkah — menghadap Ka’bah','A Makka — fuskanci Ka’aba','À La Mecque — face à la Kaaba'],
+    ['Qibla bearing from North','اتجاه القبلة من الشمال','شمال سے قبلہ کا رخ','Arah kiblat dari utara','Alƙiblar daga Arewa','Direction de la qibla depuis le nord'],
+    ['Choose','اختر','منتخب کریں','Pilih','Zaɓa','Choisir'],
+    ['Continue as','المتابعة باسم','بطور جاری رکھیں','Lanjut sebagai','Ci gaba a matsayin','Continuer en tant que'],
+    ['Cancel','إلغاء','منسوخ','Batal','Soke','Annuler'],
+    ['Delete','حذف','حذف کریں','Hapus','Goge','Supprimer'],
+    ['Clear','مسح','صاف کریں','Hapus','Share','Effacer'],
+    ['Delete this trip?','حذف هذه الرحلة؟','یہ سفر حذف کریں؟','Hapus perjalanan ini?','A goge wannan tafiya?','Supprimer ce voyage ?'],
+    ['Its dates, checklist and notes will be removed from this device.','ستُحذف تواريخها وقائمة التحقق والملاحظات من هذا الجهاز.','اس کی تاریخیں، چیک لسٹ اور نوٹس اس ڈیوائس سے ہٹ جائیں گے۔','Tanggal, daftar periksa, dan catatannya akan dihapus dari perangkat ini.','Za a cire kwanakinta, jerin dubawa da bayananta daga wannan na’ura.','Ses dates, sa liste et ses notes seront supprimées de cet appareil.'],
+    ['Clear saved data?','مسح البيانات المحفوظة؟','محفوظ ڈیٹا صاف کریں؟','Hapus data tersimpan?','A share bayanan da aka adana?','Effacer les données enregistrées ?'],
+    ['Clear checklists, bookmarks, reminders and cached data on this device? Premium bought with Pi is restored when you sign in again.','مسح قوائم التحقق والإشارات المرجعية والتذكيرات والبيانات المؤقتة على هذا الجهاز؟ يُستعاد بريميوم المشترى بـ Pi عند تسجيل الدخول مجدداً.','اس ڈیوائس پر چیک لسٹیں، بُک مارکس، یاد دہانیاں اور عارضی ڈیٹا صاف کریں؟ Pi سے خریدا گیا پریمیم دوبارہ سائن اِن پر بحال ہو جاتا ہے۔','Hapus daftar periksa, markah, pengingat, dan data cache di perangkat ini? Premium yang dibeli dengan Pi dipulihkan saat Anda masuk lagi.','A share jerin dubawa, alamomi, tunatarwa da bayanan wucin gadi a wannan na’ura? Ana dawo da Premium da aka saya da Pi idan ka sake shiga.','Effacer listes, favoris, rappels et données en cache sur cet appareil ? Le Premium acheté en Pi est restauré à la prochaine connexion.'],
+    ['Opening times and prices change — check the official site before you go.','تتغير أوقات العمل والأسعار — تحقّق من الموقع الرسمي قبل الذهاب.','اوقات اور قیمتیں بدلتی رہتی ہیں — جانے سے پہلے سرکاری سائٹ دیکھیں۔','Jam buka dan harga bisa berubah — cek situs resmi sebelum pergi.','Lokutan buɗewa da farashi suna canzawa — duba shafin hukuma kafin ka tafi.','Horaires et prix changent — vérifiez le site officiel avant d’y aller.'],
+    ['Rules and fees change — always confirm on the official site before you apply or pay.','القواعد والرسوم تتغير — تأكد دائماً من الموقع الرسمي قبل التقديم أو الدفع.','قواعد اور فیس بدلتی رہتی ہیں — درخواست یا ادائیگی سے پہلے سرکاری سائٹ پر تصدیق کریں۔','Aturan dan biaya bisa berubah — selalu cek situs resmi sebelum mendaftar atau membayar.','Dokoki da kuɗaɗe suna canzawa — ko da yaushe ka tabbatar a shafin hukuma kafin ka nema ko ka biya.','Règles et frais changent — vérifiez toujours sur le site officiel avant de demander ou de payer.'],
+    ['Official sources','المصادر الرسمية','سرکاری ذرائع','Sumber resmi','Majiyoyin hukuma','Sources officielles'],
+    ['min read','دقيقة قراءة','منٹ مطالعہ','menit baca','minti na karatu','min de lecture'],
+    ['sections','أقسام','حصے','bagian','sassa','sections'],
+    ['Cities','المدن','شہر','Kota','Birane','Villes'],
+    ['Career','المسار المهني','کیریئر','Karier','Sana’a','Carrière'],
+    ['Ministry of Foreign Affairs — visa platform','وزارة الخارجية — منصة التأشيرات','وزارتِ خارجہ — ویزا پلیٹ فارم','Kementerian Luar Negeri — platform visa','Ma’aikatar Harkokin Waje — dandalin biza','Ministère des Affaires étrangères — plateforme des visas'],
+    ['Nusuk — Ministry of Hajj and Umrah','نسك — وزارة الحج والعمرة','نُسک — وزارتِ حج و عمرہ','Nusuk — Kementerian Haji dan Umrah','Nusuk — Ma’aikatar Hajji da Umrah','Nusuk — Ministère du Hajj et de la Omra'],
+    ['Absher — Ministry of Interior','أبشر — وزارة الداخلية','ابشر — وزارتِ داخلہ','Absher — Kementerian Dalam Negeri','Absher — Ma’aikatar Cikin Gida','Absher — Ministère de l’Intérieur'],
+    ['Ministry of Health','وزارة الصحة','وزارتِ صحت','Kementerian Kesehatan','Ma’aikatar Lafiya','Ministère de la Santé'],
+    ['Ministry of Human Resources','وزارة الموارد البشرية','وزارتِ افرادی قوت','Kementerian Sumber Daya Manusia','Ma’aikatar Albarkatun Ɗan Adam','Ministère des Ressources humaines'],
+    ['Visit Saudi — official tourism site','روح السعودية — الموقع السياحي الرسمي','وزٹ سعودی — سرکاری سیاحتی سائٹ','Visit Saudi — situs pariwisata resmi','Visit Saudi — shafin yawon buɗe ido na hukuma','Visit Saudi — site touristique officiel'],
+    ['GOSI deduction','استقطاع التأمينات (GOSI)','GOSI کٹوتی','Potongan GOSI','Ragin GOSI','Retenue GOSI'],
+    ['Net per year','الصافي سنوياً','سالانہ خالص','Bersih per tahun','Net a shekara','Net par an'],
+    ['Net / month in NGN','الصافي شهرياً بالنيرة','ماہانہ خالص (NGN)','Bersih / bulan dalam NGN','Net / wata a NGN','Net / mois en NGN'],
+    ['Net / month in USD','الصافي شهرياً بالدولار','ماہانہ خالص (USD)','Bersih / bulan dalam USD','Net / wata a USD','Net / mois en USD'],
+    ['Full award','المكافأة الكاملة','مکمل انعام','Pesangon penuh','Cikakken lada','Indemnité complète'],
+    ['100%','100%','100%','100%','100%','100 %'], ['None','لا شيء','کچھ نہیں','Tidak ada','Babu','Aucune'],
+    ['Less than 2 years: no award on resignation','أقل من سنتين: لا مكافأة عند الاستقالة','2 سال سے کم: استعفیٰ پر کوئی انعام نہیں','Kurang dari 2 tahun: tidak ada pesangon saat mengundurkan diri','Ƙasa da shekara 2: babu lada idan ka yi murabus','Moins de 2 ans : pas d’indemnité en cas de démission'],
+    ['2–5 years: one-third of the award','2–5 سنوات: ثلث المكافأة','2–5 سال: انعام کا ایک تہائی','2–5 tahun: sepertiga pesangon','Shekara 2–5: kashi ɗaya bisa uku na lada','2–5 ans : un tiers de l’indemnité'],
+    ['5–10 years: two-thirds of the award','5–10 سنوات: ثلثا المكافأة','5–10 سال: انعام کا دو تہائی','5–10 tahun: dua pertiga pesangon','Shekara 5–10: kashi biyu bisa uku na lada','5–10 ans : deux tiers de l’indemnité'],
+    ['10+ years: full award','10 سنوات فأكثر: المكافأة كاملة','10+ سال: مکمل انعام','10+ tahun: pesangon penuh','Shekara 10+: cikakken lada','10 ans et plus : indemnité complète']
+  ];
+  R.forEach(function(r){ LANG_ORDER.slice(1).forEach(function(l, i){ if(I18N[l]) I18N[l][r[0]] = r[i + 1]; }); });
+})();
+
+/* 14 · News areas are skipped by the page translator (headlines are translated separately),
+   so their status messages and buttons are translated here */
+(function(){
+  function fix(root){
+    if(!root || typeof LANG === 'undefined' || LANG === 'en') return;
+    root.querySelectorAll('.empty, .small, button, .ds-off').forEach(function(el){
+      if(el.closest('.nrow, .news-row, article, .n-card')) return;
+      [].slice.call(el.childNodes).forEach(function(n){ if(n.nodeType === 3){ const s = n.nodeValue.trim(); if(s && /[A-Za-z]/.test(s)){ const x = t(s); if(x !== s) n.nodeValue = n.nodeValue.replace(s, x); } } });
+    });
+  }
+  ['newsList', 'homeNews'].forEach(function(id){ const el = $(id); if(el) new MutationObserver(function(){ fix(el); }).observe(el, { childList:true, subtree:true }); });
+})();
+
+/* v6.3 — built-in words for the main screens, so Arabic, Urdu, Indonesian, Hausa and French
+   users see their language instantly (no waiting for online translation, works offline). */
+(function(){
+  const R = [
+  // Live › News / Scores / Markets / Weather / Events
+  ['Top','الأبرز','اہم','Utama','Manyan labarai','À la une'],
+  ['Saudi','السعودية','سعودی','Saudi','Saudiyya','Arabie saoudite'],
+  ['Business','أعمال','کاروبار','Bisnis','Kasuwanci','Économie'],
+  ['Sport','رياضة','کھیل','Olahraga','Wasanni','Sport'],
+  ['Pi & Crypto','Pi والعملات الرقمية','Pi اور کرپٹو','Pi & Kripto','Pi da kuɗin kirifto','Pi et crypto'],
+  ['World','العالم','دنیا','Dunia','Duniya','Monde'],
+  ['Upcoming','القادمة','آنے والے','Mendatang','Masu zuwa','À venir'],
+  ['Results','النتائج','نتائج','Hasil','Sakamako','Résultats'],
+  ['Scores are unavailable right now.','النتائج غير متاحة الآن.','اسکور ابھی دستیاب نہیں۔','Skor sedang tidak tersedia.','Sakamakon wasa ba ya samuwa yanzu.','Les scores sont indisponibles pour le moment.'],
+  ['Data: football-data.org · Times shown in Saudi time (UTC+3)','البيانات: football-data.org · الأوقات بتوقيت السعودية (UTC+3)','ڈیٹا: football-data.org · اوقات سعودی وقت میں (UTC+3)','Data: football-data.org · Waktu Saudi (UTC+3)','Bayanai: football-data.org · Lokaci a agogon Saudiyya (UTC+3)','Données : football-data.org · Heure saoudienne (UTC+3)'],
+  ['Weather unavailable.','الطقس غير متاح.','موسم دستیاب نہیں۔','Cuaca tidak tersedia.','Yanayi ba ya samuwa.','Météo indisponible.'],
+  ['Pi price unavailable right now','سعر Pi غير متاح الآن','Pi کی قیمت ابھی دستیاب نہیں','Harga Pi sedang tidak tersedia','Farashin Pi ba ya samuwa yanzu','Cours du Pi indisponible pour le moment'],
+  ['Not financial advice ·','ليست نصيحة مالية ·','مالی مشورہ نہیں ·','Bukan nasihat keuangan ·','Ba shawarar kuɗi ba ce ·','Pas un conseil financier ·'],
+  ['Know an event that’s missing?','هل تعرف فعالية غير موجودة؟','کوئی تقریب رہ گئی ہے؟','Tahu acara yang belum ada?','Ka san wani taron da babu?','Un événement manque ?'],
+  ['Suggest it','اقترحها','تجویز کریں','Usulkan','Ba da shawara','Proposez-le'],
+  ['🕌 Religious','🕌 دينية','🕌 مذہبی','🕌 Keagamaan','🕌 Na addini','🕌 Religieux'],
+  ['🇸🇦 National','🇸🇦 وطنية','🇸🇦 قومی','🇸🇦 Nasional','🇸🇦 Na ƙasa','🇸🇦 National'],
+  ['⚽ Sports','⚽ رياضة','⚽ کھیل','⚽ Olahraga','⚽ Wasanni','⚽ Sport'],
+  ['🎭 Culture','🎭 ثقافة','🎭 ثقافت','🎭 Budaya','🎭 Al’adu','🎭 Culture'],
+  ['🎵 Concerts','🎵 حفلات','🎵 کنسرٹ','🎵 Konser','🎵 Wasannin kiɗa','🎵 Concerts'],
+  ['👨‍👩‍👧 Family','👨‍👩‍👧 عائلية','👨‍👩‍👧 فیملی','👨‍👩‍👧 Keluarga','👨‍👩‍👧 Iyali','👨‍👩‍👧 Famille'],
+  ['🖼️ Exhibitions','🖼️ معارض','🖼️ نمائشیں','🖼️ Pameran','🖼️ Nune-nune','🖼️ Expositions'],
+  ['🎤 Conferences','🎤 مؤتمرات','🎤 کانفرنسیں','🎤 Konferensi','🎤 Taruka','🎤 Conférences'],
+  ['🎆 Seasons','🎆 مواسم','🎆 سیزن','🎆 Musim','🎆 Lokutan biki','🎆 Saisons'],
+  ['📍 All cities','📍 كل المدن','📍 تمام شہر','📍 Semua kota','📍 Duk birane','📍 Toutes les villes'],
+  ['Ramadan begins','بداية رمضان','رمضان کا آغاز','Awal Ramadan','Farkon Ramadan','Début du Ramadan'],
+  ['Saudi Founding Day','يوم التأسيس','سعودی یومِ تاسیس','Hari Pendirian Saudi','Ranar Kafuwar Saudiyya','Jour de la fondation'],
+  ['Eid al-Fitr','عيد الفطر','عید الفطر','Idul Fitri','Sallah Ƙarama','Aïd el-Fitr'],
+  ['Hajj begins','بداية الحج','حج کا آغاز','Awal Haji','Farkon Hajji','Début du Hajj'],
+  ['Day of Arafah','يوم عرفة','یومِ عرفہ','Hari Arafah','Ranar Arafa','Jour d’Arafat'],
+  ['Eid al-Adha','عيد الأضحى','عید الاضحیٰ','Idul Adha','Sallah Babba','Aïd al-Adha'],
+  ['Islamic New Year','رأس السنة الهجرية','اسلامی نیا سال','Tahun Baru Islam','Sabuwar Shekarar Musulunci','Nouvel an islamique'],
+  ['Day of Ashura','يوم عاشوراء','یومِ عاشورہ','Hari Asyura','Ranar Ashura','Jour d’Achoura'],
+  ['Saudi National Day','اليوم الوطني السعودي','سعودی قومی دن','Hari Nasional Saudi','Ranar Ƙasar Saudiyya','Fête nationale saoudienne'],
+  // Home
+  ['GREEN TIP OF THE DAY','نصيحة خضراء لليوم','آج کا سبز مشورہ','TIPS HIJAU HARI INI','SHAWARAR KORE TA YAU','ASTUCE VERTE DU JOUR'],
+  ['Explore Green Saudi ›','استكشف السعودية الخضراء ›','گرین سعودی دیکھیں ›','Jelajahi Saudi Hijau ›','Bincika Saudiyya Mai Kore ›','Découvrir l’Arabie verte ›'],
+  ['Wash the car with a bucket, not a hose: about 20 litres instead of 150+.','اغسل السيارة بدلو لا بخرطوم: نحو 20 لتراً بدلاً من أكثر من 150.','گاڑی پائپ کے بجائے بالٹی سے دھوئیں: 150+ کے بجائے تقریباً 20 لیٹر۔','Cuci mobil dengan ember, bukan selang: sekitar 20 liter, bukan 150+.','Wanke mota da bokiti, ba da bututu ba: kusan lita 20 maimakon 150+.','Lavez la voiture au seau, pas au tuyau : environ 20 litres au lieu de 150+.'],
+  ['Hegra, rock art & canyons','الحِجر والنقوش الصخرية والأودية','حِجر، چٹانی نقوش اور وادیاں','Hegra, seni batu & ngarai','Hegra, zane-zanen dutse da kwazazzabai','Hégra, art rupestre et canyons'],
+  ['Dunes, camps & stargazing','كثبان ومخيمات ومشاهدة النجوم','ٹیلے، کیمپ اور ستارہ بینی','Bukit pasir, kemah & melihat bintang','Tuddan yashi, sansani da kallon taurari','Dunes, camps et observation des étoiles'],
+  ['Kabsa, mandi, jareesh…','كبسة، مندي، جريش…','کبسہ، مندی، جریش…','Kabsa, mandi, jareesh…','Kabsa, mandi, jareesh…','Kabsa, mandi, jareesh…'],
+  ['Car, train, flight & bus between cities','سيارة وقطار وطيران وحافلة بين المدن','شہروں کے درمیان کار، ٹرین، پرواز اور بس','Mobil, kereta, pesawat & bus antarkota','Mota, jirgin ƙasa, jirgin sama da bas tsakanin birane','Voiture, train, avion et bus entre villes'],
+  ['AlUla','العُلا','العُلا','AlUla','AlUla','AlUla'],
+  ['Saudi food guide','دليل الطعام السعودي','سعودی کھانوں کی گائیڈ','Panduan kuliner Saudi','Jagorar abincin Saudiyya','Guide de la cuisine saoudienne'],
+  ['Desert adventures','مغامرات الصحراء','صحرائی مہم جوئی','Petualangan gurun','Kasadar hamada','Aventures dans le désert'],
+  ['Tourist safety','سلامة السياح','سیاحوں کی حفاظت','Keamanan wisatawan','Tsaron ’yan yawon buɗe ido','Sécurité des touristes'],
+  ['General tips','نصائح عامة','عمومی مشورے','Tips umum','Shawarwari na gaba ɗaya','Conseils généraux'],
+  // Explore
+  ['OpenStreetMap · real places','OpenStreetMap · أماكن حقيقية','OpenStreetMap · حقیقی مقامات','OpenStreetMap · tempat nyata','OpenStreetMap · wurare na gaske','OpenStreetMap · lieux réels'],
+  ['Dashboard, countdown & checklists','لوحة وعدّ تنازلي وقوائم','ڈیش بورڈ، الٹی گنتی اور چیک لسٹیں','Dasbor, hitung mundur & daftar periksa','Dashboard, ƙirgawa da jerin dubawa','Tableau de bord, compte à rebours et listes'],
+  ['Distance to Haram, saved hotels','المسافة إلى الحرم والفنادق المحفوظة','حرم تک فاصلہ، محفوظ ہوٹل','Jarak ke Haram, hotel tersimpan','Nisa zuwa Haram, otal-otal da aka adana','Distance au Haram, hôtels enregistrés'],
+  ['By city and cuisine','حسب المدينة والمطبخ','شہر اور کھانے کے لحاظ سے','Menurut kota dan masakan','Ta birni da nau’in abinci','Par ville et cuisine'],
+  ['The capital','العاصمة','دارالحکومت','Ibu kota','Babban birni','La capitale'],
+  ['Red Sea gateway','بوابة البحر الأحمر','بحیرۂ احمر کا دروازہ','Gerbang Laut Merah','Ƙofar Bahar Maliya','Porte de la mer Rouge'],
+  ['The holiest city','أقدس مدينة','سب سے مقدس شہر','Kota tersuci','Birni mafi tsarki','La ville la plus sainte'],
+  ['City of the Prophet ﷺ','مدينة النبي ﷺ','شہرِ نبی ﷺ','Kota Nabi ﷺ','Birnin Annabi ﷺ','La ville du Prophète ﷺ'],
+  ['Ancient Hegra','الحِجر العريقة','قدیم حِجر','Hegra kuno','Tsohuwar Hegra','L’antique Hégra'],
+  ['Cool mountains','جبال معتدلة','ٹھنڈے پہاڑ','Pegunungan sejuk','Duwatsu masu sanyi','Montagnes fraîches'],
+  ['Eastern Province','المنطقة الشرقية','مشرقی صوبہ','Provinsi Timur','Lardin Gabas','Province orientale'],
+  ['New destinations','وجهات جديدة','نئی منزلیں','Destinasi baru','Sababbin wurare','Nouvelles destinations'],
+  ['Coral reefs & islands','شعاب مرجانية وجزر','مرجانی چٹانیں اور جزیرے','Terumbu karang & pulau','Murjani da tsibirai','Récifs coralliens et îles'],
+  ['Cool air in the southwest','أجواء معتدلة في الجنوب الغربي','جنوب مغرب میں ٹھنڈی ہوا','Udara sejuk di barat daya','Iska mai sanyi a kudu maso yamma','De l’air frais dans le sud-ouest'],
+  ['Traditional architecture','عمارة تقليدية','روایتی طرزِ تعمیر','Arsitektur tradisional','Gine-gine na gargajiya','Architecture traditionnelle'],
+  ['History, art & Islam','التاريخ والفن والإسلام','تاریخ، فن اور اسلام','Sejarah, seni & Islam','Tarihi, fasaha da Musulunci','Histoire, art et islam'],
+  ['Parks, aquariums & shows','حدائق وأحواض أسماك وعروض','پارک، ایکویریم اور شوز','Taman, akuarium & pertunjukan','Wuraren shakatawa, akwatin kifi da nune-nune','Parcs, aquariums et spectacles'],
+  ['Riyadh Season & more','موسم الرياض والمزيد','ریاض سیزن اور مزید','Riyadh Season & lainnya','Riyadh Season da sauransu','Riyadh Season et plus'],
+  ['Local businesses, reviewed','أعمال محلية تمت مراجعتها','مقامی کاروبار، جانچ شدہ','Bisnis lokal, sudah ditinjau','Kasuwancin gida, an duba su','Commerces locaux vérifiés'],
+  ['Price, merchants, QR & safety','السعر والتجار ورمز QR والأمان','قیمت، تاجر، QR اور حفاظت','Harga, pedagang, QR & keamanan','Farashi, ’yan kasuwa, QR da tsaro','Cours, commerçants, QR et sécurité'],
+  ['Free listing · accepts Pi option','إدراج مجاني · خيار قبول Pi','مفت اندراج · Pi قبول کرنے کا آپشن','Daftar gratis · opsi terima Pi','Rajista kyauta · zaɓin karɓar Pi','Inscription gratuite · option Pi acceptée'],
+  ['Deserts, coasts, mountains','صحارى وسواحل وجبال','صحرا، ساحل، پہاڑ','Gurun, pantai, pegunungan','Hamada, gaɓar teku, duwatsu','Déserts, côtes, montagnes'],
+  ['From Diriyah to today','من الدرعية إلى اليوم','درعیہ سے آج تک','Dari Diriyah hingga kini','Daga Diriyah zuwa yau','De Diriyah à aujourd’hui'],
+  ['Hospitality, dress, arts','الضيافة واللباس والفنون','مہمان نوازی، لباس، فنون','Keramahan, busana, seni','Karɓar baƙi, sutura, fasaha','Hospitalité, tenue, arts'],
+  ['Holy sites to skyscrapers','من الأماكن المقدسة إلى ناطحات السحاب','مقدس مقامات سے فلک بوس عمارتوں تک','Dari tempat suci hingga gedung pencakar langit','Daga wurare masu tsarki zuwa dogayen gine-gine','Des lieux saints aux gratte-ciel'],
+  ['Everyday dialect','اللهجة اليومية','روزمرہ لہجہ','Dialek sehari-hari','Yaren yau da kullum','Dialecte du quotidien'],
+  ['At a glance','لمحة سريعة','ایک نظر میں','Sekilas','A taƙaice','En bref'],
+  ['10 questions · earn a badge','10 أسئلة · اربح شارة','10 سوالات · بیج حاصل کریں','10 pertanyaan · dapatkan lencana','Tambayoyi 10 · sami lamba','10 questions · gagnez un badge'],
+  ['Dammam & Khobar','الدمام والخبر','دمام اور خبر','Dammam & Khobar','Dammam da Khobar','Dammam et Khobar'],
+  ['Red Sea coast','ساحل البحر الأحمر','بحیرۂ احمر کا ساحل','Pesisir Laut Merah','Gaɓar Bahar Maliya','Côte de la mer Rouge'],
+  ['Major cities','المدن الكبرى','بڑے شہر','Kota-kota besar','Manyan birane','Grandes villes'],
+  ['Culture & traditions','الثقافة والتقاليد','ثقافت اور روایات','Budaya & tradisi','Al’adu da gargajiya','Culture et traditions'],
+  ['Saudi expressions','تعابير سعودية','سعودی محاورے','Ungkapan Saudi','Kalaman Saudiyya','Expressions saoudiennes'],
+  ['Geography','الجغرافيا','جغرافیہ','Geografi','Labarin ƙasa','Géographie'],
+  ['History','التاريخ','تاریخ','Sejarah','Tarihi','Histoire'],
+  ['Famous landmarks','معالم شهيرة','مشہور مقامات','Landmark terkenal','Shahararrun wurare','Sites célèbres'],
+  ['Family fun','مرح عائلي','فیملی تفریح','Hiburan keluarga','Nishaɗin iyali','Loisirs en famille'],
+  ['Heritage villages','قرى تراثية','تاریخی دیہات','Desa warisan','Ƙauyukan tarihi','Villages du patrimoine'],
+  ['Mountains & hiking','الجبال والمشي','پہاڑ اور ہائیکنگ','Gunung & pendakian','Duwatsu da hawan ƙafa','Montagnes et randonnée'],
+  ['Museums & culture','المتاحف والثقافة','عجائب گھر اور ثقافت','Museum & budaya','Gidajen tarihi da al’adu','Musées et culture'],
+  ['Red Sea & diving','البحر الأحمر والغوص','بحیرۂ احمر اور غوطہ خوری','Laut Merah & menyelam','Bahar Maliya da ninkaya a ƙarƙashin ruwa','Mer Rouge et plongée'],
+  ['Seasonal festivals','المهرجانات الموسمية','موسمی میلے','Festival musiman','Bukukuwan yanayi','Festivals saisonniers'],
+  ['Abha','أبها','ابہا','Abha','Abha','Abha'], ['Dammam','الدمام','دمام','Dammam','Dammam','Dammam'], ['Khobar','الخبر','خبر','Khobar','Khobar','Khobar'], ['Taif','الطائف','طائف','Taif','Taif','Taïf'], ['Tabuk','تبوك','تبوک','Tabuk','Tabuk','Tabouk'],
+  // Tools
+  ['Full calendar ›','التقويم الكامل ›','مکمل کیلنڈر ›','Kalender lengkap ›','Cikakken kalanda ›','Calendrier complet ›'],
+  ['All visa types','جميع أنواع التأشيرات','تمام اقسام کے ویزے','Semua jenis visa','Duk nau’in biza','Tous les types de visa'],
+  ['SAR, mada, SADAD, remittance','الريال ومدى وسداد والحوالات','ریال، مدی، سداد، ترسیلات','SAR, mada, SADAD, kiriman uang','SAR, mada, SADAD, aika kuɗi','SAR, mada, SADAD, transferts'],
+  ['Renting safely','الاستئجار بأمان','محفوظ طریقے سے کرایہ','Menyewa dengan aman','Yin haya cikin aminci','Louer en toute sécurité'],
+  ['Metro, trains, taxis','المترو والقطارات وسيارات الأجرة','میٹرو، ٹرینیں، ٹیکسیاں','Metro, kereta, taksi','Metro, jiragen ƙasa, tasi','Métro, trains, taxis'],
+  ['Hospitals, insurance, pharmacies','المستشفيات والتأمين والصيدليات','ہسپتال، انشورنس، فارمیسیاں','Rumah sakit, asuransi, apotek','Asibitoci, inshora, kantin magani','Hôpitaux, assurance, pharmacies'],
+  ['Guides, checklists & emergency help','أدلة وقوائم ومساعدة طارئة','گائیڈز، چیک لسٹیں اور ہنگامی مدد','Panduan, daftar periksa & bantuan darurat','Jagorori, jerin dubawa da taimakon gaggawa','Guides, listes et aide d’urgence'],
+  ['CV builder, interviews, salary, gratuity','منشئ السيرة الذاتية والمقابلات والراتب ومكافأة نهاية الخدمة','سی وی بلڈر، انٹرویو، تنخواہ، گریجویٹی','Pembuat CV, wawancara, gaji, pesangon','Mai haɗa CV, hira, albashi, kuɗin sallama','CV, entretiens, salaire, indemnité'],
+  ['Dress, prayer times, Ramadan','اللباس وأوقات الصلاة ورمضان','لباس، نماز کے اوقات، رمضان','Busana, waktu salat, Ramadan','Sutura, lokutan sallah, Ramadan','Tenue, heures de prière, Ramadan'],
+  ['Legit job channels & scam warning','قنوات توظيف موثوقة وتحذير من الاحتيال','قابلِ اعتماد ملازمت ذرائع اور فراڈ سے انتباہ','Saluran kerja resmi & peringatan penipuan','Hanyoyin aiki na gaske da gargaɗin zamba','Canaux d’emploi fiables et alerte arnaques'],
+  ['Finding jobs','البحث عن عمل','ملازمت تلاش کرنا','Mencari kerja','Neman aiki','Trouver un emploi'],
+  ['Iqama, exit/re-entry, traffic','الإقامة والخروج والعودة والمرور','اقامہ، خروج/واپسی، ٹریفک','Iqama, keluar/masuk kembali, lalu lintas','Iqama, fita/dawowa, zirga-zirga','Iqama, sortie/retour, circulation'],
+  ['National digital login','الدخول الرقمي الوطني','قومی ڈیجیٹل لاگ اِن','Login digital nasional','Shiga ta dijital na ƙasa','Connexion numérique nationale'],
+  ['Unified government services app','تطبيق الخدمات الحكومية الموحد','متحدہ سرکاری خدمات ایپ','Aplikasi layanan pemerintah terpadu','Manhajar ayyukan gwamnati ta bai ɗaya','Application unifiée des services publics'],
+  ['Employment contracts & job changes','عقود العمل ونقل الخدمات','ملازمت کے معاہدے اور تبدیلی','Kontrak kerja & pindah kerja','Kwangilolin aiki da sauya aiki','Contrats de travail et changements d’emploi'],
+  ['Umrah, Rawdah & Hajj','العمرة والروضة والحج','عمرہ، روضہ اور حج','Umrah, Raudhah & Haji','Umrah, Rawdah da Hajji','Omra, Rawdah et Hajj'],
+  ['Health appointments & records','المواعيد والسجلات الصحية','طبی ملاقاتیں اور ریکارڈ','Janji temu & catatan kesehatan','Ganawa da bayanan lafiya','Rendez-vous et dossiers de santé'],
+  ['Balady, Ejar, Musaned, Muqeem','بلدي، إيجار، مساند، مقيم','بلدی، ایجار، مساند، مقیم','Balady, Ejar, Musaned, Muqeem','Balady, Ejar, Musaned, Muqeem','Balady, Ejar, Musaned, Muqeem'],
+  ['More platforms','منصات أخرى','مزید پلیٹ فارمز','Platform lain','Ƙarin dandamali','Autres plateformes'],
+  ['Your yearly CO₂ footprint','بصمتك الكربونية السنوية','آپ کا سالانہ CO₂ اثر','Jejak CO₂ tahunan Anda','Sawun CO₂ ɗinka na shekara','Votre empreinte CO₂ annuelle'],
+  ['Daily litres & savings','اللترات اليومية والتوفير','روزانہ لیٹر اور بچت','Liter harian & penghematan','Lita na kullum da tanadi','Litres par jour et économies'],
+  ['kWh and SAR estimate','تقدير الكيلوواط ساعة والريال','kWh اور ریال کا اندازہ','Perkiraan kWh dan SAR','Kimanin kWh da SAR','Estimation kWh et SAR'],
+  ['What, how and where','ماذا وكيف وأين','کیا، کیسے اور کہاں','Apa, bagaimana, dan di mana','Me, yaya da ina','Quoi, comment et où'],
+  ['Home, travel, shopping, Umrah','المنزل والسفر والتسوق والعمرة','گھر، سفر، خریداری، عمرہ','Rumah, perjalanan, belanja, Umrah','Gida, tafiya, siyayya, Umrah','Maison, voyage, achats, Omra'],
+  ['6 short lessons','6 دروس قصيرة','6 مختصر اسباق','6 pelajaran singkat','Gajerun darussa 6','6 courtes leçons'],
+  ['Solar, wind, hydrogen & more','الشمس والرياح والهيدروجين والمزيد','شمسی، ہوا، ہائیڈروجن اور مزید','Surya, angin, hidrogen & lainnya','Hasken rana, iska, hydrogen da sauransu','Solaire, éolien, hydrogène et plus'],
+  ['Healthcare information','معلومات الرعاية الصحية','صحت کی معلومات','Informasi layanan kesehatan','Bayanan kiwon lafiya','Informations santé'],
+  ['Housing','السكن','رہائش','Perumahan','Gidaje','Logement'],
+  ['Money & banking','المال والبنوك','رقم اور بینکاری','Uang & perbankan','Kuɗi da banki','Argent et banque'],
+  ['Getting around','التنقل','آمد و رفت','Berkeliling','Zirga-zirga','Se déplacer'],
+  ['When to visit','متى تزور','کب جائیں','Kapan berkunjung','Lokacin ziyara','Quand y aller'],
+  ['Offline, on this device','بدون إنترنت، على هذا الجهاز','آف لائن، اسی ڈیوائس پر','Offline, di perangkat ini','Ba intanet, a wannan na’ura','Hors ligne, sur cet appareil'],
+  ['Common tricks & how to avoid them','حيل شائعة وكيف تتجنبها','عام چالیں اور ان سے بچاؤ','Trik umum & cara menghindarinya','Dabarun da aka saba da yadda za a guje su','Arnaques courantes et comment les éviter'],
+  ['Step-by-step emergency guide','دليل الطوارئ خطوة بخطوة','قدم بہ قدم ہنگامی رہنمائی','Panduan darurat langkah demi langkah','Jagorar gaggawa mataki-mataki','Guide d’urgence pas à pas'],
+  ['Scam awareness','التوعية بالاحتيال','فراڈ سے آگاہی','Waspada penipuan','Wayar da kai kan zamba','Prévention des arnaques'],
+  ['Made for your trip type','مصمم لنوع رحلتك','آپ کے سفر کی قسم کے مطابق','Sesuai jenis perjalanan Anda','An yi shi don irin tafiyarka','Adapté à votre type de voyage'],
+  // Profile & badges
+  ['No payments yet.','لا مدفوعات بعد.','ابھی کوئی ادائیگی نہیں۔','Belum ada pembayaran.','Babu biya tukuna.','Aucun paiement pour le moment.'],
+  ['Tap a locked badge to see how to earn it','اضغط على شارة مقفلة لمعرفة طريقة كسبها','مقفل بیج پر ٹیپ کریں کہ اسے کیسے حاصل کریں','Ketuk lencana terkunci untuk melihat cara mendapatkannya','Taɓa lamba a kulle don ganin yadda za ka samu','Touchez un badge verrouillé pour savoir comment l’obtenir'],
+  ['First step','الخطوة الأولى','پہلا قدم','Langkah pertama','Mataki na farko','Premier pas'],
+  ['3-day streak','3 أيام متتالية','3 دن مسلسل','3 hari berturut-turut','Kwana 3 a jere','3 jours d’affilée'],
+  ['7-day streak','7 أيام متتالية','7 دن مسلسل','7 hari berturut-turut','Kwana 7 a jere','7 jours d’affilée'],
+  ['30-day streak','30 يوماً متتالية','30 دن مسلسل','30 hari berturut-turut','Kwana 30 a jere','30 jours d’affilée'],
+  ['Guide reader','قارئ الأدلة','گائیڈ ریڈر','Pembaca panduan','Mai karanta jagora','Lecteur de guides'],
+  ['City explorer','مستكشف المدن','شہروں کا متلاشی','Penjelajah kota','Mai binciken birane','Explorateur de villes'],
+  ['Near-me navigator','مستكشف ما حولي','قریبی رہنما','Navigator terdekat','Mai bincike kusa da ni','Navigateur de proximité'],
+  ['Trip planner','مخطط الرحلات','ٹرپ پلانر','Perencana perjalanan','Mai tsara tafiya','Planificateur de voyage'],
+  ['Stay sorted','منظّم دائماً','منظم رہیں','Selalu teratur','Kasance cikin tsari','Toujours organisé'],
+  ['Foodie','محب الطعام','کھانے کا شوقین','Pecinta kuliner','Mai son abinci','Gourmand'],
+  ['News reader','قارئ الأخبار','خبریں پڑھنے والا','Pembaca berita','Mai karanta labarai','Lecteur d’actualités'],
+  ['Event goer','حاضر الفعاليات','تقریبات میں جانے والا','Pengunjung acara','Mai halartar taro','Amateur d’événements'],
+  ['Umrah ready','جاهز للعمرة','عمرہ کے لیے تیار','Siap Umrah','A shirye don Umrah','Prêt pour la Omra'],
+  ['Quran reader','قارئ القرآن','قرآن پڑھنے والا','Pembaca Al-Qur’an','Mai karatun Alƙur’ani','Lecteur du Coran'],
+  ['First dua saved','أول دعاء محفوظ','پہلی دعا محفوظ','Doa pertama tersimpan','Addu’a ta farko an adana','Première invocation enregistrée'],
+  ['100 dhikr','100 ذكر','100 ذکر','100 zikir','Zikiri 100','100 dhikr'],
+  ['Saudi scholar','خبير السعودية','سعودی ماہر','Pakar Saudi','Masanin Saudiyya','Expert de l’Arabie'],
+  ['Safety smart','واعٍ بالسلامة','حفاظت میں ہوشیار','Cerdas keamanan','Mai hankali kan tsaro','Prudent'],
+  ['CV ready','السيرة الذاتية جاهزة','سی وی تیار','CV siap','CV ta shirya','CV prêt'],
+  ['Local supporter','داعم محلي','مقامی حامی','Pendukung lokal','Mai tallafa wa gida','Soutien local'],
+  ['Pi shopper','متسوق بـ Pi','Pi خریدار','Pembeli Pi','Mai siyayya da Pi','Acheteur Pi'],
+  ['AI explorer','مستكشف الذكاء الاصطناعي','AI متلاشی','Penjelajah AI','Mai binciken AI','Explorateur IA'],
+  ['Green champion','بطل البيئة','ماحول دوست چیمپئن','Juara hijau','Gwarzon muhalli','Champion vert'],
+  ['Supporter','داعم','حامی','Pendukung','Mai tallafi','Soutien'],
+  ['Word explorer','مستكشف الكلمات','الفاظ کا متلاشی','Penjelajah kata','Mai binciken kalmomi','Explorateur de mots'],
+  ['Pi Pioneer','رائد Pi','Pi پائنیر','Pionir Pi','Majagaban Pi','Pionnier Pi'],
+  // Pi Hub, wallet, premium, support
+  ['Live from market data','مباشر من بيانات السوق','مارکیٹ ڈیٹا سے براہِ راست','Langsung dari data pasar','Kai tsaye daga bayanan kasuwa','En direct des données du marché'],
+  ['Merchants unavailable right now.','التجار غير متاحين الآن.','تاجر ابھی دستیاب نہیں۔','Pedagang sedang tidak tersedia.','’Yan kasuwa ba sa samuwa yanzu.','Commerçants indisponibles pour le moment.'],
+  ['Get listed free — shown on the Pi map','أدرج نشاطك مجاناً — يظهر على خريطة Pi','مفت اندراج — Pi نقشے پر دکھایا جائے گا','Daftar gratis — tampil di peta Pi','Yi rajista kyauta — za a nuna a taswirar Pi','Inscription gratuite — visible sur la carte Pi'],
+  ['Real QR code · print, stick or share on WhatsApp','رمز QR حقيقي · اطبع أو ألصق أو شارك عبر واتساب','حقیقی QR کوڈ · پرنٹ کریں، لگائیں یا واٹس ایپ پر بھیجیں','Kode QR asli · cetak, tempel, atau bagikan di WhatsApp','Lambar QR ta gaske · buga, liƙa ko raba a WhatsApp','Vrai QR code · imprimez, collez ou partagez sur WhatsApp'],
+  ['Prices are for information only and are not financial advice.','الأسعار للمعلومات فقط وليست نصيحة مالية.','قیمتیں صرف معلومات کے لیے ہیں، مالی مشورہ نہیں۔','Harga hanya untuk informasi, bukan nasihat keuangan.','Farashi don bayani ne kawai, ba shawarar kuɗi ba.','Les prix sont indicatifs et ne constituent pas un conseil financier.'],
+  ['Account','الحساب','اکاؤنٹ','Akun','Asusu','Compte'],
+  ['Paid via app','مدفوع عبر التطبيق','ایپ کے ذریعے ادا شدہ','Dibayar via aplikasi','An biya ta manhaja','Payé via l’app'],
+  ['Poster','الملصق','پوسٹر','Poster','Fosta','Affiche'],
+  ['Activity','النشاط','سرگرمی','Aktivitas','Ayyuka','Activité'],
+  ['Create a payment request to show or share. The payer sends Pi from their own Pi Wallet.','أنشئ طلب دفع لعرضه أو مشاركته. يرسل الدافع Pi من محفظته الخاصة.','دکھانے یا بھیجنے کے لیے ادائیگی کی درخواست بنائیں۔ ادا کرنے والا اپنے Pi Wallet سے Pi بھیجتا ہے۔','Buat permintaan pembayaran untuk ditunjukkan atau dibagikan. Pembayar mengirim Pi dari Pi Wallet miliknya.','Ƙirƙiri buƙatar biya don nunawa ko rabawa. Mai biya yana aika Pi daga Pi Wallet ɗinsa.','Créez une demande de paiement à montrer ou partager. Le payeur envoie des Pi depuis son propre Pi Wallet.'],
+  ['Your Pi username or wallet address','اسم مستخدم Pi أو عنوان المحفظة','آپ کا Pi یوزرنیم یا والٹ ایڈریس','Nama pengguna Pi atau alamat dompet','Sunan Pi ɗinka ko adireshin walat','Votre nom Pi ou adresse de portefeuille'],
+  ['Amount (π)','المبلغ (π)','رقم (π)','Jumlah (π)','Adadi (π)','Montant (π)'],
+  ['For (memo)','الغرض (ملاحظة)','کس لیے (میمو)','Untuk (memo)','Don (bayani)','Pour (mémo)'],
+  ['Create request','إنشاء طلب','درخواست بنائیں','Buat permintaan','Ƙirƙiri buƙata','Créer la demande'],
+  ['Fix “Pending payment found”','إصلاح «تم العثور على دفعة معلقة»','«زیرِ التوا ادائیگی» ٹھیک کریں','Perbaiki “Pembayaran tertunda ditemukan”','Gyara “An sami biya da ke jira”','Corriger « Paiement en attente trouvé »'],
+  ['Clears an unfinished payment so you can pay again','يزيل دفعة غير مكتملة لتتمكن من الدفع مجدداً','نامکمل ادائیگی صاف کرتا ہے تاکہ آپ دوبارہ ادا کر سکیں','Menghapus pembayaran yang belum selesai agar bisa membayar lagi','Yana share biyan da bai kammala ba domin ka sake biya','Supprime un paiement inachevé pour pouvoir repayer'],
+  ['Go Premium','اشترك في بريميوم','پریمیم لیں','Jadi Premium','Shiga Premium','Passer à Premium'],
+  ['Unlock planners and checklists for your trip.','افتح المخططات وقوائم التحقق لرحلتك.','اپنے سفر کے لیے پلانر اور چیک لسٹیں کھولیں۔','Buka perencana dan daftar periksa untuk perjalanan Anda.','Buɗe masu tsara tafiya da jerin dubawa don tafiyarka.','Débloquez planificateurs et listes pour votre voyage.'],
+  ['What you get','ما تحصل عليه','آپ کو کیا ملے گا','Yang Anda dapatkan','Abin da za ka samu','Ce que vous obtenez'],
+  ['Choose a plan','اختر خطة','پلان منتخب کریں','Pilih paket','Zaɓi tsari','Choisissez une formule'],
+  ['Monthly','شهري','ماہانہ','Bulanan','Na wata','Mensuel'],
+  ['30 days of Premium','30 يوماً من بريميوم','30 دن کا پریمیم','30 hari Premium','Kwana 30 na Premium','30 jours de Premium'],
+  ['BEST VALUE','أفضل قيمة','بہترین قدر','PALING HEMAT','MAFI ARHA','MEILLEURE OFFRE'],
+  ['Lifetime','مدى الحياة','تاحیات','Seumur hidup','Har abada','À vie'],
+  ['Pay once, keep forever','ادفع مرة واحتفظ للأبد','ایک بار ادا کریں، ہمیشہ رکھیں','Bayar sekali, milik selamanya','Biya sau ɗaya, ka mallaka har abada','Payez une fois, gardez pour toujours'],
+  ['Seeing “Pending payment found”?','هل تظهر «دفعة معلقة»؟','«زیرِ التوا ادائیگی» نظر آ رہی ہے؟','Muncul “Pembayaran tertunda ditemukan”?','Kana ganin “An sami biya da ke jira”?','Vous voyez « Paiement en attente » ?'],
+  ['Fix it','أصلحه','ٹھیک کریں','Perbaiki','Gyara','Corriger'],
+  ['Or enter an amount','أو أدخل مبلغاً','یا رقم درج کریں','Atau masukkan jumlah','Ko shigar da adadi','Ou saisissez un montant'],
+  ['Send support','أرسل الدعم','حمایت بھیجیں','Kirim dukungan','Aika tallafi','Envoyer le soutien'],
+  ['Premium feature','ميزة بريميوم','پریمیم فیچر','Fitur Premium','Fasalin Premium','Fonction Premium'],
+  ['See Premium','عرض بريميوم','پریمیم دیکھیں','Lihat Premium','Duba Premium','Voir Premium'],
+  // Common empty states and labels
+  ['No notifications yet.','لا إشعارات بعد.','ابھی کوئی اطلاع نہیں۔','Belum ada notifikasi.','Babu sanarwa tukuna.','Aucune notification pour le moment.'],
+  ['No bookmarks yet.','لا إشارات مرجعية بعد.','ابھی کوئی بُک مارک نہیں۔','Belum ada markah.','Babu alamomi tukuna.','Aucun favori pour le moment.'],
+  ['Tap ☆ on any guide to save it here.','اضغط ☆ على أي دليل لحفظه هنا.','کسی بھی گائیڈ پر ☆ دبائیں تاکہ یہاں محفوظ ہو۔','Ketuk ☆ pada panduan untuk menyimpannya di sini.','Taɓa ☆ a kowace jagora don adana ta nan.','Touchez ☆ sur un guide pour l’enregistrer ici.'],
+  ['No saved places yet.','لا أماكن محفوظة بعد.','ابھی کوئی محفوظ جگہ نہیں۔','Belum ada tempat tersimpan.','Babu wuraren da aka adana tukuna.','Aucun lieu enregistré pour le moment.'],
+  ['Tap ☆ Save on any place in Explore.','اضغط ☆ حفظ على أي مكان في استكشف.','ایکسپلور میں کسی بھی جگہ پر ☆ محفوظ دبائیں۔','Ketuk ☆ Simpan pada tempat di Jelajahi.','Taɓa ☆ Adana a kowane wuri a Bincike.','Touchez ☆ Enregistrer sur un lieu dans Explorer.'],
+  ['No reminders yet.','لا تذكيرات بعد.','ابھی کوئی یاد دہانی نہیں۔','Belum ada pengingat.','Babu tunatarwa tukuna.','Aucun rappel pour le moment.'],
+  ['Couldn’t load places. Check your connection.','تعذّر تحميل الأماكن. تحقّق من الاتصال.','مقامات لوڈ نہیں ہو سکے۔ کنکشن چیک کریں۔','Tempat gagal dimuat. Periksa koneksi Anda.','An kasa loda wurare. Duba haɗin intanet.','Impossible de charger les lieux. Vérifiez votre connexion.'],
+  ['Couldn’t load places right now.','تعذّر تحميل الأماكن الآن.','مقامات ابھی لوڈ نہیں ہو سکے۔','Tempat gagal dimuat saat ini.','An kasa loda wurare yanzu.','Impossible de charger les lieux pour le moment.'],
+  ['Map could not load. Showing the list only.','تعذّر تحميل الخريطة. تُعرض القائمة فقط.','نقشہ لوڈ نہیں ہو سکا۔ صرف فہرست دکھائی جا رہی ہے۔','Peta gagal dimuat. Hanya menampilkan daftar.','Taswira ta kasa lodi. Ana nuna jeri kawai.','La carte n’a pas pu se charger. Liste uniquement.'],
+  ['Couldn’t load the Quran. Check your connection.','تعذّر تحميل القرآن. تحقّق من الاتصال.','قرآن لوڈ نہیں ہو سکا۔ کنکشن چیک کریں۔','Al-Qur’an gagal dimuat. Periksa koneksi Anda.','An kasa loda Alƙur’ani. Duba haɗin intanet.','Impossible de charger le Coran. Vérifiez votre connexion.'],
+  ['Directory unavailable right now.','الدليل غير متاح الآن.','ڈائریکٹری ابھی دستیاب نہیں۔','Direktori sedang tidak tersedia.','Jerin kasuwanci ba ya samuwa yanzu.','Annuaire indisponible pour le moment.'],
+  ['All businesses','كل الأنشطة','تمام کاروبار','Semua bisnis','Duk kasuwanci','Tous les commerces'],
+  ['Sign in to add a business','سجّل الدخول لإضافة نشاط','کاروبار شامل کرنے کے لیے سائن اِن کریں','Masuk untuk menambah bisnis','Shiga don ƙara kasuwanci','Connectez-vous pour ajouter un commerce'],
+  ['We ask for a Pi sign-in to keep the directory free of spam.','نطلب تسجيل الدخول بـ Pi لإبقاء الدليل خالياً من الرسائل المزعجة.','ڈائریکٹری کو اسپام سے پاک رکھنے کے لیے Pi سائن اِن ضروری ہے۔','Kami meminta login Pi agar direktori bebas spam.','Muna buƙatar shiga da Pi don kare jerin daga saƙonnin banza.','Nous demandons une connexion Pi pour éviter le spam.'],
+  ['Ask anything. Try:','اسأل أي شيء. جرّب:','کچھ بھی پوچھیں۔ آزمائیں:','Tanya apa saja. Coba:','Tambayi komai. Gwada:','Posez une question. Essayez :'],
+  ['Free: 10 questions a day · unlimited with Premium','مجاناً: 10 أسئلة يومياً · بلا حدود مع بريميوم','مفت: روزانہ 10 سوالات · پریمیم کے ساتھ لامحدود','Gratis: 10 pertanyaan sehari · tanpa batas dengan Premium','Kyauta: tambayoyi 10 a rana · marar iyaka da Premium','Gratuit : 10 questions par jour · illimité avec Premium'],
+  ['AI can make mistakes — check important details on official sources.','قد يخطئ الذكاء الاصطناعي — تحقّق من التفاصيل المهمة في المصادر الرسمية.','AI غلطی کر سکتا ہے — اہم تفصیلات سرکاری ذرائع سے چیک کریں۔','AI bisa keliru — cek detail penting di sumber resmi.','AI na iya yin kuskure — duba muhimman bayanai a majiyoyin hukuma.','L’IA peut se tromper — vérifiez les points importants auprès des sources officielles.'],
+  ['Unified emergency number','رقم الطوارئ الموحد','متحدہ ایمرجنسی نمبر','Nomor darurat terpadu','Lambar gaggawa ta bai ɗaya','Numéro d’urgence unifié'],
+  ['Police','الشرطة','پولیس','Polisi','’Yan sanda','Police'],
+  ['Ambulance','الإسعاف','ایمبولینس','Ambulans','Motar asibiti','Ambulance'],
+  ['Civil Defence (fire)','الدفاع المدني (حريق)','شہری دفاع (آگ)','Pertahanan Sipil (kebakaran)','Tsaron farar hula (gobara)','Défense civile (incendie)'],
+  ['Traffic police','المرور','ٹریفک پولیس','Polisi lalu lintas','’Yan sandan hanya','Police de la route'],
+  ['My emergency card','بطاقة الطوارئ الخاصة بي','میرا ایمرجنسی کارڈ','Kartu darurat saya','Katin gaggawa na','Ma carte d’urgence'],
+  ['Your details, works offline','بياناتك، تعمل بدون إنترنت','آپ کی تفصیلات، آف لائن کام کرتی ہیں','Data Anda, berfungsi offline','Bayananka, yana aiki ba intanet','Vos informations, hors ligne'],
+  ['Save card','حفظ البطاقة','کارڈ محفوظ کریں','Simpan kartu','Adana kati','Enregistrer la carte'],
+  ['Stored only on this device.','مخزّنة على هذا الجهاز فقط.','صرف اسی ڈیوائس پر محفوظ۔','Hanya disimpan di perangkat ini.','An adana a wannan na’ura kawai.','Stocké uniquement sur cet appareil.'],
+  ['Full name','الاسم الكامل','پورا نام','Nama lengkap','Cikakken suna','Nom complet'],
+  ['Nationality','الجنسية','قومیت','Kewarganegaraan','Ɗan ƙasa','Nationalité'],
+  ['Blood group','فصيلة الدم','بلڈ گروپ','Golongan darah','Rukunin jini','Groupe sanguin'],
+  ['Emergency contact','جهة اتصال للطوارئ','ہنگامی رابطہ','Kontak darurat','Wanda za a kira a gaggawa','Contact d’urgence'],
+  ['Contact phone','رقم الهاتف','رابطہ نمبر','Nomor telepon','Lambar waya','Téléphone'],
+  ['Embassy phone','هاتف السفارة','سفارت خانے کا فون','Telepon kedutaan','Lambar ofishin jakadanci','Téléphone de l’ambassade'],
+  ['Document','المستند','دستاویز','Dokumen','Takarda','Document'],
+  ['Expiry date','تاريخ الانتهاء','میعاد ختم ہونے کی تاریخ','Tanggal kedaluwarsa','Ranar ƙarewa','Date d’expiration'],
+  ['Note (optional)','ملاحظة (اختياري)','نوٹ (اختیاری)','Catatan (opsional)','Bayani (na zaɓi)','Note (facultatif)'],
+  ['＋ Add reminder','＋ إضافة تذكير','＋ یاد دہانی شامل کریں','＋ Tambah pengingat','＋ Ƙara tunatarwa','＋ Ajouter un rappel'],
+  ['＋ Plan a new trip','＋ خطّط لرحلة جديدة','＋ نیا سفر پلان کریں','＋ Rencanakan perjalanan baru','＋ Tsara sabuwar tafiya','＋ Planifier un voyage'],
+  ['Plan your first trip — dates, documents, packing, budget and places in one dashboard.','خطّط لأول رحلة — التواريخ والمستندات والتجهيز والميزانية والأماكن في لوحة واحدة.','اپنا پہلا سفر پلان کریں — تاریخیں، دستاویزات، سامان، بجٹ اور مقامات ایک ڈیش بورڈ میں۔','Rencanakan perjalanan pertama — tanggal, dokumen, barang bawaan, anggaran, dan tempat dalam satu dasbor.','Tsara tafiyarka ta farko — kwanaki, takardu, kaya, kasafi da wurare a wuri ɗaya.','Planifiez votre premier voyage — dates, documents, bagages, budget et lieux en un seul tableau.'],
+  ['Upcoming dates','المواعيد القادمة','آنے والی تاریخیں','Tanggal mendatang','Kwanaki masu zuwa','Dates à venir'],
+  ['Today (Umm al-Qura)','اليوم (أم القرى)','آج (اُمّ القریٰ)','Hari ini (Umm al-Qura)','Yau (Umm al-Qura)','Aujourd’hui (Umm al-Qura)'],
+  ['Convert a date','تحويل تاريخ','تاریخ تبدیل کریں','Konversi tanggal','Canza kwanan wata','Convertir une date'],
+  ['Gregorian date','التاريخ الميلادي','عیسوی تاریخ','Tanggal Masehi','Kwanan watan Miladiyya','Date grégorienne'],
+  ['You have','لديك','آپ کے پاس','Anda punya','Kana da','Vous avez'],
+  ['You get','تحصل على','آپ کو ملے گا','Anda dapat','Za ka samu','Vous obtenez'],
+  ['Subject','الموضوع','موضوع','Subjek','Batu','Objet'],
+  ['Message','الرسالة','پیغام','Pesan','Saƙo','Message'],
+  ['✉️ Send via email','✉️ إرسال بالبريد','✉️ ای میل سے بھیجیں','✉️ Kirim lewat email','✉️ Aika ta imel','✉️ Envoyer par e-mail'],
+  ['Independence','الاستقلالية','خود مختاری','Independensi','’Yancin kai','Indépendance'],
+  ['Data sources','مصادر البيانات','ڈیٹا کے ذرائع','Sumber data','Majiyoyin bayanai','Sources des données'],
+  ['Contact','التواصل','رابطہ','Kontak','Tuntuɓa','Contact'],
+  ['Guides','الأدلة','گائیڈز','Panduan','Jagorori','Guides'],
+  ['Calculators','الحاسبات','کیلکولیٹر','Kalkulator','Na’urorin lissafi','Calculateurs'],
+  ['Common questions','أسئلة شائعة','عام سوالات','Pertanyaan umum','Tambayoyin da aka saba','Questions fréquentes'],
+  ['Tips','نصائح','مشورے','Tips','Shawarwari','Conseils'],
+  ['Overview','نظرة عامة','جائزہ','Ikhtisar','Bayani a taƙaice','Aperçu'],
+  ['What it is','ما هي','یہ کیا ہے','Apa itu','Menene shi','De quoi s’agit-il'],
+  ['How it works','كيف تعمل','یہ کیسے کام کرتا ہے','Cara kerjanya','Yadda yake aiki','Comment ça marche'],
+  ['Keep in mind','تذكّر','یاد رکھیں','Ingat','Ka tuna','À savoir'],
+  ['Who can apply','من يمكنه التقديم','کون درخواست دے سکتا ہے','Siapa yang bisa mendaftar','Wa zai iya nema','Qui peut postuler'],
+  ['Where','أين','کہاں','Di mana','Ina','Où'],
+  ['Prevent','الوقاية','بچاؤ','Pencegahan','Rigakafi','Prévenir'],
+  ['Warning signs','علامات التحذير','انتباہی علامات','Tanda bahaya','Alamun gargaɗi','Signes d’alerte'],
+  ['Visas & residency','التأشيرات والإقامة','ویزے اور رہائش','Visa & izin tinggal','Biza da zama','Visas et résidence'],
+  ['Tourist eVisa','التأشيرة السياحية الإلكترونية','سیاحتی ای ویزا','eVisa turis','Bizar yawon buɗe ido ta intanet','eVisa touristique'],
+  ['Umrah visa & permits','تأشيرة العمرة والتصاريح','عمرہ ویزا اور اجازت نامے','Visa & izin Umrah','Bizar Umrah da izini','Visa et permis de Omra'],
+  ['Work visa & Iqama','تأشيرة العمل والإقامة','ورک ویزا اور اقامہ','Visa kerja & Iqama','Bizar aiki da Iqama','Visa de travail et Iqama'],
+  ['Family visit visa','تأشيرة الزيارة العائلية','فیملی وزٹ ویزا','Visa kunjungan keluarga','Bizar ziyarar iyali','Visa de visite familiale'],
+  ['Premium Residency','الإقامة المميزة','پریمیم ریزیڈنسی','Izin Tinggal Premium','Zama na musamman (Premium)','Résidence Premium'],
+  ['Online visa for eligible nationalities','تأشيرة إلكترونية للجنسيات المؤهلة','اہل قومیتوں کے لیے آن لائن ویزا','Visa online untuk negara yang memenuhi syarat','Biza ta intanet ga ƙasashen da suka cancanta','Visa en ligne pour les nationalités éligibles'],
+  ['Via Nusuk or approved agents','عبر نسك أو الوكلاء المعتمدين','نُسک یا منظور شدہ ایجنٹس کے ذریعے','Melalui Nusuk atau agen resmi','Ta Nusuk ko wakilai da aka amince','Via Nusuk ou des agents agréés'],
+  ['Through your country’s Hajj mission','عبر بعثة الحج في بلدك','اپنے ملک کے حج مشن کے ذریعے','Melalui misi haji negara Anda','Ta hukumar Hajjin ƙasarka','Par la mission Hajj de votre pays'],
+  ['Employer-sponsored residency','إقامة بكفالة صاحب العمل','آجر کی کفالت والی رہائش','Izin tinggal disponsori pemberi kerja','Zama ta hanyar mai ɗaukar aiki','Résidence parrainée par l’employeur'],
+  ['For residents inviting family','للمقيمين الذين يدعون عائلاتهم','اہلِ خانہ کو بلانے والے مقیمین کے لیے','Untuk penduduk yang mengundang keluarga','Ga mazauna da ke gayyatar iyali','Pour les résidents qui invitent leur famille'],
+  ['Long-term residency without a sponsor','إقامة طويلة دون كفيل','کفیل کے بغیر طویل مدتی رہائش','Izin tinggal jangka panjang tanpa sponsor','Zama na dogon lokaci ba tare da mai ɗauka ba','Résidence longue durée sans parrain'],
+  ['Lost passport','فقدان جواز السفر','پاسپورٹ گم ہو جانا','Paspor hilang','Fasfo ya ɓace','Passeport perdu'],
+  ['Lost phone','فقدان الهاتف','فون گم ہو جانا','Ponsel hilang','Waya ta ɓace','Téléphone perdu'],
+  ['Road safety','السلامة المرورية','سڑک پر حفاظت','Keselamatan jalan','Tsaron hanya','Sécurité routière'],
+  ['Heat safety','السلامة من الحرارة','گرمی سے حفاظت','Keamanan dari panas','Tsaro daga zafi','Se protéger de la chaleur'],
+  ['Desert safety','السلامة في الصحراء','صحرا میں حفاظت','Keamanan di gurun','Tsaro a hamada','Sécurité dans le désert'],
+  ['Medical emergencies','الطوارئ الطبية','طبی ہنگامی حالات','Darurat medis','Gaggawar lafiya','Urgences médicales'],
+  ['Important documents','المستندات المهمة','اہم دستاویزات','Dokumen penting','Muhimman takardu','Documents importants'],
+  ['Saudi CV guide','دليل السيرة الذاتية السعودية','سعودی سی وی گائیڈ','Panduan CV Saudi','Jagorar CV ta Saudiyya','Guide du CV saoudien'],
+  ['Interview preparation','التحضير للمقابلة','انٹرویو کی تیاری','Persiapan wawancara','Shirye-shiryen hira','Préparer un entretien'],
+  ['Where to find jobs','أين تجد الوظائف','ملازمتیں کہاں ملیں','Tempat mencari kerja','Inda za a samu aiki','Où trouver un emploi'],
+  ['Career roadmap','خارطة المسار المهني','کیریئر کا روڈ میپ','Peta jalan karier','Taswirar sana’a','Feuille de route professionnelle'],
+  ['What employers expect','ما يتوقعه أصحاب العمل','آجر کیا توقع رکھتے ہیں','Yang diharapkan pemberi kerja','Abin da masu ɗaukar aiki ke tsammani','Ce qu’attendent les employeurs'],
+  ['Common questions & tips','أسئلة شائعة ونصائح','عام سوالات اور مشورے','Pertanyaan umum & tips','Tambayoyin da aka saba da shawarwari','Questions fréquentes et conseils'],
+  ['From student to professional','من طالب إلى محترف','طالب علم سے پیشہ ور تک','Dari pelajar ke profesional','Daga ɗalibi zuwa ƙwararre','De l’étudiant au professionnel'],
+  ['Trusted platforms','منصات موثوقة','قابلِ اعتماد پلیٹ فارمز','Platform tepercaya','Dandamali amintattu','Plateformes fiables'],
+  ['Basic salary','الراتب الأساسي','بنیادی تنخواہ','Gaji pokok','Albashi na asali','Salaire de base'],
+  ['Housing allowance','بدل السكن','رہائشی الاؤنس','Tunjangan perumahan','Alawus na gida','Indemnité de logement'],
+  ['Transport allowance','بدل المواصلات','ٹرانسپورٹ الاؤنس','Tunjangan transportasi','Alawus na sufuri','Indemnité de transport'],
+  ['Other allowances','بدلات أخرى','دیگر الاؤنس','Tunjangan lain','Sauran alawus','Autres indemnités'],
+  ['Gross / month','الإجمالي / شهرياً','کل / ماہانہ','Kotor / bulan','Jimla / wata','Brut / mois'],
+  ['Net / month','الصافي / شهرياً','خالص / ماہانہ','Bersih / bulan','Net / wata','Net / mois'],
+  ['Start date','تاريخ البداية','آغاز کی تاریخ','Tanggal mulai','Ranar farawa','Date de début'],
+  ['End date','تاريخ النهاية','اختتام کی تاریخ','Tanggal selesai','Ranar ƙarshe','Date de fin'],
+  ['Estimated gratuity','المكافأة التقديرية','اندازاً گریجویٹی','Perkiraan pesangon','Kimanin kuɗin sallama','Indemnité estimée'],
+  ['Total','الإجمالي','کل','Total','Jimla','Total'],
+  ['People','الأشخاص','افراد','Orang','Mutane','Personnes'],
+  ['Each person','لكل شخص','فی کس','Per orang','Kowane mutum','Par personne'],
+  ['Result','النتيجة','نتیجہ','Hasil','Sakamako','Résultat'],
+  ['Value','القيمة','قدر','Nilai','Ƙima','Valeur'],
+  ['Type','النوع','قسم','Jenis','Nau’i','Type'],
+  ['From','من','سے','Dari','Daga','De'],
+  ['Total with VAT','الإجمالي مع الضريبة','VAT سمیت کل','Total dengan PPN','Jimla da VAT','Total TTC'],
+  ['Amount (SAR)','المبلغ (ريال)','رقم (ریال)','Jumlah (SAR)','Adadi (SAR)','Montant (SAR)'],
+  ['Mode','الوضع','موڈ','Mode','Yanayi','Mode'],
+  ['Read & listen','اقرأ واستمع','پڑھیں اور سنیں','Baca & dengarkan','Karanta ka saurara','Lire et écouter'],
+  ['Countdowns & converter','العد التنازلي والمحوّل','الٹی گنتی اور کنورٹر','Hitung mundur & konverter','Ƙirgawa da mai canzawa','Comptes à rebours et convertisseur'],
+  ['Direction to the Kaaba','الاتجاه إلى الكعبة','کعبہ کی سمت','Arah ke Ka’bah','Hanyar Ka’aba','Direction de la Kaaba'],
+  ['Digital counter','عدّاد رقمي','ڈیجیٹل کاؤنٹر','Penghitung digital','Ma’aunin dijital','Compteur numérique'],
+  ['By situation, with audio','حسب الموقف، مع الصوت','حالات کے مطابق، آڈیو کے ساتھ','Sesuai situasi, dengan audio','Bisa yanayi, da sauti','Par situation, avec audio'],
+  ['2.5% of eligible wealth','2.5% من المال الزكوي','قابلِ زکوٰۃ مال کا 2.5%','2,5% dari harta wajib zakat','2.5% na dukiyar da ta cancanta','2,5 % des biens imposables'],
+  ['KSA vs your time','توقيت السعودية مقابل توقيتك','سعودی وقت بمقابلہ آپ کا وقت','Waktu Saudi vs waktu Anda','Lokacin Saudiyya da naka','Heure saoudienne et la vôtre'],
+  ['Share costs + VAT','تقسيم التكاليف + الضريبة','اخراجات تقسیم + VAT','Bagi biaya + PPN','Raba kuɗi + VAT','Partager les frais + TVA'],
+  ['Add / remove 15%','إضافة / إزالة 15%','15% شامل / منہا کریں','Tambah / hapus 15%','Ƙara / cire 15%','Ajouter / retirer 15 %'],
+  ['Live SAR · NGN · USD · Pi','مباشر: ريال · نيرة · دولار · Pi','لائیو SAR · NGN · USD · Pi','Langsung SAR · NGN · USD · Pi','Kai tsaye SAR · NGN · USD · Pi','En direct SAR · NGN · USD · Pi'],
+  ['Weather · Makkah','الطقس · مكة','موسم · مکہ','Cuaca · Makkah','Yanayi · Makka','Météo · La Mecque']
+  ];
+  // the page translator looks words up without their icons and arrows ("🕌 Religious" → "Religious"), so store both forms
+  function core(s){ const m = s.match(TR_SPLIT); return m ? m : null; }
+  R.forEach(function(r){
+    const m = core(r[0]);
+    LANG_ORDER.slice(1).forEach(function(l, i){
+      if(!I18N[l]) return; let v = r[i + 1];
+      if(!I18N[l][r[0]]) I18N[l][r[0]] = v;
+      if(m && m[2] !== r[0]){ if(m[1] && v.indexOf(m[1]) === 0) v = v.slice(m[1].length); if(m[3] && v.slice(-m[3].length) === m[3]) v = v.slice(0, -m[3].length); if(!I18N[l][m[2]]) I18N[l][m[2]] = v.trim(); }
+    });
+  });
+})();
+(function(){
+  const R = [
+    ['No stories in this section right now.','لا أخبار في هذا القسم الآن.','اس حصے میں ابھی کوئی خبر نہیں۔','Belum ada berita di bagian ini.','Babu labari a wannan sashe yanzu.','Aucun article dans cette rubrique pour le moment.'],
+    ['No news right now.','لا أخبار الآن.','ابھی کوئی خبر نہیں۔','Belum ada berita.','Babu labarai yanzu.','Pas d’actualités pour le moment.'],
+    ['All matches','كل المباريات','تمام میچ','Semua pertandingan','Duk wasanni','Tous les matchs'],
+    ['Weather data:','بيانات الطقس:','موسم کا ڈیٹا:','Data cuaca:','Bayanan yanayi:','Données météo :'],
+    ['PI · live price','PI · سعر مباشر','PI · لائیو قیمت','PI · harga langsung','PI · farashi kai tsaye','PI · cours en direct'],
+    ['Championship','الدرجة الأولى الإنجليزية','چیمپئن شپ','Championship','Championship','Championship'],
+    ['World Cup','كأس العالم','ورلڈ کپ','Piala Dunia','Kofin Duniya','Coupe du monde'],
+    ['Euros','بطولة أوروبا','یورو','Piala Eropa','Gasar Turai','Euro']
+  ];
+  R.forEach(function(r){ LANG_ORDER.slice(1).forEach(function(l, i){ if(I18N[l] && !I18N[l][r[0]]) I18N[l][r[0]] = r[i + 1]; }); });
 })();
 
 </script>
