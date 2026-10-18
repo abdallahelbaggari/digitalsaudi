@@ -1453,7 +1453,7 @@ header.scrolled{box-shadow:0 1px 0 var(--line),0 10px 24px -18px rgba(0,0,0,.6)}
       <button class="row" onclick="openItem('about')"><div class="ic">ℹ️</div><div class="tx"><b>About</b></div><span class="chev">›</span></button>
       <button class="row" onclick="location.href='/privacy.html'"><div class="ic">🔒</div><div class="tx"><b>Privacy policy</b></div><span class="chev">›</span></button>
       <button class="row" onclick="location.href='/terms.html'"><div class="ic">📄</div><div class="tx"><b>Terms of service</b></div><span class="chev">›</span></button>
-      <footer class="legal"><span class="notr" dir="ltr">digitalsaudi.pi · DigitalSaudi v6.3</span><br><span class="notr" dir="ltr">© 2026 DigitalSaudi.</span> <span>All rights reserved.</span><br><span>Independent app, not affiliated with the Government of Saudi Arabia or Pi Network.</span><br><a href="/terms.html">Terms of service</a> · <a href="/privacy.html">Privacy policy</a> · <a href="mailto:support.digitalsaudi.pi@gmail.com" class="notr">support.digitalsaudi.pi@gmail.com</a></footer>
+      <footer class="legal"><span class="notr" dir="ltr">digitalsaudi.pi · DigitalSaudi v6.4</span><br><span class="notr" dir="ltr">© 2026 DigitalSaudi.</span> <span>All rights reserved.</span><br><span>Independent app, not affiliated with the Government of Saudi Arabia or Pi Network.</span><br><a href="/terms.html">Terms of service</a> · <a href="/privacy.html">Privacy policy</a> · <a href="mailto:support.digitalsaudi.pi@gmail.com" class="notr">support.digitalsaudi.pi@gmail.com</a></footer>
     </section>
   </main>
 
@@ -2502,6 +2502,12 @@ body.panel-open #toast{bottom:calc(22px + env(safe-area-inset-bottom))}
 .bdg-prog{min-width:0;overflow-wrap:anywhere}
 @media(max-width:340px){.hp-st small{font-size:10.5px!important}}
 #piChg:empty{display:none}
+/* v6.4 */
+.map-cl{border-radius:50%;background:var(--c,#0A7A4B);color:#fff;display:flex;align-items:center;justify-content:center;border:3px solid #fff;box-shadow:0 4px 12px rgba(0,0,0,.35);font-weight:900;font-size:14px}
+.ds-wallet{margin:12px 0;padding:14px;border-radius:16px;background:var(--bg-soft,#EEF2EF);text-align:center}
+.ds-wallet p{margin:0 0 10px;font-size:13.5px;color:var(--text-2);line-height:1.45}
+.ds-wallet .btn{margin:0 auto;display:inline-flex;gap:8px;align-items:center}
+.ds-wallet .btn .i{width:18px;height:18px}
 
 </style>
 
@@ -3254,7 +3260,7 @@ function openFeedback(subject){
 function sendFeedback(){
   const t = $('fbT').value, s = $('fbS').value, m = $('fbM').value;
   if(!m.trim()){ toast('Please write a message'); return; }
-  const body = m + '\n\n—\nApp: DigitalSaudi v6.3\nUser: ' + (piUser ? '@' + piUser.username : 'guest');
+  const body = m + '\n\n—\nApp: DigitalSaudi v6.4\nUser: ' + (piUser ? '@' + piUser.username : 'guest');
   location.href = 'mailto:' + CONTACT_EMAIL + '?subject=' + encodeURIComponent('[' + t + '] ' + (s || 'DigitalSaudi feedback')) + '&body=' + encodeURIComponent(body);
 }
 function editEcard(){
@@ -10083,6 +10089,206 @@ const DS_SURAHS = 'Al-Faatiha|The Opening|7|M|الفاتحة;Al-Baqara|The Cow|2
     ['Euros','بطولة أوروبا','یورو','Piala Eropa','Gasar Turai','Euro']
   ];
   R.forEach(function(r){ LANG_ORDER.slice(1).forEach(function(l, i){ if(I18N[l] && !I18N[l][r[0]]) I18N[l][r[0]] = r[i + 1]; }); });
+})();
+
+/* ==========================================================================
+   v6.4 — fixes from real-phone testing
+   1. Quran "Play all" stopped after two verses
+   2. Qibla stayed on "Locating…"
+   3. Pi requests: a clear way to open your own Pi Wallet to send or receive
+   4. Map: crowded pins grouped into numbered circles
+   ========================================================================== */
+
+/* 1 · Quran: one audio player for the whole surah.
+   Phones (and the Pi Browser) only let a player start after a tap. The old code made a new
+   player for every verse, so after the first verse or two the phone blocked it.
+   Now the player you tapped keeps playing verse after verse. */
+let dsQ = { el:null, list:[], i:0, cont:false, k:0, srcs:[] };
+function dsQEl(){
+  if(dsQ.el) return dsQ.el;
+  const a = new Audio(); a.preload = 'auto';
+  a.addEventListener('ended', function(){ dsQOnEnd(); });
+  a.addEventListener('error', function(){ dsQTryNext(); });
+  dsQ.el = a; return a;
+}
+function dsQMark(i){
+  document.querySelectorAll('.ayah.playing').forEach(function(x){ x.classList.remove('playing'); });
+  const el = $('ay' + i); if(el){ el.classList.add('playing'); el.scrollIntoView({ behavior:'smooth', block:'center' }); }
+  const b = $('qPlayAll'); if(b) b.textContent = dsQ.cont ? '⏸ ' + t('Pause') : '▶ ' + t('Play all');
+}
+function dsQStart(i){
+  const s = window._surah; if(!s || !s.ayahs[i]) return dsQStop();
+  dsQ.i = i; dsQ.k = 0; dsQ.srcs = ayahSources(s, i);
+  dsQMark(i);
+  const a = dsQEl(); a.src = dsQ.srcs[0];
+  const pr = a.play(); if(pr && pr.catch) pr.catch(function(e){ if(e && e.name === 'NotAllowedError'){ toast(t('Tap ▶ again to play')); dsQ.cont = false; dsQMark(-1); } else if(!(e && e.name === 'AbortError')) dsQTryNext(); });
+  // warm the next verse in the phone's cache so there is no pause between verses
+  if(dsQ.cont && s.ayahs[i + 1]){ try{ fetch(ayahSources(s, i + 1)[0], { mode:'no-cors' }).catch(function(){}); }catch(e){} }
+}
+function dsQTryNext(){
+  dsQ.k++;
+  if(dsQ.k >= dsQ.srcs.length){ toast(t('Audio could not play. Check your connection and try again.')); return dsQStop(); }
+  const a = dsQEl(); a.src = dsQ.srcs[dsQ.k]; const pr = a.play(); if(pr && pr.catch) pr.catch(function(e){ if(!(e && (e.name === 'AbortError' || e.name === 'NotAllowedError'))) dsQTryNext(); });
+}
+function dsQOnEnd(){
+  const s = window._surah;
+  if(dsQ.cont && s && dsQ.i + 1 < s.ayahs.length && $('ay' + (dsQ.i + 1))) dsQStart(dsQ.i + 1);
+  else dsQStop();
+}
+function dsQStop(){
+  if(dsQ.el){ try{ dsQ.el.pause(); }catch(e){} }
+  dsQ.cont = false;
+  document.querySelectorAll('.ayah.playing').forEach(function(x){ x.classList.remove('playing'); });
+  const b = $('qPlayAll'); if(b) b.textContent = '▶ ' + t('Play all');
+}
+playAyah = function(i, cont){
+  // "Play all" while playing → pause
+  if(cont && dsQ.cont && dsQ.el && !dsQ.el.paused){ dsQStop(); return; }
+  const sur = window._surah;
+  // "Play all" after a pause → carry on from the verse you stopped at
+  if(cont && i === 0 && sur && dsQ.n === sur.n && dsQ.i > 0 && dsQ.el && dsQ.el.paused && dsQ.el.currentTime > 0 && dsQ.el.currentTime < (dsQ.el.duration || 1e9)){
+    dsQ.cont = true; dsQMark(dsQ.i); dsQ.el.play().catch(function(){ dsQStart(dsQ.i); }); return;
+  }
+  dsQ.cont = !!cont; dsQ.n = sur ? sur.n : 0;
+  dsQStart(i);
+};
+stopQuranAudio = function(){ dsQStop(); };
+(function(){
+  // stop when the surah is closed; keep the lock-screen title right
+  const _close = closePanel;
+  closePanel = function(){ if(dsQ.el && !dsQ.el.paused) dsQStop(); return _close.apply(this, arguments); };
+})();
+
+/* 2 · Qibla: never stuck on "Locating…" — a 10-second limit, a city you can pick, and the
+   compass starts straight away */
+function dsQiblaFrom(lat, lon){
+  const r = Math.PI / 180, la = lat * r, lo = lon * r, kLa = 21.4225 * r, kLo = 39.8262 * r;
+  return (Math.atan2(Math.sin(kLo - lo), Math.cos(la) * Math.tan(kLa) - Math.sin(la) * Math.cos(kLo - lo)) / r + 360) % 360;
+}
+function dsQiblaShow(b, label){
+  qiblaBearing = b;
+  if(!$('qOut')) return;
+  $('qOut').textContent = Math.round(b) + '°';
+  const sm = $('qOut').parentNode.querySelector('small'); if(sm) sm.textContent = t('Qibla bearing from North') + (label ? ' · ' + label : '');
+  if($('qNeedle')) $('qNeedle').style.transform = 'rotate(' + b + 'deg)';
+  startCompass();
+}
+function dsQiblaCity(c){
+  store.set('qiblaCity', c);
+  const k = CITY_COORDS[c]; if(!k) return;
+  if(c === 'Makkah'){ qiblaBearing = null; if($('qOut')) $('qOut').textContent = t('In Makkah — face the Kaaba'); return; }
+  dsQiblaShow(dsQiblaFrom(k[0], k[1]), t(c));
+}
+findQibla = function(){
+  if(!$('qOut')) return;
+  if(!navigator.geolocation){ toast(t('Location is not available on this device. Pick your city instead.')); return; }
+  $('qOut').textContent = t('Locating…');
+  let done = false;
+  const fallback = function(msg){
+    if(done) return; done = true;
+    toast(t(msg));
+    dsQiblaCity(store.get('qiblaCity', null) || (typeof prayerCity === 'function' ? prayerCity() : 'Makkah'));
+  };
+  const watchdog = setTimeout(function(){ fallback('Location is taking too long. Showing the direction from your city — you can change it below.'); }, 10000);
+  navigator.geolocation.getCurrentPosition(function(p){
+    if(done) return; done = true; clearTimeout(watchdog);
+    dsQiblaShow(dsQiblaFrom(p.coords.latitude, p.coords.longitude), t('your location'));
+  }, function(err){
+    clearTimeout(watchdog);
+    fallback(err && err.code === 1 ? 'Location permission is off. Showing the direction from your city — you can change it below.' : 'Could not get your location. Showing the direction from your city.');
+  }, { enableHighAccuracy:false, timeout:9000, maximumAge:600000 });
+};
+(function(){
+  const _q = PANELS.qibla; if(!_q) return;
+  PANELS.qibla = function(){
+    const r = _q.apply(this, arguments);
+    const cur = store.get('qiblaCity', null) || (typeof prayerCity === 'function' ? prayerCity() : 'Makkah');
+    const btn = document.querySelector('#pBody .btn-primary');
+    if(btn) btn.insertAdjacentHTML('beforebegin', `<div class="field" style="margin-top:14px"><label>${esc(t('Or pick your city'))}</label><select id="qCity" onchange="dsQiblaCity(this.value)">${Object.keys(CITY_COORDS).map(function(c){ return `<option value="${c}" ${c === cur ? 'selected' : ''}>${esc(t(c))}</option>`; }).join('')}</select></div>`);
+    dsQiblaCity(cur);
+    return r;
+  };
+})();
+
+/* 3 · Pi requests & history: open your own Pi Wallet from here */
+function dsOpenPiWallet(){
+  const inPi = typeof Pi !== 'undefined' && /PiBrowser|; wv\)/i.test(navigator.userAgent);
+  if(!inPi){ toast(t('Open DigitalSaudi in the Pi Browser to use your Pi Wallet.')); return; }
+  try{ location.href = 'https://wallet.pinet.com'; }catch(e){ toast(t('Open the Wallet from the Pi Browser home screen.')); }
+}
+(function(){
+  const _wt = walletTab;
+  walletTab = function(tab){
+    const r = _wt.apply(this, arguments);
+    const b = $('wBody'); if(!b) return r;
+    const note = tab === 'send'
+      ? t('Sending Pi to a person happens in your own Pi Wallet — DigitalSaudi can never move your Pi. Tap below, then use Send / Pay.')
+      : tab === 'req' ? t('Share your request; the payer sends from their own Pi Wallet. To see what you received, open your Pi Wallet.') : '';
+    if(note) b.insertAdjacentHTML(tab === 'send' ? 'afterbegin' : 'beforeend', `<div class="ds-wallet"><p>${esc(note)}</p><button class="btn btn-primary" onclick="dsOpenPiWallet()">${ico('pi')}${esc(t('Open my Pi Wallet'))}</button></div>`);
+    return r;
+  };
+})();
+
+/* 4 · Map: pins that sit on top of each other are grouped into one numbered circle; tap to zoom in */
+(function(){
+  if(typeof drawMarkers !== 'function') return;
+  function cluster(){
+    const m = mapState.map; if(!m || !window.L || !mapState.layer) return;
+    mapState.layer.clearLayers();
+    if(mapState.me) L.marker(mapState.me, { icon:L.divIcon({ className:'', html:'<div class="me-dot"></div>', iconSize:[18, 18], iconAnchor:[9, 9] }) }).addTo(mapState.layer);
+    if(HARAM[mapCity()] && !mapState.me) L.marker([HARAM[mapCity()][0], HARAM[mapCity()][1]], { icon:pinIcon('mosques'), zIndexOffset:1000 }).bindPopup('<b>' + HARAM[mapCity()][2] + '</b>').addTo(mapState.layer);
+    const cell = 46, groups = {};
+    mapState.list.forEach(function(p){
+      const pt = m.latLngToLayerPoint([p.lat, p.lng]), key = Math.floor(pt.x / cell) + ':' + Math.floor(pt.y / cell);
+      (groups[key] = groups[key] || []).push(p);
+    });
+    Object.keys(groups).forEach(function(k){
+      const g = groups[k];
+      if(g.length === 1 || m.getZoom() >= 18){
+        g.forEach(function(p){ L.marker([p.lat, p.lng], { icon:pinIcon(p.cat) }).bindPopup(`<b>${esc(p.name)}</b><br><small>${esc(placeSub(p))}</small><br><a href="#" onclick="openPlace('${p.id}');return false">${esc(t('Details'))} ›</a>`).addTo(mapState.layer); });
+        return;
+      }
+      const lat = g.reduce(function(s, p){ return s + p.lat; }, 0) / g.length, lng = g.reduce(function(s, p){ return s + p.lng; }, 0) / g.length;
+      const c = pcat(g[0].cat === 'biz' ? 'all' : g[0].cat), size = g.length < 10 ? 38 : g.length < 50 ? 44 : 50;
+      L.marker([lat, lng], { icon:L.divIcon({ className:'', html:`<div class="map-cl" style="--c:${c.c};width:${size}px;height:${size}px"><b>${g.length}</b></div>`, iconSize:[size, size], iconAnchor:[size / 2, size / 2] }) })
+        .on('click', function(){ m.fitBounds(L.latLngBounds(g.map(function(p){ return [p.lat, p.lng]; })), { padding:[40, 40], maxZoom:18 }); }).addTo(mapState.layer);
+    });
+  }
+  const _draw = drawMarkers;
+  drawMarkers = function(center){
+    const r = _draw.apply(this, arguments);
+    const m = mapState.map; if(!m) return r;
+    if(!m._dsCluster){ m._dsCluster = true; m.on('zoomend', cluster); }
+    cluster();
+    // say where the places come from, so people know they are real
+    const info = $('mapInfo'); if(info && !/OpenStreetMap/.test(info.textContent)) info.insertAdjacentHTML('beforeend', ' <span class="small">· ' + esc(t('real places from OpenStreetMap')) + '</span>');
+    return r;
+  };
+})();
+
+/* words */
+(function(){
+  const R = [
+    ['Pause','إيقاف مؤقت','روکیں','Jeda','Dakata','Pause'],
+    ['Play all','تشغيل الكل','سب چلائیں','Putar semua','Kunna duka','Tout lire'],
+    ['Tap ▶ again to play','اضغط ▶ مجدداً للتشغيل','چلانے کے لیے دوبارہ ▶ دبائیں','Ketuk ▶ lagi untuk memutar','Sake taɓa ▶ don kunnawa','Touchez ▶ à nouveau pour lire'],
+    ['Audio could not play. Check your connection and try again.','تعذّر تشغيل الصوت. تحقّق من الاتصال وحاول مجدداً.','آڈیو نہیں چل سکی۔ کنکشن چیک کر کے دوبارہ کوشش کریں۔','Audio tidak dapat diputar. Periksa koneksi dan coba lagi.','Sauti bai kunna ba. Duba haɗin intanet ka sake gwadawa.','Le son n’a pas pu être lu. Vérifiez votre connexion et réessayez.'],
+    ['Locating…','جارٍ تحديد الموقع…','مقام معلوم کیا جا رہا ہے…','Mencari lokasi…','Ana neman wuri…','Localisation…'],
+    ['your location','موقعك','آپ کا مقام','lokasi Anda','wurinka','votre position'],
+    ['Or pick your city','أو اختر مدينتك','یا اپنا شہر منتخب کریں','Atau pilih kota Anda','Ko zaɓi birninka','Ou choisissez votre ville'],
+    ['Location is not available on this device. Pick your city instead.','الموقع غير متاح على هذا الجهاز. اختر مدينتك بدلاً من ذلك.','اس ڈیوائس پر مقام دستیاب نہیں۔ اپنا شہر منتخب کریں۔','Lokasi tidak tersedia di perangkat ini. Pilih kota Anda.','Ba a samun wuri a wannan na’ura. Zaɓi birninka.','La localisation n’est pas disponible. Choisissez votre ville.'],
+    ['Location is taking too long. Showing the direction from your city — you can change it below.','تحديد الموقع يستغرق وقتاً طويلاً. نعرض الاتجاه من مدينتك — يمكنك تغييرها بالأسفل.','مقام معلوم کرنے میں دیر ہو رہی ہے۔ آپ کے شہر سے سمت دکھائی جا رہی ہے — نیچے بدل سکتے ہیں۔','Lokasi terlalu lama. Menampilkan arah dari kota Anda — bisa diubah di bawah.','Neman wuri yana ɗaukar lokaci. Ana nuna alƙibla daga birninka — za ka iya canza shi a ƙasa.','La localisation prend trop de temps. Direction depuis votre ville — modifiable ci-dessous.'],
+    ['Location permission is off. Showing the direction from your city — you can change it below.','إذن الموقع متوقف. نعرض الاتجاه من مدينتك — يمكنك تغييرها بالأسفل.','مقام کی اجازت بند ہے۔ آپ کے شہر سے سمت دکھائی جا رہی ہے — نیچے بدل سکتے ہیں۔','Izin lokasi mati. Menampilkan arah dari kota Anda — bisa diubah di bawah.','An kashe izinin wuri. Ana nuna alƙibla daga birninka — za ka iya canza shi a ƙasa.','La localisation est désactivée. Direction depuis votre ville — modifiable ci-dessous.'],
+    ['Could not get your location. Showing the direction from your city.','تعذّر تحديد موقعك. نعرض الاتجاه من مدينتك.','آپ کا مقام معلوم نہیں ہو سکا۔ آپ کے شہر سے سمت دکھائی جا رہی ہے۔','Lokasi tidak didapat. Menampilkan arah dari kota Anda.','An kasa samun wurinka. Ana nuna alƙibla daga birninka.','Position introuvable. Direction depuis votre ville.'],
+    ['Open DigitalSaudi in the Pi Browser to use your Pi Wallet.','افتح DigitalSaudi في متصفح Pi لاستخدام محفظة Pi.','Pi Wallet استعمال کرنے کے لیے DigitalSaudi کو Pi Browser میں کھولیں۔','Buka DigitalSaudi di Pi Browser untuk memakai Pi Wallet.','Buɗe DigitalSaudi a Pi Browser don amfani da Pi Wallet.','Ouvrez DigitalSaudi dans le Pi Browser pour utiliser votre Pi Wallet.'],
+    ['Open the Wallet from the Pi Browser home screen.','افتح المحفظة من الشاشة الرئيسية لمتصفح Pi.','Pi Browser کی ہوم اسکرین سے والٹ کھولیں۔','Buka Wallet dari layar utama Pi Browser.','Buɗe Wallet daga babban shafin Pi Browser.','Ouvrez le Wallet depuis l’accueil du Pi Browser.'],
+    ['Sending Pi to a person happens in your own Pi Wallet — DigitalSaudi can never move your Pi. Tap below, then use Send / Pay.','إرسال Pi لشخص يتم من محفظتك الخاصة — لا يستطيع DigitalSaudi تحريك عملاتك أبداً. اضغط بالأسفل ثم استخدم إرسال / دفع.','کسی کو Pi بھیجنا آپ کے اپنے Pi Wallet میں ہوتا ہے — DigitalSaudi کبھی آپ کا Pi منتقل نہیں کر سکتا۔ نیچے دبائیں، پھر Send / Pay استعمال کریں۔','Mengirim Pi ke orang lain dilakukan di Pi Wallet Anda sendiri — DigitalSaudi tidak pernah bisa memindahkan Pi Anda. Ketuk di bawah, lalu gunakan Send / Pay.','Aika Pi ga mutum yana faruwa a Pi Wallet ɗinka — DigitalSaudi ba za ta taɓa motsa Pi ɗinka ba. Taɓa ƙasa, sannan yi amfani da Send / Pay.','L’envoi de Pi à une personne se fait dans votre propre Pi Wallet — DigitalSaudi ne peut jamais déplacer vos Pi. Touchez ci-dessous puis Send / Pay.'],
+    ['Share your request; the payer sends from their own Pi Wallet. To see what you received, open your Pi Wallet.','شارك طلبك؛ يرسل الدافع من محفظته. لرؤية ما استلمته افتح محفظة Pi.','اپنی درخواست شیئر کریں؛ ادا کرنے والا اپنے Pi Wallet سے بھیجتا ہے۔ موصول رقم دیکھنے کے لیے اپنا Pi Wallet کھولیں۔','Bagikan permintaan Anda; pembayar mengirim dari Pi Wallet miliknya. Untuk melihat yang Anda terima, buka Pi Wallet.','Raba buƙatarka; mai biya zai aika daga Pi Wallet ɗinsa. Don ganin abin da ka karɓa, buɗe Pi Wallet ɗinka.','Partagez votre demande ; le payeur envoie depuis son Pi Wallet. Pour voir ce que vous avez reçu, ouvrez votre Pi Wallet.'],
+    ['Open my Pi Wallet','افتح محفظة Pi','میرا Pi Wallet کھولیں','Buka Pi Wallet saya','Buɗe Pi Wallet ɗina','Ouvrir mon Pi Wallet'],
+    ['Details','التفاصيل','تفصیلات','Detail','Bayani','Détails'],
+    ['real places from OpenStreetMap','أماكن حقيقية من OpenStreetMap','OpenStreetMap سے حقیقی مقامات','tempat nyata dari OpenStreetMap','wurare na gaske daga OpenStreetMap','lieux réels d’OpenStreetMap']
+  ];
+  R.forEach(function(r){ LANG_ORDER.slice(1).forEach(function(l, i){ if(I18N[l]) I18N[l][r[0]] = r[i + 1]; }); });
 })();
 
 </script>
