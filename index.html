@@ -1453,7 +1453,7 @@ header.scrolled{box-shadow:0 1px 0 var(--line),0 10px 24px -18px rgba(0,0,0,.6)}
       <button class="row" onclick="openItem('about')"><div class="ic">ℹ️</div><div class="tx"><b>About</b></div><span class="chev">›</span></button>
       <button class="row" onclick="location.href='/privacy.html'"><div class="ic">🔒</div><div class="tx"><b>Privacy policy</b></div><span class="chev">›</span></button>
       <button class="row" onclick="location.href='/terms.html'"><div class="ic">📄</div><div class="tx"><b>Terms of service</b></div><span class="chev">›</span></button>
-      <footer class="legal"><span class="notr" dir="ltr">digitalsaudi.pi · DigitalSaudi v6.5</span><br><span class="notr" dir="ltr">© 2026 DigitalSaudi.</span> <span>All rights reserved.</span><br><span>Independent app, not affiliated with the Government of Saudi Arabia or Pi Network.</span><br><a href="/terms.html">Terms of service</a> · <a href="/privacy.html">Privacy policy</a> · <a href="mailto:support.digitalsaudi.pi@gmail.com" class="notr">support.digitalsaudi.pi@gmail.com</a></footer>
+      <footer class="legal"><span class="notr" dir="ltr">digitalsaudi.pi · DigitalSaudi v6.6</span><br><span class="notr" dir="ltr">© 2026 DigitalSaudi.</span> <span>All rights reserved.</span><br><span>Independent app, not affiliated with the Government of Saudi Arabia or Pi Network.</span><br><a href="/terms.html">Terms of service</a> · <a href="/privacy.html">Privacy policy</a> · <a href="mailto:support.digitalsaudi.pi@gmail.com" class="notr">support.digitalsaudi.pi@gmail.com</a></footer>
     </section>
   </main>
 
@@ -2527,6 +2527,35 @@ body.panel-open #toast{bottom:calc(22px + env(safe-area-inset-bottom))}
 .ds-confirm .dsw-open{background:var(--accent,#0A7A4B)}
 .dsw-cs{display:flex;gap:8px}
 .dsw-cs button{border:1px solid var(--line);background:var(--bg-soft,#EEF2EF);color:var(--text);border-radius:999px;padding:7px 12px;font-weight:700;font-size:13px;cursor:pointer}
+/* v6.6 structure */
+/* Services: header + sticky group chips, one group at a time */
+.svc-head{padding:4px 2px 2px}
+.svc-head h1{margin:0;font-size:26px;font-weight:900;letter-spacing:-.01em;color:var(--text)}
+.svc-head p{margin:4px 0 0;color:var(--text-2);font-size:14px;min-height:20px}
+.svc-chips{position:sticky;top:0;z-index:5;display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin:10px -16px 14px;padding:10px 16px;background:var(--bg);-webkit-overflow-scrolling:touch}
+.svc-chips::-webkit-scrollbar{display:none}
+.svc-chips button{flex:none;display:inline-flex;align-items:center;gap:7px;height:42px;padding:0 15px;border-radius:999px;border:1px solid var(--line);background:var(--bg-card);color:var(--text);font-weight:800;font-size:14px;cursor:pointer}
+.svc-chips button .i{width:18px;height:18px;color:var(--accent)}
+.svc-chips button.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.svc-chips button.on .i{color:#fff}
+.svc-pane{animation:svcIn .22s ease}
+@keyframes svcIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.svc-pane > .hero{margin-top:0}
+.svc-pane > .grid-4,.svc-pane > div[id]{margin-bottom:14px}
+.ds-rows{margin-bottom:14px}
+.ds-rows .ic .i{width:20px;height:20px;color:var(--accent)}
+/* Home: shorter lists */
+.ds-home #homeEvents > *:nth-child(n+3){display:none}
+.ds-home #forYou > *:nth-child(n+4){display:none}
+/* Explore: cities and knowledge as swipe rows instead of tall grids */
+.ds-swipe{display:grid!important;grid-auto-flow:column;grid-template-columns:none!important;grid-auto-columns:44%;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;margin:0 -16px;padding:2px 16px 8px;scrollbar-width:none}
+.ds-swipe::-webkit-scrollbar{display:none}
+.ds-swipe > *{scroll-snap-align:start;min-width:0}
+@media(min-width:600px){.ds-swipe{grid-auto-columns:30%}}
+/* Profile: show the first 6 badges, the rest on request */
+#badgeGrid:not(.all) > .bdg:nth-child(n+8){display:none}
+/* one heading style everywhere */
+#app .sec{font-size:19px;font-weight:850;letter-spacing:-.01em;margin-top:26px}
 
 </style>
 
@@ -3279,7 +3308,7 @@ function openFeedback(subject){
 function sendFeedback(){
   const t = $('fbT').value, s = $('fbS').value, m = $('fbM').value;
   if(!m.trim()){ toast('Please write a message'); return; }
-  const body = m + '\n\n—\nApp: DigitalSaudi v6.5\nUser: ' + (piUser ? '@' + piUser.username : 'guest');
+  const body = m + '\n\n—\nApp: DigitalSaudi v6.6\nUser: ' + (piUser ? '@' + piUser.username : 'guest');
   location.href = 'mailto:' + CONTACT_EMAIL + '?subject=' + encodeURIComponent('[' + t + '] ' + (s || 'DigitalSaudi feedback')) + '&body=' + encodeURIComponent(body);
 }
 function editEcard(){
@@ -10474,6 +10503,152 @@ function dswDecode(file){
     ['e.g. Coffee','مثلاً: قهوة','مثلاً: کافی','mis. Kopi','misali: Kofi','ex. Café']
   ];
   R.forEach(function(r){ LANG_ORDER.slice(1).forEach(function(l, i){ if(I18N[l]) I18N[l][r[0]] = r[i + 1]; }); });
+})();
+
+/* ==========================================================================
+   v6.6 — App structure: every tab has one clear job and the most-used things first.
+     Home     → Today: prayer, Pi price, quick actions, what's on, news
+     Live     → News, scores, markets, weather, events (unchanged)
+     Explore  → Places, cities, experiences, Saudi knowledge (shorter, swipe rows)
+     Services → one group at a time: Islamic · Pi & money · Travel · Work · Government · Safety · Green
+     Profile  → you, wallet & Premium, your saved things, settings (badges folded)
+   Existing sections are moved, not rebuilt, so every feature keeps working.
+   ========================================================================== */
+const SVC_GROUPS = [
+  ['islamic', 'Islamic', 'mosque', 'Prayer times, Quran, duas, Qibla, Hajj & Umrah'],
+  ['money', 'Pi & money', 'coins', 'Pi wallet, currency, VAT, salary, Zakat'],
+  ['travel', 'Travel & papers', 'luggage', 'Visas, documents, transport, good to know'],
+  ['work', 'Work & life', 'briefcase', 'Jobs, CV, banking, housing, healthcare'],
+  ['gov', 'Government', 'landmark', 'Absher, Nafath, Tawakkalna, Qiwa, Nusuk'],
+  ['safety', 'Safety', 'shield', 'Emergency numbers, what to do, scams'],
+  ['green', 'Green', 'leaf', 'Save water and power, recycling, climate']
+];
+function dsSvcShow(id, scroll){
+  store.set('svcGroup', id);
+  document.querySelectorAll('#svcChips button').forEach(function(b){ const on = b.dataset.g === id; b.classList.toggle('on', on); b.setAttribute('aria-selected', on ? 'true' : 'false'); if(on && scroll !== false) try{ b.scrollIntoView({ inline:'center', block:'nearest', behavior:'smooth' }); }catch(e){} });
+  document.querySelectorAll('#tab-tools .svc-pane').forEach(function(p){ p.hidden = p.dataset.g !== id; });
+  const g = SVC_GROUPS.find(function(x){ return x[0] === id; }), d = $('svcDesc'); if(d && g) d.textContent = t(g[3]);
+  if(scroll !== false){ const tb = $('svcChips'); if(tb){ const top = tb.getBoundingClientRect().top; if(top < 0) tb.scrollIntoView({ block:'start' }); } }
+}
+function dsBadgesAll(){ const g = $('badgeGrid'); if(!g) return; const all = g.classList.toggle('all'); const b = $('bdgMore'); if(b) b.textContent = all ? t('Show fewer') : t('See all badges') + ' (' + (typeof BADGES !== 'undefined' ? BADGES.length : '') + ')'; }
+
+(function(){
+  let done = false;
+  function move(el, into){ if(el && into) into.appendChild(el); }
+  function headOf(el){ const h = el && el.previousElementSibling; return h && (h.tagName === 'H2' || h.classList.contains('sub')) ? h : null; }
+  function sec(title, extra){ const h = document.createElement('h2'); h.className = 'sec ds-sec'; h.innerHTML = esc(t(title)) + (extra || ''); return h; }
+
+  function home(){
+    const T = $('tab-home'); if(!T) return;
+    // find each block and its own heading by position (works in every language)
+    const pair = function(el){ return el ? [headOf(el), el] : []; };
+    const strip = T.querySelector(':scope > .now-strip'), prem = T.querySelector(':scope > button.row');
+    const stripHead = headOf(strip);
+    const order = [].concat([T.querySelector(':scope > .hero'), $('homeAlerts'), $('homeTrip'), $('jumpBack')],
+      pair($('quickActions')), pair(strip), pair($('homeEvents')), pair($('homeNews')), [$('whyPromo')],
+      pair($('dailyAyah')), pair($('forYou')), pair(prem));
+    order.forEach(function(el){ if(el) T.appendChild(el); });
+    if(stripHead){ const tn = [].slice.call(stripHead.childNodes).find(function(n){ return n.nodeType === 3 && n.nodeValue.trim(); }); if(tn) tn.nodeValue = t('Today'); }
+    T.classList.add('ds-home');
+  }
+
+  function explore(){
+    const T = $('tab-explore'); if(!T) return;
+    ['trvCities', 'knowGrid'].forEach(function(id){ const g = $(id); if(g) g.classList.add('ds-swipe'); });
+    // Businesses & Pi before the long reading lists
+    const biz = $('expBiz'), bizH = headOf(biz), cities = $('trvCities'), citiesH = headOf(cities);
+    if(biz && bizH && citiesH){ T.insertBefore(bizH, citiesH); T.insertBefore(biz, citiesH); }
+    T.classList.add('ds-explore');
+  }
+
+  function services(){
+    const T = $('tab-tools'); if(!T || $('svcChips')) return;
+    const panes = {}; SVC_GROUPS.forEach(function(g){ const p = document.createElement('div'); p.className = 'svc-pane'; p.dataset.g = g[0]; p.hidden = true; panes[g[0]] = p; });
+    const kids = [].slice.call(T.children);
+    const hero = kids[0], times = kids[1];
+    const take = function(id, pane, withHead){ const el = $(id); if(!el) return; const h = headOf(el); if(h) h.remove(); move(el, panes[pane]); };
+    // Islamic
+    move(hero, panes.islamic); move(times, panes.islamic);
+    take('deenGrid', 'islamic'); take('deenEvents', 'islamic');
+    // Pi & money
+    const piRows = document.createElement('div'); piRows.className = 'ds-rows';
+    piRows.innerHTML = [['piWallet', 'wallet'], ['piHub', 'pi'], ['merchantQR', 'image'], ['directory', 'store']].map(function(r){ const m = META[r[0]]; return m ? `<button class="row" onclick="openItem('${r[0]}')"><div class="ic">${ico(r[1])}</div><div class="tx"><b>${esc(t(m.t))}</b><small>${esc(t(m.s || ''))}</small></div><span class="chev">›</span></button>` : ''; }).join('');
+    panes.money.appendChild(piRows);
+    take('finGrid', 'money');
+    // Travel & papers
+    take('svcDocs', 'travel'); take('toolGrid', 'travel');
+    const tips = $('trvTips'); if(tips){ const h = headOf(tips); if(h) h.remove(); panes.travel.appendChild(sec('Good to know')); move(tips, panes.travel); }
+    // Work & life
+    take('svcLife', 'work'); take('careerRows', 'work');
+    // Government (keep the independence note)
+    const gov = $('svcGov'); if(gov){ const note = gov.previousElementSibling, sub = note && note.previousElementSibling; if(sub && sub.classList.contains('sub')) sub.remove(); if(note && note.classList.contains('note')) move(note, panes.gov); move(gov, panes.gov); }
+    // Safety & green
+    take('safetyRows', 'safety'); take('svcGreen', 'green');
+    const tip = $('greenTip'); if(tip) panes.green.insertBefore(tip, panes.green.firstChild);
+    // leftovers: empty headings and sub-labels
+    [].slice.call(T.children).forEach(function(el){ if((el.tagName === 'H2' || el.classList.contains('sub')) && !el.closest('.svc-pane')) el.remove(); });
+    const lastNote = [].slice.call(T.children).filter(function(el){ return el.classList.contains('note'); }).pop();
+    // header + chips
+    const head = document.createElement('div'); head.className = 'svc-head';
+    head.innerHTML = `<h1>${esc(t('Services'))}</h1><p id="svcDesc"></p>`;
+    const chips = document.createElement('div'); chips.id = 'svcChips'; chips.className = 'svc-chips'; chips.setAttribute('role', 'tablist');
+    chips.innerHTML = SVC_GROUPS.map(function(g){ return `<button role="tab" data-g="${g[0]}" onclick="dsSvcShow('${g[0]}')">${ico(g[2])}<span>${esc(t(g[1]))}</span></button>`; }).join('');
+    T.insertBefore(chips, T.firstChild); T.insertBefore(head, chips);
+    SVC_GROUPS.forEach(function(g){ T.insertBefore(panes[g[0]], lastNote || null); });
+    if(lastNote) T.appendChild(lastNote);
+    dsSvcShow(store.get('svcGroup', 'islamic'), false);
+    T.classList.add('ds-svc');
+  }
+
+  function profile(){
+    const T = $('tab-profile'); if(!T) return;
+    const g = $('badgeGrid'); if(g && !$('bdgMore')){
+      g.insertAdjacentHTML('afterend', `<button class="btn btn-ghost btn-sm" id="bdgMore" style="margin:10px auto 0" onclick="dsBadgesAll()">${esc(t('See all badges'))} (${typeof BADGES !== 'undefined' ? BADGES.length : ''})</button>`);
+      // badges go after your saved things, just before the app settings
+      const h = headOf(g), my = [].slice.call(T.querySelectorAll(':scope > h2.sec')).find(function(x){ return /^App$/.test(x.textContent.trim()) || x.textContent.trim() === t('App'); });
+      if(h && my){ const btn = $('bdgMore'); T.insertBefore(h, my); T.insertBefore(g, my); T.insertBefore(btn, my); }
+    }
+    T.classList.add('ds-profile');
+  }
+
+  function run(){
+    if(done) return; done = true;
+    try{ home(); }catch(e){ log && log('home layout', e); }
+    try{ explore(); }catch(e){}
+    try{ services(); }catch(e){}
+    try{ profile(); }catch(e){}
+    try{ if(typeof trWalk === 'function' && LANG !== 'en') trWalk(document.getElementById('app')); }catch(e){}
+  }
+  const _enter = enterApp;
+  enterApp = function(){ const r = _enter.apply(this, arguments); setTimeout(run, 0); return r; };
+  // the bottom tab now says Services; the prayer box on Home opens the Islamic group
+  try{ const nb = document.querySelector('[data-tab="tools"]'); if(nb){ const tn = [].slice.call(nb.childNodes).filter(function(n){ return n.nodeType === 3 && n.nodeValue.trim(); }).pop(); if(tn) tn.nodeValue = 'Services'; nb.setAttribute('aria-label', 'Services'); } }catch(e){}
+  try{ const np = document.querySelector('.hp-np'); if(np) np.setAttribute('onclick', "event.stopPropagation();switchTab('tools');dsSvcShow('islamic',false)"); }catch(e){}
+})();
+
+(function(){
+  const R = [
+    ['Services','الخدمات','خدمات','Layanan','Ayyuka','Services'],
+    ['Islamic','إسلامي','اسلامی','Islami','Musulunci','Islam'],
+    ['Pi & money','Pi والمال','Pi اور رقم','Pi & uang','Pi da kuɗi','Pi et argent'],
+    ['Travel & papers','السفر والوثائق','سفر اور دستاویزات','Perjalanan & dokumen','Tafiya da takardu','Voyage et papiers'],
+    ['Work & life','العمل والحياة','کام اور زندگی','Kerja & kehidupan','Aiki da rayuwa','Travail et vie'],
+    ['Government','الخدمات الحكومية','سرکاری خدمات','Pemerintah','Gwamnati','Administration'],
+    ['Safety','السلامة','حفاظت','Keamanan','Tsaro','Sécurité'],
+    ['Green','البيئة','ماحول','Hijau','Muhalli','Écologie'],
+    ['Prayer times, Quran, duas, Qibla, Hajj & Umrah','أوقات الصلاة والقرآن والأدعية والقبلة والحج والعمرة','نماز کے اوقات، قرآن، دعائیں، قبلہ، حج و عمرہ','Waktu salat, Al-Qur’an, doa, kiblat, Haji & Umrah','Lokutan sallah, Alƙur’ani, addu’o’i, Alƙibla, Hajji da Umrah','Heures de prière, Coran, invocations, qibla, Hajj et Omra'],
+    ['Pi wallet, currency, VAT, salary, Zakat','محفظة Pi والعملات والضريبة والراتب والزكاة','Pi والٹ، کرنسی، VAT، تنخواہ، زکوٰۃ','Dompet Pi, mata uang, PPN, gaji, zakat','Walat Pi, kuɗaɗe, VAT, albashi, Zakka','Portefeuille Pi, devises, TVA, salaire, zakat'],
+    ['Visas, documents, transport, good to know','التأشيرات والوثائق والمواصلات ومعلومات مفيدة','ویزے، دستاویزات، ٹرانسپورٹ، مفید معلومات','Visa, dokumen, transportasi, info penting','Biza, takardu, sufuri, abubuwan sani','Visas, documents, transports, bon à savoir'],
+    ['Jobs, CV, banking, housing, healthcare','الوظائف والسيرة الذاتية والبنوك والسكن والصحة','ملازمتیں، سی وی، بینکاری، رہائش، صحت','Kerja, CV, perbankan, perumahan, kesehatan','Aiki, CV, banki, gidaje, lafiya','Emploi, CV, banque, logement, santé'],
+    ['Absher, Nafath, Tawakkalna, Qiwa, Nusuk','أبشر ونفاذ وتوكلنا وقوى ونسك','ابشر، نفاذ، توکلنا، قوی، نُسک','Absher, Nafath, Tawakkalna, Qiwa, Nusuk','Absher, Nafath, Tawakkalna, Qiwa, Nusuk','Absher, Nafath, Tawakkalna, Qiwa, Nusuk'],
+    ['Emergency numbers, what to do, scams','أرقام الطوارئ وماذا تفعل والاحتيال','ایمرجنسی نمبر، کیا کریں، فراڈ','Nomor darurat, apa yang dilakukan, penipuan','Lambobin gaggawa, abin da za a yi, zamba','Numéros d’urgence, que faire, arnaques'],
+    ['Save water and power, recycling, climate','وفّر الماء والكهرباء، إعادة التدوير، المناخ','پانی اور بجلی بچائیں، ری سائیکلنگ، موسمیات','Hemat air dan listrik, daur ulang, iklim','Tanadin ruwa da wuta, sake amfani, yanayi','Économiser eau et énergie, recyclage, climat'],
+    ['Today','اليوم','آج','Hari ini','Yau','Aujourd’hui'],
+    ['Good to know','معلومات مفيدة','جاننا مفید ہے','Perlu diketahui','Abin sani','Bon à savoir'],
+    ['See all badges','عرض كل الشارات','تمام بیج دیکھیں','Lihat semua lencana','Duba duk lambobi','Voir tous les badges'],
+    ['Show fewer','عرض أقل','کم دکھائیں','Tampilkan lebih sedikit','Nuna kaɗan','Afficher moins']
+  ];
+  R.forEach(function(r){ LANG_ORDER.slice(1).forEach(function(l, i){ if(I18N[l] && !I18N[l][r[0]]) I18N[l][r[0]] = r[i + 1]; }); });
 })();
 
 </script>
