@@ -1453,7 +1453,7 @@ header.scrolled{box-shadow:0 1px 0 var(--line),0 10px 24px -18px rgba(0,0,0,.6)}
       <button class="row" onclick="openItem('about')"><div class="ic">ℹ️</div><div class="tx"><b>About</b></div><span class="chev">›</span></button>
       <button class="row" onclick="location.href='/privacy.html'"><div class="ic">🔒</div><div class="tx"><b>Privacy policy</b></div><span class="chev">›</span></button>
       <button class="row" onclick="location.href='/terms.html'"><div class="ic">📄</div><div class="tx"><b>Terms of service</b></div><span class="chev">›</span></button>
-      <footer class="legal"><span class="notr" dir="ltr">digitalsaudi.pi · DigitalSaudi v6.6</span><br><span class="notr" dir="ltr">© 2026 DigitalSaudi.</span> <span>All rights reserved.</span><br><span>Independent app, not affiliated with the Government of Saudi Arabia or Pi Network.</span><br><a href="/terms.html">Terms of service</a> · <a href="/privacy.html">Privacy policy</a> · <a href="mailto:support.digitalsaudi.pi@gmail.com" class="notr">support.digitalsaudi.pi@gmail.com</a></footer>
+      <footer class="legal"><span class="notr" dir="ltr">digitalsaudi.pi · DigitalSaudi v6.7</span><br><span class="notr" dir="ltr">© 2026 DigitalSaudi.</span> <span>All rights reserved.</span><br><span>Independent app, not affiliated with the Government of Saudi Arabia or Pi Network.</span><br><a href="/terms.html">Terms of service</a> · <a href="/privacy.html">Privacy policy</a> · <a href="mailto:support.digitalsaudi.pi@gmail.com" class="notr">support.digitalsaudi.pi@gmail.com</a></footer>
     </section>
   </main>
 
@@ -3308,7 +3308,7 @@ function openFeedback(subject){
 function sendFeedback(){
   const t = $('fbT').value, s = $('fbS').value, m = $('fbM').value;
   if(!m.trim()){ toast('Please write a message'); return; }
-  const body = m + '\n\n—\nApp: DigitalSaudi v6.6\nUser: ' + (piUser ? '@' + piUser.username : 'guest');
+  const body = m + '\n\n—\nApp: DigitalSaudi v6.7\nUser: ' + (piUser ? '@' + piUser.username : 'guest');
   location.href = 'mailto:' + CONTACT_EMAIL + '?subject=' + encodeURIComponent('[' + t + '] ' + (s || 'DigitalSaudi feedback')) + '&body=' + encodeURIComponent(body);
 }
 function editEcard(){
@@ -3500,7 +3500,10 @@ function loadNews(){
     else $('sentinel').innerHTML = '<button class="btn btn-ghost btn-sm" onclick="loadNews()">Load more</button>';
   }).finally(function(){ news.loading = false; });
 }
-function imgStyle(url){ return url ? `background-image:url('${esc(url).replace(/'/g, '%27')}')` : 'background-image:linear-gradient(135deg,#0B4A2A,#073019)'; }
+function imgStyle(url){   // v6.7: only http(s) images; quotes, brackets and spaces are percent-encoded so a feed can't break out of the style
+  if(!url || !/^https?:\/\//i.test(url)) return 'background-image:linear-gradient(135deg,#0B4A2A,#073019)';
+  return `background-image:url('${String(url).replace(/['"()\\\s<>]/g, function(c){ return '%' + c.charCodeAt(0).toString(16).toUpperCase().padStart(2, '0'); }).replace(/&/g, '&amp;')}')`;
+}
 function catName(c){ const x = NEWS_CATS.find(function(n){ return n[0] === c; }); return x ? x[1] : 'News'; }
 function newsCardHTML(it){
   return `<button class="news-card" onclick="openArticle('${it.id}')"><div class="img" style="${imgStyle(it.img)}"><span class="cat">${esc(catName(it.cat))}</span></div><div class="bd"><div class="meta"><b>${esc(it.source)}</b> · ${ago(it.date)}</div><h4>${esc(it.title)}</h4></div></button>`;

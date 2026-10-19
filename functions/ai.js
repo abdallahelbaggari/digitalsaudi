@@ -154,6 +154,9 @@ export async function onRequestPost(context) {
 export async function onRequestGet(context) {
   const env = context.env;
   if (!new URL(context.request.url).searchParams.get('check')) return json({ ok: true, endpoint: '/ai' });
+  // the provider check costs AI quota, so only the admin can run it
+  const tok = env.ADMIN_TOKEN, got = context.request.headers.get('X-Admin-Token') || new URL(context.request.url).searchParams.get('token') || '';
+  if (!tok || tok.length < 12 || got !== tok) return json({ ok: false, error: 'unauthorised' });
   const list = providers(env), out = { providers: list.map(p => p[0]), KV: !!env.DS_KV, results: {} };
   for (const [name, fn] of list) {
     try { const r = await fn(env, 'Reply with the single word OK.', [{ role: 'user', content: 'Say OK' }]); out.results[name] = 'OK: ' + r.slice(0, 40); }

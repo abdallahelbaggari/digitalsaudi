@@ -36,7 +36,7 @@ th{color:var(--gold);font-weight:600}
 <a class="back" href="/">← Back to DigitalSaudi</a>
 <div class="brand">DigitalSaudi · digitalsaudi.pi</div>
 <h1>Privacy Policy</h1>
-<p class="meta"><b>Effective Date:</b> October 1, 2026 &nbsp;·&nbsp; <b>Last Updated:</b> October 17, 2026</p>
+<p class="meta"><b>Effective Date:</b> October 1, 2026 &nbsp;·&nbsp; <b>Last Updated:</b> October 19, 2026</p>
 
 <p>DigitalSaudi (“DigitalSaudi,” “we,” “us,” or “our”) respects your privacy and is committed to protecting personal information through responsible, transparent, and security-conscious practices.</p>
 <p>This Privacy Policy explains what information DigitalSaudi may process, why it may be processed, how it may be protected, when it may be shared, and the choices and rights available to you when you use the DigitalSaudi application at <b>digitalsaudi.pi</b> and <a href="https://digitalsaudi.pages.dev">digitalsaudi.pages.dev</a>, and its services, features, and related experiences (collectively, the “Service”).</p>
@@ -89,7 +89,8 @@ th{color:var(--gold);font-weight:600}
 <p>DigitalSaudi supports Pi payments for Premium (1&nbsp;π monthly or 5&nbsp;π lifetime) and voluntary support payments. Transaction processing may involve information necessary to facilitate, verify, record, reconcile, or display the transaction, including:</p>
 <ul><li>public wallet addresses;</li><li>transaction identifiers;</li><li>payment identifiers;</li><li>transaction status;</li><li>transaction amount and plan;</li><li>timestamps;</li><li>merchant or recipient information;</li><li>blockchain-related information.</li></ul>
 <p>Payments are approved and completed through the official Pi Network API, and your Premium status is recorded against your Pi user ID. DigitalSaudi does not need and must not request your private wallet credentials to facilitate a legitimate supported transaction.</p>
-<p><b>Accept-Pi posters and pay links</b> are generated on your device. A pay link contains only what you typed (business name, Pi username or wallet address, price, note, city) inside the link itself; we do not store it. Anyone you share the poster or link with can see those details.</p>
+<p><b>Accept-Pi posters and pay links</b> are generated on your device. A pay link contains only what you typed (business name, Pi username or wallet address, price, note, city) inside the link itself; we do not store it. Anyone you share the poster or link with can see those details. In the Pi Browser, which cannot save files directly, the finished poster file is uploaded to our server so your phone's browser can download it; the file is deleted automatically after 24 hours, and a daily counter linked to your IP address limits uploads to prevent abuse.</p>
+<p><b>Send and Request.</b> DigitalSaudi never holds, sees or moves your Pi. When you prepare a transfer, the receiver, amount and memo you typed, and your recent receivers, are kept only on your device; the transfer itself happens in your own Pi Wallet. If you scan a request QR code, the photo is read on your device and is not uploaded.</p>
 <p>Blockchain transactions may be publicly visible and may be permanent or difficult to reverse. Users should carefully verify transaction details before confirming them.</p>
 
 <h3>2.5 Technical and diagnostic information</h3>
@@ -147,11 +148,11 @@ th{color:var(--gold);font-weight:600}
 <tr><td>Hosting, storage &amp; security</td><td>Cloudflare (Pages, KV, D1, Workers AI, cdnjs)</td><td>Standard request data; Premium records, business listings, translation cache</td></tr>
 <tr><td>AI answers, translation, dictionary</td><td>Google Gemini, Cloudflare Workers AI, Anthropic</td><td>The text of the request only</td></tr>
 <tr><td>Pi price &amp; exchange rates</td><td>OKX, Gate.io, Bitget, MEXC, CoinGecko, ExchangeRate-API (open.er-api.com)</td><td>No personal data</td></tr>
-<tr><td>Football scores</td><td>football-data.org</td><td>No personal data</td></tr>
+<tr><td>Football scores, line-ups &amp; live match events</td><td>football-data.org, API-Football (api-sports.io), via our server</td><td>No personal data</td></tr>
 <tr><td>News headlines &amp; images</td><td>BBC, Al Jazeera, Arab News, Al Arabiya, Cointelegraph, Bing News</td><td>No personal data; opening an article takes you to the publisher's site</td></tr>
 <tr><td>Weather</td><td>MET Norway (via our server)</td><td>The selected city's coordinates only — your IP address is not passed on</td></tr>
 <tr><td>Prayer times</td><td>Aladhan</td><td>The selected city (if unavailable, times are calculated on your device)</td></tr>
-<tr><td>Quran text &amp; audio</td><td>alquran.cloud</td><td>No personal data</td></tr>
+<tr><td>Quran text &amp; audio</td><td>alquran.cloud, cdn.islamic.network, everyayah.com</td><td>No personal data (your browser loads the audio directly, or through our server as a backup)</td></tr>
 <tr><td>Places &amp; map tiles</td><td>OpenStreetMap, Overpass, Photon (komoot)</td><td>Map area or approximate coordinates for “Near me”</td></tr>
 </table>
 <p>Third parties may process information only as necessary to provide their services, subject to applicable contractual, legal, and security requirements. Your browser connects directly to some of these services (for example map tiles and audio), so they may also see your IP address as part of normal web traffic.</p>
