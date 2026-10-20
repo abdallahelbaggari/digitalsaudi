@@ -1455,7 +1455,7 @@ header.scrolled{box-shadow:0 1px 0 var(--line),0 10px 24px -18px rgba(0,0,0,.6)}
       <button class="row" onclick="openItem('about')"><div class="ic">ℹ️</div><div class="tx"><b>About</b></div><span class="chev">›</span></button>
       <button class="row" onclick="location.href='/privacy.html'"><div class="ic">🔒</div><div class="tx"><b>Privacy policy</b></div><span class="chev">›</span></button>
       <button class="row" onclick="location.href='/terms.html'"><div class="ic">📄</div><div class="tx"><b>Terms of service</b></div><span class="chev">›</span></button>
-      <footer class="legal"><span class="notr" dir="ltr">digitalsaudi.pi · DigitalSaudi v7.0</span><br><span class="notr" dir="ltr">© 2026 DigitalSaudi.</span> <span>All rights reserved.</span><br><span>Independent app, not affiliated with the Government of Saudi Arabia or Pi Network.</span><br><a href="/terms.html">Terms of service</a> · <a href="/privacy.html">Privacy policy</a> · <a href="mailto:support.digitalsaudi.pi@gmail.com" class="notr">support.digitalsaudi.pi@gmail.com</a></footer>
+      <footer class="legal"><span class="notr" dir="ltr">digitalsaudi.pi · DigitalSaudi v7.1</span><br><span class="notr" dir="ltr">© 2026 DigitalSaudi.</span> <span>All rights reserved.</span><br><span>Independent app, not affiliated with the Government of Saudi Arabia or Pi Network.</span><br><a href="/terms.html">Terms of service</a> · <a href="/privacy.html">Privacy policy</a> · <a href="mailto:support.digitalsaudi.pi@gmail.com" class="notr">support.digitalsaudi.pi@gmail.com</a></footer>
     </section>
   </main>
 
@@ -2353,6 +2353,29 @@ a.ds-credit{color:inherit!important;text-decoration:none!important;opacity:.75;f
 /* poster → list your business */
 #poOut .row.dd-cta{background:linear-gradient(135deg,rgba(10,122,75,.1),rgba(227,179,65,.12));box-shadow:inset 0 0 0 1.5px rgba(10,122,75,.35)}
 a.ds-credit{display:inline-block;padding:9px 2px;margin:-9px 0}
+.dd-fun{font-size:12.5px!important;color:var(--muted)!important;margin-top:-4px!important}
+/* v7.1 price alerts */
+.pa-now{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:6px}
+.pa-now div{padding:12px;border-radius:14px;background:var(--bg-soft,#EEF2EF);min-width:0}
+.pa-now small{display:block;font-size:12px;color:var(--text-2)}
+.pa-now b{display:block;font-size:15px;margin-top:2px;overflow-wrap:anywhere}
+.pa-list{display:flex;flex-direction:column;gap:8px;margin-bottom:6px}
+.pa-it{display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid var(--line);border-radius:14px}
+.pa-it>span{font-size:20px;width:28px;text-align:center}
+.pa-it>div{flex:1;min-width:0}
+.pa-it b{display:block;font-size:14px}
+.pa-it small{font-size:12.5px;color:var(--text-2)}
+.pa-it small button{border:0;background:none;color:var(--accent,#0A7A4B);font:inherit;font-weight:700;padding:0;cursor:pointer}
+.pa-it.done{opacity:.7}
+.pa-del{width:36px;height:36px;flex:none;border-radius:50%;border:0;background:var(--bg-soft,#EEF2EF);color:var(--text);cursor:pointer}
+.pa-form{display:flex;flex-direction:column;gap:10px;margin-bottom:8px}
+.pa-seg{display:flex}
+.pa-row{display:grid;grid-template-columns:1.2fr 1fr .8fr;gap:8px}
+.pa-row select,.pa-row input,.setting select{height:46px;border-radius:12px;border:1px solid var(--line);background:var(--bg-card,#fff);color:var(--text);padding:0 10px;font:inherit;font-size:14.5px;min-width:0}
+.pa-row #paCur{grid-column:3}
+.pa-phone{margin-top:14px;padding:12px 14px;border-radius:14px;background:var(--bg-soft,#EEF2EF)}
+.pa-phone p{margin:4px 0 8px;font-size:13.5px;color:var(--text-2);line-height:1.45}
+.pa-note{margin-top:12px;text-align:center}
 
 </style>
 
@@ -3105,7 +3128,7 @@ function openFeedback(subject){
 function sendFeedback(){
   const t = $('fbT').value, s = $('fbS').value, m = $('fbM').value;
   if(!m.trim()){ toast('Please write a message'); return; }
-  const body = m + '\n\n—\nApp: DigitalSaudi v7.0\nUser: ' + (piUser ? '@' + piUser.username : 'guest');
+  const body = m + '\n\n—\nApp: DigitalSaudi v7.1\nUser: ' + (piUser ? '@' + piUser.username : 'guest');
   location.href = 'mailto:' + CONTACT_EMAIL + '?subject=' + encodeURIComponent('[' + t + '] ' + (s || 'DigitalSaudi feedback')) + '&body=' + encodeURIComponent(body);
 }
 function editEcard(){
@@ -9548,9 +9571,9 @@ const DSS_IC = {
   save:'<path d="M12 4.5v10M7.5 10.5 12 15l4.5-4.5M5 19.5h14" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>'
 };
 function dsOpenExt(url){
-  if(/^(sms|mailto):/.test(url)){ location.href = url; return; }
+  if(/^(sms|mailto):/.test(url)){ const a = document.createElement('a'); a.href = url; a.target = '_blank'; a.rel = 'noopener'; a.style.display = 'none'; document.body.appendChild(a); a.click(); setTimeout(function(){ a.remove(); }, 500); return; }
   try{ if(window.Pi && typeof window.Pi.openUrlInSystemBrowser === 'function'){ window.Pi.openUrlInSystemBrowser(url); return; } }catch(e){}
-  const w = window.open(url, '_blank', 'noopener'); if(!w) location.href = url;
+  window.open(url, '_blank', 'noopener');
 }
 function dsCloseShare(){
   const el = $('dss'); if(!el) return;
@@ -9887,11 +9910,11 @@ PANELS.streakInfo = function(){
 function dsInviteLink(){ return location.origin + '/' + (piUser && piUser.username ? '?ref=' + encodeURIComponent(piUser.username) : ''); }
 function dsInviteText(){ return t('Join me on DigitalSaudi: prayer times, Umrah guides, Saudi news, rates, places and Pi payments in one app. Open it in the Pi Browser:'); }
 function dsInviteShare(){ dsShareSheet({ title:t('Invite friends'), text:dsInviteText(), url:dsInviteLink() }); }
-META.invite = { t:'Invite friends', ic:'🤝', s:'Share DigitalSaudi, earn badges' };
+META.invite = { t:'Invite friends', ic:'🤝', s:'Share DigitalSaudi, unlock badges' };
 PANELS.invite = function(){
   const signed = !!(piUser && piUser.accessToken);
   showPanel('Invite friends', `<div class="dd-inv"><div class="dd-fl2">🤝</div><h3>${esc(t('Share DigitalSaudi with friends'))}</h3>
-      <p>${esc(t('Friends who open your link and sign in with Pi are counted here. Earn badges at 1, 3 and 10 friends.'))}</p></div>
+      <p>${esc(t('Friends who open your link and sign in with Pi are counted here.'))}</p><p class="dd-fun">${esc(t('Unlock badges at 1, 3 and 10 friends. Badges are just for fun: there are no Pi, cash or prize rewards.'))}</p></div>
     <div class="dd-cnt"><div><b id="invCount" class="notr">${signed ? '…' : '—'}</b><small>${esc(t('friends joined'))}</small></div><div id="invRecent" class="notr"></div></div>
     <div class="dd-link notr" dir="ltr">${esc(dsInviteLink())}</div>
     <button class="btn btn-primary" style="width:100%;margin-top:10px" onclick="dsInviteShare()">📤 ${esc(t('Share invite'))}</button>
@@ -9990,7 +10013,8 @@ function dsInviteLoad(){
     ["Days follow Saudi time (midnight in Makkah).","الأيام بتوقيت السعودية (منتصف الليل في مكة).","دن سعودی وقت کے مطابق ہیں (مکہ میں آدھی رات)۔","Hari mengikuti waktu Saudi (tengah malam di Makkah).","Kwanaki suna bin lokacin Saudiyya (tsakar dare a Makkah).","Les jours suivent l’heure saoudienne (minuit à La Mecque)."],
     ["Invite friends to join you","ادعُ أصدقاءك للانضمام","دوستوں کو ساتھ شامل ہونے کی دعوت دیں","Undang teman untuk bergabung","Gayyaci abokai su shiga","Invitez vos amis à vous rejoindre"],
     ["Share DigitalSaudi with friends","شارك DigitalSaudi مع أصدقائك","DigitalSaudi دوستوں کے ساتھ شیئر کریں","Bagikan DigitalSaudi dengan teman","Raba DigitalSaudi da abokai","Partagez DigitalSaudi avec vos amis"],
-    ["Friends who open your link and sign in with Pi are counted here. Earn badges at 1, 3 and 10 friends.","يُحتسب هنا الأصدقاء الذين يفتحون رابطك ويسجلون الدخول عبر Pi. اربح شارات عند 1 و3 و10 أصدقاء.","جو دوست آپ کا لنک کھول کر Pi سے سائن اِن کریں وہ یہاں شمار ہوتے ہیں۔ 1، 3 اور 10 دوستوں پر بیج حاصل کریں۔","Teman yang membuka tautan Anda dan masuk dengan Pi dihitung di sini. Dapatkan lencana di 1, 3, dan 10 teman.","Abokan da suka buɗe mahaɗarka suka shiga da Pi ana ƙirga su a nan. Sami lambobi a abokai 1, 3 da 10.","Les amis qui ouvrent votre lien et se connectent avec Pi sont comptés ici. Badges à 1, 3 et 10 amis."],
+    ["Friends who open your link and sign in with Pi are counted here.","يُحتسب هنا الأصدقاء الذين يفتحون رابطك ويسجلون الدخول عبر Pi.","جو دوست آپ کا لنک کھول کر Pi سے سائن اِن کریں وہ یہاں شمار ہوتے ہیں۔","Teman yang membuka tautan Anda dan masuk dengan Pi dihitung di sini.","Abokan da suka buɗe mahaɗarka suka shiga da Pi ana ƙirga su a nan.","Les amis qui ouvrent votre lien et se connectent avec Pi sont comptés ici."],
+    ["_unused_","يُحتسب هنا الأصدقاء الذين يفتحون رابطك ويسجلون الدخول عبر Pi. اربح شارات عند 1 و3 و10 أصدقاء.","جو دوست آپ کا لنک کھول کر Pi سے سائن اِن کریں وہ یہاں شمار ہوتے ہیں۔ 1، 3 اور 10 دوستوں پر بیج حاصل کریں۔","Teman yang membuka tautan Anda dan masuk dengan Pi dihitung di sini. Dapatkan lencana di 1, 3, dan 10 teman.","Abokan da suka buɗe mahaɗarka suka shiga da Pi ana ƙirga su a nan. Sami lambobi a abokai 1, 3 da 10.","Les amis qui ouvrent votre lien et se connectent avec Pi sont comptés ici. Badges à 1, 3 et 10 amis."],
     ["friends joined","أصدقاء انضموا","دوست شامل ہوئے","teman bergabung","abokan da suka shiga","amis inscrits"],
     ["Share invite","شارك الدعوة","دعوت شیئر کریں","Bagikan undangan","Raba gayyata","Partager l’invitation"],
     ["Sign in with Pi to get your personal link, so your friends are counted.","سجّل الدخول عبر Pi لتحصل على رابطك الخاص ويُحتسب أصدقاؤك.","اپنا ذاتی لنک حاصل کرنے کے لیے Pi سے سائن اِن کریں تاکہ آپ کے دوست شمار ہوں۔","Masuk dengan Pi untuk mendapatkan tautan pribadi agar teman Anda dihitung.","Shiga da Pi don samun mahaɗarka ta kanka, don a ƙirga abokanka.","Connectez-vous avec Pi pour obtenir votre lien personnel et faire compter vos amis."],
@@ -10004,6 +10028,195 @@ function dsInviteLoad(){
     ["First friend invited","أول صديق مدعو","پہلا دوست مدعو","Teman pertama diundang","Aboki na farko da aka gayyata","Premier ami invité"],
     ["3 friends joined","انضم 3 أصدقاء","3 دوست شامل","3 teman bergabung","Abokai 3 sun shiga","3 amis inscrits"],
     ["10 friends joined","انضم 10 أصدقاء","10 دوست شامل","10 teman bergabung","Abokai 10 sun shiga","10 amis inscrits"]
+  ];
+  R.forEach(function(r){ LANG_ORDER.slice(1).forEach(function(l, i){ if(r[i + 1]) I18N[l][r[0]] = r[i + 1]; }); });
+})();
+
+/* ==========================================================================
+   v7.1 — automatic price alerts
+   • Pi price above / below a target (USD or SAR)
+   • Pi big move in 24 h (3%, 5% or 10%)
+   • Currency targets: 1 SAR in NGN, PKR, INR, EGP, USD… above / below a value
+   • Daily price summary (once a day, after 8 am Saudi time)
+   Checked automatically every 2 minutes while DigitalSaudi is open and every
+   time it is opened again. Alerts go to the 🔔 inbox, as a pop-up and — when
+   the phone allows it — as a phone notification. Information only, not advice.
+   ========================================================================== */
+const PA_CURS = ['NGN', 'USD', 'EUR', 'GBP', 'AED', 'EGP', 'PKR', 'INR', 'IDR', 'BDT', 'PHP', 'GHS', 'XOF'];
+function paCfg(){ return Object.assign({ move:5, daily:true, list:[] }, store.get('priceAlerts', {})); }
+function paSave(c){ store.set('priceAlerts', c); }
+function paPi(){ return store.get('pi', null); }
+function paFx(){ return store.get('fx', null); }
+function paNow(a){
+  if(a.k === 'pi'){ const p = paPi(); if(!p || !p.usd) return null; return a.u === 'SAR' ? (p.sar || p.usd * 3.75) : p.usd; }
+  const fx = paFx(); return fx && fx.rates && fx.rates[a.c] ? fx.rates[a.c] : null;
+}
+function paLabel(a){
+  const v = a.k === 'pi' ? (a.u === 'SAR' ? fmt(a.v, 4) + ' SAR' : '$' + fmt(a.v, 4)) : fmt(a.v, a.v < 10 ? 4 : 2) + ' ' + a.c;
+  return (a.k === 'pi' ? t('Pi price') : '1 SAR → ' + a.c) + ' ' + t(a.d === 'up' ? 'rises above' : 'falls below') + ' ' + v;
+}
+
+/* the 5% rule already built into the inbox now follows the chosen setting */
+(function(){
+  const _n = notify;
+  notify = function(type, key){ if(type === 'pi' && /^pi_\d{4}-/.test(String(key))) return; return _n.apply(this, arguments); };
+})();
+
+function paCheck(){
+  const c = paCfg(), p = paPi(), fx = paFx(), today = ksaDate();
+  let changed = false;
+  // targets
+  c.list.forEach(function(a){
+    if(a.done) return;
+    const now = paNow(a); if(now == null) return;
+    if((a.d === 'up' && now >= a.v) || (a.d === 'down' && now <= a.v)){
+      a.done = Date.now(); changed = true;
+      const nowTxt = a.k === 'pi' ? (a.u === 'SAR' ? fmt(now, 4) + ' SAR' : '$' + fmt(now, 4)) : fmt(now, now < 10 ? 4 : 2) + ' ' + a.c;
+      notify('pi', 'pa_' + a.id + '_' + a.done, a.k === 'pi' ? 'π' : '💱', t('Price alert') + ': ' + paLabel(a), t('Now') + ' ' + nowTxt + ' · ' + t('Tap to see the markets.'), 'live:markets');
+    }
+  });
+  // big move
+  if(c.move && p && p.change != null && Math.abs(p.change) >= c.move){
+    const up = p.change > 0;
+    notify('pi', 'pamove_' + today + '_' + c.move + '_' + (up ? 'u' : 'd'), up ? '📈' : '📉',
+      t(up ? 'Pi is up {p}% in 24 hours' : 'Pi is down {p}% in 24 hours').replace('{p}', Math.abs(p.change).toFixed(1)),
+      '$' + fmt(p.usd, 4) + ' · ≈ ' + fmt(p.sar || p.usd * 3.75, 4) + ' SAR', 'live:markets');
+  }
+  // daily summary (after 8 am Saudi time)
+  const hr = +new Intl.DateTimeFormat('en-GB', { timeZone:'Asia/Riyadh', hour:'2-digit', hour12:false }).format(new Date());
+  if(c.daily && hr >= 8 && p && p.usd){
+    const home = store.get('homeCur', 'NGN'), r = fx && fx.rates && fx.rates[home];
+    const ch = p.change != null ? ' (' + (p.change >= 0 ? '+' : '') + (+p.change).toFixed(1) + '%)' : '';
+    notify('pi', 'padaily_' + today, '☀️', t('Today’s prices'), 'Pi $' + fmt(p.usd, 4) + ch + (r ? ' · 1 SAR = ' + fmt(r, r < 10 ? 4 : 2) + ' ' + home : ''), 'live:markets');
+  }
+  if(changed) paSave(c);
+}
+function paTick(){
+  if(document.visibilityState === 'hidden') return;
+  Promise.all([loadPi(), loadFx()]).then(paCheck, paCheck);
+}
+setInterval(paTick, 120000);
+document.addEventListener('visibilitychange', function(){ if(document.visibilityState === 'visible') setTimeout(paTick, 1500); });
+setTimeout(paTick, 6000);
+
+/* ---------- the Price alerts screen ---------- */
+META.priceAlerts = { t:'Price alerts', ic:'🔔', s:'Pi and currency rates, automatically' };
+PANELS.priceAlerts = function(){
+  const c = paCfg(), p = paPi(), fx = paFx(), home = store.get('homeCur', 'NGN');
+  const perm = 'Notification' in window ? Notification.permission : 'unsupported';
+  const piNow = p && p.usd ? '$' + fmt(p.usd, 4) + ' · ≈ ' + fmt(p.sar || p.usd * 3.75, 4) + ' SAR' : t('Price unavailable right now');
+  const list = c.list.length ? c.list.map(function(a){ const now = paNow(a);
+      return `<div class="pa-it ${a.done ? 'done' : ''}"><span>${a.k === 'pi' ? 'π' : '💱'}</span><div><b>${esc(paLabel(a))}</b><small>${a.done ? esc(t('Alert sent')) + ' · <button onclick="paRearm(\'' + a.id + '\')">' + esc(t('Turn on again')) + '</button>' : esc(t('Now')) + ' ' + (now == null ? '—' : fmt(now, now < 10 ? 4 : 2))}</small></div><button class="pa-del" onclick="paDel('${a.id}')" aria-label="${esc(t('Delete'))}">✕</button></div>`; }).join('')
+    : `<p class="small" style="text-align:center;padding:8px 0">${esc(t('No alerts yet. Add your first one below.'))}</p>`;
+  showPanel('Price alerts', `
+    <div class="pa-now"><div><small>${esc(t('Pi now'))}</small><b class="notr" dir="ltr">${piNow}</b></div>${fx && fx.rates && fx.rates[home] ? `<div><small>1 SAR</small><b class="notr" dir="ltr">${fmt(fx.rates[home], fx.rates[home] < 10 ? 4 : 2)} ${home}</b></div>` : ''}</div>
+    <h4>${esc(t('Your alerts'))}</h4><div class="pa-list">${list}</div>
+    <h4>${esc(t('Add an alert'))}</h4>
+    <div class="pa-form">
+      <div class="seg pa-seg" role="tablist"><button class="on" data-k="pi" onclick="paKind('pi',this)">π Pi</button><button data-k="fx" onclick="paKind('fx',this)">💱 ${esc(t('Currency'))}</button></div>
+      <div class="pa-row"><select id="paDir" aria-label="${esc(t('When'))}"><option value="up">${esc(t('Rises above'))}</option><option value="down">${esc(t('Falls below'))}</option></select>
+        <input id="paVal" type="number" inputmode="decimal" step="any" min="0" placeholder="${p && p.usd ? fmt(p.usd, 4) : '0.25'}" aria-label="${esc(t('Price'))}">
+        <select id="paUnit" aria-label="${esc(t('Unit'))}"><option value="USD">USD</option><option value="SAR">SAR</option></select>
+        <select id="paCur" aria-label="${esc(t('Currency'))}" style="display:none">${PA_CURS.map(function(x){ return `<option value="${x}" ${x === home ? 'selected' : ''}>1 SAR → ${x}</option>`; }).join('')}</select></div>
+      <button class="btn btn-primary" style="width:100%" onclick="paAdd()">＋ ${esc(t('Add alert'))}</button>
+    </div>
+    <h4>${esc(t('Automatic alerts'))}</h4>
+    <div class="setting"><div><b>${esc(t('Big Pi price move'))}</b><div class="small">${esc(t('When Pi moves this much in 24 hours'))}</div></div>
+      <select id="paMove" onchange="paSetMove(this.value)">${[[0, t('Off')], [3, '3%'], [5, '5%'], [10, '10%']].map(function(o){ return `<option value="${o[0]}" ${+c.move === o[0] ? 'selected' : ''}>${esc(o[1])}</option>`; }).join('')}</select></div>
+    <div class="setting"><div><b>${esc(t('Daily price summary'))}</b><div class="small">${esc(t('Pi and your currency, once a day after 8 am'))}</div></div><button class="toggle ${c.daily ? 'on' : ''}" onclick="paSetDaily(this)"></button></div>
+    <div class="setting"><div><b>${esc(t('My currency'))}</b><div class="small">${esc(t('Used in the daily summary'))}</div></div><select onchange="store.set('homeCur',this.value);openItem('priceAlerts')">${PA_CURS.map(function(x){ return `<option ${x === home ? 'selected' : ''}>${x}</option>`; }).join('')}</select></div>
+    <div class="pa-phone"><b>${esc(t('Phone notifications'))}</b><p>${esc(t(perm === 'granted' ? 'On. Alerts also appear in your phone’s notification bar while DigitalSaudi is open.' : perm === 'denied' ? 'Blocked in this browser’s settings. Alerts still appear in the app and in your inbox.' : perm === 'unsupported' ? 'This browser can’t show phone notifications. Alerts still appear in the app and in your inbox.' : 'Allow them to see alerts in your phone’s notification bar.'))}</p>
+      ${perm === 'default' ? `<button class="btn btn-ghost btn-sm" onclick="Notification.requestPermission().then(function(){openItem('priceAlerts')})">🔔 ${esc(t('Allow notifications'))}</button>` : ''}</div>
+    <p class="small pa-note">${esc(t('Prices are checked every 2 minutes while the app is open, and again each time you open it. Information only, not financial advice.'))}</p>`, { id:'priceAlerts', share:false });
+};
+function paKind(k, b){
+  document.querySelectorAll('.pa-seg button').forEach(function(x){ x.classList.toggle('on', x === b); });
+  $('paUnit').style.display = k === 'pi' ? '' : 'none'; $('paCur').style.display = k === 'pi' ? 'none' : '';
+  const p = paPi(), fx = paFx(), cur = $('paCur').value;
+  $('paVal').placeholder = k === 'pi' ? (p && p.usd ? fmt(p.usd, 4) : '0.25') : (fx && fx.rates && fx.rates[cur] ? fmt(fx.rates[cur], 2) : '');
+  $('paVal').dataset.k = k;
+}
+function paAdd(){
+  const k = $('paVal').dataset.k || 'pi', v = parseFloat(String($('paVal').value).replace(',', '.'));
+  if(!(v > 0)) return toast(t('Enter a price above 0'));
+  const c = paCfg(); if(c.list.length >= 12) return toast(t('You can have up to 12 alerts'));
+  const a = { id:Date.now().toString(36), k:k, d:$('paDir').value, v:v };
+  if(k === 'pi') a.u = $('paUnit').value; else a.c = $('paCur').value;
+  const now = paNow(a);
+  if(now != null && ((a.d === 'up' && now >= v) || (a.d === 'down' && now <= v))) return toast(t('The price is already there. Choose a different value.'));
+  c.list.push(a); paSave(c); toast('🔔 ' + t('Alert added'));
+  openItem('priceAlerts');
+}
+function paDel(id){ const c = paCfg(); c.list = c.list.filter(function(a){ return a.id !== id; }); paSave(c); openItem('priceAlerts'); }
+function paRearm(id){ const c = paCfg(); c.list.forEach(function(a){ if(a.id === id) delete a.done; }); paSave(c); openItem('priceAlerts'); }
+function paSetMove(v){ const c = paCfg(); c.move = +v; paSave(c); }
+function paSetDaily(b){ const c = paCfg(); c.daily = !c.daily; paSave(c); b.classList.toggle('on', c.daily); }
+
+/* entry points: Live › Markets, notification settings and the money services */
+(function(){
+  const addBtn = function(){
+    const rl = $('rateList'); if(rl && !$('paLive')) rl.insertAdjacentHTML('afterend', `<button class="row" id="paLive" style="margin-top:10px" onclick="openItem('priceAlerts')"><div class="ic">🔔</div><div class="tx"><b>${esc(t('Price alerts'))}</b><small>${esc(t('Pi and currency rates, automatically'))}</small></div><span class="chev">›</span></button>`);
+  };
+  addBtn();
+  const _al = applyLang; applyLang = function(){ const r = _al.apply(this, arguments); const b = $('paLive'); if(b){ b.remove(); addBtn(); } return r; };
+  const _ns = notifSettingsPanel;
+  notifSettingsPanel = function(){ const r = _ns.apply(this, arguments); const b = $('pBody'); if(b) b.insertAdjacentHTML('afterbegin', '<div style="margin-bottom:12px">' + rowHTML('priceAlerts') + '</div>'); return r; };
+  PANELS.notifSettings = notifSettingsPanel;
+  // Services › Pi & money: first row
+  const _e = enterApp;
+  enterApp = function(){ const r = _e.apply(this, arguments); setTimeout(function(){ const pane = document.querySelector('.svc-pane[data-g="money"]'); if(pane && !$('paSvc')){ pane.insertAdjacentHTML('afterbegin', '<div id="paSvc">' + rowHTML('priceAlerts') + '</div>'); } }, 80); return r; };
+})();
+
+/* words in every language */
+(function(){
+  const R = [
+    ["Price alerts","تنبيهات الأسعار","قیمت کے الرٹس","Peringatan harga","Faɗakarwar farashi","Alertes de prix"],
+    ["Pi and currency rates, automatically","أسعار Pi والعملات تلقائياً","Pi اور کرنسی ریٹس، خودکار","Harga Pi dan kurs, otomatis","Farashin Pi da kuɗaɗe, kai tsaye","Pi et devises, automatiquement"],
+    ["Pi price","سعر Pi","Pi کی قیمت","Harga Pi","Farashin Pi","Prix du Pi"],
+    ["rises above","يرتفع فوق","اوپر جائے","naik di atas","ya haura","dépasse"],
+    ["falls below","ينخفض تحت","نیچے جائے","turun di bawah","ya faɗi ƙasa da","passe sous"],
+    ["Rises above","يرتفع فوق","اس سے اوپر جائے","Naik di atas","Ya haura","Dépasse"],
+    ["Falls below","ينخفض تحت","اس سے نیچے جائے","Turun di bawah","Ya faɗi ƙasa da","Passe sous"],
+    ["Price alert","تنبيه سعر","قیمت الرٹ","Peringatan harga","Faɗakarwar farashi","Alerte de prix"],
+    ["Now","الآن","ابھی","Sekarang","Yanzu","Maintenant"],
+    ["Tap to see the markets.","اضغط لرؤية الأسواق.","مارکیٹس دیکھنے کے لیے ٹیپ کریں۔","Ketuk untuk melihat pasar.","Taɓa don ganin kasuwanni.","Touchez pour voir les marchés."],
+    ["Pi is up {p}% in 24 hours","ارتفع Pi بنسبة {p}% خلال 24 ساعة","Pi 24 گھنٹوں میں {p}% بڑھا","Pi naik {p}% dalam 24 jam","Pi ya haura da {p}% cikin awa 24","Le Pi a pris {p} % en 24 h"],
+    ["Pi is down {p}% in 24 hours","انخفض Pi بنسبة {p}% خلال 24 ساعة","Pi 24 گھنٹوں میں {p}% گرا","Pi turun {p}% dalam 24 jam","Pi ya faɗi da {p}% cikin awa 24","Le Pi a perdu {p} % en 24 h"],
+    ["Today’s prices","أسعار اليوم","آج کی قیمتیں","Harga hari ini","Farashin yau","Les prix du jour"],
+    ["Price unavailable right now","السعر غير متاح الآن","قیمت ابھی دستیاب نہیں","Harga belum tersedia","Babu farashi yanzu","Prix indisponible pour le moment"],
+    ["Alert sent","تم إرسال التنبيه","الرٹ بھیج دیا گیا","Peringatan terkirim","An aika faɗakarwa","Alerte envoyée"],
+    ["Turn on again","فعّله مجدداً","دوبارہ آن کریں","Aktifkan lagi","Sake kunnawa","Réactiver"],
+    ["Delete","حذف","حذف کریں","Hapus","Goge","Supprimer"],
+    ["No alerts yet. Add your first one below.","لا توجد تنبيهات بعد. أضف أول تنبيه بالأسفل.","ابھی کوئی الرٹ نہیں۔ نیچے پہلا شامل کریں۔","Belum ada peringatan. Tambahkan di bawah.","Babu faɗakarwa tukuna. Ƙara ta farko a ƙasa.","Aucune alerte. Ajoutez-en une ci-dessous."],
+    ["Pi now","Pi الآن","Pi ابھی","Pi sekarang","Pi yanzu","Pi maintenant"],
+    ["Your alerts","تنبيهاتك","آپ کے الرٹس","Peringatan Anda","Faɗakarwarka","Vos alertes"],
+    ["Add an alert","أضف تنبيهاً","الرٹ شامل کریں","Tambah peringatan","Ƙara faɗakarwa","Ajouter une alerte"],
+    ["Currency","العملة","کرنسی","Mata uang","Kuɗi","Devise"],
+    ["Add alert","أضف التنبيه","الرٹ شامل کریں","Tambah","Ƙara","Ajouter"],
+    ["Automatic alerts","تنبيهات تلقائية","خودکار الرٹس","Peringatan otomatis","Faɗakarwa ta atomatik","Alertes automatiques"],
+    ["Big Pi price move","تحرك كبير في سعر Pi","Pi کی قیمت میں بڑی تبدیلی","Pergerakan besar harga Pi","Babban sauyin farashin Pi","Forte variation du Pi"],
+    ["When Pi moves this much in 24 hours","عندما يتحرك Pi بهذا القدر خلال 24 ساعة","جب Pi 24 گھنٹوں میں اتنا بدلے","Saat Pi bergerak sebesar ini dalam 24 jam","Idan Pi ya motsa haka cikin awa 24","Quand le Pi varie autant en 24 h"],
+    ["Off","إيقاف","بند","Mati","A kashe","Désactivé"],
+    ["Daily price summary","ملخص الأسعار اليومي","روزانہ قیمتوں کا خلاصہ","Ringkasan harga harian","Taƙaitaccen farashi na kullum","Résumé quotidien des prix"],
+    ["Pi and your currency, once a day after 8 am","Pi وعملتك، مرة يومياً بعد 8 صباحاً","Pi اور آپ کی کرنسی، روزانہ صبح 8 کے بعد","Pi dan mata uang Anda, sekali sehari setelah pukul 8","Pi da kuɗinka, sau ɗaya a rana bayan ƙarfe 8","Pi et votre devise, une fois par jour après 8 h"],
+    ["My currency","عملتي","میری کرنسی","Mata uang saya","Kuɗina","Ma devise"],
+    ["Used in the daily summary","تُستخدم في الملخص اليومي","روزانہ خلاصے میں استعمال","Dipakai di ringkasan harian","Ana amfani da shi a taƙaitaccen kullum","Utilisée dans le résumé"],
+    ["Phone notifications","إشعارات الهاتف","فون نوٹیفکیشنز","Notifikasi ponsel","Sanarwar waya","Notifications du téléphone"],
+    ["On. Alerts also appear in your phone’s notification bar while DigitalSaudi is open.","مفعّلة. تظهر التنبيهات أيضاً في شريط إشعارات هاتفك أثناء فتح DigitalSaudi.","آن ہیں۔ DigitalSaudi کھلا ہو تو الرٹس فون کی نوٹیفکیشن بار میں بھی آتے ہیں۔","Aktif. Peringatan juga muncul di bilah notifikasi saat DigitalSaudi terbuka.","A kunne. Faɗakarwa na bayyana a sandar sanarwar waya yayin da DigitalSaudi ke buɗe.","Activées. Les alertes s’affichent aussi dans la barre de notifications quand DigitalSaudi est ouvert."],
+    ["Blocked in this browser’s settings. Alerts still appear in the app and in your inbox.","محظورة في إعدادات المتصفح. تظل التنبيهات تظهر في التطبيق وصندوقك.","براؤزر کی سیٹنگز میں بلاک ہیں۔ الرٹس پھر بھی ایپ اور ان باکس میں آتے ہیں۔","Diblokir di pengaturan browser. Peringatan tetap muncul di aplikasi dan kotak masuk.","An toshe a saitunan burauza. Faɗakarwa na bayyana a manhaja da akwatinka.","Bloquées dans le navigateur. Les alertes restent visibles dans l’appli et la boîte de réception."],
+    ["This browser can’t show phone notifications. Alerts still appear in the app and in your inbox.","هذا المتصفح لا يعرض إشعارات الهاتف. تظل التنبيهات تظهر في التطبيق وصندوقك.","یہ براؤزر فون نوٹیفکیشن نہیں دکھا سکتا۔ الرٹس پھر بھی ایپ اور ان باکس میں آتے ہیں۔","Browser ini tidak bisa menampilkan notifikasi ponsel. Peringatan tetap muncul di aplikasi dan kotak masuk.","Wannan burauza ba ta nuna sanarwar waya. Faɗakarwa na bayyana a manhaja da akwatinka.","Ce navigateur ne peut pas afficher de notifications. Les alertes restent dans l’appli et la boîte de réception."],
+    ["Allow them to see alerts in your phone’s notification bar.","اسمح بها لرؤية التنبيهات في شريط إشعارات هاتفك.","فون کی نوٹیفکیشن بار میں الرٹس دیکھنے کے لیے اجازت دیں۔","Izinkan untuk melihat peringatan di bilah notifikasi.","Ba da izini don ganin faɗakarwa a sandar sanarwar waya.","Autorisez-les pour voir les alertes dans la barre de notifications."],
+    ["Allow notifications","السماح بالإشعارات","نوٹیفکیشنز کی اجازت دیں","Izinkan notifikasi","Ba da izinin sanarwa","Autoriser les notifications"],
+    ["Prices are checked every 2 minutes while the app is open, and again each time you open it. Information only, not financial advice.","تُفحص الأسعار كل دقيقتين أثناء فتح التطبيق، وعند كل فتح. للمعلومات فقط، وليست نصيحة مالية.","ایپ کھلی ہو تو قیمتیں ہر 2 منٹ میں اور ہر بار کھولنے پر جانچی جاتی ہیں۔ صرف معلومات، مالی مشورہ نہیں۔","Harga diperiksa setiap 2 menit saat aplikasi terbuka, dan setiap kali dibuka. Hanya informasi, bukan saran keuangan.","Ana duba farashi kowane minti 2 yayin da manhaja ke buɗe, da duk lokacin da ka buɗe ta. Bayani kawai, ba shawarar kuɗi ba.","Les prix sont vérifiés toutes les 2 minutes quand l’appli est ouverte, et à chaque ouverture. Information seulement, pas un conseil financier."],
+    ["Enter a price above 0","أدخل سعراً أكبر من 0","0 سے زیادہ قیمت درج کریں","Masukkan harga di atas 0","Shigar da farashi sama da 0","Entrez un prix supérieur à 0"],
+    ["You can have up to 12 alerts","يمكنك إضافة حتى 12 تنبيهاً","آپ 12 تک الرٹس رکھ سکتے ہیں","Maksimal 12 peringatan","Za ka iya samun faɗakarwa har 12","12 alertes maximum"],
+    ["The price is already there. Choose a different value.","السعر وصل بالفعل لهذا الحد. اختر قيمة أخرى.","قیمت پہلے ہی وہاں ہے۔ کوئی اور قدر منتخب کریں۔","Harga sudah di sana. Pilih nilai lain.","Farashin ya riga ya kai can. Zaɓi wani adadi.","Le prix y est déjà. Choisissez une autre valeur."],
+    ["Alert added","تمت إضافة التنبيه","الرٹ شامل ہو گیا","Peringatan ditambahkan","An ƙara faɗakarwa","Alerte ajoutée"],
+    ["When","متى","کب","Kapan","Yaushe","Quand"],
+    ["Price","السعر","قیمت","Harga","Farashi","Prix"],
+    ["Unit","الوحدة","اکائی","Satuan","Ma’auni","Unité"],
+    ["Unlock badges at 1, 3 and 10 friends. Badges are just for fun: there are no Pi, cash or prize rewards.","افتح شارات عند 1 و3 و10 أصدقاء. الشارات للمتعة فقط: لا توجد مكافآت Pi أو نقود أو جوائز.","1، 3 اور 10 دوستوں پر بیج کھولیں۔ بیج صرف تفریح کے لیے ہیں: کوئی Pi، نقد یا انعام نہیں۔","Buka lencana di 1, 3, dan 10 teman. Lencana hanya untuk kesenangan: tidak ada hadiah Pi, uang, atau barang.","Buɗe lambobi a abokai 1, 3 da 10. Lambobi don nishaɗi ne kawai: babu ladan Pi, kuɗi ko kyauta.","Débloquez des badges à 1, 3 et 10 amis. Les badges sont juste pour le plaisir : aucune récompense en Pi, argent ou cadeau."],
+    ["Share DigitalSaudi, unlock badges","شارك DigitalSaudi وافتح الشارات","DigitalSaudi شیئر کریں، بیج کھولیں","Bagikan DigitalSaudi, buka lencana","Raba DigitalSaudi, buɗe lambobi","Partagez DigitalSaudi, débloquez des badges"]
   ];
   R.forEach(function(r){ LANG_ORDER.slice(1).forEach(function(l, i){ if(r[i + 1]) I18N[l][r[0]] = r[i + 1]; }); });
 })();
