@@ -972,27 +972,29 @@ header.scrolled{box-shadow:0 1px 0 var(--line),0 10px 24px -18px rgba(0,0,0,.6)}
 <!-- ============ CINEMATIC ONBOARDING (first visit) ============ -->
 <script>try{if(location.hash.indexOf('#mkposter=')===0)sessionStorage.setItem('ds_film_session','1');if(sessionStorage.getItem('ds_film_session')!=='1')document.documentElement.classList.add('intro-first')}catch(e){document.documentElement.classList.add('intro-first')}</script>
 <section id="ovid" aria-label="Welcome to DigitalSaudi">
-  <video id="ovVideo" muted playsinline preload="none" poster="/onboarding/ovid-poster.jpg?v=59" disablepictureinpicture disableremoteplayback aria-hidden="true"></video>
-  <div class="ov-shade" aria-hidden="true"></div>
-  <div class="ov-top">
-    <div class="ov-bars" aria-hidden="true"><i><b></b></i><i><b></b></i><i><b></b></i><i><b></b></i></div>
-    <div class="ov-head">
-      <div class="ov-brand notr" dir="ltr"><img src="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 512 512%22%3E%0A%3Cdefs%3E%0A%3CradialGradient id=%22bg%22 cx=%22.5%22 cy=%22.42%22 r=%22.75%22%3E%3Cstop offset=%220%22 stop-color=%22%230F4D32%22/%3E%3Cstop offset=%22.6%22 stop-color=%22%2308311F%22/%3E%3Cstop offset=%221%22 stop-color=%22%23041A10%22/%3E%3C/radialGradient%3E%0A%3ClinearGradient id=%22rim%22 x1=%220%22 y1=%221%22 x2=%221%22 y2=%220%22%3E%3Cstop offset=%220%22 stop-color=%22%233DF2A2%22/%3E%3Cstop offset=%22.45%22 stop-color=%22%231FAE6B%22 stop-opacity=%22.55%22/%3E%3Cstop offset=%221%22 stop-color=%22%237DF5C0%22/%3E%3C/linearGradient%3E%0A%3ClinearGradient id=%22dw%22 x1=%220%22 y1=%220%22 x2=%22.9%22 y2=%221%22%3E%3Cstop offset=%220%22 stop-color=%22%23FFFFFF%22/%3E%3Cstop offset=%22.62%22 stop-color=%22%23F1F4F2%22/%3E%3Cstop offset=%221%22 stop-color=%22%23AEB9B3%22/%3E%3C/linearGradient%3E%0A%3ClinearGradient id=%22fold%22 x1=%220%22 y1=%221%22 x2=%221%22 y2=%220%22%3E%3Cstop offset=%220%22 stop-color=%22%238E9C95%22/%3E%3Cstop offset=%22.5%22 stop-color=%22%23E9EEEB%22/%3E%3Cstop offset=%221%22 stop-color=%22%23FFFFFF%22/%3E%3C/linearGradient%3E%0A%3ClinearGradient id=%22sg%22 gradientUnits=%22userSpaceOnUse%22 x1=%22300%22 y1=%22130%22 x2=%22430%22 y2=%22370%22%3E%3Cstop offset=%220%22 stop-color=%22%2356F0AE%22/%3E%3Cstop offset=%22.5%22 stop-color=%22%2322C47E%22/%3E%3Cstop offset=%221%22 stop-color=%22%230E9A5E%22/%3E%3C/linearGradient%3E%0A%3ClinearGradient id=%22sshade%22 gradientUnits=%22userSpaceOnUse%22 x1=%22300%22 y1=%22230%22 x2=%22420%22 y2=%22290%22%3E%3Cstop offset=%220%22 stop-color=%22%230B6E44%22 stop-opacity=%22.0%22/%3E%3Cstop offset=%22.5%22 stop-color=%22%230B6E44%22 stop-opacity=%22.55%22/%3E%3Cstop offset=%221%22 stop-color=%22%230B6E44%22 stop-opacity=%220%22/%3E%3C/linearGradient%3E%0A%3Cfilter id=%22glow%22 x=%22-20%25%22 y=%22-20%25%22 width=%22140%25%22 height=%22140%25%22%3E%3CfeGaussianBlur stdDeviation=%229%22/%3E%3C/filter%3E%0A%3CradialGradient id=%22shine%22 cx=%22.3%22 cy=%22.05%22 r=%22.8%22%3E%3Cstop offset=%220%22 stop-color=%22%23fff%22 stop-opacity=%22.14%22/%3E%3Cstop offset=%22.6%22 stop-color=%22%23fff%22 stop-opacity=%220%22/%3E%3C/radialGradient%3E%0A%3C/defs%3E%0A%3Crect width=%22512%22 height=%22512%22 rx=%22118%22 fill=%22url(%23bg)%22/%3E%0A%3Crect width=%22512%22 height=%22512%22 rx=%22118%22 fill=%22url(%23shine)%22/%3E%0A%3Cg transform=%22translate(256 256) scale(1) translate(-256 -256)%22%3E%0A%3Crect x=%2212%22 y=%2212%22 width=%22488%22 height=%22488%22 rx=%22108%22 fill=%22none%22 stroke=%22url(%23rim)%22 stroke-width=%2210%22 filter=%22url(%23glow)%22 opacity=%22.85%22/%3E%3Crect x=%2212%22 y=%2212%22 width=%22488%22 height=%22488%22 rx=%22108%22 fill=%22none%22 stroke=%22url(%23rim)%22 stroke-width=%224%22/%3E%0A%3Cpath fill=%22url(%23dw)%22 fill-rule=%22evenodd%22 d=%22M84 130H172C232 130 274 180 274 244S232 358 172 358H84ZM150 188V300H168C198 300 214 276 214 244S198 188 168 188Z%22/%3E%0A%3Cpath fill=%22url(%23fold)%22 d=%22M84 358C112 300 182 268 272 262C266 318 230 358 172 358Z%22 opacity=%22.96%22/%3E%0A%3Cpath d=%22M84 358C112 300 182 268 272 262%22 fill=%22none%22 stroke=%22%23FFFFFF%22 stroke-width=%223%22 opacity=%22.9%22/%3E%0A%3Cpath d=%22M424 182C408 152 380 138 352 140C314 142 296 166 298 196C301 236 342 240 372 252C404 264 422 282 420 310C417 340 390 356 356 354C324 352 304 338 292 316%22 fill=%22none%22 stroke=%22url(%23sg)%22 stroke-width=%2248%22 stroke-linecap=%22butt%22/%3E%0A%0A%3C/g%3E%3C/svg%3E" alt="" width="32" height="32"><b>Digital<span>Saudi</span></b></div>
-      <div class="ov-tools">
-        <button class="ov-icon" id="ovSound" type="button" onclick="ovToggleSound()" aria-label="Sound off" aria-pressed="false"><svg viewBox="0 0 24 24" class="ov-so"><path d="M4 9h4l5-4v14l-5-4H4z"/><path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><svg viewBox="0 0 24 24" class="ov-sm"><path d="M4 9h4l5-4v14l-5-4H4z"/><path d="M17 9.5l5 5M22 9.5l-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
-        <button class="ov-skip" type="button" onclick="ovEnd()"><span>Skip</span><svg class="i"><use href="#i-arrow"/></svg></button>
+  <div class="ov-media">
+    <video id="ovVideo" muted playsinline preload="none" poster="/onboarding/ovid-poster.jpg?v=59" disablepictureinpicture disableremoteplayback aria-hidden="true"></video>
+    <div class="ov-shade" aria-hidden="true"></div>
+    <div class="ov-top">
+      <div class="ov-head">
+        <div class="ov-brand notr" dir="ltr"><img src="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 512 512%22%3E%0A%3Cdefs%3E%0A%3CradialGradient id=%22bg%22 cx=%22.5%22 cy=%22.42%22 r=%22.75%22%3E%3Cstop offset=%220%22 stop-color=%22%230F4D32%22/%3E%3Cstop offset=%22.6%22 stop-color=%22%2308311F%22/%3E%3Cstop offset=%221%22 stop-color=%22%23041A10%22/%3E%3C/radialGradient%3E%0A%3ClinearGradient id=%22rim%22 x1=%220%22 y1=%221%22 x2=%221%22 y2=%220%22%3E%3Cstop offset=%220%22 stop-color=%22%233DF2A2%22/%3E%3Cstop offset=%22.45%22 stop-color=%22%231FAE6B%22 stop-opacity=%22.55%22/%3E%3Cstop offset=%221%22 stop-color=%22%237DF5C0%22/%3E%3C/linearGradient%3E%0A%3ClinearGradient id=%22dw%22 x1=%220%22 y1=%220%22 x2=%22.9%22 y2=%221%22%3E%3Cstop offset=%220%22 stop-color=%22%23FFFFFF%22/%3E%3Cstop offset=%22.62%22 stop-color=%22%23F1F4F2%22/%3E%3Cstop offset=%221%22 stop-color=%22%23AEB9B3%22/%3E%3C/linearGradient%3E%0A%3ClinearGradient id=%22fold%22 x1=%220%22 y1=%221%22 x2=%221%22 y2=%220%22%3E%3Cstop offset=%220%22 stop-color=%22%238E9C95%22/%3E%3Cstop offset=%22.5%22 stop-color=%22%23E9EEEB%22/%3E%3Cstop offset=%221%22 stop-color=%22%23FFFFFF%22/%3E%3C/linearGradient%3E%0A%3ClinearGradient id=%22sg%22 gradientUnits=%22userSpaceOnUse%22 x1=%22300%22 y1=%22130%22 x2=%22430%22 y2=%22370%22%3E%3Cstop offset=%220%22 stop-color=%22%2356F0AE%22/%3E%3Cstop offset=%22.5%22 stop-color=%22%2322C47E%22/%3E%3Cstop offset=%221%22 stop-color=%22%230E9A5E%22/%3E%3C/linearGradient%3E%0A%3ClinearGradient id=%22sshade%22 gradientUnits=%22userSpaceOnUse%22 x1=%22300%22 y1=%22230%22 x2=%22420%22 y2=%22290%22%3E%3Cstop offset=%220%22 stop-color=%22%230B6E44%22 stop-opacity=%22.0%22/%3E%3Cstop offset=%22.5%22 stop-color=%22%230B6E44%22 stop-opacity=%22.55%22/%3E%3Cstop offset=%221%22 stop-color=%22%230B6E44%22 stop-opacity=%220%22/%3E%3C/linearGradient%3E%0A%3Cfilter id=%22glow%22 x=%22-20%25%22 y=%22-20%25%22 width=%22140%25%22 height=%22140%25%22%3E%3CfeGaussianBlur stdDeviation=%229%22/%3E%3C/filter%3E%0A%3CradialGradient id=%22shine%22 cx=%22.3%22 cy=%22.05%22 r=%22.8%22%3E%3Cstop offset=%220%22 stop-color=%22%23fff%22 stop-opacity=%22.14%22/%3E%3Cstop offset=%22.6%22 stop-color=%22%23fff%22 stop-opacity=%220%22/%3E%3C/radialGradient%3E%0A%3C/defs%3E%0A%3Crect width=%22512%22 height=%22512%22 rx=%22118%22 fill=%22url(%23bg)%22/%3E%0A%3Crect width=%22512%22 height=%22512%22 rx=%22118%22 fill=%22url(%23shine)%22/%3E%0A%3Cg transform=%22translate(256 256) scale(1) translate(-256 -256)%22%3E%0A%3Crect x=%2212%22 y=%2212%22 width=%22488%22 height=%22488%22 rx=%22108%22 fill=%22none%22 stroke=%22url(%23rim)%22 stroke-width=%2210%22 filter=%22url(%23glow)%22 opacity=%22.85%22/%3E%3Crect x=%2212%22 y=%2212%22 width=%22488%22 height=%22488%22 rx=%22108%22 fill=%22none%22 stroke=%22url(%23rim)%22 stroke-width=%224%22/%3E%0A%3Cpath fill=%22url(%23dw)%22 fill-rule=%22evenodd%22 d=%22M84 130H172C232 130 274 180 274 244S232 358 172 358H84ZM150 188V300H168C198 300 214 276 214 244S198 188 168 188Z%22/%3E%0A%3Cpath fill=%22url(%23fold)%22 d=%22M84 358C112 300 182 268 272 262C266 318 230 358 172 358Z%22 opacity=%22.96%22/%3E%0A%3Cpath d=%22M84 358C112 300 182 268 272 262%22 fill=%22none%22 stroke=%22%23FFFFFF%22 stroke-width=%223%22 opacity=%22.9%22/%3E%0A%3Cpath d=%22M424 182C408 152 380 138 352 140C314 142 296 166 298 196C301 236 342 240 372 252C404 264 422 282 420 310C417 340 390 356 356 354C324 352 304 338 292 316%22 fill=%22none%22 stroke=%22url(%23sg)%22 stroke-width=%2248%22 stroke-linecap=%22butt%22/%3E%0A%0A%3C/g%3E%3C/svg%3E" alt="" width="32" height="32"><b>Digital<span>Saudi</span></b></div>
+        <div class="ov-tools">
+          <button class="ov-icon" id="ovSound" type="button" onclick="ovToggleSound()" aria-label="Sound off" aria-pressed="false"><svg viewBox="0 0 24 24" class="ov-so"><path d="M4 9h4l5-4v14l-5-4H4z"/><path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><svg viewBox="0 0 24 24" class="ov-sm"><path d="M4 9h4l5-4v14l-5-4H4z"/><path d="M17 9.5l5 5M22 9.5l-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+          <button class="ov-skip" type="button" onclick="ovEnd()"><span>Skip</span><svg class="i"><use href="#i-arrow"/></svg></button>
+        </div>
       </div>
     </div>
-  </div>
-  <div class="ov-phone" aria-hidden="true"><img src="/onboarding/app-explore.webp" alt="" width="200" height="433" decoding="async"></div>
-  <div class="ov-pi" role="group" aria-label="Pi price">
-    <div class="ov-pi-h"><span class="ov-pi-ic"><svg class="i"><use href="#i-chart"/></svg></span><span>Pi market price</span><span class="ov-live" id="ovLiveTag"><i></i><span>Live</span></span></div>
-    <div class="ov-pi-v notr" dir="ltr"><b id="ovPiUsd">—</b><span id="ovPiChg"></span></div>
-    <svg class="ov-spark" id="ovPiSpark" viewBox="0 0 300 50" preserveAspectRatio="none" aria-hidden="true"></svg>
-    <div class="ov-pi-sar notr" id="ovPiSar"></div>
-    <div class="ov-pi-src notr" id="ovPiSrc"></div>
+    <div class="ov-phone" aria-hidden="true"><img src="/onboarding/app-explore.webp" alt="" width="200" height="433" decoding="async"></div>
+    <div class="ov-pi" role="group" aria-label="Pi price">
+      <div class="ov-pi-h"><span class="ov-pi-ic"><svg class="i"><use href="#i-chart"/></svg></span><span>Pi market price</span><span class="ov-live" id="ovLiveTag"><i></i><span>Live</span></span></div>
+      <div class="ov-pi-v notr" dir="ltr"><b id="ovPiUsd">—</b><span id="ovPiChg"></span></div>
+      <svg class="ov-spark" id="ovPiSpark" viewBox="0 0 300 50" preserveAspectRatio="none" aria-hidden="true"></svg>
+      <div class="ov-pi-sar notr" id="ovPiSar"></div>
+      <div class="ov-pi-src notr" id="ovPiSrc"></div>
+    </div>
   </div>
   <div class="ov-bottom">
+    <div class="ov-bars" aria-hidden="true"><i><b></b></i><i><b></b></i><i><b></b></i><i><b></b></i></div>
     <div class="ov-copy"><div class="ov-txt on" data-i="0"><h2><span>Everything Saudi.</span><span class="ov-acc">One Digital Experience.</span></h2><p>Your gateway to places, services and more.</p></div><div class="ov-txt" data-i="1"><h2><span>Your Journey</span><span class="ov-acc">Starts Here.</span></h2><p>Hajj and Umrah guides, travel tools and essential services.</p></div><div class="ov-txt" data-i="2"><h2><span>Discover More.</span><span class="ov-acc">Do More.</span></h2><p>Local businesses, shopping and useful tools in one app.</p></div><div class="ov-txt" data-i="3"><h2><span>Explore the</span><span class="ov-acc">Pi Ecosystem.</span></h2><p>Pi is a digital currency from the Pi Network app.</p></div></div>
     <button class="ov-start" type="button" onclick="ovEnd()"><span>Get Started</span><svg class="i"><use href="#i-arrow"/></svg></button>
     <p class="ov-legal">By continuing, you agree to the <a href="/terms.html">Terms of service</a> · <a href="/privacy.html">Privacy policy</a></p><p class="ov-ai"><span class="notr" dir="ltr">© 2026 DigitalSaudi</span></p>
@@ -1453,7 +1455,7 @@ header.scrolled{box-shadow:0 1px 0 var(--line),0 10px 24px -18px rgba(0,0,0,.6)}
       <button class="row" onclick="openItem('about')"><div class="ic">ℹ️</div><div class="tx"><b>About</b></div><span class="chev">›</span></button>
       <button class="row" onclick="location.href='/privacy.html'"><div class="ic">🔒</div><div class="tx"><b>Privacy policy</b></div><span class="chev">›</span></button>
       <button class="row" onclick="location.href='/terms.html'"><div class="ic">📄</div><div class="tx"><b>Terms of service</b></div><span class="chev">›</span></button>
-      <footer class="legal"><span class="notr" dir="ltr">digitalsaudi.pi · DigitalSaudi v6.7</span><br><span class="notr" dir="ltr">© 2026 DigitalSaudi.</span> <span>All rights reserved.</span><br><span>Independent app, not affiliated with the Government of Saudi Arabia or Pi Network.</span><br><a href="/terms.html">Terms of service</a> · <a href="/privacy.html">Privacy policy</a> · <a href="mailto:support.digitalsaudi.pi@gmail.com" class="notr">support.digitalsaudi.pi@gmail.com</a></footer>
+      <footer class="legal"><span class="notr" dir="ltr">digitalsaudi.pi · DigitalSaudi v6.8</span><br><span class="notr" dir="ltr">© 2026 DigitalSaudi.</span> <span>All rights reserved.</span><br><span>Independent app, not affiliated with the Government of Saudi Arabia or Pi Network.</span><br><a href="/terms.html">Terms of service</a> · <a href="/privacy.html">Privacy policy</a> · <a href="mailto:support.digitalsaudi.pi@gmail.com" class="notr">support.digitalsaudi.pi@gmail.com</a></footer>
     </section>
   </main>
 
@@ -2558,6 +2560,42 @@ body.panel-open #toast{bottom:calc(22px + env(safe-area-inset-bottom))}
 #app .sec{font-size:19px;font-weight:850;letter-spacing:-.01em;margin-top:26px}
 section.tab{overflow-x:clip}
 
+/* v6.8 — welcome film, clearer layout in the app's own colours:
+   the film fills the top (only its sharp part), the words sit on a clean app panel below. */
+#ovid{--ovs:#FFFFFF;--ovt:#0F1A14;--ova:#0A7A4B;--ovp:#4B5A52;--ovm:#6B7A72;--ovk:#E3EAE6;background:var(--ovs);color:var(--ovt)}
+[data-theme=dark] #ovid{--ovs:#0B1712;--ovt:#FFFFFF;--ova:#34D399;--ovp:#B8C6BF;--ovm:#8FA198;--ovk:rgba(255,255,255,.14)}
+#ovid.open,.intro-first #ovid{display:flex;flex-direction:column;align-items:center}
+#ovid.off{display:none!important}
+#ovid .ov-media{position:relative;flex:1 1 auto;min-height:220px;width:100%;max-width:480px;overflow:hidden;background:#06140D}
+/* zoom so only the top, sharp part of the film shows (its lower part is soft by design) */
+#ovid .ov-media video{position:absolute;top:0;bottom:auto;left:50%;right:auto;transform:translateX(-50%);height:calc(100% / .56);width:auto;min-width:100%;aspect-ratio:9/16;object-fit:cover;object-position:50% 0}
+#ovid .ov-media .ov-shade{position:absolute;inset:0;left:0;right:0;background:linear-gradient(180deg,rgba(0,0,0,.5) 0,rgba(0,0,0,0) 22%,rgba(0,0,0,0) 78%,rgba(0,0,0,.18) 100%)}
+#ovid .ov-media .ov-top{position:absolute;left:0;right:0;top:0}
+#ovid .ov-head{margin-top:2px}
+#ovid .ov-skip{background:rgba(255,255,255,.94);color:#0F1A14;border-color:transparent}
+#ovid .ov-icon{background:rgba(0,0,0,.38)}
+/* the panel */
+#ovid .ov-bottom{position:relative;left:auto;right:auto;bottom:auto;flex:0 0 auto;width:100%;max-width:480px;margin-top:-26px;z-index:2;background:var(--ovs);border-radius:26px 26px 0 0;padding:22px 22px calc(14px + env(safe-area-inset-bottom));box-shadow:0 -10px 30px -18px rgba(0,0,0,.35)}
+#ovid .ov-bars{margin:0 0 16px;gap:6px}
+#ovid .ov-bars i{height:4px;background:var(--ovk)}
+#ovid .ov-bars b{background:var(--ova)}
+#ovid .ov-copy{margin-bottom:18px}
+#ovid .ov-txt h2{color:var(--ovt);text-shadow:none;font-size:clamp(26px,7.4vw,34px);line-height:1.1}
+#ovid .ov-acc{color:var(--ova)}
+#ovid .ov-txt p{color:var(--ovp);font-size:15.5px;max-width:34ch}
+/* one clear action, visible from the start */
+#ovid .ov-start{opacity:1;transform:none;pointer-events:auto;background:#0A7A4B;box-shadow:0 10px 24px -12px rgba(10,122,75,.75);border-radius:16px}
+#ovid .ov-start:active{transform:scale(.985)}
+#ovid .ov-legal{color:var(--ovm);font-size:12px;margin-top:12px}
+#ovid .ov-legal a{color:var(--ova)}
+#ovid .ov-ai{color:var(--ovm);opacity:.85}
+#ovid .ov-start:focus-visible,#ovid .ov-legal a:focus-visible{outline-color:var(--ova)}
+/* scene extras stay inside the picture */
+#ovid .ov-media .ov-phone{top:calc(84px + env(safe-area-inset-top));width:auto;height:min(calc(100% - 104px - env(safe-area-inset-top)),330px)}
+#ovid .ov-media .ov-pi{top:calc(86px + env(safe-area-inset-top))}
+@media (max-height:680px){#ovid .ov-bottom{padding-top:18px}#ovid .ov-bars{margin-bottom:12px}#ovid .ov-txt h2{font-size:25px}#ovid .ov-txt p{font-size:14px;margin-top:6px}#ovid .ov-copy{margin-bottom:12px}#ovid .ov-start{height:50px}#ovid .ov-media .ov-pi{top:calc(70px + env(safe-area-inset-top))}}
+#ovid .ov-pi.none .ov-spark{display:none}
+
 </style>
 
 <script>
@@ -3309,7 +3347,7 @@ function openFeedback(subject){
 function sendFeedback(){
   const t = $('fbT').value, s = $('fbS').value, m = $('fbM').value;
   if(!m.trim()){ toast('Please write a message'); return; }
-  const body = m + '\n\n—\nApp: DigitalSaudi v6.7\nUser: ' + (piUser ? '@' + piUser.username : 'guest');
+  const body = m + '\n\n—\nApp: DigitalSaudi v6.8\nUser: ' + (piUser ? '@' + piUser.username : 'guest');
   location.href = 'mailto:' + CONTACT_EMAIL + '?subject=' + encodeURIComponent('[' + t + '] ' + (s || 'DigitalSaudi feedback')) + '&body=' + encodeURIComponent(body);
 }
 function editEcard(){
