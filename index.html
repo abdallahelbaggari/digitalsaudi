@@ -1318,7 +1318,7 @@ header.scrolled{box-shadow:0 1px 0 var(--line),0 10px 24px -18px rgba(0,0,0,.6)}
         <div class="chips" id="compChips"></div>
         <div class="chips" id="scoreViews"></div>
         <div id="scoreList"></div>
-        <p class="small" style="text-align:center;margin-top:8px">Data: football-data.org · Times shown in Saudi time (UTC+3)</p>
+        <p class="small" style="text-align:center;margin-top:8px">Times shown in Saudi time (UTC+3)</p>
       </div>
 
       <div id="live-markets" class="lv" style="display:none">
@@ -1331,7 +1331,7 @@ header.scrolled{box-shadow:0 1px 0 var(--line),0 10px 24px -18px rgba(0,0,0,.6)}
         </div>
         <h2 class="sec">Saudi Riyal rates <button onclick="openItem('converter')">Convert ›</button></h2>
         <div class="card" id="rateList"><div class="skeleton" style="margin:8px 0"></div><div class="skeleton" style="margin:8px 0"></div><div class="skeleton" style="margin:8px 0"></div></div>
-        <p class="small" style="text-align:center;margin-top:10px">Not financial advice · <a href="https://www.exchangerate-api.com" target="_blank" rel="noopener" style="color:inherit">Rates By Exchange Rate API</a></p>
+        <p class="small" style="text-align:center;margin-top:10px">Not financial advice · <a class="ds-credit" href="https://www.exchangerate-api.com" target="_blank" rel="noopener">Rates By Exchange Rate API</a></p>
       </div>
 
       <div id="live-events" class="lv" style="display:none">
@@ -1350,7 +1350,7 @@ header.scrolled{box-shadow:0 1px 0 var(--line),0 10px 24px -18px rgba(0,0,0,.6)}
     <!-- ===== EXPLORE ===== -->
     <section class="tab" id="tab-explore">
       <button class="hero near-hero" onclick="openMap('all', true)">
-        <div class="greet">OpenStreetMap · real places</div>
+        <div class="greet">Map</div>
         <h3 style="margin-bottom:6px"><svg class="i hero-i"><use href="#i-pin"/></svg>Explore near me</h3>
         <p class="small" style="color:#BFE6CF;position:relative;z-index:1">Hotels, food, mosques, hospitals, malls and more around you or any Saudi city.</p>
       </button>
@@ -1455,7 +1455,7 @@ header.scrolled{box-shadow:0 1px 0 var(--line),0 10px 24px -18px rgba(0,0,0,.6)}
       <button class="row" onclick="openItem('about')"><div class="ic">ℹ️</div><div class="tx"><b>About</b></div><span class="chev">›</span></button>
       <button class="row" onclick="location.href='/privacy.html'"><div class="ic">🔒</div><div class="tx"><b>Privacy policy</b></div><span class="chev">›</span></button>
       <button class="row" onclick="location.href='/terms.html'"><div class="ic">📄</div><div class="tx"><b>Terms of service</b></div><span class="chev">›</span></button>
-      <footer class="legal"><span class="notr" dir="ltr">digitalsaudi.pi · DigitalSaudi v6.8</span><br><span class="notr" dir="ltr">© 2026 DigitalSaudi.</span> <span>All rights reserved.</span><br><span>Independent app, not affiliated with the Government of Saudi Arabia or Pi Network.</span><br><a href="/terms.html">Terms of service</a> · <a href="/privacy.html">Privacy policy</a> · <a href="mailto:support.digitalsaudi.pi@gmail.com" class="notr">support.digitalsaudi.pi@gmail.com</a></footer>
+      <footer class="legal"><span class="notr" dir="ltr">digitalsaudi.pi · DigitalSaudi v6.9</span><br><span class="notr" dir="ltr">© 2026 DigitalSaudi.</span> <span>All rights reserved.</span><br><span>Independent app, not affiliated with the Government of Saudi Arabia or Pi Network.</span><br><a href="/terms.html">Terms of service</a> · <a href="/privacy.html">Privacy policy</a> · <a href="mailto:support.digitalsaudi.pi@gmail.com" class="notr">support.digitalsaudi.pi@gmail.com</a></footer>
     </section>
   </main>
 
@@ -2254,6 +2254,57 @@ section.tab{overflow-x:clip}
 .why-banner{margin:0 0 14px}
 footer.legal a,.ov-legal a,.st-legal a,.sp-legal a{display:inline-block;padding:9px 2px;margin:-6px 0}
 
+/* v6.9 — share sheet */
+.dss{position:fixed;inset:0;z-index:9600;display:flex;align-items:flex-end;justify-content:center;background:rgba(0,0,0,.45);opacity:0;transition:opacity .2s}
+.dss.open{opacity:1}
+.dss-box{width:100%;max-width:480px;background:var(--bg-card,#fff);color:var(--text);border-radius:24px 24px 0 0;padding:10px 18px calc(18px + env(safe-area-inset-bottom));transform:translateY(30px);transition:transform .25s}
+.dss.open .dss-box{transform:none}
+.dss-grab{width:40px;height:4px;border-radius:4px;background:var(--line,#DDE5E0);margin:0 auto 10px}
+.dss-h{display:flex;align-items:center;justify-content:space-between}
+.dss-h b{font-size:17px}
+.dss-x{width:36px;height:36px;border-radius:50%;border:0;background:var(--bg-soft,#EEF2EF);color:var(--text);font-size:15px;cursor:pointer}
+.dss-t{margin:4px 0 0;color:var(--text-2);font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dss-g{display:grid;grid-template-columns:repeat(4,1fr);gap:14px 6px;margin-top:16px}
+.dss-g button{display:flex;flex-direction:column;align-items:center;gap:7px;border:0;background:none;color:var(--text);cursor:pointer;padding:2px;font:inherit;min-width:0}
+.dss-g button span{width:54px;height:54px;border-radius:18px;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 14px -8px rgba(0,0,0,.45)}
+.dss-g button svg{width:28px;height:28px}
+.dss-g button small{font-size:12.5px;font-weight:600;text-align:center;line-height:1.2;overflow-wrap:anywhere}
+.dss-g button:active span{transform:scale(.94)}
+.dss-g button:focus-visible{outline:2px solid var(--accent,#0A7A4B);outline-offset:2px;border-radius:12px}
+/* discreet data credit (required by the rates provider) */
+a.ds-credit{color:inherit!important;text-decoration:none!important;opacity:.75;font-weight:400}
+.ds-credit-p{margin:10px 0 0;text-align:center;font-size:11.5px;color:var(--muted)}
+/* poster actions: one clear Share, then Save / Print */
+.po-acts{display:grid!important;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0}
+.po-acts .btn-primary{grid-column:1/-1}
+.po-acts .btn{width:100%;justify-content:center}
+/* v6.9 — Green guides */
+.g-head{margin:18px 4px 8px;font-size:12.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--accent,#0A7A4B)}
+.g-head:first-child{margin-top:4px}
+.g-alert{padding:12px 14px;border-radius:14px;background:#FFF4E5;color:#7A4A00;font-size:14.5px;line-height:1.45;margin:4px 0 14px;border:1px solid #F5D9A8}
+[data-theme=dark] .g-alert{background:rgba(227,179,65,.12);color:#F2D27A;border-color:rgba(227,179,65,.3)}
+.g-fines{border:1px solid var(--line);border-radius:14px;overflow:hidden;margin:8px 0 12px}
+.g-fines div{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:11px 14px;border-bottom:1px solid var(--line);font-size:14px}
+.g-fines div:last-child{border-bottom:0}
+.g-fines span{flex:1;color:var(--text-2)}
+.g-fines b{flex:none;color:#B42318;font-weight:800;text-align:end;max-width:46%}
+[data-theme=dark] .g-fines b{color:#FCA5A5}
+.g-calls{display:grid;grid-template-columns:repeat(auto-fit,minmax(96px,1fr));gap:8px;margin:8px 0 12px}
+.g-calls a{display:flex;flex-direction:column;gap:2px;padding:10px 12px;border-radius:14px;background:var(--bg-soft,#EEF2EF);color:var(--text);text-decoration:none}
+.g-calls b{font-size:20px;color:var(--accent,#0A7A4B)}
+.g-calls small{font-size:12px;line-height:1.3;color:var(--text-2)}
+.g-goals{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0 14px}
+.g-goals div{padding:12px;border-radius:14px;background:var(--bg-soft,#EEF2EF)}
+.g-goals div:last-child{grid-column:1/-1}
+.g-goals b{display:block;font-size:22px;color:var(--accent,#0A7A4B)}
+.g-goals span{font-size:13px;color:var(--text-2);line-height:1.35}
+.g-src2{margin-top:18px;padding-top:12px;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:6px;font-size:13px}
+.g-src2 a{color:var(--accent,#0A7A4B);text-decoration:none;font-weight:600}
+.g-src2 small{color:var(--muted);font-size:12px;margin-top:2px}
+.dss-g button:focus{outline:none}
+.dss-g button:focus-visible span{box-shadow:0 0 0 3px var(--bg-card,#fff),0 0 0 5px var(--accent,#0A7A4B)}
+.po-acts .btn{white-space:nowrap;padding-left:10px;padding-right:10px}
+
 </style>
 
 <script>
@@ -3005,7 +3056,7 @@ function openFeedback(subject){
 function sendFeedback(){
   const t = $('fbT').value, s = $('fbS').value, m = $('fbM').value;
   if(!m.trim()){ toast('Please write a message'); return; }
-  const body = m + '\n\n—\nApp: DigitalSaudi v6.8\nUser: ' + (piUser ? '@' + piUser.username : 'guest');
+  const body = m + '\n\n—\nApp: DigitalSaudi v6.9\nUser: ' + (piUser ? '@' + piUser.username : 'guest');
   location.href = 'mailto:' + CONTACT_EMAIL + '?subject=' + encodeURIComponent('[' + t + '] ' + (s || 'DigitalSaudi feedback')) + '&body=' + encodeURIComponent(body);
 }
 function editEcard(){
@@ -3390,14 +3441,14 @@ function renderMarkets(){
     const ch = p.change || 0; $('piChg').textContent = (ch >= 0 ? '▲ ' : '▼ ') + Math.abs(ch).toFixed(2) + '% 24h'; $('piChg').style.color = ch >= 0 ? '#86EFAC' : '#FCA5A5';
     $('piOther').textContent = (p.sar ? fmt(p.sar, 4) + ' SAR' : '') + (p.ngn ? ' · ₦' + fmt(p.ngn, 2) : '');
     $('piSpark').innerHTML = sparkSVG(p.spark, '#FFFFFF');   // white line on the green card; the badge shows up/down
-    $('piUpd').textContent = (p.stale ? 'Last known price' : '7-day chart · updated ' + ago(p.t)) + (p.src === 'CoinGecko' ? ' · Data: CoinGecko' : '');
+    $('piUpd').textContent = (p.stale ? 'Last known price' : '7-day chart · updated ' + ago(p.t)) + (p.src === 'CoinGecko' ? ' · CoinGecko' : '');
     if($('piSrc')) $('piSrc').textContent = 'PI · live price';
   } else { $('piUsd').textContent = '—'; $('piUpd').textContent = 'Pi price unavailable right now'; }
   const fx = store.get('fx', null);
   if(fx && fx.rates){
     const r = [['🇳🇬 NGN','NGN',2],['🇺🇸 USD','USD',4],['🇪🇺 EUR','EUR',4],['🇬🇧 GBP','GBP',4],['🇦🇪 AED','AED',4],['🇪🇬 EGP','EGP',3],['🇵🇰 PKR','PKR',2],['🇮🇳 INR','INR',2],['🇬🇭 GHS','GHS',3],['🌍 XOF','XOF',2]];
     $('rateList').innerHTML = '<div class="small" style="margin-bottom:4px">1 SAR equals</div>' + r.map(function(x){ return fx.rates[x[1]] ? `<div class="rate"><span>${x[0]}</span><b>${fmt(fx.rates[x[1]], x[2])}</b></div>` : ''; }).join('') +
-      (p && p.sar ? `<div class="rate" style="border:0"><span>π PI</span><b>${fmt(1 / p.sar, 4)}</b></div>` : '') + `<div class="small" style="margin-top:6px">FX updated ${ago(fx.t)} · <a href="https://www.exchangerate-api.com" target="_blank" rel="noopener">Rates By Exchange Rate API</a></div>`;
+      (p && p.sar ? `<div class="rate" style="border:0"><span>π PI</span><b>${fmt(1 / p.sar, 4)}</b></div>` : '') + `<div class="small" style="margin-top:6px">${esc(t('Updated'))} ${ago(fx.t)}</div>`;
   }
   // home ticker
   if(p && p.usd){ $('hPi').textContent = '$' + fmt(p.usd, 4); const ch = p.change || 0; $('hPiChg').innerHTML = `<span class="${ch >= 0 ? 'up' : 'down'}">${ch >= 0 ? '▲' : '▼'} ${Math.abs(ch).toFixed(2)}%</span> · 24h`; }
@@ -3869,8 +3920,8 @@ function openReceipt(id){
   showPanel('Receipt', `<div class="receipt"><div style="text-align:center;margin-bottom:14px"><div style="font-size:34px">🧾</div><b style="font-size:18px">DigitalSaudi</b><div style="color:#666;font-size:12px">Pi Network payment receipt</div></div>
     ${rl('Status', h.status.toUpperCase())}${rl('Item', esc(h.memo))}${rl('Amount', h.amount + ' π')}${rl('Paid by', piUser ? '@' + esc(piUser.username) : '—')}${rl('Date', new Date(h.done || h.at).toLocaleString('en-GB'))}${rl('Payment ID', esc(h.id))}${h.txid ? rl('Blockchain TX', esc(h.txid)) : ''}
     <div style="text-align:center;color:#666;font-size:12px;margin-top:14px">Thank you for supporting DigitalSaudi 💚</div></div>
-    <div class="p-actions" style="justify-content:center"><button class="btn btn-ghost btn-sm" onclick="copyText('${esc(h.txid || h.id)}')">📋 Copy ${h.txid ? 'TX ID' : 'payment ID'}</button></div>`, { id:'receipt' });
-  current.share = function(){ shareText('DigitalSaudi receipt', 'DigitalSaudi receipt\n' + h.memo + '\n' + h.amount + ' π · ' + h.status + '\nPayment: ' + h.id + (h.txid ? '\nTX: ' + h.txid : ''), location.origin); };
+    <div class="p-actions" style="justify-content:center"><button class="btn btn-primary btn-sm" onclick="current.share()">📤 Share receipt</button><button class="btn btn-ghost btn-sm" onclick="copyText('${esc(h.txid || h.id)}')">📋 Copy ${h.txid ? 'TX ID' : 'payment ID'}</button></div>`, { id:'receipt' });
+  current.share = function(){ shareText('DigitalSaudi receipt', '🧾 DigitalSaudi receipt\n' + h.memo + '\n' + h.amount + ' π · ' + String(h.status).toUpperCase() + '\n' + new Date(h.done || h.at).toLocaleString('en-GB') + '\nPayment ID: ' + h.id + (h.txid ? '\nBlockchain TX: ' + h.txid : ''), ''); };
 }
 function copyText(t){ if(navigator.clipboard) navigator.clipboard.writeText(t).then(function(){ toast('Copied'); }).catch(function(){ toast(t); }); else toast(t); }
 
@@ -4286,8 +4337,7 @@ function openMap(cat, nearMe, city){
     <div class="chips" id="mapCats">${PLACE_CATS.map(function(c){ return `<button class="chip ${c.id === mapState.cat ? 'on' : ''}" data-c="${c.id}" onclick="mapSetCat('${c.id}')">${c.ic} ${c.t}</button>`; }).join('')}</div>
     <div id="map"></div>
     <div class="small" id="mapInfo" style="margin-bottom:8px">Loading places…</div>
-    <div id="mapList"></div>
-    <p class="small" style="text-align:center;margin-top:10px">Map data & tiles © OpenStreetMap contributors. Places are community-mapped and may be incomplete.</p>`, { id:'map', share:false });
+    <div id="mapList"></div>`, { id:'map', share:false });
   panelCleanup = function(){ if(mapState.map){ mapState.map.remove(); mapState.map = null; } };
   loadLeaflet().then(function(){
     if(!$('map')) return;
@@ -4376,8 +4426,7 @@ function openPlace(id){
     <div class="card" style="margin-top:12px">${rows.length ? rows.map(function(r){ return `<div class="rate"><span>${r[0]}</span><b style="text-align:right;max-width:60%">${r[1]}</b></div>`; }).join('') : '<p class="small">No extra details listed for this place.</p>'}</div>
     <div class="p-actions"><button class="btn ${isSavedPlace(p.id) ? 'btn-gold' : 'btn-primary'} btn-sm" id="savePl" onclick="toggleSavePlace('${p.id}')">${isSavedPlace(p.id) ? '★ Saved' : '☆ Save place'}</button>
     <a class="btn btn-ghost btn-sm" href="https://www.google.com/maps/dir/?api=1&destination=${p.lat},${p.lng}">🧭 Directions</a>
-    ${mapState.map !== undefined ? `<button class="btn btn-ghost btn-sm" onclick="openMap()">‹ Back to map</button>` : ''}</div>
-    <p class="small" style="margin-top:10px">Directions open your maps app. Details come from OpenStreetMap and may be out of date.</p>`, { id:'place' });
+    ${mapState.map !== undefined ? `<button class="btn btn-ghost btn-sm" onclick="openMap()">‹ Back to map</button>` : ''}</div>`, { id:'place' });
   current.share = function(){ shareText(p.name, p.name + ' — ' + placeSub(p) + '\nhttps://www.openstreetmap.org/?mlat=' + p.lat + '&mlon=' + p.lng + '#map=18/' + p.lat + '/' + p.lng, location.origin); };
   $('pShare').classList.add('on');
 }
@@ -5538,15 +5587,11 @@ function makePoster(){
     btn.disabled = false; btn.textContent = '🔄 Update poster';
     if(!$('poOut')) return;
     $('poOut').innerHTML = `<img src="${url}" alt="Accept Pi poster" style="width:100%;border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,.35);display:block">
-      <p class="small" style="text-align:center;margin:8px 0">QR opens: <b>${qp.mode === 'wallet' ? 'your Pi wallet address (scan in Pi Wallet)' : 'your DigitalSaudi pay page'}</b> · tested scannable</p>
-      <div class="p-actions" style="justify-content:center">
-        <button class="btn btn-primary btn-sm" onclick="posterShare()">📤 Share image</button>
-        <button class="btn btn-ghost btn-sm" onclick="posterDownload()">⬇️ Save PNG</button>
-        ${(POSTER_SIZES[d.size] || {}).pdf ? '<button class="btn btn-ghost btn-sm" onclick="posterPDF()">🖨️ Print PDF</button>' : ''}
-        <button class="btn btn-ghost btn-sm" onclick="shareText('${esc(d.name).replace(/'/g, '&#39;')} accepts Pi', 'Pay ${esc(d.name).replace(/'/g, '&#39;')} with Pi:', POSTER_LAST.link)">🔗 Share pay link</button>
-        <button class="btn btn-ghost btn-sm" onclick="copyText(POSTER_LAST.link)">📋 Copy link</button>
+      <div class="p-actions po-acts">
+        <button class="btn btn-primary" onclick="posterShare()">📤 Share</button>
+        <button class="btn btn-ghost" onclick="posterDownload()">⬇️ Save image</button>
+        ${(POSTER_SIZES[d.size] || {}).pdf ? '<button class="btn btn-ghost" onclick="posterPDF()">🖨️ Print PDF</button>' : ''}
       </div>
-      <p class="small" style="text-align:center">If saving doesn't start, long-press the image and choose “Save image”.</p>
       <button class="row" onclick="openItem('addBusiness')"><div class="ic">🏪</div><div class="tx"><b>List your business on the Pi map</b><small>Free · customers find you in Explore › Pi merchants</small></div><span class="chev">›</span></button>`;
     award('piMerchant');
   }).catch(function(){ btn.disabled = false; if($('poOut')) $('poOut').innerHTML = '<p class="small">The poster maker could not load. Check your connection and try again.</p>'; });
@@ -6624,7 +6669,7 @@ PANELS.converter = function(){
         <div><span>Rate used</span><b>Mid-market</b></div>
         <div><span>Rates updated</span><b id="wxUpd">—</b></div>
       </div>
-      <div class="note">Banks and exchange shops add their own margin to this rate. Compare a few before you exchange, and ask the total you'll receive.</div>
+      <div class="note">Banks and exchange shops add their own margin to this rate. Compare a few before you exchange, and ask the total you'll receive.</div><p class="ds-credit-p"><a class="ds-credit" href="https://www.exchangerate-api.com" target="_blank" rel="noopener">Rates By Exchange Rate API</a></p>
     </div>`, { id:'converter' });
   ensureRates().then(wxCalc); wxCalc();
   setTimeout(function(){ const i = $('wxAmt'); if(i){ i.focus(); i.select(); } }, 350);
@@ -6640,7 +6685,7 @@ function wxCalc(){
   const fx = store.get('fx', null), pi = store.get('pi', null), stamps = [];
   if(fx && f !== 'PI' || fx && t !== 'PI') stamps.push(ago(fx.t));
   if((f === 'PI' || t === 'PI') && pi) stamps[0] = 'Pi ' + ago(pi.t);
-  $('wxUpd').textContent = (stamps[0] || 'offline') + (fx ? ' · Rates By Exchange Rate API' : '');
+  $('wxUpd').textContent = stamps[0] || 'offline';
 }
 function wxSwap(){
   const f = $('wxFrom'), t = $('wxTo'), v = f.value; f.value = t.value; t.value = v;
@@ -6776,7 +6821,7 @@ function srAnswers(q){
     if(p && p.usd) out.push(`<button class="sr-answer" onclick="srGo('live','markets')"><span class="sa-ic">${ico('pi')}</span><span class="sa-tx"><small>Pi Network · live</small><b>$${fmt(p.usd, 4)} <span class="${(p.change || 0) >= 0 ? 'up' : 'down'}" style="font-size:14px">${(p.change || 0) >= 0 ? '▲' : '▼'} ${Math.abs(p.change || 0).toFixed(2)}%</span></b><small>${p.sar ? fmt(p.sar, 4) + ' SAR · ' : ''}open markets ›</small></span></button>`);
   }
   // 4) places near me
-  SR_PLACES.forEach(function(p){ if(p[0].test(q)) out.push(`<button class="sr-answer sr-slim" onclick="srGo('map','${p[1]}')"><span class="sa-ic">${ico('pin')}</span><span class="sa-tx"><b>${p[2]} near you</b><small>Open the map · OpenStreetMap</small></span></button>`); });
+  SR_PLACES.forEach(function(p){ if(p[0].test(q)) out.push(`<button class="sr-answer sr-slim" onclick="srGo('map','${p[1]}')"><span class="sa-ic">${ico('pin')}</span><span class="sa-tx"><b>${p[2]} near you</b><small>Open the map</small></span></button>`); });
   return out.slice(0, 3).join('');
 }
 openSearch = function(){
@@ -7332,7 +7377,7 @@ function renderHeroPi(){
   chg.textContent = (up ? '▲ ' : '▼ ') + Math.abs(ch).toFixed(2) + '% · 24h';
   const sar = p.sar || (p.usd * 3.75);
   sub.textContent = '≈ ' + fmt(sar, 4) + ' SAR  ·  1 SAR ≈ ' + fmt(1 / sar, 2) + ' π';
-  if(src) src.textContent = (p.stale ? t('Last known price') : '') + (p.src === 'CoinGecko' ? (p.stale ? ' · ' : '') + 'Data: CoinGecko' : '');   // exchange names hidden; CoinGecko requires a credit
+  if(src) src.textContent = (p.stale ? t('Last known price') : '') + '';   // exchange names hidden; CoinGecko requires a credit
   if(svg){
     const a = (p.spark || []).map(Number).filter(function(x){ return isFinite(x); });
     if(a.length < 3){ svg.innerHTML = ''; svg.classList.add('empty'); return; }
@@ -7663,7 +7708,7 @@ function srAllLangs(text){
     const ch = +p.change || 0, up = ch >= 0; chg.className = up ? 'up' : 'down'; chg.textContent = (up ? '▲ ' : '▼ ') + Math.abs(ch).toFixed(2) + '% · 24h';
     const sv = p.sar || p.usd * 3.75;
     sar.textContent = '≈ ' + fmt(sv, 4) + ' SAR';
-    src.textContent = t('Updated') + ' ' + fmtTime(p.upd || p.t) + ' ' + t('Saudi time') + (p.src === 'CoinGecko' ? ' · Data: CoinGecko' : '');
+    src.textContent = t('Updated') + ' ' + fmtTime(p.upd || p.t) + ' ' + t('Saudi time');
     const a = (p.spark || []).map(Number).filter(isFinite);
     if(a.length > 2){
       const mn = Math.min.apply(null, a), mx = Math.max.apply(null, a), r = (mx - mn) || 1;
@@ -9074,7 +9119,7 @@ function dsOpenPiWallet(){
     if(!m._dsCluster){ m._dsCluster = true; m.on('zoomend', cluster); }
     cluster();
     // say where the places come from, so people know they are real
-    const info = $('mapInfo'); if(info && !/OpenStreetMap/.test(info.textContent)) info.insertAdjacentHTML('beforeend', ' <span class="small">· ' + esc(t('real places from OpenStreetMap')) + '</span>');
+    const info = $('mapInfo'); 
     return r;
   };
 })();
@@ -9414,6 +9459,282 @@ function dsBadgesAll(){ const g = $('badgeGrid'); if(!g) return; const all = g.c
     ['Show fewer','عرض أقل','کم دکھائیں','Tampilkan lebih sedikit','Nuna kaɗan','Afficher moins']
   ];
   R.forEach(function(r){ LANG_ORDER.slice(1).forEach(function(l, i){ if(I18N[l] && !I18N[l][r[0]]) I18N[l][r[0]] = r[i + 1]; }); });
+})();
+
+/* ==========================================================================
+   v6.9 — one share sheet for the whole app: WhatsApp, Telegram, Facebook, X,
+   SMS, Email, Copy link and the phone's own share menu (with the image when the
+   phone supports it). Pi Browser has no share menu of its own, so this always works.
+   ========================================================================== */
+(function(){
+  const R = [
+    ["Share","مشاركة","شیئر کریں","Bagikan","Raba","Partager"],
+    ["Share image","مشاركة الصورة","تصویر شیئر کریں","Bagikan gambar","Raba hoto","Partager l’image"],
+    ["Copy link","نسخ الرابط","لنک کاپی کریں","Salin tautan","Kwafi mahaɗa","Copier le lien"],
+    ["Copy text","نسخ النص","متن کاپی کریں","Salin teks","Kwafi rubutu","Copier le texte"],
+    ["More apps","تطبيقات أخرى","مزید ایپس","Aplikasi lain","Wasu manhajoji","Autres applis"],
+    ["Save image","حفظ الصورة","تصویر محفوظ کریں","Simpan gambar","Ajiye hoto","Enregistrer l’image"],
+    ["Email","البريد","ای میل","Email","Imel","E-mail"],
+    ["Share receipt","مشاركة الإيصال","رسید شیئر کریں","Bagikan struk","Raba rasit","Partager le reçu"],
+    ["Share to","مشاركة عبر","شیئر کریں بذریعہ","Bagikan ke","Raba ta","Partager via"],
+    ["Copied","تم النسخ","کاپی ہو گیا","Disalin","An kwafa","Copié"],
+    ["Close","إغلاق","بند کریں","Tutup","Rufe","Fermer"],
+    ["accepts Pi","يقبل Pi","Pi قبول کرتا ہے","menerima Pi","yana karɓar Pi","accepte Pi"],
+    ["Scan the code or open:","امسح الرمز أو افتح:","کوڈ اسکین کریں یا کھولیں:","Pindai kode atau buka:","Duba lambar ko buɗe:","Scannez le code ou ouvrez :"],
+    ["Pay with Pi","ادفع بـ Pi","Pi سے ادائیگی کریں","Bayar dengan Pi","Biya da Pi","Payer en Pi"]
+  ];
+  R.forEach(function(r){ LANG_ORDER.slice(1).forEach(function(l, i){ if(r[i + 1]) I18N[l][r[0]] = r[i + 1]; }); });
+})();
+
+const DSS_IC = {
+  wa:'<path d="M12 3.2a8.7 8.7 0 0 0-7.5 13.1L3.3 20.8l4.6-1.2A8.7 8.7 0 1 0 12 3.2z" fill="none" stroke="#fff" stroke-width="1.7"/><path d="M9.1 7.9c.2-.4.4-.4.7-.4h.5c.2 0 .4 0 .6.5l.7 1.7c.1.2 0 .4-.1.6l-.5.6c-.1.1-.2.3 0 .5.4.8 1.6 2 2.6 2.4.2.1.4.1.5-.1l.6-.7c.2-.2.3-.2.6-.1l1.6.8c.2.1.4.2.4.4 0 .4-.1 1.1-.6 1.5-.5.4-1.4.7-2.6.3-1.6-.6-3.6-2.3-4.4-3.9-.7-1.3-.6-2.4-.6-2.6z" fill="#fff"/>',
+  tg:'<path d="M19.6 5.2 3.9 11.3c-.7.3-.7 1.1 0 1.3l3.9 1.2 1.5 4.6c.2.6.9.7 1.3.3l2.2-2 3.9 2.9c.5.4 1.2.1 1.3-.5l2.6-12.8c.2-.8-.5-1.4-1.1-1.1z" fill="#fff"/><path d="m8 13.6 8.6-5.5-6.6 6.6-.3 3" fill="none" stroke="#229ED9" stroke-width="1.2"/>',
+  fb:'<path d="M13.4 20v-6.6h2.3l.4-2.7h-2.7V9c0-.8.3-1.3 1.4-1.3h1.4V5.3c-.3 0-1.1-.1-2.1-.1-2.1 0-3.4 1.3-3.4 3.6v1.9H8.4v2.7h2.3V20z" fill="#fff"/>',
+  x:'<path d="M5 5h3.6l3.6 4.9L16.4 5h2.2l-5.4 6.2L19.2 19h-3.6l-3.9-5.3L7 19H4.8l5.8-6.6z" fill="#fff"/>',
+  sms:'<path d="M5 5.5h14a1.5 1.5 0 0 1 1.5 1.5v8A1.5 1.5 0 0 1 19 16.5H10l-4.5 3.2v-3.2H5A1.5 1.5 0 0 1 3.5 15V7A1.5 1.5 0 0 1 5 5.5z" fill="#fff"/><circle cx="8.5" cy="11" r="1" fill="#34C759"/><circle cx="12" cy="11" r="1" fill="#34C759"/><circle cx="15.5" cy="11" r="1" fill="#34C759"/>',
+  mail:'<rect x="3.5" y="6" width="17" height="12" rx="2" fill="#fff"/><path d="m4.5 7.5 7.5 5.5 7.5-5.5" fill="none" stroke="#5F6B66" stroke-width="1.6"/>',
+  copy:'<rect x="8.5" y="8.5" width="11" height="11" rx="2" fill="none" stroke="#fff" stroke-width="1.8"/><path d="M15.5 8.5V6a1.5 1.5 0 0 0-1.5-1.5H6A1.5 1.5 0 0 0 4.5 6v8A1.5 1.5 0 0 0 6 15.5h2.5" fill="none" stroke="#fff" stroke-width="1.8"/>',
+  more:'<circle cx="6" cy="12" r="1.8" fill="#fff"/><circle cx="12" cy="12" r="1.8" fill="#fff"/><circle cx="18" cy="12" r="1.8" fill="#fff"/>',
+  img:'<rect x="4" y="5" width="16" height="14" rx="2.5" fill="none" stroke="#fff" stroke-width="1.8"/><circle cx="9" cy="10" r="1.6" fill="#fff"/><path d="m5 17 4.5-4.5 3 3 2.5-2.5L19 17" fill="none" stroke="#fff" stroke-width="1.8" stroke-linejoin="round"/>',
+  save:'<path d="M12 4.5v10M7.5 10.5 12 15l4.5-4.5M5 19.5h14" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>'
+};
+function dsOpenExt(url){
+  if(/^(sms|mailto):/.test(url)){ location.href = url; return; }
+  try{ if(window.Pi && typeof window.Pi.openUrlInSystemBrowser === 'function'){ window.Pi.openUrlInSystemBrowser(url); return; } }catch(e){}
+  const w = window.open(url, '_blank', 'noopener'); if(!w) location.href = url;
+}
+function dsCloseShare(){
+  const el = $('dss'); if(!el) return;
+  el.classList.remove('open'); setTimeout(function(){ if(el.parentNode && !el.classList.contains('open')) el.remove(); }, 220);
+}
+/* o = { title, text, url, file?, onSave? } */
+function dsShareSheet(o){
+  dsCloseShare(); const old = $('dss'); if(old) old.remove();
+  const url = o.url || '', text = o.text || o.title || '';
+  const msg = url && text.indexOf(url) < 0 ? text + '\n' + url : text;
+  const E = encodeURIComponent;
+  const canFile = !!(o.file && navigator.canShare && (function(){ try{ return navigator.canShare({ files:[o.file] }); }catch(e){ return false; } })());
+  const opts = [];
+  if(canFile) opts.push(['img', t('Share image'), '#0A7A4B', function(){ navigator.share({ files:[o.file], title:o.title || '', text:msg }).catch(function(){}); }]);
+  opts.push(['wa', 'WhatsApp', '#25D366', function(){ dsOpenExt('https://wa.me/?text=' + E(msg)); }]);
+  opts.push(['tg', 'Telegram', '#229ED9', function(){ dsOpenExt('https://t.me/share/url?url=' + E(url || location.origin) + '&text=' + E(url ? text : msg)); }]);
+  if(url) opts.push(['fb', 'Facebook', '#1877F2', function(){ dsOpenExt('https://www.facebook.com/sharer/sharer.php?u=' + E(url)); }]);
+  opts.push(['x', 'X', '#111111', function(){ dsOpenExt('https://twitter.com/intent/tweet?text=' + E(url ? text : msg) + (url ? '&url=' + E(url) : '')); }]);
+  opts.push(['sms', 'SMS', '#34C759', function(){ dsOpenExt('sms:?&body=' + E(msg)); }]);
+  opts.push(['mail', t('Email'), '#5F6B66', function(){ dsOpenExt('mailto:?subject=' + E(o.title || 'DigitalSaudi') + '&body=' + E(msg)); }]);
+  opts.push(['copy', t(url ? 'Copy link' : 'Copy text'), '#0F5434', function(){ const v = url || msg; if(navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(v).then(function(){ toast(t('Copied')); }, function(){ toast(v); }); else toast(v); }]);
+  if(o.onSave) opts.push(['save', t('Save image'), '#946C0A', o.onSave]);
+  if(navigator.share && !canFile) opts.push(['more', t('More apps'), '#6B7A72', function(){ navigator.share({ title:o.title || '', text:text, url:url || undefined }).catch(function(){}); }]);
+  document.body.insertAdjacentHTML('beforeend', `<div class="dss" id="dss" role="dialog" aria-modal="true" aria-label="${esc(t('Share'))}">
+    <div class="dss-box"><div class="dss-grab"></div>
+      <div class="dss-h"><b>${esc(t('Share to'))}</b><button class="dss-x" onclick="dsCloseShare()" aria-label="${esc(t('Close'))}">✕</button></div>
+      ${o.title ? `<p class="dss-t notr">${esc(o.title)}</p>` : ''}
+      <div class="dss-g">${opts.map(function(x, i){ return `<button data-i="${i}"><span style="background:${x[2]}"><svg viewBox="0 0 24 24" aria-hidden="true">${DSS_IC[x[0]]}</svg></span><small>${esc(x[1])}</small></button>`; }).join('')}</div>
+    </div></div>`);
+  const el = $('dss');
+  el.addEventListener('click', function(e){
+    if(e.target === el) return dsCloseShare();
+    const b = e.target.closest('button[data-i]'); if(!b) return;
+    const f = opts[+b.dataset.i]; dsCloseShare(); if(f) f[3]();
+  });
+  requestAnimationFrame(function(){ el.classList.add('open'); });
+}
+document.addEventListener('keydown', function(e){ if(e.key === 'Escape' && $('dss')) dsCloseShare(); });
+
+/* every Share button in the app now opens the sheet */
+shareText = function(title, text, url){ dsShareSheet({ title:title, text:text, url:url }); };
+
+/* poster: the sheet shares the image itself where the phone allows it, and always offers the pay link */
+posterShare = function(){
+  if(!POSTER_LAST) return;
+  const text = POSTER_LAST.d.name + ' ' + t('accepts Pi') + ' — ' + t('Scan the code or open:');
+  posterFile().then(function(blob){
+    const f = blob && typeof File !== 'undefined' ? new File([blob], posterFileName(), { type:'image/png' }) : null;
+    dsShareSheet({ title:POSTER_LAST.d.name + ' · ' + t('Pay with Pi'), text:text, url:POSTER_LAST.link, file:f, onSave:posterDownload });
+  });
+};
+
+/* ==========================================================================
+   v6.9 — Green Saudi: practical, checked knowledge (October 2026)
+   Safety outdoors (floods, dust, heat) · rules & fines (NCVC) · camping ·
+   your electricity bill · Saudi Green Initiative · how to report.
+   Every figure below comes from the official or press source linked in the guide.
+   ========================================================================== */
+if(typeof EMOJI_ICON !== 'undefined'){ Object.assign(EMOJI_ICON, { '🌧️':'drop', '🌪️':'weather', '🌡️':'sun', '⚖️':'shield', '⛺':'dunes', '🧾':'receipt', '🌳':'leaf' }); }
+const GR_CHECKED = 'October 2026';
+function grSrc(list){
+  return `<div class="g-src2"><b>${esc(t('Official sources'))}</b>${list.map(function(s){ return `<a href="${s[1]}" target="_blank" rel="noopener">${esc(s[0])} ↗</a>`; }).join('')}<small>${esc(t('Checked'))} ${GR_CHECKED} · ${esc(t('Rules and amounts can change — follow official instructions.'))}</small></div>`;
+}
+function grFine(rows){
+  return `<div class="g-fines">${rows.map(function(r){ return `<div><span>${r[0]}</span><b class="notr" dir="ltr">${r[1]}</b></div>`; }).join('')}</div>`;
+}
+function grCall(list){
+  return `<div class="g-calls">${list.map(function(c){ return `<a href="tel:${c[0]}"><b class="notr" dir="ltr">${c[0]}</b><small>${esc(t(c[1]))}</small></a>`; }).join('')}</div>`;
+}
+const GR_NUM = [['911','Emergency (Riyadh, Makkah, Eastern Province)'],['998','Civil Defence'],['997','Ambulance (Red Crescent)']];
+
+const GR_GUIDES = {
+  floodSafe:{ t:'Flash floods & heavy rain', ic:'🌧️', s:'Wadis, driving, what to do', body:function(){ return `
+    <div class="g-alert">⚠️ <b>Never drive or walk into a flowing wadi.</b> Thirty centimetres of moving water can carry a car away.</div>
+    <h4>Before the rain</h4><ul>
+      <li>Watch the National Center for Meteorology (NCM) warnings and Civil Defence alerts, and turn on emergency alerts on your phone.</li>
+      <li>Avoid camping or parking in valley beds (wadis) and low ground, even if the sky above you is clear. Rain far away can still flood the wadi.</li>
+      <li>Clear roof drains and move valuables and cars off low ground.</li></ul>
+    <h4>On the road</h4><ul>
+      <li>If water covers the road, <b>turn around</b> and take another route or wait. Do not follow other cars through it.</li>
+      <li>Slow down and leave a bigger gap after rain: roads are slippery and visibility drops.</li>
+      <li>If your car stalls in rising water, leave it and move to higher ground.</li></ul>
+    <h4>The law</h4>
+    ${grFine([['Crossing valleys or flooded areas during rain (traffic violation)', 'up to SAR 10,000']])}
+    <h4>In an emergency</h4>${grCall(GR_NUM)}
+    ${grSrc([['Civil Defence safety instructions (Gulf News, Sep 2026)', 'https://gulfnews.com/world/gulf/saudi/saudi-arabia-issues-safety-alert-as-thunderstorms-threaten-most-regions-through-friday-1.500690095'], ['SAR 10,000 fine for crossing flooded valleys (Gulf News)', 'https://gulfnews.com/world/gulf/saudi/saudi-arabia-7-people-trapped-in-cars-during-rains-rescued-they-now-face-sr10000-fine-each-1.95387903'], ['National Center for Meteorology', 'https://ncm.gov.sa']])}`; } },
+
+  dustSafe:{ t:'Dust & sandstorms', ic:'🌪️', s:'Driving, home and breathing', body:function(){ return `
+    <div class="g-alert">🚗 <b>If you can hardly see, leave the road.</b> Signal, pull fully off the carriageway, stop and wait.</div>
+    <h4>Driving</h4><ul>
+      <li>Slow down early and double your following distance.</li>
+      <li>Switch on dipped headlights. Don't use high beam, because it reflects off the dust.</li>
+      <li>Don't overtake or change lanes suddenly.</li>
+      <li>Clean the windscreen and lights before speeding up again.</li></ul>
+    <h4>At home and outside</h4><ul>
+      <li>Close windows and doors and set the AC to recirculate.</li>
+      <li>Avoid outdoor exercise during the storm. Children, older people and anyone with asthma or breathing problems should stay inside.</li>
+      <li>Outside, cover your nose and mouth with a mask or a damp cloth and protect your eyes.</li>
+      <li>Follow NCM visibility warnings, which often come a day ahead.</li></ul>
+    ${grSrc([['NCM visibility warnings (Gulf News, Jul 2025)', 'https://gulfnews.com/world/gulf/saudi/saudi-arabia-braces-for-week-long-dust-storms-ncm-issues-visibility-warning-1.500183592'], ['National Center for Meteorology', 'https://ncm.gov.sa']])}`; } },
+
+  heatSafe:{ t:'Summer heat safety', ic:'🌡️', s:'Signs of heat illness & first aid', body:function(){ return `
+    <div class="g-alert">☀️ <b>Avoid direct sun from 10 am to 4 pm</b> in summer, and drink water regularly even when you don't feel thirsty.</div>
+    <h4>Prevent it</h4><ul>
+      <li>Wear light, loose, light-coloured clothes and use an umbrella or hat.</li>
+      <li>Don't walk on hot surfaces barefoot. Plan outdoor work and walks for early morning or after sunset.</li>
+      <li><b>Never leave children or pets in a parked car</b>, not even for a few minutes.</li></ul>
+    <h4>Heat exhaustion: warning signs</h4>
+    <p>Heavy sweating, pale and cool skin, headache, dizziness or fainting, nausea or vomiting, muscle cramps, weakness and a weak pulse.</p>
+    <h4>What to do</h4><ol>
+      <li>Move the person to a cool, shaded place.</li>
+      <li>Loosen their clothes.</li>
+      <li>Put cold compresses on the neck and armpits and spray the body with water.</li>
+      <li>Give cool water to drink if they are awake.</li></ol>
+    <p><b>Get medical help</b> if they vomit, symptoms get worse or last more than an hour. If the person is confused, collapses or stops sweating with hot skin, call an ambulance straight away.</p>
+    ${grCall([['997','Ambulance (Red Crescent)'],['911','Emergency (Riyadh, Makkah, Eastern Province)'],['937','Ministry of Health advice line']])}
+    ${grSrc([['Ministry of Health — heat exhaustion first aid', 'https://www.moh.gov.sa/en/HealthAwareness/EducationalContent/Firstaid/Pages/012.aspx'], ['Ministry of Health — heat precautions (Jun 2025)', 'https://www.moh.gov.sa/en/ministry/mediacenter/news/pages/news-2025-06-3-001.aspx']])}`; } },
+
+  envFines:{ t:'Environment rules & fines', ic:'⚖️', s:'Trees, firewood, parks, camping', body:function(){ return `
+    <p>Saudi Arabia protects its trees, rangelands and national parks with strict fines. The amounts below are for a <b>first offence</b>; repeat offences cost more, and fines double for rare trees.</p>
+    <h4>Trees and plants</h4>
+    ${grFine([['Cutting, uprooting or selling a tree from vegetation land', 'SAR 10,000 per tree'], ['The same inside a protected reserve', 'SAR 20,000 per tree'], ['Cutting a shrub', 'SAR 3,000 per shrub'], ['Burning a tree or pouring diesel on it', 'SAR 10,000 per tree']])}
+    <h4>Firewood and charcoal</h4>
+    ${grFine([['Collecting, transporting, storing or selling local firewood or charcoal', 'SAR 5,000 per m³'], ['Using local firewood in a restaurant, kitchen or bakery', 'SAR 10,000 per m³']])}
+    <p class="small">Buy licensed or imported charcoal and firewood instead.</p>
+    <h4>Forests and national parks</h4>
+    ${grFine([['Lighting a fire outside the designated areas', 'SAR 1,000'], ['Leaving, burying or burning rubbish', 'SAR 500'], ['Camping without a licence', 'SAR 500 per camp'], ['Damaging facilities, signs or fences', 'SAR 1,000'], ['Driving into protected meadows or floodplains', 'SAR 500 per vehicle']])}
+    <p>Serious cases (harming trees in protected areas) can go to court, with up to <b>10 years in prison or a fine of up to SAR 30 million</b>.</p>
+    <h4>Report a violation</h4>${grCall([['911','Riyadh, Makkah, Eastern Province'],['999','Other regions'],['996','Other regions']])}
+    ${grSrc([['National Center for Vegetation Cover (NCVC) — violations and penalties', 'https://ncvc.gov.sa/en/digitalKnowledge/Violation/Pages/default.aspx'], ['How to report environmental violations (Arab News, Apr 2025)', 'https://www.arabnews.com/saudi-arabia/saudi-arabia-cracks-down-on-environmental-violators-2595835']])}`; } },
+
+  campSafe:{ t:'Camping & desert trips', ic:'⛺', s:'Plan safely, leave no trace', body:function(){ return `
+    <h4>Before you go</h4><ul>
+      <li>Tell someone where you are going and when you'll be back.</li>
+      <li>Take more water than you think you need (several litres per person per day), a full tank of fuel, a spare tyre, a charged power bank and an offline map.</li>
+      <li>Check the weather. Don't set up camp in a wadi bed, because rain far away can flood it.</li>
+      <li>Camping inside a forest or national park needs a licence. Use the official campsites.</li></ul>
+    <h4>At the camp</h4><ul>
+      <li>Light fires only where allowed, and only with licensed or imported charcoal or firewood. Collecting local wood or cutting trees is a serious offence.</li>
+      <li>Put fires out completely with water and sand before you sleep or leave.</li>
+      <li>Keep vehicles on existing tracks, not across meadows or plants.</li></ul>
+    <h4>When you leave</h4><ul>
+      <li>Take all your rubbish home or to a bin. Don't bury or burn it.</li>
+      <li>Leave the place as you found it, or cleaner.</li></ul>
+    ${grFine([['Camping in a forest or national park without a licence', 'SAR 500 per camp'], ['Fire outside designated areas', 'SAR 1,000'], ['Leaving or burning rubbish', 'SAR 500'], ['Local firewood', 'SAR 5,000 per m³']])}
+    <p class="small">Amounts are for a first offence; see “Environment rules & fines” for more.</p>
+    <h4>In an emergency</h4>${grCall(GR_NUM)}
+    ${grSrc([['National Center for Vegetation Cover (NCVC) — violations and penalties', 'https://ncvc.gov.sa/en/digitalKnowledge/Violation/Pages/default.aspx']])}`; } },
+
+  billGuide:{ t:'Your electricity bill explained', ic:'🧾', s:'Tariffs and how to pay less', body:function(){ return `
+    <h4>What you pay (homes)</h4>
+    ${grFine([['First 6,000 kWh in a month', '18 halalas per kWh'], ['Every kWh above 6,000', '30 halalas per kWh'], ['VAT on the bill', '15%']])}
+    <p>So the last kWh of a very high summer bill costs about <b>67% more</b> than the first ones. Cutting the peak months saves the most.</p>
+    <h4>Where the power goes</h4>
+    <p>In Saudi homes, air conditioning is usually the largest part of the bill, especially from May to September.</p>
+    <h4>Pay less</h4><ol>
+      <li>Set the AC to 24°C and use the fan with it. Every degree lower makes the AC work harder.</li>
+      <li>Clean AC filters every month in summer.</li>
+      <li>Close curtains on sunny windows and seal gaps around doors and windows.</li>
+      <li>Turn off the AC in empty rooms, and use a timer at night.</li>
+      <li>When buying an AC or appliance, choose more stars on the Saudi energy label.</li>
+      <li>Read your meter or bill in the SEC app each month, so a high bill is never a surprise.</li></ol>
+    <button class="btn btn-primary" style="width:100%;margin-top:6px" onclick="openItem('energyCalc')">⚡ ${esc(t('Estimate my bill'))}</button>
+    ${grSrc([['Residential tariffs unchanged (Saudi Gazette, Jun 2025)', 'https://saudigazette.com.sa/article/652853'], ['Saudi Electricity Company', 'https://www.se.com.sa']])}`; } },
+
+  sgiGuide:{ t:'Saudi Green Initiative', ic:'🌳', s:'The national goals, in brief', body:function(){ return `
+    <p>The Saudi Green Initiative (SGI) is the Kingdom's national plan for a greener future. Its main goals:</p>
+    <div class="g-goals">
+      <div><b>10 billion</b><span>trees planted across Saudi Arabia</span></div>
+      <div><b>30%+</b><span>of land and sea protected</span></div>
+      <div><b>50%</b><span>of electricity from renewables by 2030</span></div>
+      <div><b>278 Mt</b><span>CO₂ cut each year by 2030</span></div>
+      <div><b>2060</b><span>net-zero target</span></div></div>
+    <h4>How you can take part</h4><ul>
+      <li>Protect trees and plants: never cut or burn them, and use licensed charcoal.</li>
+      <li>Save electricity and water at home; it lowers your bills too.</li>
+      <li>Keep parks, beaches and the desert clean.</li>
+      <li>Join volunteer planting and clean-up days in your city.</li></ul>
+    ${grSrc([['Saudi Green Initiative — official fact sheet', 'https://sgi.gov.sa/media/v4pllu0w/about_saudi_green_initiative_factsheet_en.pdf'], ['Saudi Green Initiative', 'https://www.sgi.gov.sa']])}`; } }
+};
+
+Object.keys(GR_GUIDES).forEach(function(id){
+  const g = GR_GUIDES[id];
+  META[id] = { t:g.t, ic:g.ic, s:g.s };
+  PANELS[id] = function(){ showPanel(g.t, g.body(), { id:id }); try{ greenUse(id); }catch(e){} };
+});
+
+/* the Green list, grouped so it reads at a glance */
+greenRowsHTML = function(){
+  const G = [
+    ['Stay safe outdoors', ['floodSafe', 'dustSafe', 'heatSafe']],
+    ['Rules & fines', ['envFines', 'campSafe']],
+    ['Save at home', ['billGuide', 'energyCalc', 'waterCalc', 'recycle']],
+    ['Learn', ['sgiGuide', 'carbonCalc', 'climateEdu', 'greenLiving', 'greenTech']]
+  ];
+  return G.map(function(g){ return `<div class="g-head">${esc(t(g[0]))}</div>` + g[1].map(rowHTML).join(''); }).join('');
+};
+try{ if($('svcGreen')) $('svcGreen').innerHTML = greenRowsHTML(); }catch(e){}
+(function(){ const _al = applyLang; applyLang = function(){ const r = _al.apply(this, arguments); try{ if($('svcGreen')) $('svcGreen').innerHTML = greenRowsHTML(); }catch(e){} return r; }; })();
+
+/* words in every language: titles, sections and short labels (long guide text is translated on first view) */
+(function(){
+  const R = [
+    ["Stay safe outdoors","ابقَ آمناً في الخارج","باہر محفوظ رہیں","Tetap aman di luar","Ka kasance lafiya a waje","Restez en sécurité dehors"],
+    ["Rules & fines","الأنظمة والغرامات","قوانین اور جرمانے","Aturan & denda","Dokoki & tara","Règles et amendes"],
+    ["Save at home","وفّر في المنزل","گھر میں بچت کریں","Hemat di rumah","Yi tanadi a gida","Économiser à la maison"],
+    ["Learn","تعلّم","سیکھیں","Belajar","Koyo","Apprendre"],
+    ["Flash floods & heavy rain","السيول والأمطار الغزيرة","اچانک سیلاب اور تیز بارش","Banjir bandang & hujan lebat","Ambaliyar ruwa & ruwan sama mai yawa","Crues soudaines et fortes pluies"],
+    ["Wadis, driving, what to do","الأودية، القيادة، وماذا تفعل","وادیاں، ڈرائیونگ، کیا کریں","Wadi, berkendara, apa yang harus dilakukan","Kwaruruka, tuƙi, abin da za a yi","Oueds, conduite, que faire"],
+    ["Dust & sandstorms","الغبار والعواصف الرملية","گرد اور ریت کے طوفان","Debu & badai pasir","Ƙura & guguwar yashi","Poussière et tempêtes de sable"],
+    ["Driving, home and breathing","القيادة والمنزل والتنفس","ڈرائیونگ، گھر اور سانس","Berkendara, rumah, dan pernapasan","Tuƙi, gida da numfashi","Conduite, maison et respiration"],
+    ["Summer heat safety","السلامة من حرارة الصيف","گرمی سے حفاظت","Aman dari panas musim panas","Kariya daga zafin bazara","Se protéger de la chaleur"],
+    ["Signs of heat illness & first aid","علامات الإجهاد الحراري والإسعافات الأولية","گرمی کی بیماری کی علامات اور ابتدائی طبی امداد","Tanda sakit akibat panas & P3K","Alamomin cutar zafi & taimakon farko","Signes du coup de chaleur et premiers secours"],
+    ["Environment rules & fines","أنظمة البيئة والغرامات","ماحولیاتی قوانین اور جرمانے","Aturan & denda lingkungan","Dokokin muhalli & tara","Règles environnementales et amendes"],
+    ["Trees, firewood, parks, camping","الأشجار والحطب والمتنزهات والتخييم","درخت، لکڑی، پارکس، کیمپنگ","Pohon, kayu bakar, taman, berkemah","Bishiyoyi, itacen wuta, wuraren shakatawa, sansani","Arbres, bois, parcs, camping"],
+    ["Camping & desert trips","التخييم والرحلات البرية","کیمپنگ اور صحرائی سفر","Berkemah & perjalanan gurun","Sansani & tafiye-tafiyen hamada","Camping et sorties dans le désert"],
+    ["Plan safely, leave no trace","خطط بأمان ولا تترك أثراً","محفوظ منصوبہ بندی، کوئی نشان نہ چھوڑیں","Rencanakan dengan aman, jangan tinggalkan jejak","Shirya lafiya, kar ka bar alama","Prévoir en sécurité, ne laisser aucune trace"],
+    ["Your electricity bill explained","فاتورة الكهرباء ببساطة","آپ کا بجلی کا بل آسان الفاظ میں","Penjelasan tagihan listrik Anda","Bayanin kuɗin wutar lantarkinka","Votre facture d’électricité expliquée"],
+    ["Tariffs and how to pay less","التعرفة وكيف تدفع أقل","نرخ اور کم ادائیگی کیسے کریں","Tarif dan cara membayar lebih sedikit","Farashi da yadda za ka biya ƙasa","Tarifs et comment payer moins"],
+    ["Saudi Green Initiative","مبادرة السعودية الخضراء","سعودی گرین انیشی ایٹو","Inisiatif Hijau Saudi","Shirin Saudiyya Kore","Initiative verte saoudienne"],
+    ["The national goals, in brief","الأهداف الوطنية باختصار","قومی اہداف، مختصراً","Tujuan nasional, singkatnya","Manufofin ƙasa, a taƙaice","Les objectifs nationaux, en bref"],
+    ["Official sources","المصادر الرسمية","سرکاری ذرائع","Sumber resmi","Majiyoyin hukuma","Sources officielles"],
+    ["Checked","تمت المراجعة","جانچا گیا","Diperiksa","An duba","Vérifié"],
+    ["Rules and amounts can change — follow official instructions.","قد تتغير الأنظمة والمبالغ — اتبع التعليمات الرسمية.","قوانین اور رقوم بدل سکتی ہیں — سرکاری ہدایات پر عمل کریں۔","Aturan dan jumlah dapat berubah — ikuti petunjuk resmi.","Dokoki da adadi na iya canzawa — bi umarnin hukuma.","Les règles et montants peuvent changer — suivez les consignes officielles."],
+    ["Estimate my bill","احسب فاتورتي","میرا بل اندازہ کریں","Perkirakan tagihan saya","Ƙididdige kuɗina","Estimer ma facture"],
+    ["Emergency (Riyadh, Makkah, Eastern Province)","الطوارئ (الرياض، مكة، الشرقية)","ایمرجنسی (ریاض، مکہ، مشرقی صوبہ)","Darurat (Riyadh, Makkah, Provinsi Timur)","Gaggawa (Riyadh, Makkah, Lardin Gabas)","Urgences (Riyad, La Mecque, Province orientale)"],
+    ["Civil Defence","الدفاع المدني","سول ڈیفنس","Pertahanan Sipil","Tsaron Farar Hula","Protection civile"],
+    ["Ambulance (Red Crescent)","الإسعاف (الهلال الأحمر)","ایمبولینس (ہلال احمر)","Ambulans (Bulan Sabit Merah)","Motar asibiti (Red Crescent)","Ambulance (Croissant-Rouge)"],
+    ["Ministry of Health advice line","خط استشارات وزارة الصحة","وزارت صحت ہیلپ لائن","Layanan konsultasi Kemenkes","Layin shawarar Ma’aikatar Lafiya","Ligne conseil du ministère de la Santé"],
+    ["Riyadh, Makkah, Eastern Province","الرياض، مكة، الشرقية","ریاض، مکہ، مشرقی صوبہ","Riyadh, Makkah, Provinsi Timur","Riyadh, Makkah, Lardin Gabas","Riyad, La Mecque, Province orientale"],
+    ["Other regions","المناطق الأخرى","دیگر علاقے","Wilayah lain","Sauran yankuna","Autres régions"]
+  ];
+  R.forEach(function(r){ LANG_ORDER.slice(1).forEach(function(l, i){ if(r[i + 1]) I18N[l][r[0]] = r[i + 1]; }); });
 })();
 
 </script>
