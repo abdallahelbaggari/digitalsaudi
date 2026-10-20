@@ -2,9 +2,9 @@
 // - App shell cached on install (works offline)
 // - Network-first for GET requests, falling back to the last saved copy
 // - Payments, Premium, AI and admin are never cached
-const CACHE = 'digitalsaudi-v40';
+const CACHE = 'digitalsaudi-v41';
 const SHELL = ['/', '/index.html', '/manifest.json', '/icon.svg', '/icon-192.png', '/privacy.html', '/terms.html'];
-const NEVER = ['/approve', '/complete', '/cancel-payment', '/premium', '/ai', '/admin-api', '/admin.html', '/admin', '/pi-check', '/dict', '/translate', '/poster-file', '/match', '/quran-audio'];
+const NEVER = ['/approve', '/complete', '/cancel-payment', '/premium', '/ai', '/admin-api', '/admin.html', '/admin', '/pi-check', '/dict', '/translate', '/poster-file', '/match', '/quran-audio', '/referral'];
 
 self.addEventListener('install', e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL))); self.skipWaiting(); });
 self.addEventListener('activate', e => {

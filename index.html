@@ -1455,7 +1455,7 @@ header.scrolled{box-shadow:0 1px 0 var(--line),0 10px 24px -18px rgba(0,0,0,.6)}
       <button class="row" onclick="openItem('about')"><div class="ic">ℹ️</div><div class="tx"><b>About</b></div><span class="chev">›</span></button>
       <button class="row" onclick="location.href='/privacy.html'"><div class="ic">🔒</div><div class="tx"><b>Privacy policy</b></div><span class="chev">›</span></button>
       <button class="row" onclick="location.href='/terms.html'"><div class="ic">📄</div><div class="tx"><b>Terms of service</b></div><span class="chev">›</span></button>
-      <footer class="legal"><span class="notr" dir="ltr">digitalsaudi.pi · DigitalSaudi v6.9</span><br><span class="notr" dir="ltr">© 2026 DigitalSaudi.</span> <span>All rights reserved.</span><br><span>Independent app, not affiliated with the Government of Saudi Arabia or Pi Network.</span><br><a href="/terms.html">Terms of service</a> · <a href="/privacy.html">Privacy policy</a> · <a href="mailto:support.digitalsaudi.pi@gmail.com" class="notr">support.digitalsaudi.pi@gmail.com</a></footer>
+      <footer class="legal"><span class="notr" dir="ltr">digitalsaudi.pi · DigitalSaudi v7.0</span><br><span class="notr" dir="ltr">© 2026 DigitalSaudi.</span> <span>All rights reserved.</span><br><span>Independent app, not affiliated with the Government of Saudi Arabia or Pi Network.</span><br><a href="/terms.html">Terms of service</a> · <a href="/privacy.html">Privacy policy</a> · <a href="mailto:support.digitalsaudi.pi@gmail.com" class="notr">support.digitalsaudi.pi@gmail.com</a></footer>
     </section>
   </main>
 
@@ -2304,6 +2304,55 @@ a.ds-credit{color:inherit!important;text-decoration:none!important;opacity:.75;f
 .dss-g button:focus{outline:none}
 .dss-g button:focus-visible span{box-shadow:0 0 0 3px var(--bg-card,#fff),0 0 0 5px var(--accent,#0A7A4B)}
 .po-acts .btn{white-space:nowrap;padding-left:10px;padding-right:10px}
+/* v7.0 — Your day card, streak, invite */
+.hp-stats{grid-template-columns:1fr 1.45fr .85fr!important}
+.hp-st b{min-width:0}
+.hp-stb{cursor:pointer}
+.hp-stb:active{opacity:.75}
+.dd{padding:6px 16px 12px!important}
+.dd-streak{display:flex;align-items:center;gap:12px;width:100%;border:0;background:none;color:inherit;font:inherit;text-align:start;padding:12px 0;border-bottom:1px solid var(--line);cursor:pointer}
+.dd-fl{font-size:30px;line-height:1}
+.dd-st{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
+.dd-st b{font-size:16.5px}
+.dd-st small{font-size:13px;color:var(--text-2)}
+.dd-bar{display:block;height:6px;border-radius:6px;background:var(--bg-soft,#EEF2EF);overflow:hidden;margin-top:4px}
+.dd-bar i{display:block;height:100%;border-radius:6px;background:linear-gradient(90deg,#E0A43A,#0A7A4B)}
+.dd-row{padding:12px 0;border-bottom:1px solid var(--line)}
+.dd-lb{font-size:11.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--accent,#0A7A4B);margin-bottom:6px}
+.dd-row p{margin:0;font-size:14.5px;line-height:1.5;color:var(--text)}
+.dd-arw{display:flex;align-items:center;gap:12px}
+.dd-arw>div{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.dd-arw b{font-size:24px;font-family:'Reem Kufi',var(--font,inherit);text-align:start}
+.dd-arw small{font-size:13px;color:var(--muted);font-style:italic}
+.dd-arw span{font-size:14.5px;color:var(--text-2)}
+.dd-play{width:46px;height:46px;flex:none;border-radius:50%;border:0;background:var(--bg-soft,#EEF2EF);font-size:19px;cursor:pointer}
+.dd-foot{display:flex;align-items:center;justify-content:space-between;gap:10px;padding-top:12px;flex-wrap:wrap}
+.dd-foot span{font-size:12.5px;color:var(--muted)}
+.dd-foot button{border:0;border-radius:999px;padding:9px 14px;background:var(--accent,#0A7A4B);color:#fff;font:inherit;font-size:13.5px;font-weight:700;cursor:pointer}
+.dd-big{text-align:center;padding:10px 0 6px;display:flex;flex-direction:column;align-items:center;gap:2px}
+.dd-fl2{font-size:48px;line-height:1.1}
+.dd-big b{font-size:44px;font-weight:800;color:var(--accent,#0A7A4B);line-height:1.1}
+.dd-big span{font-size:15px;color:var(--text-2)}
+.dd-big small{font-size:13px;color:var(--muted);margin-top:4px}
+.dd-ms{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:8px 0 14px}
+.dd-ms div,.dd-badges div{display:flex;flex-direction:column;align-items:center;gap:2px;padding:10px 6px;border-radius:14px;background:var(--bg-soft,#EEF2EF);opacity:.55}
+.dd-ms div.on,.dd-badges div.on{opacity:1;background:rgba(10,122,75,.1);box-shadow:inset 0 0 0 1.5px rgba(10,122,75,.35)}
+.dd-ms span,.dd-badges span{font-size:22px}
+.dd-ms b{font-size:17px}
+.dd-ms small,.dd-badges small{font-size:12px;color:var(--text-2);text-align:center;line-height:1.25}
+.dd-inv{text-align:center}
+.dd-inv h3{margin:6px 0 6px}
+.dd-inv p{color:var(--text-2);font-size:14.5px;line-height:1.5;margin:0 0 12px}
+.dd-cnt{display:flex;align-items:center;gap:14px;padding:14px;border-radius:16px;background:var(--bg-soft,#EEF2EF);margin-bottom:10px}
+.dd-cnt>div:first-child{display:flex;flex-direction:column}
+.dd-cnt b{font-size:30px;font-weight:800;color:var(--accent,#0A7A4B);line-height:1.1}
+.dd-cnt small{font-size:12.5px;color:var(--text-2)}
+#invRecent{flex:1;font-size:13px;color:var(--text-2);text-align:end;overflow-wrap:anywhere}
+.dd-link{padding:10px 12px;border-radius:12px;border:1px dashed var(--line);font-size:13px;color:var(--text-2);word-break:break-all;text-align:center}
+.dd-badges{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:16px}
+/* poster → list your business */
+#poOut .row.dd-cta{background:linear-gradient(135deg,rgba(10,122,75,.1),rgba(227,179,65,.12));box-shadow:inset 0 0 0 1.5px rgba(10,122,75,.35)}
+a.ds-credit{display:inline-block;padding:9px 2px;margin:-9px 0}
 
 </style>
 
@@ -3056,7 +3105,7 @@ function openFeedback(subject){
 function sendFeedback(){
   const t = $('fbT').value, s = $('fbS').value, m = $('fbM').value;
   if(!m.trim()){ toast('Please write a message'); return; }
-  const body = m + '\n\n—\nApp: DigitalSaudi v6.9\nUser: ' + (piUser ? '@' + piUser.username : 'guest');
+  const body = m + '\n\n—\nApp: DigitalSaudi v7.0\nUser: ' + (piUser ? '@' + piUser.username : 'guest');
   location.href = 'mailto:' + CONTACT_EMAIL + '?subject=' + encodeURIComponent('[' + t + '] ' + (s || 'DigitalSaudi feedback')) + '&body=' + encodeURIComponent(body);
 }
 function editEcard(){
@@ -9733,6 +9782,228 @@ try{ if($('svcGreen')) $('svcGreen').innerHTML = greenRowsHTML(); }catch(e){}
     ["Ministry of Health advice line","خط استشارات وزارة الصحة","وزارت صحت ہیلپ لائن","Layanan konsultasi Kemenkes","Layin shawarar Ma’aikatar Lafiya","Ligne conseil du ministère de la Santé"],
     ["Riyadh, Makkah, Eastern Province","الرياض، مكة، الشرقية","ریاض، مکہ، مشرقی صوبہ","Riyadh, Makkah, Provinsi Timur","Riyadh, Makkah, Lardin Gabas","Riyad, La Mecque, Province orientale"],
     ["Other regions","المناطق الأخرى","دیگر علاقے","Wilayah lain","Sauran yankuna","Autres régions"]
+  ];
+  R.forEach(function(r){ LANG_ORDER.slice(1).forEach(function(l, i){ if(r[i + 1]) I18N[l][r[0]] = r[i + 1]; }); });
+})();
+
+/* ==========================================================================
+   v7.0 — reasons to come back every day
+   • "Your day" card on Home: streak + next milestone, Arabic phrase of the day
+     (with audio) and a Saudi tip of the day — new every day.
+   • Streak details screen (tap the streak in the header).
+   • Invite friends: personal link, shared through the share sheet; friends who
+     join and sign in with Pi are counted on the server (/referral), once each.
+   ========================================================================== */
+const DS_TIPS = [
+  'The Saudi weekend is Friday and Saturday.',
+  'Most government services for residents are in the Absher app: renew your iqama, check fines and book appointments.',
+  'Umrah and the Rawdah visit in Madinah need a booking in the Nusuk app.',
+  'VAT in Saudi Arabia is 15%.',
+  'Saher speed cameras are everywhere. Traffic fines show up in Absher.',
+  'Emergency in Riyadh, Makkah or the Eastern Province? Call 911.',
+  'The Haramain high-speed train links Makkah, Jeddah (including the airport) and Madinah.',
+  'Riyadh has a metro with six lines.',
+  'Keep your iqama or passport with you; you may be asked for ID.',
+  'In mosques and government offices, dress modestly: shoulders and knees covered is a safe rule.',
+  'In summer, plan time outdoors before 10 am or after 4 pm.',
+  'Mada is the national debit card network, and tap-to-pay works almost everywhere.',
+  'Tipping isn’t required, but rounding up for good service is appreciated.',
+  'Greet with “As-salamu alaykum”; the reply is “Wa alaykum as-salam”.',
+  'During Ramadan daylight hours, avoid eating or drinking in public out of respect.',
+  'The Tawakkalna app keeps your digital ID and documents on your phone.',
+  'In summer keep water in the car and check your tyres: hot roads cause blowouts.',
+  'The Saudi Riyal is fixed at 3.75 to the US dollar.',
+  'A tourist eVisa lets you perform Umrah outside the Hajj season. Hajj itself needs a Hajj permit.',
+  'Download offline maps before a desert trip: the phone signal can drop.',
+  'When heavy rain is forecast, stay away from wadis, even if the sky above you is clear.',
+  'Carry a refillable bottle: the Haramain have Zamzam water points.',
+  'Always check the amount before you pay with Pi. Pi transfers can’t be reversed.',
+  'Never share your Pi passphrase with anyone, not even someone who says they are support.',
+  'Many shops stay open late in the evening, and evenings are the busiest time.',
+  'Learn the Arabic numerals ٠١٢٣٤٥٦٧٨٩. They help with prices, buses and signs.',
+  'Set the AC to 24°C and clean the filters monthly: lower bills in summer.',
+  'Local firewood is protected. Buy licensed or imported charcoal for camping.'
+];
+const DS_MILESTONES = [3, 7, 14, 30, 60, 100];
+
+function dsDayIndex(){ const d = ksaDate(); return Math.floor(Date.parse(d + 'T00:00:00Z') / 86400000); }
+function dsPick(list, salt){ if(!list || !list.length) return null; return list[(dsDayIndex() * 7 + (salt || 0)) % list.length]; }
+function dsStreak(){ return store.get('streak', { last:null, n:0, best:0 }); }
+function dsNextMilestone(n){ for(let i = 0; i < DS_MILESTONES.length; i++) if(n < DS_MILESTONES[i]) return DS_MILESTONES[i]; return null; }
+
+/* new streak badges (3, 7 and 30 already exist) */
+[['streak14', '⭐', '14-day streak'], ['streak60', '💎', '60-day streak'], ['streak100', '👑', '100-day streak'],
+ ['invite1', '🤝', 'First friend invited'], ['invite3', '🌟', '3 friends joined'], ['invite10', '🏆', '10 friends joined']].forEach(function(b){
+  if(!BADGES.some(function(x){ return x.id === b[0]; })) BADGES.push({ id:b[0], ic:b[1], t:b[2] });
+});
+Object.assign(BADGE_HOW, {
+  streak14:['Open the app 14 days in a row', null], streak60:['Open the app 60 days in a row', null], streak100:['Open the app 100 days in a row', null],
+  invite1:['A friend joins with your invite link and signs in with Pi', "openItem('invite')"],
+  invite3:['3 friends join with your invite link', "openItem('invite')"], invite10:['10 friends join with your invite link', "openItem('invite')"]
+});
+(function(){ const _u = updateStreak; updateStreak = function(){ const r = _u.apply(this, arguments); const s = dsStreak(); if(s.n >= 14) award('streak14'); if(s.n >= 60) award('streak60'); if(s.n >= 100) award('streak100'); try{ if($('dsDaily')) dsRenderDaily(); }catch(e){} return r; }; })();
+
+/* ---------- "Your day" card ---------- */
+function dsDailyHTML(){
+  const s = dsStreak(), n = s.n || 1, next = dsNextMilestone(n), prev = DS_MILESTONES.filter(function(m){ return m <= n; }).pop() || 0;
+  const pct = next ? Math.round((n - prev) / (next - prev) * 100) : 100;
+  const ph = dsPick(typeof PHRASES !== 'undefined' ? PHRASES.filter(function(p){ return p && p[1] && p[0] && p[0].length < 40; }) : [], 3);
+  const tip = dsPick(DS_TIPS, 0);
+  const left = next ? next - n : 0;
+  return `<button class="dd-streak" onclick="openItem('streakInfo')" aria-label="${esc(t('Your streak'))}">
+      <span class="dd-fl">🔥</span><span class="dd-st"><b>${esc(t('{n}-day streak').replace('{n}', n))}</b>
+      <small>${next ? esc(t('{n} more to the {m}-day badge').replace('{n}', left).replace('{m}', next)) : esc(t('Every milestone reached. Amazing!'))}</small>
+      <i class="dd-bar"><i style="width:${pct}%"></i></i></span><span class="chev">›</span></button>
+    ${ph ? `<div class="dd-row dd-ar"><div class="dd-lb">${esc(t('Arabic of the day'))}</div>
+      <div class="dd-arw"><div><b class="notr" dir="rtl" lang="ar">${esc(ph[1])}</b><small class="notr">${esc(ph[2] || '')}</small><span>${esc(t(ph[0]))}</span></div>
+      <button class="dd-play" onclick="playAr('${esc(ph[1]).replace(/'/g, '&#39;')}', this)" aria-label="${esc(t('Listen'))}">🔊</button></div></div>` : ''}
+    <div class="dd-row"><div class="dd-lb">${esc(t('Tip of the day'))}</div><p>${esc(t(tip))}</p></div>
+    <div class="dd-foot"><span>${esc(t('New word and tip tomorrow'))}</span><button onclick="openItem('invite')">🤝 ${esc(t('Invite friends'))}</button></div>`;
+}
+function dsRenderDaily(){
+  let box = $('dsDaily');
+  if(!box){
+    const T = $('tab-home'), qa = $('quickActions'); if(!qa) return;
+    if(T && !T.classList.contains('ds-home')){ setTimeout(dsRenderDaily, 200); return; }   // wait until Home is arranged
+    qa.insertAdjacentHTML('afterend', `<h2 class="sec ds-sec" id="dsDailyH">${esc(t('Your day'))}</h2><div class="card dd" id="dsDaily"></div>`);
+    box = $('dsDaily');
+  } else { const h = $('dsDailyH'); if(h) h.textContent = t('Your day'); }
+  box.innerHTML = dsDailyHTML();
+}
+
+/* ---------- streak details ---------- */
+META.streakInfo = { t:'Your streak', ic:'🔥', s:'Open the app every day' };
+PANELS.streakInfo = function(){
+  const s = dsStreak(), n = s.n || 1;
+  showPanel('Your streak', `<div class="dd-big"><div class="dd-fl2">🔥</div><b class="notr">${n}</b><span>${esc(t(n === 1 ? 'day in a row' : 'days in a row'))}</span><small>${esc(t('Best'))}: <span class="notr">${Math.max(s.best || 0, n)}</span></small></div>
+    <h4>${esc(t('Milestones'))}</h4>
+    <div class="dd-ms">${DS_MILESTONES.map(function(m){ const b = BADGES.find(function(x){ return x.id === 'streak' + m; }); const got = n >= m || (store.get(badgeKey(), []).indexOf('streak' + m) >= 0); return `<div class="${got ? 'on' : ''}"><span>${b ? b.ic : '🔥'}</span><b class="notr">${m}</b><small>${esc(t(got ? 'Done' : 'days'))}</small></div>`; }).join('')}</div>
+    <h4>${esc(t('How it works'))}</h4>
+    <ul><li>${esc(t('Open DigitalSaudi once a day to keep your streak.'))}</li><li>${esc(t('Miss a day and it starts again from 1.'))}</li><li>${esc(t('Each milestone unlocks a badge in your profile.'))}</li><li>${esc(t('Days follow Saudi time (midnight in Makkah).'))}</li></ul>
+    <button class="btn btn-primary" style="width:100%;margin-top:8px" onclick="openItem('invite')">🤝 ${esc(t('Invite friends to join you'))}</button>`, { id:'streakInfo', share:false });
+};
+
+/* ---------- invite friends ---------- */
+function dsInviteLink(){ return location.origin + '/' + (piUser && piUser.username ? '?ref=' + encodeURIComponent(piUser.username) : ''); }
+function dsInviteText(){ return t('Join me on DigitalSaudi: prayer times, Umrah guides, Saudi news, rates, places and Pi payments in one app. Open it in the Pi Browser:'); }
+function dsInviteShare(){ dsShareSheet({ title:t('Invite friends'), text:dsInviteText(), url:dsInviteLink() }); }
+META.invite = { t:'Invite friends', ic:'🤝', s:'Share DigitalSaudi, earn badges' };
+PANELS.invite = function(){
+  const signed = !!(piUser && piUser.accessToken);
+  showPanel('Invite friends', `<div class="dd-inv"><div class="dd-fl2">🤝</div><h3>${esc(t('Share DigitalSaudi with friends'))}</h3>
+      <p>${esc(t('Friends who open your link and sign in with Pi are counted here. Earn badges at 1, 3 and 10 friends.'))}</p></div>
+    <div class="dd-cnt"><div><b id="invCount" class="notr">${signed ? '…' : '—'}</b><small>${esc(t('friends joined'))}</small></div><div id="invRecent" class="notr"></div></div>
+    <div class="dd-link notr" dir="ltr">${esc(dsInviteLink())}</div>
+    <button class="btn btn-primary" style="width:100%;margin-top:10px" onclick="dsInviteShare()">📤 ${esc(t('Share invite'))}</button>
+    ${signed ? '' : `<p class="small" style="margin-top:12px;text-align:center">${esc(t('Sign in with Pi to get your personal link, so your friends are counted.'))}</p><button class="btn btn-ghost" style="width:100%;margin-top:6px" onclick="closePanel();piLogin()">π ${esc(t('Sign in with Pi'))}</button>`}
+    <div class="dd-badges">${['invite1', 'invite3', 'invite10'].map(function(id){ const b = BADGES.find(function(x){ return x.id === id; }); const got = store.get(badgeKey(), []).indexOf(id) >= 0; return b ? `<div class="${got ? 'on' : ''}"><span>${b.ic}</span><small>${esc(t(b.t))}</small></div>` : ''; }).join('')}</div>`, { id:'invite', share:false });
+  if(signed) dsInviteLoad();
+};
+function dsInviteLoad(){
+  if(!(piUser && piUser.accessToken)) return;
+  fetch('/referral', { method:'POST', headers:{ 'Content-Type':'application/json' }, body:JSON.stringify({ accessToken:piUser.accessToken, action:'mine' }) })
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      if(!d || !d.ok) throw 0;
+      store.set('inviteCount', d.count);
+      if(d.count >= 1) award('invite1'); if(d.count >= 3) award('invite3'); if(d.count >= 10) award('invite10');
+      if($('invCount')) $('invCount').textContent = d.count;
+      if($('invRecent')) $('invRecent').textContent = (d.recent || []).map(function(u){ return '@' + u; }).join(' · ');
+    })
+    .catch(function(){ if($('invCount')) $('invCount').textContent = store.get('inviteCount', '—'); });
+}
+/* someone arrived through an invite link: credit the friend once they sign in with Pi */
+(function(){
+  try{
+    const ref = new URLSearchParams(location.search).get('ref');
+    if(ref && /^[A-Za-z0-9_.-]{2,40}$/.test(ref) && !store.get('lastUser', null) && !store.get('refDone', false)) store.set('refPending', ref);
+    if(ref && history.replaceState) history.replaceState(null, '', location.pathname + location.hash);
+  }catch(e){}
+  const tryClaim = function(){
+    const ref = store.get('refPending', null); if(!ref || !(piUser && piUser.accessToken)) return;
+    if(piUser.username && piUser.username.toLowerCase() === String(ref).toLowerCase()){ store.set('refPending', null); return; }
+    fetch('/referral', { method:'POST', headers:{ 'Content-Type':'application/json' }, body:JSON.stringify({ accessToken:piUser.accessToken, action:'claim', ref:ref }) })
+      .then(function(r){ return r.json(); })
+      .then(function(d){ if(d && d.ok){ store.set('refPending', null); store.set('refDone', true); if(d.counted) toast(t('Welcome! Your friend @{u} invited you.').replace('{u}', ref)); } })
+      .catch(function(){});
+  };
+  let tries = 0; const iv = setInterval(function(){ tries++; tryClaim(); if(!store.get('refPending', null) || tries > 240) clearInterval(iv); }, 1500);
+  // signed-in users: refresh the friend count (and badges) once a day
+  setTimeout(function(){ if(piUser && piUser.accessToken && store.get('inviteChecked', '') !== ksaDate()){ store.set('inviteChecked', ksaDate()); dsInviteLoad(); } }, 8000);
+})();
+
+/* Home: draw the card once the Home layout is in place; the header streak opens the details */
+(function(){
+  const _e = enterApp;
+  enterApp = function(){ const r = _e.apply(this, arguments); setTimeout(function(){ try{ dsRenderDaily(); }catch(e){} try{ const g = $('bdgMore'); if(g && !$('invRow')) g.insertAdjacentHTML('afterend', '<div id="invRow" style="margin-top:12px">' + rowHTML('invite') + '</div>'); }catch(e){} }, 60); return r; };
+  const st = $('streakPill') && $('streakPill').closest('.hp-st');
+  if(st){ st.setAttribute('role', 'button'); st.setAttribute('tabindex', '0'); st.classList.add('hp-stb'); st.addEventListener('click', function(e){ e.stopPropagation(); openItem('streakInfo'); }); }
+  const _al = applyLang; applyLang = function(){ const r = _al.apply(this, arguments); try{ if($('dsDaily')) dsRenderDaily(); }catch(e){} return r; };
+  // the profile gets an "Invite friends" row next to the badges
+  const _rp = renderProfile; renderProfile = function(){ const r = _rp.apply(this, arguments); try{ const g = $('bdgMore'); if(g && !$('invRow')){ g.insertAdjacentHTML('afterend', '<div id="invRow" style="margin-top:12px">' + rowHTML('invite') + '</div>'); } }catch(e){} return r; };
+})();
+
+/* after making a poster: the free business listing is the natural next step */
+(function(){
+  const _mp = makePoster;
+  makePoster = function(){ const r = _mp.apply(this, arguments);
+    let n = 0; const iv = setInterval(function(){ n++; const row = document.querySelector('#poOut .row'); if(row){ row.classList.add('dd-cta'); clearInterval(iv); } if(n > 40) clearInterval(iv); }, 150);
+    return r; };
+})();
+
+/* pop-ups with numbers or names in them, translated piece by piece */
+(function(){
+  const _t = toast;
+  toast = function(msg){
+    let m = String(msg), x;
+    if(LANG !== 'en'){
+      if((x = /^🏅 Badge unlocked: (.+)$/.exec(m))) m = '🏅 ' + t('Badge unlocked') + ': ' + t(x[1]);
+      else if((x = /^🔥 (\d+)-day streak — welcome back!$/.exec(m))) m = '🔥 ' + t('{n}-day streak — welcome back!').replace('{n}', x[1]);
+    }
+    return _t(m);
+  };
+})();
+
+/* words in every language */
+(function(){
+  const R = [
+    ["Badge unlocked","حصلت على شارة","بیج حاصل ہوا","Lencana terbuka","An buɗe lamba","Badge débloqué"],
+    ["{n}-day streak — welcome back!","{n} أيام متتالية — أهلاً بعودتك!","{n} دن کا تسلسل — خوش آمدید!","{n} hari berturut-turut — selamat datang kembali!","Kwana {n} a jere — barka da dawowa!","{n} jours d’affilée — bon retour !"],
+    ["Your day","يومك","آپ کا دن","Hari Anda","Ranarka","Votre journée"],
+    ["{n}-day streak","{n} أيام متتالية","{n} دن کا تسلسل","{n} hari berturut-turut","Kwana {n} a jere","{n} jours d’affilée"],
+    ["{n} more to the {m}-day badge","بقي {n} للوصول إلى شارة {m} يوماً","{m} دن کے بیج تک مزید {n}","{n} lagi menuju lencana {m} hari","Saura {n} zuwa lambar kwanaki {m}","Encore {n} pour le badge {m} jours"],
+    ["Every milestone reached. Amazing!","حققت كل المراحل. رائع!","تمام سنگ میل مکمل۔ زبردست!","Semua pencapaian tercapai. Luar biasa!","An kai duk matakai. Abin mamaki!","Toutes les étapes atteintes. Bravo !"],
+    ["Arabic of the day","عبارة اليوم","آج کا عربی جملہ","Bahasa Arab hari ini","Larabcin yau","L’arabe du jour"],
+    ["Tip of the day","نصيحة اليوم","آج کا مشورہ","Tips hari ini","Shawarar yau","Conseil du jour"],
+    ["New word and tip tomorrow","عبارة ونصيحة جديدة غداً","کل نیا لفظ اور مشورہ","Kata dan tips baru besok","Sabuwar kalma da shawara gobe","Nouveau mot et conseil demain"],
+    ["Invite friends","ادعُ أصدقاءك","دوستوں کو مدعو کریں","Undang teman","Gayyaci abokai","Inviter des amis"],
+    ["Share DigitalSaudi, earn badges","شارك DigitalSaudi واربح الشارات","DigitalSaudi شیئر کریں، بیج حاصل کریں","Bagikan DigitalSaudi, dapatkan lencana","Raba DigitalSaudi, sami lambobi","Partagez DigitalSaudi, gagnez des badges"],
+    ["Your streak","أيامك المتتالية","آپ کا تسلسل","Rangkaian Anda","Jerinka","Votre série"],
+    ["Open the app every day","افتح التطبيق كل يوم","روزانہ ایپ کھولیں","Buka aplikasi setiap hari","Buɗe manhajar kowace rana","Ouvrez l’appli chaque jour"],
+    ["day in a row","يوم متتالٍ","دن مسلسل","hari berturut-turut","rana a jere","jour d’affilée"],
+    ["days in a row","أيام متتالية","دن مسلسل","hari berturut-turut","kwanaki a jere","jours d’affilée"],
+    ["Milestones","المراحل","سنگ میل","Pencapaian","Matakai","Étapes"],
+    ["How it works","كيف يعمل","یہ کیسے کام کرتا ہے","Cara kerjanya","Yadda yake aiki","Comment ça marche"],
+    ["Open DigitalSaudi once a day to keep your streak.","افتح DigitalSaudi مرة يومياً للحفاظ على أيامك المتتالية.","اپنا تسلسل برقرار رکھنے کے لیے روزانہ ایک بار DigitalSaudi کھولیں۔","Buka DigitalSaudi sekali sehari untuk menjaga rangkaian Anda.","Buɗe DigitalSaudi sau ɗaya a rana don kiyaye jerinka.","Ouvrez DigitalSaudi une fois par jour pour garder votre série."],
+    ["Miss a day and it starts again from 1.","إذا فاتك يوم تبدأ من جديد من 1.","ایک دن چھوٹ گیا تو دوبارہ 1 سے شروع ہوگا۔","Lewatkan sehari dan mulai lagi dari 1.","Idan ka rasa rana ɗaya, za ta fara daga 1.","Un jour manqué et elle repart de 1."],
+    ["Each milestone unlocks a badge in your profile.","كل مرحلة تفتح شارة في ملفك.","ہر سنگ میل آپ کی پروفائل میں ایک بیج کھولتا ہے۔","Setiap pencapaian membuka lencana di profil Anda.","Kowane mataki yana buɗe lamba a bayananka.","Chaque étape débloque un badge dans votre profil."],
+    ["Days follow Saudi time (midnight in Makkah).","الأيام بتوقيت السعودية (منتصف الليل في مكة).","دن سعودی وقت کے مطابق ہیں (مکہ میں آدھی رات)۔","Hari mengikuti waktu Saudi (tengah malam di Makkah).","Kwanaki suna bin lokacin Saudiyya (tsakar dare a Makkah).","Les jours suivent l’heure saoudienne (minuit à La Mecque)."],
+    ["Invite friends to join you","ادعُ أصدقاءك للانضمام","دوستوں کو ساتھ شامل ہونے کی دعوت دیں","Undang teman untuk bergabung","Gayyaci abokai su shiga","Invitez vos amis à vous rejoindre"],
+    ["Share DigitalSaudi with friends","شارك DigitalSaudi مع أصدقائك","DigitalSaudi دوستوں کے ساتھ شیئر کریں","Bagikan DigitalSaudi dengan teman","Raba DigitalSaudi da abokai","Partagez DigitalSaudi avec vos amis"],
+    ["Friends who open your link and sign in with Pi are counted here. Earn badges at 1, 3 and 10 friends.","يُحتسب هنا الأصدقاء الذين يفتحون رابطك ويسجلون الدخول عبر Pi. اربح شارات عند 1 و3 و10 أصدقاء.","جو دوست آپ کا لنک کھول کر Pi سے سائن اِن کریں وہ یہاں شمار ہوتے ہیں۔ 1، 3 اور 10 دوستوں پر بیج حاصل کریں۔","Teman yang membuka tautan Anda dan masuk dengan Pi dihitung di sini. Dapatkan lencana di 1, 3, dan 10 teman.","Abokan da suka buɗe mahaɗarka suka shiga da Pi ana ƙirga su a nan. Sami lambobi a abokai 1, 3 da 10.","Les amis qui ouvrent votre lien et se connectent avec Pi sont comptés ici. Badges à 1, 3 et 10 amis."],
+    ["friends joined","أصدقاء انضموا","دوست شامل ہوئے","teman bergabung","abokan da suka shiga","amis inscrits"],
+    ["Share invite","شارك الدعوة","دعوت شیئر کریں","Bagikan undangan","Raba gayyata","Partager l’invitation"],
+    ["Sign in with Pi to get your personal link, so your friends are counted.","سجّل الدخول عبر Pi لتحصل على رابطك الخاص ويُحتسب أصدقاؤك.","اپنا ذاتی لنک حاصل کرنے کے لیے Pi سے سائن اِن کریں تاکہ آپ کے دوست شمار ہوں۔","Masuk dengan Pi untuk mendapatkan tautan pribadi agar teman Anda dihitung.","Shiga da Pi don samun mahaɗarka ta kanka, don a ƙirga abokanka.","Connectez-vous avec Pi pour obtenir votre lien personnel et faire compter vos amis."],
+    ["Join me on DigitalSaudi: prayer times, Umrah guides, Saudi news, rates, places and Pi payments in one app. Open it in the Pi Browser:","انضم إليّ في DigitalSaudi: مواقيت الصلاة وأدلة العمرة وأخبار السعودية والأسعار والأماكن ومدفوعات Pi في تطبيق واحد. افتحه في متصفح Pi:","DigitalSaudi پر میرے ساتھ شامل ہوں: نماز کے اوقات، عمرہ گائیڈز، سعودی خبریں، ریٹس، مقامات اور Pi ادائیگیاں ایک ایپ میں۔ اسے Pi Browser میں کھولیں:","Bergabunglah dengan saya di DigitalSaudi: jadwal salat, panduan Umrah, berita Saudi, kurs, tempat, dan pembayaran Pi dalam satu aplikasi. Buka di Pi Browser:","Ka biyo ni a DigitalSaudi: lokutan sallah, jagororin Umrah, labaran Saudiyya, farashi, wurare da biyan Pi a manhaja ɗaya. Buɗe ta a Pi Browser:","Rejoignez-moi sur DigitalSaudi : heures de prière, guides Omra, actualités saoudiennes, taux, lieux et paiements Pi dans une seule appli. Ouvrez-la dans le Pi Browser :"],
+    ["Welcome! Your friend @{u} invited you.","أهلاً بك! دعاك صديقك ‎@{u}‎.","خوش آمدید! آپ کے دوست @{u} نے آپ کو مدعو کیا۔","Selamat datang! Teman Anda @{u} mengundang Anda.","Barka da zuwa! Abokinka @{u} ne ya gayyace ka.","Bienvenue ! Votre ami @{u} vous a invité."],
+    ["Listen","استمع","سنیں","Dengarkan","Saurara","Écouter"],
+    ["Done","تم","مکمل","Selesai","An gama","Fait"],
+    ["14-day streak","14 يوماً متتالية","14 دن مسلسل","14 hari berturut-turut","Kwana 14 a jere","14 jours d’affilée"],
+    ["60-day streak","60 يوماً متتالية","60 دن مسلسل","60 hari berturut-turut","Kwana 60 a jere","60 jours d’affilée"],
+    ["100-day streak","100 يوم متتالٍ","100 دن مسلسل","100 hari berturut-turut","Kwana 100 a jere","100 jours d’affilée"],
+    ["First friend invited","أول صديق مدعو","پہلا دوست مدعو","Teman pertama diundang","Aboki na farko da aka gayyata","Premier ami invité"],
+    ["3 friends joined","انضم 3 أصدقاء","3 دوست شامل","3 teman bergabung","Abokai 3 sun shiga","3 amis inscrits"],
+    ["10 friends joined","انضم 10 أصدقاء","10 دوست شامل","10 teman bergabung","Abokai 10 sun shiga","10 amis inscrits"]
   ];
   R.forEach(function(r){ LANG_ORDER.slice(1).forEach(function(l, i){ if(r[i + 1]) I18N[l][r[0]] = r[i + 1]; }); });
 })();
