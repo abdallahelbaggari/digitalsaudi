@@ -16,7 +16,14 @@ async function pi(key, path, method, body) {
   return { ok: r.ok, status: r.status, data, text: text.slice(0, 300) };
 }
 
-async function clearPayment(key, paymentId, txidHint) {
+// v6.8: only the payment's owner may CANCEL an unpaid payment (checked with Pi using their sign-in token).
+// Completing a payment that is already on the blockchain needs no sign-in: it only finishes what the user paid.
+async function piUid(token) {
+  if (!token || typeof token !== 'string' || token.length > 4096) return '';
+  try { const r = await fetch('https://api.minepi.com/v2/me', { headers: { Authorization: 'Bearer ' + token } }); if (!r.ok) return ''; const u = await r.json(); return (u && u.uid) || ''; } catch (e) { return ''; }
+}
+
+async function clearPayment(key, paymentId, txidHint, accessToken) {
   const look = await pi(key, encodeURIComponent(paymentId));
   if (!look.ok) return { ok: false, action: 'lookup', status: look.status, detail: (look.data && (look.data.error_message || look.data.error)) || look.text };
   const p = look.data || {}, st = p.status || {};
@@ -27,6 +34,9 @@ async function clearPayment(key, paymentId, txidHint) {
     const r = await pi(key, encodeURIComponent(paymentId) + '/complete', 'POST', { txid });
     return { ok: r.ok, action: 'complete', status: r.status, detail: r.ok ? 'Payment completed' : ((r.data && (r.data.error_message || r.data.error)) || r.text), payment: { amount: p.amount, memo: p.memo, txid, metadata: p.metadata } };
   }
+  const uid = await piUid(accessToken);
+  if (!uid) return { ok: false, action: 'auth', detail: 'Sign in with Pi to clear this payment' };
+  if (!p.user_uid || p.user_uid !== uid) return { ok: false, action: 'auth', detail: 'This payment belongs to another Pi account' };
   const r = await pi(key, encodeURIComponent(paymentId) + '/cancel', 'POST', {});
   return { ok: r.ok, action: 'cancel', status: r.status, detail: r.ok ? 'Payment cancelled' : ((r.data && (r.data.error_message || r.data.error)) || r.text) };
 }
@@ -39,7 +49,7 @@ export async function onRequestPost(context) {
     if (!/^[A-Za-z0-9_-]{6,128}$/.test(String(paymentId))) return json({ ok: false, error: 'Invalid paymentId' });
     const key = context.env.PI_API_KEY ? String(context.env.PI_API_KEY).trim() : '';
     if (!key) return json({ ok: false, error: 'PI_API_KEY not set' });
-    const res = await clearPayment(key, paymentId, body.txid);
+    const res = await clearPayment(key, paymentId, body.txid, body.accessToken);
     return json({ ...res, paymentId });
   } catch (err) {
     return json({ ok: false, error: String(err && err.message || err) });

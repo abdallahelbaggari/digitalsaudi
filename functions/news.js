@@ -10,10 +10,9 @@ const FEEDS = [
   { url: 'https://feeds.bbci.co.uk/news/business/rss.xml', source: 'BBC News', force: 'business' },
   { url: 'https://www.aljazeera.com/xml/rss/all.xml', source: 'Al Jazeera' },
   { url: 'https://www.arabnews.com/cat/1/rss.xml', source: 'Arab News', force: 'saudi' },
-  { url: 'https://www.bing.com/news/search?q=Saudi+Arabia&format=rss&mkt=en-US', source: 'Bing News', bing: true, force: 'saudi' },
-  { url: 'https://www.bing.com/news/search?q=Hajj+OR+Umrah+OR+Makkah+OR+Madinah&format=rss&mkt=en-US', source: 'Bing News', bing: true, force: 'hajj' },
-  { url: 'https://www.bing.com/news/search?q=Saudi+economy+OR+Saudi+business+OR+Aramco&format=rss&mkt=en-US', source: 'Bing News', bing: true, force: 'business' },
-  { url: 'https://www.bing.com/news/search?q=%22Pi+Network%22&format=rss&mkt=en-US', source: 'Bing News', bing: true, crypto: true, pi: true },
+  // v6.8: publishers' own feeds replace Bing News search feeds (Bing's feeds are for personal, non-commercial use only)
+  { url: 'https://www.arabnews.com/rss.xml', source: 'Arab News' },
+  { url: 'https://saudigazette.com.sa/rssFeed/74', source: 'Saudi Gazette', force: 'saudi' },
   { url: 'https://feeds.bbci.co.uk/sport/football/rss.xml', source: 'BBC Sport', sport: true },
   { url: 'https://cointelegraph.com/rss/tag/pi-network', source: 'Cointelegraph', crypto: true, pi: true },
   { url: 'https://cointelegraph.com/rss', source: 'Cointelegraph', crypto: true }
