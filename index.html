@@ -10225,7 +10225,7 @@ function paSetDaily(b){ const c = paCfg(); c.daily = !c.daily; paSave(c); b.clas
 
 /* v7.2 — the same app runs as the Pi testnet app at testnet.digitalsaudi.pages.dev.
    There a clear label shows that payments use test Pi only. */
-const DS_TESTNET = /^testnet[.-]/i.test(location.hostname);
+const DS_TESTNET = /(^|[.-])testnet[.-]/i.test(location.hostname);
 if(DS_TESTNET){
   document.documentElement.classList.add('ds-testnet');
   document.title = '[Testnet] ' + document.title;
