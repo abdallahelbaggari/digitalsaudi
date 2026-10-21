@@ -21,7 +21,8 @@
     "/poster-file",
     "/quran",
     "/match",
-    "/quran-audio"
+    "/quran-audio",
+    "/referral"
   ],
   "exclude": []
 }

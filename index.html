@@ -1455,7 +1455,7 @@ header.scrolled{box-shadow:0 1px 0 var(--line),0 10px 24px -18px rgba(0,0,0,.6)}
       <button class="row" onclick="openItem('about')"><div class="ic">ℹ️</div><div class="tx"><b>About</b></div><span class="chev">›</span></button>
       <button class="row" onclick="location.href='/privacy.html'"><div class="ic">🔒</div><div class="tx"><b>Privacy policy</b></div><span class="chev">›</span></button>
       <button class="row" onclick="location.href='/terms.html'"><div class="ic">📄</div><div class="tx"><b>Terms of service</b></div><span class="chev">›</span></button>
-      <footer class="legal"><span class="notr" dir="ltr">digitalsaudi.pi · DigitalSaudi v7.1</span><br><span class="notr" dir="ltr">© 2026 DigitalSaudi.</span> <span>All rights reserved.</span><br><span>Independent app, not affiliated with the Government of Saudi Arabia or Pi Network.</span><br><a href="/terms.html">Terms of service</a> · <a href="/privacy.html">Privacy policy</a> · <a href="mailto:support.digitalsaudi.pi@gmail.com" class="notr">support.digitalsaudi.pi@gmail.com</a></footer>
+      <footer class="legal"><span class="notr" dir="ltr">digitalsaudi.pi · DigitalSaudi v7.2</span><br><span class="notr" dir="ltr">© 2026 DigitalSaudi.</span> <span>All rights reserved.</span><br><span>Independent app, not affiliated with the Government of Saudi Arabia or Pi Network.</span><br><a href="/terms.html">Terms of service</a> · <a href="/privacy.html">Privacy policy</a> · <a href="mailto:support.digitalsaudi.pi@gmail.com" class="notr">support.digitalsaudi.pi@gmail.com</a></footer>
     </section>
   </main>
 
@@ -2376,6 +2376,8 @@ a.ds-credit{display:inline-block;padding:9px 2px;margin:-9px 0}
 .pa-phone{margin-top:14px;padding:12px 14px;border-radius:14px;background:var(--bg-soft,#EEF2EF)}
 .pa-phone p{margin:4px 0 8px;font-size:13.5px;color:var(--text-2);line-height:1.45}
 .pa-note{margin-top:12px;text-align:center}
+/* v7.2 testnet label */
+.ds-tn{position:fixed;bottom:calc(86px + env(safe-area-inset-bottom));left:12px;opacity:.92;z-index:9999;padding:3px 10px;border-radius:999px;background:#B45309;color:#fff;font-size:11px;font-weight:800;letter-spacing:.06em;pointer-events:none;box-shadow:0 4px 12px rgba(0,0,0,.25)}
 
 </style>
 
@@ -3128,7 +3130,7 @@ function openFeedback(subject){
 function sendFeedback(){
   const t = $('fbT').value, s = $('fbS').value, m = $('fbM').value;
   if(!m.trim()){ toast('Please write a message'); return; }
-  const body = m + '\n\n—\nApp: DigitalSaudi v7.1\nUser: ' + (piUser ? '@' + piUser.username : 'guest');
+  const body = m + '\n\n—\nApp: DigitalSaudi v7.2\nUser: ' + (piUser ? '@' + piUser.username : 'guest');
   location.href = 'mailto:' + CONTACT_EMAIL + '?subject=' + encodeURIComponent('[' + t + '] ' + (s || 'DigitalSaudi feedback')) + '&body=' + encodeURIComponent(body);
 }
 function editEcard(){
@@ -10220,6 +10222,15 @@ function paSetDaily(b){ const c = paCfg(); c.daily = !c.daily; paSave(c); b.clas
   ];
   R.forEach(function(r){ LANG_ORDER.slice(1).forEach(function(l, i){ if(r[i + 1]) I18N[l][r[0]] = r[i + 1]; }); });
 })();
+
+/* v7.2 — the same app runs as the Pi testnet app at testnet.digitalsaudi.pages.dev.
+   There a clear label shows that payments use test Pi only. */
+const DS_TESTNET = /^testnet[.-]/i.test(location.hostname);
+if(DS_TESTNET){
+  document.documentElement.classList.add('ds-testnet');
+  document.title = '[Testnet] ' + document.title;
+  document.body.insertAdjacentHTML('beforeend', '<div class="ds-tn" role="note" aria-label="Testnet: test Pi only">TESTNET</div>');
+}
 
 </script>
 </body>
