@@ -102,7 +102,7 @@ h2{font-size:15px;margin:22px 4px 10px}
         '<div class="step"><span class="n">1</span><div><b>Copy the seller’s wallet address</b><small>Or scan the QR code from another phone.</small><div id="qr"></div><div class="copy"><code>' + inv.t + '</code><button class="btn btn-s" data-c="' + inv.t + '">Copy</button></div></div></div>' +
         '<div class="step"><span class="n">2</span><div><b>Send exactly ' + inv.a + ' π in Pi Wallet</b><small>In Pi Wallet tap <b>Send</b>, paste the address, enter the amount and put the reference in the <b>memo</b>.</small>' +
           '<div class="copy"><code>' + inv.a + '</code><button class="btn btn-s" data-c="' + inv.a + '">Copy amount</button></div><div class="copy"><code>' + inv.r + '</code><button class="btn btn-s" data-c="' + inv.r + '">Copy memo</button></div>' +
-          '<a class="btn btn-gold btn-w" style="margin-top:10px" href="https://wallet.pinet.com" target="_blank" rel="noopener">Open Pi Wallet</a></div></div>' +
+          '<a class="btn btn-gold btn-w" style="margin-top:10px" href="https://wallet.pinet.com">Open Pi Wallet</a><small style="display:block;margin-top:6px">After approving, tap Back to return here. DigitalSaudi then confirms your payment.</small></div></div>' +
         '<div class="step"><span class="n">3</span><div><b>' + (mine ? 'DigitalSaudi checks for the payment' : 'Come back and confirm') + '</b><small>DigitalSaudi looks for your payment on the Pi blockchain and makes a verified receipt for you and the seller.</small>' +
           '<button class="btn btn-g btn-w" style="margin-top:10px" id="chk">' + (mine ? '🔎 Check for payment' : '✅ I have paid · check now') + '</button>' +
           '<div class="status" id="st"></div>' +
