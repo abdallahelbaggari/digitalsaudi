@@ -256,6 +256,15 @@
     renderLists();
   } catch (e) {}
 
+  /* Profile → Payments & receipts: the same combined activity as the wallet */
+  renderHistory = function () {
+    var box = $('payHistory'); if (!box) return;
+    var R = rows().slice(0, 4);
+    box.innerHTML = (R.length ? R.map(function (r) { return '<button class="dw-tx" onclick="' + r.act + '"><span class="dw-txi ' + r.dir + '">' + r.ic + '</span><span class="dw-txt"><b>' + esc(r.title) + '</b><small>' + esc(r.sub) + '</small></span><span class="dw-txa ' + r.dir + '">' + (r.dir === 'in' ? '+' : '−') + r.amt + ' π<small>Receipt ›</small></span></button>'; }).join('') :
+      '<p class="small" style="text-align:center;padding:8px 6px 2px">No payments yet. Payments and DigitalSaudi Pay sales appear here with a shareable receipt.</p>') +
+      '<button class="btn btn-ghost btn-sm" style="margin:10px auto 2px;display:flex" onclick="openItem(\'piWallet\')">👛 Open wallet</button>';
+  };
+  try { renderHistory(); } catch (e) {}
   setTimeout(function () { dsCheckSales(false); }, 6000);
   setInterval(function () { if (!document.hidden) dsCheckSales(false); }, 60000);
 })();
