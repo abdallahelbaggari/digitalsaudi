@@ -2,9 +2,9 @@
 // - App shell cached on install (works offline)
 // - Network-first for GET requests, falling back to the last saved copy
 // - Payments, Premium, AI and admin are never cached
-const CACHE = 'digitalsaudi-v43';
+const CACHE = 'digitalsaudi-v44';
 const SHELL = ['/', '/index.html', '/manifest.json', '/icon.svg', '/icon-192.png', '/privacy.html', '/terms.html'];
-const NEVER = ['/approve', '/complete', '/cancel-payment', '/premium', '/ai', '/admin-api', '/admin.html', '/admin', '/pi-check', '/dict', '/translate', '/poster-file', '/match', '/quran-audio', '/referral'];
+const NEVER = ['/approve', '/complete', '/cancel-payment', '/premium', '/ai', '/admin-api', '/admin.html', '/admin', '/pi-check', '/dict', '/translate', '/poster-file', '/match', '/quran-audio', '/referral', '/verify'];
 
 self.addEventListener('install', e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL))); self.skipWaiting(); });
 self.addEventListener('activate', e => {
@@ -26,4 +26,13 @@ self.addEventListener('fetch', e => {
       return res;
     }).catch(() => caches.match(req).then(r => r || (req.mode === 'navigate' ? caches.match('/index.html') : Response.error())))
   );
+});
+
+// Tapping a phone notification opens (or focuses) DigitalSaudi
+self.addEventListener('notificationclick', e => {
+  e.notification.close();
+  e.waitUntil(self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then(cs => {
+    for (const c of cs) { if ('focus' in c) return c.focus(); }
+    return self.clients.openWindow ? self.clients.openWindow('/') : null;
+  }));
 });

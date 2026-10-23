@@ -22,7 +22,8 @@
     "/quran",
     "/match",
     "/quran-audio",
-    "/referral"
+    "/referral",
+    "/verify"
   ],
   "exclude": []
 }
