@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>DigitalSaudi Pay</title>
+<meta name="description" content="Pay a DigitalSaudi payment request in Pi and get a receipt verified on the Pi blockchain.">
+<meta name="theme-color" content="#063F27">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=DM+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+:root{--g:#0A7A4B;--g2:#063F27;--gold:#946C0A;--gold2:#EBCB78;--t:#13261E;--m:#6E7B73;--bd:#E6E1D3;--bg:#F6F4EE}
+*{box-sizing:border-box}html,body{margin:0}
+body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(--t);min-height:100vh;padding:0 16px calc(32px + env(safe-area-inset-bottom))}
+.wrap{max-width:480px;margin:0 auto}
+.top{display:flex;align-items:center;gap:10px;padding:16px 0}
+.top img{width:38px;height:38px;border-radius:10px}.top b{letter-spacing:.22em;font-size:16px;color:var(--g2)}.top small{display:block;font-size:12px;color:var(--gold);font-weight:700;letter-spacing:0}
+.top .net{margin-left:auto;font-size:11px;font-weight:800;padding:4px 9px;border-radius:999px;background:#E7F6EE;color:var(--g)}.top .net.test{background:#FFF1DB;color:#B45309}
+.card{background:#fff;border:1px solid var(--bd);border-radius:22px;box-shadow:0 10px 30px rgba(19,38,30,.07);overflow:hidden}
+.hero{background:linear-gradient(135deg,#0C8A55,var(--g2));color:#fff;padding:22px 20px;text-align:center;position:relative}
+.hero .k{font-size:12px;letter-spacing:.14em;text-transform:uppercase;opacity:.8;font-weight:700}
+.hero .who{font-size:15px;margin-top:6px}.hero .who b{color:var(--gold2)}
+.hero .amt{font-size:52px;font-weight:800;margin:10px 0 2px;letter-spacing:-.02em}
+.hero .fx{font-size:14px;opacity:.9}
+.body{padding:18px 20px}
+.row{display:flex;justify-content:space-between;gap:12px;padding:11px 0;border-bottom:1px solid #F0ECE1;font-size:14px}.row:last-child{border:0}
+.row span{color:var(--m);flex:none;white-space:nowrap}.row b{text-align:right;word-break:break-word}.mono{font-family:'DM Mono',monospace;font-size:12.5px}
+h2{font-size:15px;margin:22px 4px 10px}
+.steps{display:grid;gap:10px}
+.step{display:flex;gap:12px;align-items:flex-start;background:#fff;border:1px solid var(--bd);border-radius:16px;padding:14px}
+.step .n{flex:none;width:28px;height:28px;border-radius:50%;background:var(--g);color:#fff;font-weight:800;display:flex;align-items:center;justify-content:center;font-size:14px}
+.step>div{flex:1;min-width:0}.step>div>b{display:block;font-size:14.5px}.step small{display:block;color:var(--m);font-size:12.5px;margin-top:2px;line-height:1.45}.step small b{color:var(--t)}
+.copy{display:flex;align-items:center;gap:8px;margin-top:9px;background:var(--bg);border:1px solid var(--bd);border-radius:12px;padding:8px 8px 8px 11px}
+.copy code{flex:1;min-width:0;font-family:'DM Mono',monospace;font-size:12.5px;word-break:break-all}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:0;border-radius:12px;padding:10px 14px;font:inherit;font-weight:800;font-size:13.5px;cursor:pointer;text-decoration:none}
+.btn-s{background:#fff;border:1px solid var(--bd);color:var(--t);padding:7px 11px;font-size:12.5px;flex:none}
+.btn-g{background:var(--g);color:#fff}.btn-gold{background:linear-gradient(135deg,#C99A37,#94701F);color:#fff}.btn-w{width:100%;padding:14px;font-size:15px;border-radius:14px}
+#qr{display:flex;justify-content:center;margin:12px 0 2px}#qr img,#qr canvas{border:8px solid #fff;border-radius:12px;box-shadow:0 0 0 1px var(--bd)}
+.status{margin-top:12px;padding:12px 14px;border-radius:14px;font-size:13.5px;line-height:1.45;display:none}
+.status.wait{display:block;background:#FFF8E8;color:#7A5C18}.status.err{display:block;background:#FEECEC;color:#B42318}
+.done{display:none;text-align:center}.done.on{display:block}
+.done .tick{width:74px;height:74px;border-radius:50%;background:#E7F6EE;color:var(--g);font-size:40px;display:flex;align-items:center;justify-content:center;margin:18px auto 8px}
+.done h3{margin:0;font-size:21px}.done p{color:var(--m);font-size:13.5px;margin:6px 0 14px}
+.done img{width:100%;border-radius:16px;border:1px solid var(--bd);display:block}
+.acts{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.alt{margin-top:12px;font-size:13px;color:var(--m)}.alt summary{cursor:pointer;font-weight:700;color:var(--g)}
+.alt input{width:100%;margin-top:8px;padding:11px;border:1px solid var(--bd);border-radius:12px;font:inherit;font-size:13px;font-family:'DM Mono',monospace}
+.safe{display:flex;gap:10px;margin-top:18px;padding:13px;border-radius:14px;background:#fff;border:1px solid var(--bd);font-size:12.5px;color:var(--m);line-height:1.5}
+.safe b{color:var(--t)}
+.bad{padding:40px 10px;text-align:center;color:var(--m)}
+.foot{text-align:center;font-size:12px;color:var(--m);margin-top:20px}.foot a{color:var(--g);font-weight:700;text-decoration:none}
+.spin{display:inline-block;width:14px;height:14px;border:2px solid currentColor;border-right-color:transparent;border-radius:50%;animation:s 1s linear infinite;vertical-align:-2px}@keyframes s{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><img src="/icon-192.png" alt=""><div><b>DIGITALSAUDI</b><small>DigitalSaudi Pay · digitalsaudi.pi</small></div><span class="net" id="net">Pi Mainnet</span></div>
+  <div id="app"><div class="bad">Loading payment request…</div></div>
+  <div class="foot">DigitalSaudi never holds your Pi · <a href="/privacy.html">Privacy</a> · <a href="/terms.html">Terms</a> · <a href="/">Open DigitalSaudi</a></div>
+</div>
+<script src="/ds-receipt.js?v=1"></script>
+<script>
+(function () {
+  'use strict';
+  var $ = function (id) { return document.getElementById(id); };
+  var K = 'ds_';
+  var get = function (k, d) { try { var v = localStorage.getItem(K + k); return v === null ? d : JSON.parse(v); } catch (e) { return d; } };
+  var put = function (k, v) { try { localStorage.setItem(K + k, JSON.stringify(v)); } catch (e) {} };
+  var esc = function (x) { return String(x == null ? '' : x).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
+  function dec(s) { try { s = s.replace(/-/g, '+').replace(/_/g, '/'); while (s.length % 4) s += '='; return JSON.parse(decodeURIComponent(escape(atob(s)))); } catch (e) { return null; } }
+  var inv = dec((location.hash || '').slice(1));
+  var ok = inv && /^G[A-Z2-7]{55}$/.test(inv.t || '') && inv.a > 0 && /^(HM|DS)-[A-Z0-9]{6}$/.test(inv.r || '');
+  if (!ok) { $('app').innerHTML = '<div class="card"><div class="bad"><b style="color:#13261E;font-size:16px">This payment link is not complete</b><br><br>Ask the seller to send the DigitalSaudi Pay link again.</div></div>'; return; }
+  var TEST = inv.k === 'test', NETN = TEST ? 'Pi Testnet' : 'Pi Mainnet';
+  if (TEST) { $('net').textContent = 'Pi Testnet · test Pi'; $('net').classList.add('test'); }
+  var sales = get('sales', []), mine = sales.some(function (s) { return s.r === inv.r; });
+  var price = null, fx = null, lc = (function () { try { return JSON.parse(localStorage.getItem('ds_homeCur') || '"NGN"'); } catch (e) { return 'NGN'; } })();
+  var SYM = { NGN: '₦', PKR: 'Rs ', INR: '₹', IDR: 'Rp ', BDT: '৳', EGP: 'E£', TRY: '₺', MYR: 'RM ', GBP: '£', EUR: '€', AED: 'AED ', XOF: 'CFA ', GHS: 'GH₵', KES: 'KSh ', USD: '$', SAR: 'SAR ' };
+  function fxLine() {
+    if (!price || !price.sar) return 'Live value loading…';
+    var s = '≈ ' + (inv.a * price.sar).toFixed(2) + ' SAR · $' + (inv.a * price.usd).toFixed(2);
+    var r = fx && fx[lc] ? price.sar * fx[lc] : (lc === 'NGN' ? price.ngn : null);
+    if (r && lc !== 'SAR' && lc !== 'USD') s += ' · ' + (SYM[lc] || lc + ' ') + Math.round(inv.a * r).toLocaleString();
+    return s;
+  }
+  function short(a) { return a.slice(0, 6) + '…' + a.slice(-6); }
+  function draw() {
+    $('app').innerHTML =
+      '<div class="card"><div class="hero"><div class="k">' + (mine ? 'Your payment request' : 'Payment request') + '</div>' +
+        '<div class="who">' + (mine ? 'Waiting for payment' : 'from <b>' + esc(inv.n || 'Seller') + '</b>' + (inv.u ? ' · @' + esc(inv.u) : '')) + '</div>' +
+        '<div class="amt">' + inv.a + ' π</div><div class="fx" id="fx">' + fxLine() + '</div></div>' +
+      '<div class="body"><div class="row"><span>For</span><b>' + esc(inv.i || 'Payment') + '</b></div>' +
+        '<div class="row"><span>Pay to</span><b>' + esc(inv.n || '—') + (inv.u ? ' (@' + esc(inv.u) + ')' : '') + '</b></div>' +
+        '<div class="row"><span>Reference</span><b class="mono">' + inv.r + '</b></div>' +
+        '<div class="row"><span>Network</span><b>' + NETN + '</b></div>' +
+        '<div class="row"><span>Requested</span><b>' + new Date(inv.d || Date.now()).toLocaleString([], { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }) + '</b></div></div></div>' +
+      '<div id="pay"><h2>' + (mine ? 'Share this request with your buyer' : 'How to pay · about 1 minute') + '</h2>' +
+      (mine ? '<div class="acts" style="margin-top:0"><button class="btn btn-g" id="sh">📤 Share link</button><button class="btn btn-s" id="cp" style="padding:10px">🔗 Copy link</button></div>' : '') +
+      '<div class="steps">' +
+        '<div class="step"><span class="n">1</span><div><b>Copy the seller’s wallet address</b><small>Or scan the QR code from another phone.</small><div id="qr"></div><div class="copy"><code>' + inv.t + '</code><button class="btn btn-s" data-c="' + inv.t + '">Copy</button></div></div></div>' +
+        '<div class="step"><span class="n">2</span><div><b>Send exactly ' + inv.a + ' π in Pi Wallet</b><small>In Pi Wallet tap <b>Send</b>, paste the address, enter the amount and put the reference in the <b>memo</b>.</small>' +
+          '<div class="copy"><code>' + inv.a + '</code><button class="btn btn-s" data-c="' + inv.a + '">Copy amount</button></div><div class="copy"><code>' + inv.r + '</code><button class="btn btn-s" data-c="' + inv.r + '">Copy memo</button></div>' +
+          '<a class="btn btn-gold btn-w" style="margin-top:10px" href="https://wallet.pinet.com">Open Pi Wallet</a><small style="display:block;margin-top:6px">After approving, tap Back to return here. DigitalSaudi then confirms your payment.</small></div></div>' +
+        '<div class="step"><span class="n">3</span><div><b>' + (mine ? 'DigitalSaudi checks for the payment' : 'Come back and confirm') + '</b><small>DigitalSaudi looks for your payment on the Pi blockchain and makes a verified receipt for you and the seller.</small>' +
+          '<button class="btn btn-g btn-w" style="margin-top:10px" id="chk">' + (mine ? '🔎 Check for payment' : '✅ I have paid · check now') + '</button>' +
+          '<div class="status" id="st"></div>' +
+          '<details class="alt"><summary>Forgot the memo? Use the transaction ID</summary><small>In Pi Wallet open the payment and copy its transaction ID (hash), then paste it here.</small><input id="txi" placeholder="64-character transaction ID" autocomplete="off"><button class="btn btn-s" id="txb" style="margin-top:8px">Verify this transaction</button></details></div></div>' +
+      '</div>' +
+      '<div class="safe"><span>🔒</span><div><b>Pay safely.</b> DigitalSaudi never holds your Pi and will never ask for your passphrase. Check the seller’s name and address before you pay; payments on the Pi blockchain cannot be reversed.</div></div></div>' +
+      '<div class="done" id="done"></div>';
+    Array.prototype.forEach.call(document.querySelectorAll('[data-c]'), function (b) { b.onclick = function () { copy(b.getAttribute('data-c'), b); }; });
+    $('chk').onclick = function () { poll(true); };
+    $('txb').onclick = byTx;
+    if ($('sh')) $('sh').onclick = function () { var t = 'Payment request from ' + (inv.n || 'me') + ': ' + inv.a + ' π for ' + (inv.i || 'payment') + '. Pay securely with DigitalSaudi Pay:\n' + location.href; if (navigator.share) navigator.share({ title: 'DigitalSaudi Pay', text: t }).catch(function () {}); else window.open('https://wa.me/?text=' + encodeURIComponent(t)); };
+    if ($('cp')) $('cp').onclick = function () { copy(location.href, $('cp')); };
+    qr();
+  }
+  function copy(v, b) { var done = function () { var o = b.textContent; b.textContent = '✓ Copied'; setTimeout(function () { b.textContent = o; }, 1400); }; try { navigator.clipboard.writeText(v).then(done, function () { fallback(v); done(); }); } catch (e) { fallback(v); done(); } }
+  function fallback(v) { var t = document.createElement('textarea'); t.value = v; document.body.appendChild(t); t.select(); try { document.execCommand('copy'); } catch (e) {} t.remove(); }
+  function qr() {
+    var s = document.createElement('script'); s.src = 'https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js';
+    s.onload = function () { try { new QRCode($('qr'), { text: inv.t, width: 168, height: 168, colorDark: '#07462F', colorLight: '#ffffff', correctLevel: QRCode.CorrectLevel.M }); } catch (e) {} };
+    document.head.appendChild(s);
+  }
+  var timer = null, tries = 0;
+  function status(cls, html) { var e = $('st'); if (!e) return; e.className = 'status ' + cls; e.innerHTML = html; }
+  function poll(manual) {
+    if (manual) { tries = 0; clearTimeout(timer); }
+    status('wait', '<span class="spin"></span> Looking for the payment on the Pi blockchain…');
+    fetch('/verify?to=' + inv.t + '&ref=' + inv.r + '&amt=' + inv.a + '&net=' + (TEST ? 'test' : 'main')).then(function (r) { return r.json(); }).then(function (d) {
+      if (d.ok && d.found) return paid(d.tx);
+      if (!d.ok) return status('err', esc(d.error || 'Could not check right now.') + ' Trying again…'), again();
+      if (d.account === false) return status('err', 'This wallet address has no activity on the ' + NETN + ' yet. Check that the address is right.');
+      status('wait', '<span class="spin"></span> No payment with reference <b>' + inv.r + '</b> yet. DigitalSaudi keeps checking every 10 seconds' + (tries > 30 ? ' (tap the button to check again)' : '') + '.'); again();
+    }).catch(function () { status('err', 'No connection. DigitalSaudi will try again.'); again(); });
+  }
+  function again() { if (++tries <= 60) timer = setTimeout(poll, 10000); }
+  function byTx() {
+    var h = ($('txi').value || '').trim().toLowerCase(); if (!/^[a-f0-9]{64}$/.test(h)) { status('err', 'A transaction ID is 64 letters and numbers. Copy it from the payment in Pi Wallet.'); return; }
+    status('wait', '<span class="spin"></span> Checking this transaction…');
+    fetch('/verify?tx=' + h + '&net=' + (TEST ? 'test' : 'main')).then(function (r) { return r.json(); }).then(function (d) {
+      if (!d.ok) return status('err', esc(d.error));
+      if (!d.tx.ok) return status('err', 'This transaction failed on the blockchain, so no Pi was sent.');
+      var p = (d.tx.payments || []).filter(function (x) { return x.to === inv.t && parseFloat(x.amount) + 1e-7 >= inv.a; })[0];
+      if (!p) return status('err', 'This transaction did not send ' + inv.a + ' π to the seller’s address.');
+      paid({ hash: d.tx.hash, at: d.tx.at, memo: d.tx.memo, from: p.from, to: p.to, amount: p.amount });
+    }).catch(function () { status('err', 'No connection. Try again.'); });
+  }
+  function spec(tx) {
+    var me = get('fullname', '') || '';
+    return { title: mine ? 'Sale receipt' : 'Payment receipt', status: { text: '✓  Verified on the Pi blockchain', ok: true }, amount: +parseFloat(tx.amount).toFixed(7),
+      sub: price && price.sar ? '≈ ' + (tx.amount * price.sar).toFixed(2) + ' SAR · $' + (tx.amount * price.usd).toFixed(2) : '',
+      rows: [['Paid to', (inv.n || '—') + (inv.u ? ' (@' + inv.u + ')' : '')], ['Paid by', (!mine && me) ? me : short(tx.from)], ['For', inv.i || 'Payment'], ['Reference', inv.r],
+        ['Date', new Date(tx.at).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })], ['Time', new Date(tx.at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })],
+        ['Network', NETN], ['Seller address', inv.t, 1], ['Transaction ID', tx.hash, 1]],
+      thanks: 'Paid with DigitalSaudi Pay', note: 'Verified by DigitalSaudi on the Pi blockchain. DigitalSaudi never holds funds.' };
+  }
+  function paid(tx) {
+    clearTimeout(timer);
+    var rec = { amount: +parseFloat(tx.amount).toFixed(7), memo: inv.i, kind: 'p2p', dir: mine ? 'in' : 'out', ts: Date.parse(tx.at) || Date.now(), name: mine ? (inv.n || '') : (get('fullname', '') || ''), user: inv.u || '', other: mine ? tx.from : (inv.n || '') + (inv.u ? ' (@' + inv.u + ')' : ''),
+      net: NETN, pid: inv.r, txid: tx.hash, to: inv.t, from: tx.from, item: inv.i, ref: inv.r, seller: inv.n, status: 'Verified', usd: price && price.usd, sar: price && price.sar };
+    var all = get('rcpts', []); if (!all.some(function (x) { return x.txid === tx.hash; })) { all.unshift(rec); put('rcpts', all.slice(0, 200)); }
+    if (mine) { sales.forEach(function (s) { if (s.r === inv.r) { s.paid = tx.hash; s.at = rec.ts; s.from = tx.from; } }); put('sales', sales); }
+    $('pay').style.display = 'none';
+    var d = $('done'); d.classList.add('on');
+    d.innerHTML = '<div class="tick">✓</div><h3>' + (mine ? 'Payment received' : 'Payment complete') + '</h3><p>' + rec.amount + ' π · verified on the ' + NETN + ' blockchain</p><div id="rimg"><span class="spin"></span></div>' +
+      '<div class="acts"><button class="btn btn-g" id="rs">📤 Share receipt</button><a class="btn btn-s" id="rd" style="padding:10px">⬇️ Save image</a></div>' +
+      '<a class="btn btn-s btn-w" style="margin-top:8px" target="_blank" rel="noopener" href="https://blockexplorer.minepi.com/' + (TEST ? 'testnet' : 'mainnet') + '/transactions/' + tx.hash + '">View on Pi Block Explorer ›</a>';
+    DSReceipt.canvas(spec(tx)).then(function (cv) {
+      var url = cv.toDataURL('image/png'), fn = 'DigitalSaudi-receipt-' + tx.hash.slice(0, 8) + '.png';
+      $('rimg').innerHTML = '<img alt="Receipt" src="' + url + '">'; $('rd').href = url; $('rd').download = fn;
+      $('rs').onclick = function () { DSReceipt.share(cv, fn, 'DIGITALSAUDI · Verified payment\n' + rec.amount + ' π for ' + (inv.i || 'payment') + '\nReference ' + inv.r + '\nTransaction ' + tx.hash + '\ndigitalsaudi.pi'); };
+    });
+  }
+  draw();
+  fetch('/pi-price').then(function (r) { return r.json(); }).then(function (d) { if (d && d.ok) { price = d; var e = $('fx'); if (e) e.textContent = fxLine(); } }).catch(function () {});
+  fetch('/fx').then(function (r) { return r.json(); }).then(function (d) { if (d && d.ok) { fx = d.rates; var e = $('fx'); if (e) e.textContent = fxLine(); } }).catch(function () {});
+  if (mine) poll(false);
+})();
+</script>
+</body>
+</html>

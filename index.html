@@ -966,6 +966,7 @@ header.scrolled{box-shadow:0 1px 0 var(--line),0 10px 24px -18px rgba(0,0,0,.6)}
 #splash .sp-legal a,footer.legal a{color:#D9B45B;text-decoration:none;font-weight:600}
 @media (max-width:350px){.hp-st{padding:9px 9px}.hp-st b{font-size:14px}}
 </style>
+<link rel="stylesheet" href="/ds-wallet.css?v=4">
 </head>
 <body>
 
@@ -1431,7 +1432,7 @@ header.scrolled{box-shadow:0 1px 0 var(--line),0 10px 24px -18px rgba(0,0,0,.6)}
 
       <h2 class="sec">Pi & Premium</h2>
       <button class="row" onclick="openItem('premium')"><div class="ic">⭐</div><div class="tx"><b>Premium</b><small id="premStatus">Not active</small></div><span class="chev">›</span></button>
-      <button class="row" onclick="openItem('piWallet')"><div class="ic">🧾</div><div class="tx"><b>Pi requests & history</b><small>Payment requests, your Pi payments</small></div><span class="chev">›</span></button>
+      <button class="row" onclick="openItem('piWallet')"><div class="ic">👛</div><div class="tx"><b>DigitalSaudi Wallet</b><small>Live Pi rate · get paid · verified receipts</small></div><span class="chev">›</span></button>
       <button class="row" onclick="openItem('support')"><div class="ic">💚</div><div class="tx"><b>Support DigitalSaudi</b><small>Any amount in Pi</small></div><span class="chev">›</span></button>
       <h2 class="sec">Payments & receipts</h2>
       <div class="card hist" id="payHistory"></div>
@@ -10233,5 +10234,7 @@ if(DS_TESTNET){
 }
 
 </script>
+<script src="/ds-receipt.js?v=1"></script>
+<script src="/ds-wallet.js?v=4"></script>
 </body>
 </html>
