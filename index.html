@@ -3822,12 +3822,14 @@ function buyPremium(tier){
 
 /* ================= PI AUTH ================= */
 function piLogin(){
-  if(typeof Pi === 'undefined'){ toast('Please open DigitalSaudi in the Pi Browser'); return; }
+  if(typeof Pi === 'undefined'){ log('Pi SDK missing: open from the Pi Browser'); toast('Please open DigitalSaudi in the Pi Browser'); return; }
   const btn = $('loginBtn'); if(btn){ btn.disabled = true; btn.innerHTML = '<div class="spinner"></div> Connecting…'; }
+  log('Sign-in started');
   Pi.init({ version:'2.0', sandbox:false });
   const authTimeout = new Promise(function(_, rej){ setTimeout(function(){ rej(new Error('timeout')); }, 25000); });
   Promise.race([Pi.authenticate(['username','payments'], onIncompletePaymentFound), authTimeout]).then(function(auth){
     piUser = auth.user; piUser.accessToken = auth.accessToken;
+    log('✅ Authenticated:', piUser.username);
     store.set('lastUser', piUser.username);
     enterApp();
     award('pioneer');
@@ -3835,7 +3837,7 @@ function piLogin(){
     syncPremium();
     if(pendingAction){ const a = pendingAction; pendingAction = null; a(); }
   }).catch(function(err){
-    log('auth error', err);
+    log('❌ Sign-in failed:', err && err.message ? err.message : err);
     toast(err && err.message === 'timeout' ? 'Sign-in is taking too long. Open DigitalSaudi from the Pi Browser app link (not the pages.dev address) and try again.' : 'Sign-in failed. Please try again in the Pi Browser.');
   }).finally(function(){ if(btn){ btn.disabled = false; btn.innerHTML = '<span>π</span> Sign in with Pi'; } });
 }
