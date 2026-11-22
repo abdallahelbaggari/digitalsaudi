@@ -129,16 +129,29 @@
   }
   function stats() {
     var m = new Date(); m.setDate(1); m.setHours(0, 0, 0, 0); var inn = 0, outv = 0;
-    rows().forEach(function (r) { if (r.ts >= m.getTime() && !/cancel|fail/.test(r.sub)) { if (r.dir === 'in') inn += +r.amt; else outv += +r.amt; } });
-    return { inn: +inn.toFixed(4), out: +outv.toFixed(4) };
+    var n = 0; rows().forEach(function (r) { if (r.ts >= m.getTime() && !/cancel|fail/.test(r.sub)) { n++; if (r.dir === 'in') inn += +r.amt; else outv += +r.amt; } });
+    return { inn: +inn.toFixed(4), out: +outv.toFixed(4), n: n };
+  }
+  var showAll = false;
+  function txRow(r) {
+    var parts = String(r.sub || '').split(' · '), st = parts.length > 1 ? parts.pop() : '', what = parts.join(' · ');
+    st = st ? st.charAt(0).toUpperCase() + st.slice(1) : '';
+    return '<button class="dw-li" onclick="' + r.act + '"><span class="dw-lic ' + r.dir + '">' + (r.dir === 'in' ? '↙' : r.ic === '⭐' ? '★' : '↗') + '</span><span class="dw-lit"><b>' + esc(r.title) + '</b><small>' + esc((what ? what + ' · ' : '') + new Date(r.ts).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })) + '</small></span><span class="dw-lia ' + r.dir + '"><b>' + (r.dir === 'in' ? '+' : '−') + fmt(r.amt, 7) + ' π</b><small>' + esc(st) + '</small></span></button>';
   }
   function actHTML() {
-    var R = rows().filter(function (r) { return filter === 'all' || r.dir === filter; });
-    return R.length ? R.slice(0, 50).map(function (r) {
-      return '<button class="dw-tx" onclick="' + r.act + '"><span class="dw-txi ' + r.dir + '">' + r.ic + '</span><span class="dw-txt"><b>' + esc(r.title) + '</b><small>' + esc(r.sub) + ' · ' + new Date(r.ts).toLocaleString([], { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) + '</small></span><span class="dw-txa ' + r.dir + '">' + (r.dir === 'in' ? '+' : '−') + r.amt + ' π<small>Receipt ›</small></span></button>';
-    }).join('') : '<div class="empty" style="padding:18px 8px"><div class="big">🧾</div>' + (filter === 'in' ? 'No payments received yet.' : filter === 'out' ? 'No payments made yet.' : 'No activity yet.') + '<div class="small" style="margin-top:4px">Payments in DigitalSaudi and DigitalSaudi Pay sales appear here with a receipt you can share as an image.</div></div>';
+    var R = rows().filter(function (r) { return !showAll || filter === 'all' || r.dir === filter; });
+    if (!R.length) return '<div class="dw-list"><div class="empty" style="padding:18px 8px"><div class="big">🧾</div>' + (filter === 'in' && showAll ? 'No payments received yet.' : filter === 'out' && showAll ? 'No payments made yet.' : 'No payments yet. Your receipts appear here.') + '</div></div>';
+    if (!showAll) return '<div class="dw-list">' + R.slice(0, 4).map(txRow).join('') + '</div>';
+    var out = '', day = '';
+    R.slice(0, 80).forEach(function (r) { var d = new Date(r.ts).toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' }); if (d !== day) { if (day) out += '</div>'; out += '<div class="dw-day">' + d + '</div><div class="dw-list">'; day = d; } out += txRow(r); });
+    return out + '</div>';
   }
-  window.dsTxFilter = function (f) { filter = f; var e = $('dwAct'); if (e) e.innerHTML = actHTML(); document.querySelectorAll('.dw-tabs button').forEach(function (b) { b.classList.toggle('on', b.getAttribute('data-f') === f); }); };
+  window.dsTxAll = function (on) {
+    showAll = on; var e = $('dwAct'), t = $('dwTabs'), b = $('dwSeeAll');
+    if (t) t.style.display = on ? '' : 'none'; if (b) b.textContent = on ? 'Show less' : 'See all';
+    if (e) e.innerHTML = actHTML();
+  };
+  window.dsTxFilter = function (f) { filter = f; showAll = true; var e = $('dwAct'); if (e) e.innerHTML = actHTML(); document.querySelectorAll('.dw-tabs button').forEach(function (b) { b.classList.toggle('on', b.getAttribute('data-f') === f); }); };
   function rateHTML() {
     var p = pi(); if (!p || !p.usd) return '<small>1 π today</small><b>—</b><span>Loading live price…</span>';
     var l = localOf(1), ch = typeof p.change === 'number' ? p.change : null;
@@ -156,30 +169,36 @@
   piWalletPanel = function () {
     var p = pi(), st = stats(), sales = store.get('sales', []), openN = sales.filter(function (s) { return !s.paid; }).length;
     var logo = (document.querySelector('header .mark') || {}).src || '/icon.svg', hc = home();
+    var hr = new Date().getHours(), greet = hr < 12 ? 'Good morning' : hr < 17 ? 'Good afternoon' : 'Good evening', nR = rows().length;
+    showAll = false; filter = 'all';
     showPanel('DigitalSaudi Wallet', `
+    <div class="dw-hello"><h2>${greet}${me() ? ', @' + esc(me()) : ''}</h2><p>${me() ? 'Here is your Pi today.' : 'Sign in with Pi to send and receive Pi.'}</p></div>
     <div class="pcard-wrap"><div class="pcard" id="pcard">
       <div class="pc-top"><img src="${logo}" alt="" class="pc-logo"><span class="pc-brand">DigitalSaudi <b>Wallet</b></span><span class="pc-net">${TESTNET ? 'Testnet' : 'Mainnet'}</span></div>
       <div class="pc-chip" aria-hidden="true"></div>
       <div class="pc-rate dw-rate notr" id="dwRate">${rateHTML()}</div>
-      <div class="pc-bottom"><div><small>Account</small><b class="notr"><span style="overflow:hidden;text-overflow:ellipsis">${esc(fullName())}</span><button class="dw-ed" onclick="event.stopPropagation();dsEditName()" aria-label="Edit name">✎</button></b></div><div><small>This month</small><b class="notr">+${st.inn} · −${st.out} π</b></div></div>
+      <div class="pc-bottom"><div><small>Account</small><b class="notr"><span style="overflow:hidden;text-overflow:ellipsis">${esc(fullName())}</span><button class="dw-ed" onclick="event.stopPropagation();dsEditName()" aria-label="Edit name">✎</button></b></div><div><small>Network</small><b class="notr">${TESTNET ? 'Pi Testnet' : 'Pi Mainnet'}</b></div></div>
     </div></div>
-    <div class="acts dw-acts">
-      <button onclick="dsGetPaid()"><span>💰</span>Get paid</button>
-      <button onclick="dsPay()"><span>💳</span>Pay</button>
-      <button onclick="walletTab('send')"><span><svg class="i"><use href="#i-share"/></svg></span>Send</button>
-      <button onclick="openItem('merchantQR')"><span><svg class="i"><use href="#i-image"/></svg></span>Poster</button>
-      <button onclick="document.getElementById('dwActH').scrollIntoView({behavior:'smooth',block:'start'})"><span><svg class="i"><use href="#i-receipt"/></svg></span>Receipts</button>
+    <div class="dw-qa">
+      <button onclick="walletTab('send')"><i>↗</i>Send</button>
+      <button onclick="dsGetPaid()"><i class="g">↙</i>Request</button>
+      <button onclick="dsPay()"><i class="n">▦</i>Pay</button>
+      <button onclick="openItem('merchantQR')"><i class="a">🏪</i>Poster</button>
     </div>
     <div id="wBody"></div>
-    <div class="card dw-sec"><div class="dw-h"><b>🛍️ DigitalSaudi Pay · buy &amp; sell</b>${openN ? '<button class="dw-link" onclick="dsCheckSales(true)">Check now</button>' : ''}</div>
+    <div class="dw-sh"><h3>Overview</h3></div>
+    <div class="card dw-sec"><div class="dw-h"><div><b>This month</b><div class="small" style="opacity:.7">${new Date().toLocaleDateString('en-GB', { month: 'long', year: 'numeric' })}</div></div><button class="dw-link" onclick="dsTxAll(true);document.getElementById('dwActH').scrollIntoView({behavior:'smooth',block:'start'})">Activity ›</button></div>
+      <div class="dw-stats"><div><small>Sent</small><b class="notr">${fmt(st.out, 4)} π</b></div><div><small>Received</small><b class="notr pos">${fmt(st.inn, 4)} π</b></div><div><small>Payments</small><b class="notr">${st.n}</b></div></div></div>
+    <div id="dwActH"><div class="dw-sh"><h3>Recent activity</h3>${nR > 4 ? '<button id="dwSeeAll" onclick="dsTxAll(!' + 'document.getElementById(\'dwTabs\').offsetParent)">See all</button>' : ''}</div>
+      <div class="dw-tabs" id="dwTabs" style="display:none">${[['all', 'All'], ['out', 'Sent'], ['in', 'Received']].map(function (x) { return `<button data-f="${x[0]}" class="${filter === x[0] ? 'on' : ''}" onclick="dsTxFilter('${x[0]}')">${x[1]}</button>`; }).join('')}</div>
+      <div id="dwAct">${actHTML()}</div></div>
+    <div class="dw-sh"><h3>Get paid · DigitalSaudi Pay</h3>${openN ? '<button onclick="dsCheckSales(true)">Check now</button>' : ''}</div>
+    <div class="card dw-sec">
       ${sales.length ? sales.slice(0, 6).map(function (s, i) { return `<button class="dw-sale" onclick="dsShowReq(${i})"><span class="dw-si ${s.paid ? 'ok' : ''}">${s.paid ? '✓' : '⏳'}</span><span class="dw-txt"><b>${esc(s.i)}</b><small class="notr">${s.r} · ${new Date(s.d).toLocaleDateString([], { day: 'numeric', month: 'short' })} · ${s.paid ? 'Paid' : 'Waiting for payment'}</small></span><span class="dw-txa ${s.paid ? 'in' : ''}">${s.a} π<small>${s.paid ? 'Receipt ›' : 'Share ›'}</small></span></button>`; }).join('') :
       '<div class="dw-how"><div><i>1</i>Create a request with the amount and item</div><div><i>2</i>The buyer pays from their Pi Wallet</div><div><i>3</i>Both get a receipt verified on the Pi blockchain</div></div>'}
       <button class="btn btn-primary" style="width:100%;margin-top:12px" onclick="dsGetPaid()">＋ Create payment request</button></div>
-    <div class="card dw-sec"><div class="dw-h"><b>💱 Converter · live rate</b><button class="dw-link" onclick="openItem('priceAlerts')">${esc(hc)} ›</button></div>
-      <div class="dw-conv3"><label><span>π</span><input id="dwPi" type="number" inputmode="decimal" value="1" oninput="dsConv('pi')"></label><label><span>SAR</span><input id="dwSar" type="number" inputmode="decimal" oninput="dsConv('sar')"></label>${hc !== 'SAR' ? `<label><span>${esc(hc)}</span><input id="dwLoc" type="number" inputmode="decimal" oninput="dsConv('loc')"></label>` : ''}</div></div>
-    <div class="card dw-sec" id="dwActH"><div class="dw-h"><b>🧾 Activity &amp; receipts</b></div>
-      <div class="dw-tabs">${[['all', 'All'], ['in', 'Received'], ['out', 'Paid']].map(function (x) { return `<button data-f="${x[0]}" class="${filter === x[0] ? 'on' : ''}" onclick="dsTxFilter('${x[0]}')">${x[1]}</button>`; }).join('')}</div>
-      <div id="dwAct">${actHTML()}</div></div>
+    <div class="dw-sh"><h3>Converter</h3><button onclick="openItem('priceAlerts')">${esc(hc)} ▾</button></div>
+    <div class="card dw-sec"><div class="dw-conv3"><label><span>π</span><input id="dwPi" type="number" inputmode="decimal" value="1" oninput="dsConv('pi')"></label><label><span>SAR</span><input id="dwSar" type="number" inputmode="decimal" oninput="dsConv('sar')"></label>${hc !== 'SAR' ? `<label><span>${esc(hc)}</span><input id="dwLoc" type="number" inputmode="decimal" oninput="dsConv('loc')"></label>` : ''}</div></div>
     <button class="row" onclick="clearStuckPayment()"><div class="ic">🧹</div><div class="tx"><b>Fix “Pending payment found”</b><small>Clears an unfinished payment so you can pay again</small></div><span class="chev">›</span></button>
     <div class="note">🔒 <b>Your Pi stays in your Pi Wallet.</b> DigitalSaudi never sees your balance, holds your Pi or asks for your passphrase. Transfers always happen in your own Pi Wallet, and only you approve them.</div>`, { id: 'piWallet', share: false });
     dsConv('pi');
