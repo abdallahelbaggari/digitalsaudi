@@ -8,6 +8,7 @@
 
 const CORS = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'GET, POST, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type', 'Content-Type': 'application/json', 'Cache-Control': 'no-store' };
 const json = (obj) => new Response(JSON.stringify(obj), { status: 200, headers: CORS });
+import { payout } from './_lib/transfers.js';
 const PI = 'https://api.minepi.com/v2/payments/';
 
 async function pi(key, path, method, body) {
@@ -28,7 +29,7 @@ async function clearPayment(key, paymentId, txidHint, accessToken) {
   if (!look.ok) return { ok: false, action: 'lookup', status: look.status, detail: (look.data && (look.data.error_message || look.data.error)) || look.text };
   const p = look.data || {}, st = p.status || {};
   const txid = (p.transaction && p.transaction.txid) || (/^[A-Za-z0-9]{16,128}$/.test(String(txidHint || '')) ? String(txidHint) : '');
-  if (st.developer_completed) return { ok: true, action: 'none', detail: 'Payment was already completed', payment: { amount: p.amount, memo: p.memo, txid } };
+  if (st.developer_completed) return { ok: true, action: 'none', detail: 'Payment was already completed', payment: { amount: p.amount, memo: p.memo, txid, metadata: p.metadata } };
   if (st.cancelled || st.user_cancelled) return { ok: true, action: 'none', detail: 'Payment was already cancelled' };
   if (txid) {
     const r = await pi(key, encodeURIComponent(paymentId) + '/complete', 'POST', { txid });
@@ -50,6 +51,10 @@ export async function onRequestPost(context) {
     const key = context.env.PI_API_KEY ? String(context.env.PI_API_KEY).trim() : '';
     if (!key) return json({ ok: false, error: 'PI_API_KEY not set' });
     const res = await clearPayment(key, paymentId, body.txid, body.accessToken);
+    // An unfinished in-app transfer that was paid: deliver it to the recipient now (or refund automatically).
+    if (res.ok && res.payment && res.payment.metadata && res.payment.metadata.type === 'transfer') {
+      try { res.transfer = await payout(context.env, context.request, paymentId); } catch (e) { res.transfer = { ok: false, retry: true }; }
+    }
     return json({ ...res, paymentId });
   } catch (err) {
     return json({ ok: false, error: String(err && err.message || err) });

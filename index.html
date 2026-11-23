@@ -11,7 +11,7 @@
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="DigitalSaudi">
 <meta property="og:title" content="DigitalSaudi — your all-in-one Saudi companion on Pi">
-<meta property="og:description" content="Umrah & Hajj guides, live news and scores, Pi price and payments, places near you, Saudi AI, Quran and prayer times — in 6 languages.">
+<meta property="og:description" content="Umrah & Hajj guides, live news and scores, Pi wallet and payments, Quran, 40 Hadith and prayer times — in 6 languages.">
 <meta property="og:url" content="https://digitalsaudi.pages.dev/">
 <meta property="og:image" content="https://digitalsaudi.pages.dev/og-image.png">
 <meta property="og:image:width" content="1200">
@@ -27,7 +27,7 @@
 <link rel="dns-prefetch" href="https://open.er-api.com">
 <link rel="dns-prefetch" href="https://api.alquran.cloud">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@300..700&family=Reem+Kufi:wght@500..700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@300..700&family=Reem+Kufi:wght@500..700&family=Amiri+Quran&family=Amiri:wght@400;700&display=swap">
 <script src="https://sdk.minepi.com/pi-sdk.js"></script>
 <style>
 :root{
@@ -966,7 +966,7 @@ header.scrolled{box-shadow:0 1px 0 var(--line),0 10px 24px -18px rgba(0,0,0,.6)}
 #splash .sp-legal a,footer.legal a{color:#D9B45B;text-decoration:none;font-weight:600}
 @media (max-width:350px){.hp-st{padding:9px 9px}.hp-st b{font-size:14px}}
 </style>
-<link rel="stylesheet" href="/ds-wallet.css?v=5">
+<link rel="stylesheet" href="/ds-wallet.css?v=7">
 </head>
 <body>
 
@@ -1332,7 +1332,6 @@ header.scrolled{box-shadow:0 1px 0 var(--line),0 10px 24px -18px rgba(0,0,0,.6)}
         </div>
         <h2 class="sec">Saudi Riyal rates <button onclick="openItem('converter')">Convert ›</button></h2>
         <div class="card" id="rateList"><div class="skeleton" style="margin:8px 0"></div><div class="skeleton" style="margin:8px 0"></div><div class="skeleton" style="margin:8px 0"></div></div>
-        <p class="small" style="text-align:center;margin-top:10px">Not financial advice · <a class="ds-credit" href="https://www.exchangerate-api.com" target="_blank" rel="noopener">Rates By Exchange Rate API</a></p>
       </div>
 
       <div id="live-events" class="lv" style="display:none">
@@ -1350,14 +1349,6 @@ header.scrolled{box-shadow:0 1px 0 var(--line),0 10px 24px -18px rgba(0,0,0,.6)}
 
     <!-- ===== EXPLORE ===== -->
     <section class="tab" id="tab-explore">
-      <button class="hero near-hero" onclick="openMap('all', true)">
-        <div class="greet">Map</div>
-        <h3 style="margin-bottom:6px"><svg class="i hero-i"><use href="#i-pin"/></svg>Explore near me</h3>
-        <p class="small" style="color:#BFE6CF;position:relative;z-index:1">Hotels, food, mosques, hospitals, malls and more around you or any Saudi city.</p>
-      </button>
-      <h2 class="sec">Find places</h2>
-      <div class="grid-4" id="placeCats"></div>
-
       <h2 class="sec">Plan</h2>
       <div id="expPlan"></div>
 
@@ -1398,7 +1389,6 @@ header.scrolled{box-shadow:0 1px 0 var(--line),0 10px 24px -18px rgba(0,0,0,.6)}
       <div class="sub">Daily life</div>
       <div id="svcLife"></div>
       <div class="sub">Official platforms</div>
-      <div class="note" style="margin-top:0">These are official government services. DigitalSaudi is an independent guide and is not affiliated with them.</div>
       <div id="svcGov"></div>
 
       <h2 class="sec sec-ico"><svg class="i"><use href="#i-coins"/></svg>Finance</h2>
@@ -1418,7 +1408,6 @@ header.scrolled{box-shadow:0 1px 0 var(--line),0 10px 24px -18px rgba(0,0,0,.6)}
 
       <h2 class="sec">Good to know</h2>
       <div id="trvTips"></div>
-      <div class="note">ℹ️ Rules and fees change. Always confirm on the official portal before applying or paying.</div>
     </section>
 
     <!-- ===== PROFILE ===== -->
@@ -1442,7 +1431,6 @@ header.scrolled{box-shadow:0 1px 0 var(--line),0 10px 24px -18px rgba(0,0,0,.6)}
 
       <h2 class="sec">My stuff</h2>
       <button class="row" onclick="openItem('trips')"><div class="ic">🧳</div><div class="tx"><b>My Saudi Trips</b><small>Plans, countdown, checklists</small></div><span class="chev">›</span></button>
-      <button class="row" onclick="openItem('savedPlaces')"><div class="ic">📍</div><div class="tx"><b>Saved places</b><small>Hotels, restaurants, spots</small></div><span class="chev">›</span></button>
       <button class="row" onclick="openItem('bookmarks')"><div class="ic">🔖</div><div class="tx"><b>Bookmarks</b><small>Saved guides</small></div><span class="chev">›</span></button>
       <button class="row" onclick="openItem('recent')"><div class="ic">🕘</div><div class="tx"><b>Recently viewed</b></div><span class="chev">›</span></button>
       <button class="row" onclick="openItem('ecard')"><div class="ic">🆘</div><div class="tx"><b>Emergency card</b><small>Works offline</small></div><span class="chev">›</span></button>
@@ -1456,14 +1444,14 @@ header.scrolled{box-shadow:0 1px 0 var(--line),0 10px 24px -18px rgba(0,0,0,.6)}
       <button class="row" onclick="openItem('about')"><div class="ic">ℹ️</div><div class="tx"><b>About</b></div><span class="chev">›</span></button>
       <button class="row" onclick="location.href='/privacy.html'"><div class="ic">🔒</div><div class="tx"><b>Privacy policy</b></div><span class="chev">›</span></button>
       <button class="row" onclick="location.href='/terms.html'"><div class="ic">📄</div><div class="tx"><b>Terms of service</b></div><span class="chev">›</span></button>
-      <footer class="legal"><span class="notr" dir="ltr">digitalsaudi.pi · DigitalSaudi v7.2</span><br><span class="notr" dir="ltr">© 2026 DigitalSaudi.</span> <span>All rights reserved.</span><br><span>Independent app, not affiliated with the Government of Saudi Arabia or Pi Network.</span><br><a href="/terms.html">Terms of service</a> · <a href="/privacy.html">Privacy policy</a> · <a href="mailto:support.digitalsaudi.pi@gmail.com" class="notr">support.digitalsaudi.pi@gmail.com</a></footer>
+      <footer class="legal"><span class="notr" dir="ltr">© 2026 DigitalSaudi · digitalsaudi.pi</span><br><a href="/terms.html">Terms of service</a> · <a href="/privacy.html">Privacy policy</a> · <a href="mailto:support.digitalsaudi.pi@gmail.com" class="notr">support.digitalsaudi.pi@gmail.com</a></footer>
     </section>
   </main>
 
   <nav id="nav">
     <button class="active" data-tab="home" onclick="switchTab('home')"><span class="ni"><svg class="i"><use href="#i-home"/></svg></span>Home</button>
     <button data-tab="live" onclick="switchTab('live')"><span class="ni"><svg class="i"><use href="#i-live"/></svg></span>Live</button>
-    <button class="nav-ai" onclick="openAI()" aria-label="Saudi AI assistant"><span class="ni"><svg class="i"><use href="#i-spark"/></svg></span>Ask AI</button>
+    <button class="nav-ai" onclick="openItem('piWallet')" aria-label="Wallet"><span class="ni"><svg class="i"><use href="#i-wallet"/></svg></span>Wallet</button>
     <button data-tab="explore" onclick="switchTab('explore')"><span class="ni"><svg class="i"><use href="#i-compass"/></svg></span>Explore</button>
     <button data-tab="tools" onclick="switchTab('tools')"><span class="ni"><svg class="i"><use href="#i-tools"/></svg></span>Tools</button>
   </nav>
@@ -2721,7 +2709,7 @@ function renderLists(){
   $('svcLife').innerHTML = LIFE.map(function(v){ return rowHTML(v.id); }).concat(['k-health','s-scams'].map(rowHTML)).join('');
   $('svcGov').innerHTML = GOV.map(function(v){ return rowHTML(v.id); }).join('');
   $('svcGreen').innerHTML = greenRowsHTML();
-  $('deenGrid').innerHTML = ['quran','duas','tasbih','qibla','calendar','zakat','hajj','umrah','madinah','umrahPack'].map(tileHTML).join('');
+  $('deenGrid').innerHTML = ['quran','hadith40','duas','tasbih','qibla','calendar','zakat','hajj','umrah','madinah','umrahPack'].map(tileHTML).join('');
   $('finGrid').innerHTML = ['converter','vat','split','salary','gratuity','zakat','piWallet'].map(tileHTML).join('');
   $('toolGrid').innerHTML = ['transport','units','phrases','worldclock','train','travelPlan','arrival'].map(tileHTML).join('');
   $('safetyRows').innerHTML = ['safety','whatToDo','emergency'].map(rowHTML).join('');
@@ -2729,7 +2717,7 @@ function renderLists(){
   $('trvTips').innerHTML = ['etiquette','weather','about'].map(rowHTML).join('');
   $('trvCities').innerHTML = CITIES.map(function(c, i){ return cardHTML(c.id, i); }).join('');
   if($('placeCats')) $('placeCats').innerHTML = PLACE_CATS.filter(function(c){ return c.id !== 'all'; }).map(function(c, i){ return `<button class="tile" style="animation-delay:${i*0.02}s" onclick="openMap('${c.id}')"><div class="ic">${c.ic}</div><span>${c.t}</span></button>`; }).join('');
-  if($('expPlan')) $('expPlan').innerHTML = ['trips','hotels','food','transport'].map(rowHTML).join('');
+  if($('expPlan')) $('expPlan').innerHTML = ['trips','transport'].map(rowHTML).join('');
   if($('expList')) $('expList').innerHTML = EXPERIENCES.map(function(x){ return x.img ? `<button class="xp xp-photo" style="background-image:linear-gradient(180deg,rgba(6,20,14,0) 35%,rgba(6,20,14,.78) 100%),url(${x.img});background-color:#0E3B26" onclick="openItem('${x.id}')"><b>${x.t}</b><small>${x.s}</small></button>` : `<button class="xp" style="background:${x.bg}" onclick="openItem('${x.id}')"><span class="e">${x.ic}</span><b>${x.t}</b><small>${x.s}</small></button>`; }).join('');
   if($('expBiz')) $('expBiz').innerHTML = ['directory','piHub','addBusiness'].map(rowHTML).join('');
   if($('knowGrid')) $('knowGrid').innerHTML = KNOW.map(function(k, i){ return cardHTML(k.id, i); }).join('') + cardHTML('knowQuiz', KNOW.length);
@@ -3095,10 +3083,9 @@ const PANELS = {
   },
   feedback: function(){ openFeedback(''); },
   about: function(){
-    showPanel('About DigitalSaudi', `<p>DigitalSaudi is an independent Pi Network app that helps visitors, pilgrims, workers and residents with Saudi Arabia: live news, football scores, the Pi price, visas, e-services, Umrah, Quran and practical tools — in one place.</p>
-      <h4>Independence</h4><p>DigitalSaudi is not affiliated with or endorsed by the Government of Saudi Arabia or any ministry. Always confirm details on official portals.</p>
+    showPanel('About DigitalSaudi', `<p>DigitalSaudi is a Pi Network app that helps visitors, pilgrims, workers and residents with Saudi Arabia: live news, football scores, the Pi price, visas, e-services, Umrah, Quran and practical tools — in one place.</p>
       <h4>Data sources</h4><ul><li>News: BBC, Al Jazeera, Arab News, Saudi Gazette and Cointelegraph feeds — headlines, short summaries and links; articles belong to their publishers</li><li>Football: football-data.org</li><li>Pi price: OKX, Gate.io, Bitget, MEXC or CoinGecko (the source is shown next to the price) · Currency rates: <a href="https://www.exchangerate-api.com" target="_blank" rel="noopener">Rates By Exchange Rate API</a></li><li>Weather: <a href="https://www.met.no/en" target="_blank" rel="noopener">MET Norway</a> (CC BY 4.0) · Prayer times: Aladhan (Umm al-Qura)</li><li>Maps &amp; places: © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors (ODbL), Overpass, Photon by komoot</li><li>Quran: alquran.cloud</li><li>AI features: Google Gemini, Cloudflare Workers AI, Anthropic — answers are AI-generated</li><li>Green calculators: SEC tariffs, Climate Transparency, Our World in Data (estimates)</li></ul>
-      <h4>Contact</h4><p><a href="mailto:${CONTACT_EMAIL}">${CONTACT_EMAIL}</a></p><p class="small"><span class="notr" dir="ltr">© 2026 DigitalSaudi.</span> All rights reserved. The DigitalSaudi name, logo, design and original content are protected by copyright.</p>`, { id:'about' });
+      <h4>Contact</h4><p><a href="mailto:${CONTACT_EMAIL}">${CONTACT_EMAIL}</a></p><p class="small"><span class="notr" dir="ltr">© 2026 DigitalSaudi</span></p>`, { id:'about' });
   }
 };
 
@@ -3808,7 +3795,7 @@ function recordPremium(paymentId, tier){
 function refreshPremiumUI(){ renderLists(); renderProfile(); if($('panel').classList.contains('open') && current && current.id === 'premium') renderPremium(); }
 function renderPremium(){
   const on = isPremium();
-  const perks = ['Unlimited Saudi AI assistant (free: 10 a day)','Umrah packing checklist','7-day Jeddah · Makkah · Madinah plan','Arrival checklist for your first 48 hours','Trip budget planner with live SAR · NGN · Pi','Premium badge ⭐ and supporter status','Supports new features and updates'];
+  const perks = ['Umrah packing checklist','7-day Jeddah · Makkah · Madinah plan','Arrival checklist for your first 48 hours','Trip budget planner with live SAR · NGN · Pi','Premium badge ⭐ and supporter status','Supports new features and updates'];
   showPanel('DigitalSaudi Premium', (on ? `<div class="lock-wrap"><div class="big">⭐</div><h3>Premium is active</h3><p class="small">${premiumLabel()}</p></div>` + ['umrahPack','travelPlan','arrival','budget'].map(rowHTML).join('') : `<div class="lock-wrap"><div class="big">⭐</div><h3>Go Premium</h3><p class="small">Unlock planners and checklists for your trip.</p></div>`) +
     `<h4>What you get</h4><ul>${perks.map(function(p){ return '<li>' + p + '</li>'; }).join('')}</ul>` +
     (getPremium() && getPremium().tier === 'lifetime' ? '' : `<h4>${on ? 'Extend or upgrade' : 'Choose a plan'}</h4>` +
@@ -3821,25 +3808,57 @@ function buyPremium(tier){
 }
 
 /* ================= PI AUTH ================= */
+/* Pi.init must run only once per page: calling it again before every sign-in can leave Pi.authenticate waiting. */
+let piInited = false, authInFlight = null, authStartedAt = 0;
+const PI_SANDBOX = (function(){ try{ const r = document.referrer || '', a = location.ancestorOrigins ? [].slice.call(location.ancestorOrigins).join(' ') : ''; return /sandbox\.minepi\.com/.test(r + ' ' + a); }catch(e){ return false; } })();
+function initPi(){ if(!piInited && typeof Pi !== 'undefined'){ try{ Pi.init({ version:'2.0', sandbox:PI_SANDBOX }); piInited = true; }catch(e){ log('Pi.init failed', e); } } }
+/* Start the Pi SDK as soon as the page opens (like FinPi), so Pi is ready before anyone taps Sign in. */
+if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initPi, { once:true }); else initPi();
+function onPiAuth(auth){
+  piUser = auth.user; piUser.accessToken = auth.accessToken;
+  log('✅ Authenticated:', piUser.username);
+  store.set('lastUser', piUser.username);
+  enterApp();
+  award('pioneer');
+  toast('Welcome, @' + piUser.username);
+  syncPremium();
+  if(pendingAction){ const a = pendingAction; pendingAction = null; a(); }
+}
+/* One shared Pi sign-in. Two Pi.authenticate calls at the same time (sign-in button, "Fix pending payment",
+   a payment) make the Pi Browser hang or fail, so every caller waits for the same request. */
+let authRetried = false;
+function piAuth(){
+  initPi();
+  if(!authInFlight || Date.now() - authStartedAt >= 20000){
+    log('Sign-in started');
+    authStartedAt = Date.now();
+    const attempt = Pi.authenticate(['username','payments'], onIncompletePaymentFound).then(function(auth){
+      if(authInFlight === attempt) authInFlight = null;
+      if(!piUser) onPiAuth(auth); else piUser.accessToken = auth.accessToken;
+      return true;
+    }, function(err){
+      if(authInFlight === attempt) authInFlight = null;
+      log('❌ Sign-in failed:', err && err.message ? err.message : err);
+      if(!piUser){ const why = String((err && (err.message || err.error || err)) || '').slice(0, 140); toast('Sign-in failed' + (why ? ': ' + why : '') + '. Please try again.'); store.set('lastAuthError', { at: Date.now(), why: why }); }
+      return false;
+    });
+    authInFlight = attempt;
+    // Pi is started when the page opens, so one request is enough. A second request while the first is still
+    // waiting can make the Pi Browser hang, so a new one is only sent if the user taps Sign in again after 20 s.
+  }
+  return authInFlight;
+}
 function piLogin(){
   if(typeof Pi === 'undefined'){ log('Pi SDK missing: open from the Pi Browser'); toast('Please open DigitalSaudi in the Pi Browser'); return; }
-  const btn = $('loginBtn'); if(btn){ btn.disabled = true; btn.innerHTML = '<div class="spinner"></div> Connecting…'; }
-  log('Sign-in started');
-  Pi.init({ version:'2.0', sandbox:false });
-  const authTimeout = new Promise(function(_, rej){ setTimeout(function(){ rej(new Error('timeout')); }, 25000); });
-  Promise.race([Pi.authenticate(['username','payments'], onIncompletePaymentFound), authTimeout]).then(function(auth){
-    piUser = auth.user; piUser.accessToken = auth.accessToken;
-    log('✅ Authenticated:', piUser.username);
-    store.set('lastUser', piUser.username);
-    enterApp();
-    award('pioneer');
-    toast('Welcome, @' + piUser.username);
-    syncPremium();
-    if(pendingAction){ const a = pendingAction; pendingAction = null; a(); }
-  }).catch(function(err){
-    log('❌ Sign-in failed:', err && err.message ? err.message : err);
-    toast(err && err.message === 'timeout' ? 'Sign-in is taking too long. Open DigitalSaudi from the Pi Browser app link (not the pages.dev address) and try again.' : 'Sign-in failed. Please try again in the Pi Browser.');
-  }).finally(function(){ if(btn){ btn.disabled = false; btn.innerHTML = '<span>π</span> Sign in with Pi'; } });
+  const btn = $('loginBtn');
+  const resetBtn = function(){ if(btn){ btn.disabled = false; btn.innerHTML = '<span>π</span> Sign in with Pi'; } };
+  if(btn){ btn.disabled = true; btn.innerHTML = '<div class="spinner"></div> Connecting…'; }
+  const current = piAuth();
+  // A slow answer from Pi is not a failure: keep waiting and sign in as soon as Pi replies.
+  const slow = setTimeout(function(){
+    if(authInFlight === current && !piUser){ resetBtn(); toast('Still connecting to Pi… you will be signed in when Pi answers. If nothing happens, tap Sign in again.'); }
+  }, 15000);
+  current.then(function(){ clearTimeout(slow); resetBtn(); });
 }
 function dsWaitToken(ms){
   return new Promise(function(res){
@@ -3848,7 +3867,7 @@ function dsWaitToken(ms){
   });
 }
 function onIncompletePaymentFound(payment){
-  log('incomplete payment', payment);
+  log('incomplete payment', payment); window.__dsFoundIncomplete = true;
   if(!payment || !payment.identifier) return;
   const txid = payment.transaction && payment.transaction.txid;
   const info = { id:payment.identifier, amount:payment.amount, memo:payment.memo || 'Earlier payment', txid:txid || '', at:Date.now(), state:'working' };
@@ -3885,20 +3904,23 @@ function showStuckPayment(){
 }
 function clearStuckPayment(){
   if(typeof Pi === 'undefined') return toast('Open DigitalSaudi in the Pi Browser');
-  Pi.init({ version:'2.0', sandbox:false });
+  initPi();
   showPanel('Unfinished payment', '<div class="lock-wrap"><div class="big">⏳</div><h3>Checking with Pi…</h3></div>', { id:'stuckPay', share:false });
-  let found = false;
-  Pi.authenticate(['username','payments'], function(p){ found = true; onIncompletePaymentFound(p); })
-    .then(function(auth){ piUser = auth.user; piUser.accessToken = auth.accessToken; if(!found){ store.set('stuckPayment', null); showStuckPayment(); } })
-    .catch(function(){ toast('Sign-in failed — open the app from the Pi Browser app link'); });
+  window.__dsFoundIncomplete = false;
+  if(!authInFlight) authStartedAt = 0; // ask Pi again so it reports any unfinished payment
+  piAuth().then(function(ok){
+    if(!ok) return toast('Sign-in failed — open the app from the Pi Browser app link');
+    if(!window.__dsFoundIncomplete){ store.set('stuckPayment', null); showStuckPayment(); }
+  });
 }
 
 /* ================= PI PAYMENTS (Copa exact pattern) ================= */
 function submitPiPayment(amount, memo, metadata, btn){
   if(typeof Pi === 'undefined'){ toast('Payments work only in the Pi Browser'); return; }
   if(!piUser){ pendingAction = function(){ submitPiPayment(amount, memo, metadata, btn); }; piLogin(); return; }
+  if(authInFlight){ toast('Connecting to Pi…'); authInFlight.then(function(){ submitPiPayment(amount, memo, metadata, btn); }); return; }
   if(metadata && metadata.type === 'premium') metadata.uid = piUser.uid;
-  Pi.init({ version:'2.0', sandbox:false });
+  initPi();
   const label = btn ? btn.innerHTML : '';
   if(btn){ btn.disabled = true; btn.innerHTML = '<div class="spinner" style="margin:0 auto"></div>'; }
   const reset = function(){ if(btn && document.body.contains(btn)){ btn.disabled = false; btn.innerHTML = label; } };
@@ -3939,6 +3961,7 @@ function submitPiPayment(amount, memo, metadata, btn){
   });
 }
 function applyPaymentEffect(metadata, amount, paymentId){
+  if(metadata && metadata.type === 'transfer'){ if(window.dsTransferSync) dsTransferSync(); return; }
   if(metadata && metadata.type === 'premium'){
     recordPremium(paymentId, metadata.tier || 'monthly').then(function(){ toast('⭐ Premium unlocked — thank you!'); });
   } else {
@@ -5202,10 +5225,10 @@ Object.assign(PANELS, {
   career:careerPanel, cvBuilder:cvBuilderPanel, salary:salaryPanel, gratuity:gratuityPanel, skills:skillsPanel, safety:safetyPanel, whatToDo:whatToDoPanel,
   inbox:inboxPanel, notifSettings:notifSettingsPanel, savedPlaces:savedPlacesPanel, knowQuiz:quizPanel, ai:function(){ openAI(); }
 });
-PERSONA_QA.pilgrim = ['umrah','duas','quran','qibla','trips','hotels'];
-PERSONA_QA.visitor = ['nearMe','trips','hotels','food','converter','phrases'];
+PERSONA_QA.pilgrim = ['umrah','duas','quran','qibla','trips','hadith40'];
+PERSONA_QA.visitor = ['piWallet','trips','quran','hadith40','converter','phrases'];
 PERSONA_QA.worker = ['career','visas','reminders','salary','gratuity','eservices'];
-PERSONA_QA.resident = ['nearMe','directory','energyCalc','reminders','events','safety'];
+PERSONA_QA.resident = ['piWallet','directory','energyCalc','reminders','events','safety'];
 PERSONA_FOR.pilgrim = ['hajj','madinah','umrahPack','train','whatToDo'];
 PERSONA_FOR.visitor = ['x-alula','x-desert','k-food','transport','s-tourist'];
 PERSONA_FOR.worker = ['cvBuilder','c-interview','v-work','g-qiwa','l-money'];
@@ -6134,7 +6157,7 @@ let LANG = LANGS[store.get('lang', '')] ? store.get('lang', '') : detectLang();
 let AUTO_TR = store.get('tr_' + LANG, {});
 const TR_FAILED = new Set(), TR_QUEUE = new Set();
 const TR_ORIG = new WeakMap(), TR_LAST = new WeakMap(), TR_ATTR = new WeakMap();
-const TR_SKIP = 'script,style,textarea,code,pre,.ar,.notr,[translate="no"],#newsList,#homeNews,.msg,#avatar,#bigAv,.qr,.leaflet-container,#trBadge';
+const TR_SKIP = 'script,style,textarea,code,pre,.ar,.notr,[translate="no"],#newsList,#homeNews,.msg,#avatar,#bigAv,.qr,.leaflet-container,#trBadge,.hq-ay-ar,.hq-ay-en,.hq-head-ar,.hq-bism,.hq-ar,.hq-rec select,.hq-now,#hh-list small';
 const TR_SPLIT = /^([\s\p{Extended_Pictographic}️‍⃣•·›‹←→＋+✓✔★☆▸▾▲▼|π]*)(\S[\s\S]*?)([\s›‹→←:*·\p{Extended_Pictographic}\uFE0F\u200D]*)$/u;
 let trEverChanged = LANG !== 'en';
 
@@ -6746,7 +6769,6 @@ PANELS.converter = function(){
         <div><span>Rate used</span><b>Mid-market</b></div>
         <div><span>Rates updated</span><b id="wxUpd">—</b></div>
       </div>
-      <div class="note">Banks and exchange shops add their own margin to this rate. Compare a few before you exchange, and ask the total you'll receive.</div><p class="ds-credit-p"><a class="ds-credit" href="https://www.exchangerate-api.com" target="_blank" rel="noopener">Rates By Exchange Rate API</a></p>
     </div>`, { id:'converter' });
   ensureRates().then(wxCalc); wxCalc();
   setTimeout(function(){ const i = $('wxAmt'); if(i){ i.focus(); i.select(); } }, 350);
@@ -6935,7 +6957,7 @@ runSearch = function(raw){
       items.map(function(it){ return `<button class="row sr-row" onclick="srGo('item','${it.id}')"><div class="ic">${it.ic || '•'}</div><div class="tx"><b>${srMark(it.t, terms)}</b>${it.s ? '<small>' + srMark(it.s, terms) + '</small>' : ''}</div><span class="chev">›</span></button>`; }).join('');
   }).join('');
   const ai = `<button class="sr-answer sr-ai" onclick="srGo('ai',0,${JSON.stringify(String(raw).trim()).replace(/"/g, '&quot;')})"><span class="sa-ic">${ico('spark')}</span><span class="sa-tx"><b>Ask Saudi AI</b><small>“${esc(String(raw).trim())}”</small></span></button>`;
-  box.innerHTML = ans + (list || (ans ? '' : `<div class="empty" style="padding:18px 8px"><div class="big">🔎</div>No matches for “${esc(raw)}”. Check the spelling, try a shorter word, or ask Saudi AI.</div>`)) + ai;
+  box.innerHTML = ans + (list || (ans ? '' : `<div class="empty" style="padding:18px 8px"><div class="big">🔎</div>No matches for “${esc(raw)}”. Check the spelling or try a shorter word.</div>`)) + ai;
 };
 
 /* ==========================================================================
@@ -7092,7 +7114,7 @@ function sourcesFor(id){
     if(src.length){
       const rv = body.querySelector('.reviewed');
       const note = src.every(function(k){ return k === 'visit'; }) ? 'Opening times and prices change — check the official site before you go.' : 'Rules and fees change — always confirm on the official site before you apply or pay.';
-      const html = `<div class="g-src"><b>${esc(t('Official sources'))}</b>${src.map(function(k){ const o = OFFICIAL[k]; return `<a href="${o[1]}" target="_blank" rel="noopener"><span>${ico('shield')}</span><span><b class="notr">${o[0]}</b><small>${esc(t(o[2]))}</small></span><span class="chev">›</span></a>`; }).join('')}<small class="g-src-n">${esc(t(note))}</small></div>`;
+      const html = `<div class="g-src"><b>${esc(t('Official sources'))}</b>${src.map(function(k){ const o = OFFICIAL[k]; return `<a href="${o[1]}" target="_blank" rel="noopener"><span>${ico('shield')}</span><span><b class="notr">${o[0]}</b><small>${esc(t(o[2]))}</small></span><span class="chev">›</span></a>`; }).join('')}</div>`;
       if(rv) rv.insertAdjacentHTML('beforebegin', html); else body.insertAdjacentHTML('beforeend', html);
     }
     return r;
@@ -7279,7 +7301,7 @@ showOnboarding = function(){ showIntro(true); };
 /* digitalsaudi.pi everywhere people see the address */
 (function(){
   const _share = shareApp;
-  shareApp = function(){ shareText('DigitalSaudi', 'DigitalSaudi — your Saudi digital companion: Umrah & Hajj, live news and scores, Pi payments, places near you and Saudi AI. Open ' + OB_DOMAIN + ' in the Pi Browser, or:', location.origin); };
+  shareApp = function(){ shareText('DigitalSaudi', 'DigitalSaudi — your Saudi digital companion: Umrah & Hajj, live news and scores, Pi wallet and payments, Quran and 40 Hadith. Open ' + OB_DOMAIN + ' in the Pi Browser, or:', location.origin); };
 })();
 
 /* words for the onboarding in every language (instant, offline) */
@@ -7545,7 +7567,7 @@ function srAllLangs(text){
   runSearch = function(raw){
     const r = _rs.apply(this, arguments);
     const box = $('sres'), e = box && box.querySelector('.empty');
-    if(e){ e.classList.add('notr'); e.innerHTML = '<div class="big">🔎</div>' + esc(t('No matches for')) + ' “' + esc(String(raw).trim()) + '”. ' + esc(t('Check the spelling, try a shorter word, or ask Saudi AI.')); }
+    if(e){ e.classList.add('notr'); e.innerHTML = '<div class="big">🔎</div>' + esc(t('No matches for')) + ' “' + esc(String(raw).trim()) + '”. ' + esc(t('Check the spelling or try a shorter word.')); }
     return r;
   };
 })();
@@ -7556,7 +7578,7 @@ function srAllLangs(text){
     ["Payment requests, your Pi payments","طلبات الدفع ومدفوعاتك بـ Pi","ادائیگی کی درخواستیں، آپ کی Pi ادائیگیاں","Permintaan pembayaran, pembayaran Pi Anda","Buƙatun biya, biyan kuɗin Pi naka","Demandes de paiement, vos paiements Pi"],
     ["Requests","الطلبات","درخواستیں","Permintaan","Buƙatu","Demandes"],
     ["No matches for","لا توجد نتائج لـ","کوئی نتیجہ نہیں ملا:","Tidak ada hasil untuk","Babu sakamako ga","Aucun résultat pour"],
-    ["Check the spelling, try a shorter word, or ask Saudi AI.","تحقق من الإملاء، أو جرّب كلمة أقصر، أو اسأل الذكاء السعودي.","ہجے چیک کریں، چھوٹا لفظ آزمائیں، یا سعودی AI سے پوچھیں۔","Periksa ejaan, coba kata yang lebih pendek, atau tanya Saudi AI.","Duba rubutun, gwada gajeriyar kalma, ko ka tambayi Saudi AI.","Vérifiez l’orthographe, essayez un mot plus court ou demandez à Saudi AI."],
+    ["Check the spelling or try a shorter word.","تحقق من الإملاء أو جرّب كلمة أقصر.","ہجے چیک کریں یا چھوٹا لفظ آزمائیں۔","Periksa ejaan atau coba kata yang lebih pendek.","Duba rubutun ko ka gwada gajeriyar kalma.","Vérifiez l’orthographe ou essayez un mot plus court."],
     ["Pi is a digital currency from the Pi Network app. Sign in with Pi for Premium, business listings and QR payments.","Pi عملة رقمية من تطبيق Pi Network. سجّل الدخول عبر Pi للحصول على Premium وقوائم الأعمال والدفع عبر QR.","Pi، Pi Network ایپ کی ایک ڈیجیٹل کرنسی ہے۔ Premium، کاروباری فہرستوں اور QR ادائیگیوں کے لیے Pi سے سائن ان کریں۔","Pi adalah mata uang digital dari aplikasi Pi Network. Masuk dengan Pi untuk Premium, daftar bisnis, dan pembayaran QR.","Pi kuɗin dijital ne daga manhajar Pi Network. Shiga da Pi don Premium, jerin kasuwanci da biyan kuɗi ta QR.","Pi est une monnaie numérique de l’application Pi Network. Connectez-vous avec Pi pour le Premium, les fiches d’entreprise et les paiements QR."]
   ];
   R.forEach(function(r){ LANG_ORDER.slice(1).forEach(function(l, i){ if(r[i + 1] && I18N[l]) I18N[l][r[0]] = r[i + 1]; }); });
@@ -8612,7 +8634,8 @@ const DS_SURAHS = 'Al-Faatiha|The Opening|7|M|الفاتحة;Al-Baqara|The Cow|2
     if(ov && ov.classList.contains('open')) return;
     tried = true;
     const b = $('loginBtn'); if(b) b.innerHTML = '<span>π</span> ' + esc(t('Continue as')) + ' @' + esc(last);
-    setTimeout(function(){ if(!(typeof entered !== 'undefined' && entered)) piLogin(); }, 350);
+    const go = function(){ setTimeout(function(){ if(!(typeof entered !== 'undefined' && entered)) piLogin(); }, 600); };
+    if(document.readyState === 'complete') go(); else window.addEventListener('load', go, { once:true });
   }
   const iv = setInterval(function(){ check(); if(tried || (typeof entered !== 'undefined' && entered)) clearInterval(iv); }, 500);
   setTimeout(function(){ clearInterval(iv); }, 120000);
@@ -9459,7 +9482,7 @@ function dsBadgesAll(){ const g = $('badgeGrid'); if(!g) return; const all = g.c
     take('deenGrid', 'islamic'); take('deenEvents', 'islamic');
     // Pi & money
     const piRows = document.createElement('div'); piRows.className = 'ds-rows';
-    piRows.innerHTML = [['piWallet', 'wallet'], ['piHub', 'pi'], ['merchantQR', 'image'], ['directory', 'store']].map(function(r){ const m = META[r[0]]; return m ? `<button class="row" onclick="openItem('${r[0]}')"><div class="ic">${ico(r[1])}</div><div class="tx"><b>${esc(t(m.t))}</b><small>${esc(t(m.s || ''))}</small></div><span class="chev">›</span></button>` : ''; }).join('');
+    piRows.innerHTML = [['piWallet', 'wallet'], ['business', 'briefcase'], ['piHub', 'pi'], ['merchantQR', 'image'], ['directory', 'store']].map(function(r){ const m = META[r[0]]; return m ? `<button class="row" onclick="openItem('${r[0]}')"><div class="ic">${ico(r[1])}</div><div class="tx"><b>${esc(t(m.t))}</b><small>${esc(t(m.s || ''))}</small></div><span class="chev">›</span></button>` : ''; }).join('');
     panes.money.appendChild(piRows);
     take('finGrid', 'money');
     // Travel & papers
@@ -10236,7 +10259,12 @@ if(DS_TESTNET){
 }
 
 </script>
-<script src="/ds-receipt.js?v=1"></script>
-<script src="/ds-wallet.js?v=5"></script>
+<script src="/ds-receipt.js?v=3"></script>
+<script src="/ds-wallet.js?v=8"></script>
+<script src="/ds-transfer.js?v=2"></script>
+<script src="/ds-business.js?v=1"></script>
+<link rel="stylesheet" href="/ds-pro.css?v=9">
+<script src="/ds-quran.js?v=2"></script>
+<script src="/ds-pro.js?v=3"></script>
 </body>
 </html>

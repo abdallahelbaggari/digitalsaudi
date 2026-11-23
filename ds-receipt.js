@@ -54,21 +54,83 @@
       return cv;
     });
   }
-  function share(cv, fname, text) {
-    cv.toBlob(function (blob) {
-      try { var f = new File([blob], fname, { type: 'image/png' }); if (navigator.canShare && navigator.canShare({ files: [f] })) { navigator.share({ files: [f], title: 'DigitalSaudi receipt', text: 'DigitalSaudi receipt' }).catch(function () {}); return; } } catch (e) {}
-      if (navigator.share) navigator.share({ title: 'DigitalSaudi receipt', text: text }).catch(function () {}); else window.open('https://wa.me/?text=' + encodeURIComponent(text));
-    }, 'image/png');
+  /* ── saving and sharing (works inside the Pi Browser) ──
+     The Pi Browser cannot save files made inside the page or share them as files, so DigitalSaudi keeps a private
+     copy for 30 days (/file) and uses its link: saving downloads from that link (Downloads and Gallery), sharing tries
+     a real image first, and the link is offered as an option. */
+  var upCache = {};
+  function T(m) { try { toast(m); } catch (e) {} }
+  function upload(blob, name, type) {
+    var k = name + '|' + blob.size;
+    if (!upCache[k]) upCache[k] = fetch('/file?type=' + encodeURIComponent(type) + '&name=' + encodeURIComponent(name), { method: 'POST', headers: { 'Content-Type': type }, body: blob })
+      .then(function (r) { return r.json(); }).then(function (d) { if (!d || !d.ok) throw new Error((d && d.error) || 'Could not save'); return d; })
+      .catch(function (e) { delete upCache[k]; throw e; });
+    return upCache[k];
   }
+  function clickDl(href, name) { var a = document.createElement('a'); a.href = href; a.download = name; a.rel = 'noopener'; document.body.appendChild(a); a.click(); a.remove(); }
+  function blobSave(blob, name) { var u = URL.createObjectURL(blob); clickDl(u, name); setTimeout(function () { URL.revokeObjectURL(u); }, 15000); }
+  function canShareFile(f) { try { return !!(f && navigator.canShare && navigator.canShare({ files: [f] })); } catch (e) { return false; } }
+  function note(html) {
+    var old = document.getElementById('dsFileNote'); if (old) old.remove();
+    var d = document.createElement('div'); d.id = 'dsFileNote'; d.className = 'ds-fnote'; d.innerHTML = html + '<button type="button" class="ds-fx" aria-label="Close">✕</button>';
+    d.querySelector('.ds-fx').onclick = function () { d.remove(); };
+    var host = document.querySelector('#panel .p-body, #pBody') || document.body; host.appendChild(d); try { d.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); } catch (e) {}
+    return d;
+  }
+  function save(blob, name, type, what, quiet) {
+    T('Saving ' + what + '…');
+    return upload(blob, name, type).then(function (d) {
+      clickDl(location.origin + d.file + '?dl=1', d.name || name);
+      if (quiet) return d;
+      var img = /^image\//.test(type);
+      var n = note('<b>✓ Saved to your phone</b><p>' + (img ? 'Your receipt image is in your phone’s <b>Downloads</b> and <b>Gallery</b>.' : 'Your ' + what + ' is in your phone’s <b>Downloads</b> folder.') + '</p>' +
+        '<button type="button" class="btn btn-ghost btn-sm" data-x="o">' + (img ? 'Open the receipt image' : 'Download again') + '</button>');
+      n.querySelector('[data-x="o"]').onclick = function () { if (img) location.href = d.page; else clickDl(location.origin + d.file + '?dl=1', d.name || name); };
+      return d;
+    }, function () { blobSave(blob, name); T(what.charAt(0).toUpperCase() + what.slice(1) + ' saved to Downloads'); });
+  }
+  function shareLink(blob, name, type, title, short) {
+    T('Preparing link…');
+    upload(blob, name, type).then(function (d) {
+      var link = location.origin + d.page, t = short || title;
+      if (navigator.share) navigator.share({ title: title, text: t, url: link }).catch(function () {});
+      else if (window.Pi && Pi.openShareDialog) { try { Pi.openShareDialog(title, t + '\n' + link); } catch (e) {} }
+      else { try { navigator.clipboard.writeText(t + '\n' + link); T('Link copied'); } catch (e) {} }
+    }, function () { T('No connection. Try again.'); });
+  }
+  function shareImage(blob, name, type, title, short) {
+    var f = null; try { f = new File([blob], name, { type: type }); } catch (e) {}
+    var fallback = function () {
+      save(blob, name, type, 'receipt', true);
+      var n = note('<b>Share the receipt image</b><p>The receipt image is saved to your phone’s <b>Gallery</b>. Open WhatsApp (or any app), tap attach, choose <b>Gallery</b> and pick the DigitalSaudi receipt.</p>' +
+        '<button type="button" class="btn btn-primary btn-sm" data-x="l">🔗 Share as a link instead</button>');
+      n.querySelector('[data-x="l"]').onclick = function () { n.remove(); shareLink(blob, name, type, title, short); };
+    };
+    if (f && navigator.share && (!navigator.canShare || canShareFile(f))) return navigator.share({ files: [f], title: title }).catch(function (e) { if (!e || e.name !== 'AbortError') fallback(); });
+    fallback();
+  }
+  function shareFile(blob, name, type, title, short) {
+    var f = null; try { f = new File([blob], name, { type: type }); } catch (e) {}
+    if (canShareFile(f)) return navigator.share({ files: [f], title: title }).catch(function () {});
+    shareLink(blob, name, type, title, short);
+  }
+  function toJpg(cv) { return new Promise(function (ok) { cv.toBlob(ok, 'image/jpeg', 0.92); }); }
+  function share(cv, fname, text) { toJpg(cv).then(function (b) { shareImage(b, fname.replace(/\.png$/, '.jpg'), 'image/jpeg', 'DigitalSaudi receipt', String(text || '').split('\n').slice(0, 2).join(' · ')); }); }
   function sheet(spec, fname, text, title) {
-    try { toast('Preparing receipt…'); } catch (e) {}
+    var isInv = /^Invoice/.test(spec.title || ''); T(isInv ? 'Preparing invoice…' : 'Preparing receipt…');
+    fname = fname.replace(/\.png$/, '.jpg');
+    var short = (isInv ? 'DigitalSaudi · ' : 'DigitalSaudi receipt · ') + (spec.title || 'Receipt') + ' · ' + spec.amount + ' π';
     return canvas(spec).then(function (cv) {
-      var url = cv.toDataURL('image/png');
-      showPanel(title || 'Receipt', '<img src="' + url + '" alt="Receipt" style="width:100%;border-radius:16px;border:1px solid var(--line);display:block">' +
-        '<div class="p-actions" style="justify-content:center"><button class="btn btn-primary btn-sm" id="dsRcShare">📤 Share receipt image</button><a class="btn btn-ghost btn-sm" href="' + url + '" download="' + fname + '">⬇️ Save image</a></div>' +
-        '<p class="small" style="text-align:center;margin-top:6px">Tip: you can also press and hold the image to save it.</p>', { id: 'receipt', share: false });
-      var b = document.getElementById('dsRcShare'); if (b) b.onclick = function () { share(cv, fname, text); };
+      var url = cv.toDataURL('image/jpeg', 0.92), jpg = toJpg(cv);
+      showPanel(title || 'Receipt', '<img src="' + url + '" alt="' + (isInv ? 'Invoice' : 'Receipt') + '" class="ds-rimg">' +
+        '<div class="ds-ract"><button class="btn btn-primary" id="dsRcShare">📤 Share image</button><button class="btn btn-ghost" id="dsRcSave">⬇️ Save to gallery</button></div>' +
+        '<button type="button" class="ds-rlink" id="dsRcLink">🔗 Share as a link</button>', { id: 'receipt', share: false });
+      var g = function (id, fn) { var e = document.getElementById(id); if (e) e.onclick = function () { jpg.then(fn); }; };
+      g('dsRcShare', function (b) { shareImage(b, fname, 'image/jpeg', 'DigitalSaudi receipt', short); });
+      g('dsRcSave', function (b) { save(b, fname, 'image/jpeg', 'receipt'); });
+      g('dsRcLink', function (b) { shareLink(b, fname, 'image/jpeg', 'DigitalSaudi receipt', short); });
     });
   }
+  window.DSFiles = { save: save, shareImage: shareImage, shareFile: shareFile, shareLink: shareLink };
   window.DSReceipt = { canvas: canvas, share: share, sheet: sheet };
 })();

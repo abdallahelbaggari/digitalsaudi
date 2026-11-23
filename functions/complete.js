@@ -7,6 +7,7 @@ const CORS = {
   'Content-Type': 'application/json'
 };
 const json = (obj) => new Response(JSON.stringify(obj), { status: 200, headers: CORS });
+import { payout, piApi } from './_lib/transfers.js';
 const ID_RE = /^[A-Za-z0-9_-]{6,128}$/;
 
 export async function onRequestPost(context) {
@@ -26,7 +27,14 @@ export async function onRequestPost(context) {
       body: JSON.stringify(PAYLOAD)
     });
     const data = await res.json().catch(() => ({}));
-    return json({ ok: res.ok, status: res.status, data });
+    // In-app transfer: once the sender's payment is completed, pay the recipient at once (or refund automatically).
+    let transfer = null;
+    try {
+      const g = await piApi(context.env, '/payments/' + encodeURIComponent(paymentId));
+      const done = res.ok || (g.ok && g.d && g.d.status && g.d.status.developer_completed);
+      if (done && g.d && g.d.metadata && g.d.metadata.type === 'transfer') transfer = await payout(context.env, context.request, paymentId);
+    } catch (e) { transfer = { ok: false, retry: true, error: 'Delivery will be retried automatically' }; }
+    return json({ ok: res.ok, status: res.status, data, transfer });
   } catch (err) {
     return json({ ok: false, error: String(err && err.message || err) });
   }

@@ -6,7 +6,8 @@ const CORS = {
   'Access-Control-Allow-Headers': 'Content-Type',
   'Content-Type': 'application/json'
 };
-const json = (obj) => new Response(JSON.stringify(obj), { status: 200, headers: CORS });
+const json = (obj) => { try { console.log('[approve]', JSON.stringify(obj).slice(0, 600)); } catch (e) {} return new Response(JSON.stringify(obj), { status: 200, headers: CORS }); };
+import { checkTransferPayment, checkLimits, reserve, cancelPayment } from './_lib/transfers.js';
 const ID_RE = /^[A-Za-z0-9_-]{6,128}$/;
 
 
@@ -28,12 +29,16 @@ export async function onRequestPost(context) {
     const meta = p.metadata || {}, amount = Number(p.amount);
     const PRICES = { monthly: 1, lifetime: 5 };
     let why = '';
-    if (!(amount > 0) || amount > 10000) why = 'Invalid amount';
+    if (!(amount > 0) || (meta.type !== 'transfer' && amount > 10000)) why = 'Invalid amount';
     else if (meta.app && meta.app !== 'DigitalSaudi') why = 'Not a DigitalSaudi payment';
-    else if (meta.type !== 'premium' && meta.type !== 'support') why = 'Unknown payment type';
+    else if (meta.type !== 'premium' && meta.type !== 'support' && meta.type !== 'transfer') why = 'Unknown payment type';
     else if (meta.type === 'premium' && amount < (PRICES[meta.tier] || PRICES.monthly)) why = 'Amount too low for this plan';
-    if (why) return json({ ok: false, error: why });
-    if (p.status && p.status.developer_approved) return json({ ok: true, status: 200, data: p, already: true });
+    if (p.status && p.status.developer_approved) return json({ ok: true, approved: true, status: 200, already: true });
+    // In-app transfer (send Pi to a DigitalSaudi user or a wallet address): checked against the fixed transfer rules.
+    // A refused transfer is cancelled at once, so it never blocks the sender's next payment.
+    if (!why && meta.type === 'transfer') why = (await checkTransferPayment(context.env, p, context.request)) || (await checkLimits(context.env, p));
+    if (why) { if (meta.type === 'transfer') await cancelPayment(context.env, paymentId); return json({ ok: false, approved: false, error: why }); }
+    if (meta.type === 'transfer') await reserve(context.env, p);
 
     const res = await fetch('https://api.minepi.com/v2/payments/' + encodeURIComponent(paymentId) + '/approve', {
       method: 'POST',
@@ -41,7 +46,7 @@ export async function onRequestPost(context) {
       body: JSON.stringify(PAYLOAD)
     });
     const data = await res.json().catch(() => ({}));
-    return json({ ok: res.ok, status: res.status, data });
+    return json({ ok: res.ok, approved: res.ok, status: res.status, data });
   } catch (err) {
     return json({ ok: false, error: String(err && err.message || err) });
   }

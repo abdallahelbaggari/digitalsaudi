@@ -52,6 +52,7 @@ h2{font-size:15px;margin:22px 4px 10px}
 .bad{padding:40px 10px;text-align:center;color:var(--m)}
 .foot{text-align:center;font-size:12px;color:var(--m);margin-top:20px}.foot a{color:var(--g);font-weight:700;text-decoration:none}
 .spin{display:inline-block;width:14px;height:14px;border:2px solid currentColor;border-right-color:transparent;border-radius:50%;animation:s 1s linear infinite;vertical-align:-2px}@keyframes s{to{transform:rotate(360deg)}}
+.items{border:1px solid #E6E1D3;border-radius:12px;padding:2px 12px;margin:6px 0}.items .row.tot b{font-size:17px;color:#0E7A52}.items .row.tot span{font-weight:800;color:#13261E}
 </style>
 </head>
 <body>
@@ -60,7 +61,7 @@ h2{font-size:15px;margin:22px 4px 10px}
   <div id="app"><div class="bad">Loading payment request…</div></div>
   <div class="foot">DigitalSaudi never holds your Pi · <a href="/privacy.html">Privacy</a> · <a href="/terms.html">Terms</a> · <a href="/">Open DigitalSaudi</a></div>
 </div>
-<script src="/ds-receipt.js?v=1"></script>
+<script src="/ds-receipt.js?v=3"></script>
 <script>
 (function () {
   'use strict';
@@ -88,14 +89,18 @@ h2{font-size:15px;margin:22px 4px 10px}
   function short(a) { return a.slice(0, 6) + '…' + a.slice(-6); }
   function draw() {
     $('app').innerHTML =
-      '<div class="card"><div class="hero"><div class="k">' + (mine ? 'Your payment request' : 'Payment request') + '</div>' +
+      '<div class="card"><div class="hero"><div class="k">' + (inv.no ? (mine ? 'Your invoice · ' : 'Invoice · ') + esc(inv.no) : (mine ? 'Your payment request' : 'Payment request')) + '</div>' +
         '<div class="who">' + (mine ? 'Waiting for payment' : 'from <b>' + esc(inv.n || 'Seller') + '</b>' + (inv.u ? ' · @' + esc(inv.u) : '')) + '</div>' +
         '<div class="amt">' + inv.a + ' π</div><div class="fx" id="fx">' + fxLine() + '</div></div>' +
-      '<div class="body"><div class="row"><span>For</span><b>' + esc(inv.i || 'Payment') + '</b></div>' +
+      '<div class="body">' + (inv.c ? '<div class="row"><span>Bill to</span><b>' + esc(inv.c) + '</b></div>' : '') +
+        (Array.isArray(inv.l) && inv.l.length ? '<div class="items">' + inv.l.slice(0, 12).map(function (x) { var q = +x[1] || 1, u = +x[2] || 0; return '<div class="row"><span>' + esc(q + ' × ' + x[0]) + '</span><b>' + +(q * u).toFixed(7) + ' π</b></div>'; }).join('') + '<div class="row tot"><span>Total</span><b>' + inv.a + ' π</b></div></div>'
+          : '<div class="row"><span>For</span><b>' + esc(inv.i || 'Payment') + '</b></div>') +
         '<div class="row"><span>Pay to</span><b>' + esc(inv.n || '—') + (inv.u ? ' (@' + esc(inv.u) + ')' : '') + '</b></div>' +
         '<div class="row"><span>Reference</span><b class="mono">' + inv.r + '</b></div>' +
         '<div class="row"><span>Network</span><b>' + NETN + '</b></div>' +
-        '<div class="row"><span>Requested</span><b>' + new Date(inv.d || Date.now()).toLocaleString([], { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }) + '</b></div></div></div>' +
+        '<div class="row"><span>' + (inv.no ? 'Issued' : 'Requested') + '</span><b>' + new Date(inv.d || Date.now()).toLocaleString([], { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }) + '</b></div>' +
+        (inv.due ? '<div class="row"><span>Due</span><b>' + esc(new Date(inv.due + 'T12:00:00').toLocaleDateString([], { day: 'numeric', month: 'short', year: 'numeric' })) + '</b></div>' : '') +
+        (inv.x ? '<div class="row"><span>Note</span><b>' + esc(inv.x) + '</b></div>' : '') + '</div></div>' +
       '<div id="pay"><h2>' + (mine ? 'Share this request with your buyer' : 'How to pay · about 1 minute') + '</h2>' +
       (mine ? '<div class="acts" style="margin-top:0"><button class="btn btn-g" id="sh">📤 Share link</button><button class="btn btn-s" id="cp" style="padding:10px">🔗 Copy link</button></div>' : '') +
       '<div class="steps">' +

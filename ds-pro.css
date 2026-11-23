@@ -1,0 +1,119 @@
+/* DigitalSaudi — clearer structure and stronger, high-contrast colours (light and dark). Layout and features unchanged. */
+
+/* ── All services directory (Home) ── */
+.ds-dir{margin:22px 0 6px}
+.ds-dir-h{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin:0 2px 10px}
+.ds-dir-h h2{margin:0;font-size:20px;font-weight:800;letter-spacing:-.01em;color:var(--text)}
+.ds-dir-h span{font-size:12.5px;font-weight:600;color:var(--muted)}
+.ds-dir-q{display:flex;align-items:center;gap:10px;width:100%;height:52px;padding:0 16px;margin-bottom:12px;border-radius:16px;border:1.5px solid var(--line);background:var(--bg-card);color:var(--muted);font:inherit;font-size:15px;font-weight:600;text-align:left;cursor:pointer;box-shadow:var(--shadow)}
+.ds-dir-q .i{width:20px;height:20px;color:var(--accent);flex:none}
+.ds-dir-g{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.ds-dir-t{--c:var(--accent);display:flex;flex-direction:column;align-items:flex-start;gap:6px;min-width:0;padding:13px 12px 12px;border-radius:18px;border:1.5px solid color-mix(in srgb,var(--c) 28%,var(--line));
+  background:linear-gradient(160deg,color-mix(in srgb,var(--c) 16%,var(--bg-card)) 0%,var(--bg-card) 75%);color:var(--text);text-align:left;font:inherit;cursor:pointer;box-shadow:var(--shadow);transition:transform .12s}
+.ds-dir-t:active{transform:scale(.97)}
+.ds-dir-t i{display:flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:13px;background:var(--c);color:#fff;box-shadow:0 8px 16px -8px color-mix(in srgb,var(--c) 80%,transparent)}
+.ds-dir-t i .i{width:21px;height:21px}
+.ds-dir-t b{font-size:14px;font-weight:800;line-height:1.2;color:var(--text)}
+.ds-dir-t small{font-size:11.5px;line-height:1.35;color:var(--text-2);opacity:.85;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.ds-c-islamic{--c:var(--accent)} .ds-c-money{--c:#B7861A} .ds-c-travel{--c:#2479B5} .ds-c-work{--c:#5B4FC9} .ds-c-gov{--c:#0F766E}
+.ds-c-live{--c:#D9463A} .ds-c-explore{--c:#E07A1F} .ds-c-safety{--c:#C2263F} .ds-c-green{--c:#3F8F2A}
+@media (max-width:340px){.ds-dir-g{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* ── stronger colour and contrast ── */
+h2.sec,.sec{font-weight:800;letter-spacing:-.01em;color:var(--text)}
+.qa span,.tile span{font-weight:700;color:var(--text)}
+.qa .ic,.tile .ic{background:var(--ic,var(--accent))!important;color:#fff!important;box-shadow:0 10px 20px -12px color-mix(in srgb,var(--ic,var(--accent)) 85%,transparent)}
+html:not([data-theme="light"]) .qa .ic,html:not([data-theme="light"]) .tile .ic{color:#07130E!important}
+.tile{border:1.5px solid var(--line)!important;box-shadow:var(--shadow)}
+.row,.card{border-width:1.5px}
+.row .tx b,.card h4{font-weight:700;color:var(--text)}
+.row .tx small,.card p{color:var(--text-2)}
+.btn-primary{font-weight:800;box-shadow:0 12px 24px -14px color-mix(in srgb,var(--accent) 90%,transparent)}
+.svc-chips button{border-width:1.5px}
+#nav button.active{font-weight:800}
+footer.legal{font-weight:600;color:var(--text-2)}
+
+/* ── full-screen reader (news, Quran, 40 Hadith) and photo viewer ── */
+#panel.ds-full{top:0;border-radius:0}
+#pBody .reader img.reader-img{cursor:zoom-in;width:100%;border-radius:16px}
+#dsImgV{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.94);display:flex;align-items:center;justify-content:center;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
+#dsImgV img{max-width:100%;max-height:100%;object-fit:contain}
+#dsImgV button{position:absolute;top:calc(14px + env(safe-area-inset-top));right:14px;width:44px;height:44px;border-radius:50%;border:0;background:rgba(255,255,255,.16);color:#fff;font-size:18px}
+
+/* ── The Holy Quran and 40 Hadith ── */
+.hq-intro{font-size:13.5px;font-weight:600;color:var(--text-2);margin:0 2px 12px}
+.hq-lbl{font-size:12.5px;font-weight:800;color:var(--text-2);margin:4px 2px 8px}
+.hq-cont{display:flex;align-items:center;gap:12px;width:100%;padding:14px;border-radius:16px;border:0;background:linear-gradient(135deg,#0E7A52,#0A5139);color:#fff;font:inherit;text-align:left;margin-bottom:12px;cursor:pointer}
+.hq-cont span{width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;font-size:16px;flex:none}
+.hq-cont b{display:block;font-size:15px}.hq-cont small{font-size:13px;opacity:.85}
+.hq-bms{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}.hq-bms button{border:1.5px solid var(--line);background:var(--bg-card);border-radius:999px;padding:6px 12px;font:inherit;font-size:12.5px;font-weight:700;color:var(--accent)}
+.hq-search{width:100%;height:48px;padding:0 14px;margin:4px 0 10px;border-radius:14px;border:1.5px solid var(--line);background:var(--bg-card);color:var(--text);font:inherit;font-size:15px}
+.hq-row{display:flex;align-items:center;gap:12px;width:100%;padding:12px 6px;border:0;border-bottom:1px solid var(--line);background:transparent;font:inherit;text-align:left;cursor:pointer;color:var(--text)}
+.hq-num{width:38px;height:38px;flex:none;border-radius:11px;border:1.5px solid color-mix(in srgb,var(--accent) 40%,transparent);background:color-mix(in srgb,var(--accent) 12%,transparent);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:var(--accent)}
+.hq-t{flex:1;min-width:0}.hq-t b{display:block;font-size:15px}.hq-t small{display:block;font-size:12.5px;color:var(--text-2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.hq-ar{font-family:'Amiri Quran','Amiri',serif;font-size:21px;color:var(--accent);flex:none}
+.hq-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.hq-back{border:0;background:color-mix(in srgb,var(--accent) 14%,transparent);color:var(--accent);border-radius:999px;padding:8px 14px;font:inherit;font-weight:800;cursor:pointer}
+.hq-tools{display:flex;gap:6px}.hq-tools button{border:1.5px solid var(--line);background:var(--bg-card);color:var(--text);border-radius:10px;padding:6px 10px;font:inherit;font-size:13px;font-weight:800}
+.hq-tools button.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+.hq-head{text-align:center;background:linear-gradient(135deg,color-mix(in srgb,var(--accent) 12%,var(--bg-card)),color-mix(in srgb,var(--gold) 10%,var(--bg-card)));border:1.5px solid var(--line);border-radius:18px;padding:16px;margin-bottom:12px}
+.hq-head-ar{font-family:'Amiri Quran','Amiri',serif;font-size:32px;color:var(--text);line-height:1.5}
+.hq-head-en{font-size:13.5px;color:var(--text-2);margin-bottom:10px}
+.hq-rec{display:flex;align-items:center;gap:8px;justify-content:center;font-size:13px;color:var(--text-2);margin-bottom:10px}
+.hq-rec select{font:inherit;font-size:13.5px;padding:6px 8px;border-radius:10px;border:1.5px solid var(--line);background:var(--bg-card);color:var(--text);max-width:220px}
+.hq-playall{border:0;background:var(--accent);color:#fff;border-radius:999px;padding:10px 20px;font:inherit;font-weight:800;cursor:pointer}
+.hq-bism{font-family:'Amiri Quran','Amiri',serif;text-align:center;font-size:26px;color:var(--text);margin:6px 0 12px}
+.hq-ay{background:var(--bg-card);border:1.5px solid var(--line);border-radius:16px;padding:14px;margin-bottom:10px;transition:background .3s,border-color .3s}
+.hq-ay.cur{background:color-mix(in srgb,var(--accent) 10%,var(--bg-card));border-color:color-mix(in srgb,var(--accent) 55%,transparent)}
+.hq-ay-ar{font-family:'Amiri Quran','Amiri',serif;line-height:2.1;color:var(--text);text-align:right}
+.hq-end{display:inline-flex;align-items:center;justify-content:center;min-width:1.6em;height:1.6em;border:1.5px solid var(--gold);border-radius:50%;font-size:.55em;color:var(--gold);margin-right:4px;vertical-align:middle}
+.hq-ay-en{font-size:14.5px;line-height:1.65;color:var(--text-2);margin-top:8px}.hq-ay-en b{color:var(--gold);margin-right:4px}
+.hq-ay-act{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}.hq-ay-act button{border:0;background:color-mix(in srgb,var(--accent) 12%,transparent);border-radius:999px;padding:7px 13px;font:inherit;font-size:12.5px;font-weight:700;color:var(--accent);cursor:pointer}
+.hq-foot{display:flex;justify-content:space-between;gap:8px;margin:14px 0}
+.hq-src{font-size:12px;color:var(--text-2);text-align:center;margin:6px 0 20px}
+#hq-bar{position:fixed;left:8px;right:8px;bottom:calc(12px + env(safe-area-inset-bottom));z-index:60;background:#0B5C40;color:#fff;border-radius:18px;display:flex;align-items:center;gap:6px;padding:8px 10px;box-shadow:0 14px 30px -12px rgba(0,0,0,.55);max-width:620px;margin:0 auto}
+#hq-bar button{border:0;background:rgba(255,255,255,.12);color:#fff;width:38px;height:38px;border-radius:50%;font-size:15px;flex:none;cursor:pointer}
+#hq-bar #hq-play{background:#E6BD5C;color:#13261E;width:44px;height:44px;font-size:17px}
+#hq-bar #hq-rep.on{background:#E6BD5C;color:#13261E}
+.hq-now{flex:1;min-width:0}.hq-now b{display:block;font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.hq-now small{display:block;font-size:11.5px;opacity:.8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+html.hq-playing #pBody{padding-bottom:6.5rem}
+
+/* ── v3 colour: clear Saudi green + gold, solid coloured icons everywhere (light and dark) ── */
+[data-theme="light"]{--accent:#08804F;--accent-dark:#05603A;--gold:#A87B0C;--bg-base:#EEF3F0}
+html:not([data-theme="light"]){--accent:#19C48A;--accent-dark:#0E9F6F;--gold:#F0C14B}
+/* every list icon becomes a solid colour badge, like Quick actions */
+.row .ic,.card .ic,.mini .ic{background:var(--ic,var(--accent))!important;color:#fff!important;box-shadow:0 8px 16px -10px color-mix(in srgb,var(--ic,var(--accent)) 90%,transparent)}
+html:not([data-theme="light"]) .row .ic,html:not([data-theme="light"]) .card .ic,html:not([data-theme="light"]) .mini .ic{color:#07130E!important}
+.row .chev{color:var(--accent);font-weight:800}
+.row,.mini{border-left:4px solid var(--ic,var(--accent))!important}
+/* section titles with a green and gold marker */
+h2.sec{position:relative;padding-left:14px}
+h2.sec::before{content:"";position:absolute;left:0;top:50%;width:5px;height:1.05em;transform:translateY(-50%);border-radius:3px;background:linear-gradient(180deg,var(--accent),var(--gold))}
+/* header: thin Saudi green and gold line */
+header{border-bottom:0!important;background-image:linear-gradient(90deg,var(--accent),var(--gold))!important;background-size:100% 3px!important;background-repeat:no-repeat!important;background-position:bottom!important}
+/* buttons and active states */
+.btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent-dark))!important;color:#fff!important}
+.chip.on,.seg button.on{background:var(--accent)!important;border-color:var(--accent)!important;color:#fff!important}
+#nav button.active{color:var(--accent)!important}
+h2.sec button{color:var(--accent)!important}
+/* All services tiles: a little more colour */
+.ds-dir-t{background:linear-gradient(160deg,color-mix(in srgb,var(--c) 24%,var(--bg-card)) 0%,var(--bg-card) 80%)}
+/* tidy: no empty gap when the price chart has no data yet; less space at the top of Explore */
+.hpx-spark.empty{display:none!important}
+#tab-explore>h2.sec:first-child{margin-top:8px}
+
+/* ── Arabic / Urdu (right-to-left): keep English Quran and Hadith meanings and the wallet card left-to-right ── */
+[dir=rtl] .hq-ay-en,[dir=rtl] #hh-list small{direction:ltr;text-align:left;unicode-bidi:isolate}
+[dir=rtl] .pcard{direction:ltr}
+.pcard .pc-brand{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;flex:1 1 auto}
+.pcard .pc-top{min-width:0}
+[dir=rtl] .pcard .pc-chip{left:auto;right:20px}
+[dir=rtl] .pcard .pc-bottom div:last-child{text-align:right}
+
+/* ── consistency: one page background everywhere; Services category bar no longer shows content through it ── */
+[data-theme="light"] body{background:var(--bg-base)!important}
+.svc-chips{background:var(--bg-base)!important;box-shadow:0 -40px 0 0 var(--bg-base),0 10px 14px -14px rgba(0,0,0,.35)}
+/* one look for every result box (salary, zakat, Qibla, calculators) and the Tasbih counter: Saudi green, like the Home card */
+.result{background:linear-gradient(150deg,#0C8A55 0%,#0A7A4B 55%,#075E3A 100%)!important;color:#fff!important;border:0!important;box-shadow:0 14px 28px -18px rgba(7,94,58,.75)}
+.result small{color:#D5EEE2!important}
+.tasbih{background:radial-gradient(circle at 35% 30%,#14A36A,#0A7A4B 55%,#064A2E)!important}

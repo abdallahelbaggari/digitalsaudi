@@ -43,14 +43,15 @@
       'DIGITALSAUDI · Payment receipt\n' + h.amount + ' π · ' + (h.memo || '') + '\n' + new Date(h.done || h.at).toLocaleString('en-GB') + '\nPayment ID: ' + h.id + (h.txid ? '\nTransaction ID: ' + h.txid : '') + '\ndigitalsaudi.pi');
   };
   window.dsP2PReceipt = function (h) {
-    var r = p2pList().find(function (x) { return x.txid === h; }); if (!r) return toast('Receipt not found on this phone');
+    var r = p2pList().concat(extra).find(function (x) { return x.txid === h; }); if (!r) return toast('Receipt not found on this phone');
     DSReceipt.sheet(specP2P(r), 'DigitalSaudi-receipt-' + h.slice(0, 8) + '.png', 'DIGITALSAUDI · Verified payment\n' + r.amount + ' π for ' + (r.item || 'payment') + '\nReference ' + r.ref + '\nTransaction ' + h + '\ndigitalsaudi.pi');
   };
 
   /* ── DigitalSaudi Pay ── */
   function enc(o) { return btoa(unescape(encodeURIComponent(JSON.stringify(o)))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, ''); }
   function newRef() { var A = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789', b = new Uint8Array(6), s = 'DS-'; try { crypto.getRandomValues(b); } catch (e) { for (var j = 0; j < 6; j++) b[j] = Math.random() * 256; } for (var i = 0; i < 6; i++) s += A[b[i] % A.length]; return s; }
-  function link(s) { return location.origin + '/invoice.html#' + enc({ v: 1, t: s.t, a: s.a, i: s.i, n: s.n, u: s.u, r: s.r, k: TESTNET ? 'test' : 'main', d: s.d }); }
+  function link(s) { var o = { v: 1, t: s.t, a: s.a, i: s.i, n: s.n, u: s.u, r: s.r, k: TESTNET ? 'test' : 'main', d: s.d }; ['c', 'no', 'due', 'x', 'l'].forEach(function (k) { if (s[k]) o[k] = s[k]; }); return location.origin + '/invoice.html#' + enc(o); }
+  window.dsPayLink = link; window.dsNewRef = newRef;
   var back = '<button class="btn btn-ghost btn-sm dw-back" onclick="openItem(\'piWallet\')">‹ Wallet</button>';
   window.dsGetPaid = function () {
     showPanel('Get paid in Pi', back +
@@ -75,9 +76,10 @@
   };
   window.dsShowReq = function (i) {
     var s = store.get('sales', [])[i]; if (!s) return;
-    var url = link(s), text = 'Payment request from ' + (s.n || 'me') + ': ' + s.a + ' π for ' + s.i + '. Pay securely with DigitalSaudi Pay:\n' + url;
-    showPanel(s.paid ? 'Payment received' : 'Payment request ready', back +
+    var url = link(s), text = (s.no ? 'Invoice ' + s.no + ' from ' + (s.n || 'me') + ': ' + s.a + ' π' + (s.due ? ', due ' + s.due : '') : 'Payment request from ' + (s.n || 'me') + ': ' + s.a + ' π for ' + s.i) + '. Pay securely with DigitalSaudi Pay:\n' + url;
+    showPanel(s.paid ? (s.no ? 'Invoice paid' : 'Payment received') : (s.no ? 'Invoice ' + s.no : 'Payment request ready'), back +
       '<div class="dw-req"><div class="dw-req-a">' + s.a + ' π</div><div class="dw-req-c">' + esc(conv(s.a)) + '</div><div class="dw-req-i">' + esc(s.i) + ' · <span class="notr">' + s.r + '</span></div></div>' +
+      (s.no && window.dsInvoiceInfo ? dsInvoiceInfo(s, i) : '') +
       (s.paid ? '<div class="p-actions" style="justify-content:center"><button class="btn btn-primary btn-sm" onclick="dsP2PReceipt(\'' + s.paid + '\')">🧾 View receipt</button></div>' :
       '<p class="small" style="text-align:center;margin:10px 0">Send this link to your buyer. When they pay, DigitalSaudi finds the payment automatically and adds your sale receipt to the wallet.</p>' +
       '<button class="btn btn-primary" style="width:100%" id="rqSh">📤 Share with buyer</button>' +
@@ -106,7 +108,7 @@
         s.paid = tx.hash; s.at = Date.parse(tx.at) || Date.now(); s.from = tx.from;
         if (!all.some(function (x) { return x.txid === tx.hash; })) {
           all.unshift({ amount: +parseFloat(tx.amount).toFixed(7), memo: s.i, item: s.i, kind: 'p2p', dir: 'in', ts: s.at, name: s.n, user: s.u, other: tx.from, from: tx.from, to: s.t, ref: s.r, seller: s.n, net: NETN, txid: tx.hash, status: 'Verified', usd: p && p.usd, sar: p && p.sar });
-          store.set('rcpts', all.slice(0, 200));
+          store.set('rcpts', all.slice(0, 2500)); dsHistSoon();
         }
         notify('pay', 'pay_' + s.r, '💰', 'Payment received', s.a + ' π for ' + s.i + ' · verified on the Pi blockchain', 'piWallet');
         return 1;
@@ -123,8 +125,8 @@
   var filter = 'all';
   function rows() {
     var out = [];
-    inAppList().forEach(function (h) { out.push({ ts: h.done || h.at, dir: 'out', title: h.memo || 'Pi payment', sub: 'In-app payment · ' + String(h.status || ''), amt: h.amount, act: "openReceipt('" + esc(h.id) + "')", ic: '⭐' }); });
-    p2pList().forEach(function (r) { var inn = r.dir === 'in'; out.push({ ts: r.ts, dir: inn ? 'in' : 'out', title: inn ? 'From ' + short(r.other) : 'To ' + (r.seller || short(r.to)), sub: (r.item || '') + ' · Verified', amt: r.amount, act: "dsP2PReceipt('" + r.txid + "')", ic: inn ? '↓' : '↑' }); });
+    inAppList().forEach(function (h) { out.push({ raw: h, ts: h.done || h.at, dir: 'out', title: h.memo || 'Pi payment', sub: 'In-app payment · ' + String(h.status || ''), amt: h.amount, act: "openReceipt('" + esc(h.id) + "')", ic: '⭐' }); });
+    p2pList().concat(extra).forEach(function (r) { var inn = r.dir === 'in'; out.push({ raw: r, ts: r.ts, dir: inn ? 'in' : 'out', title: inn ? 'From ' + short(r.other) : 'To ' + (r.seller || short(r.to)), sub: (r.item || '') + ' · Verified', amt: r.amount, act: "dsP2PReceipt('" + r.txid + "')", ic: inn ? '↓' : '↑' }); });
     return out.sort(function (a, b) { return b.ts - a.ts; });
   }
   function stats() {
@@ -136,15 +138,160 @@
   function txRow(r) {
     var parts = String(r.sub || '').split(' · '), st = parts.length > 1 ? parts.pop() : '', what = parts.join(' · ');
     st = st ? st.charAt(0).toUpperCase() + st.slice(1) : '';
-    return '<button class="dw-li" onclick="' + r.act + '"><span class="dw-lic ' + r.dir + '">' + (r.dir === 'in' ? '↙' : r.ic === '⭐' ? '★' : '↗') + '</span><span class="dw-lit"><b>' + esc(r.title) + '</b><small>' + esc((what ? what + ' · ' : '') + new Date(r.ts).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })) + '</small></span><span class="dw-lia ' + r.dir + '"><b>' + (r.dir === 'in' ? '+' : '−') + fmt(r.amt, 7) + ' π</b><small>' + esc(st) + '</small></span></button>';
+    return '<button class="dw-li" onclick="' + r.act + '"><span class="dw-lic ' + r.dir + '">' + (r.dir === 'in' ? '↙' : r.ic === '⭐' ? '★' : '↗') + '</span><span class="dw-lit"><b>' + esc(r.title) + '</b><small>' + esc((what ? what + ' · ' : '') + new Date(r.ts).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })) + '</small></span><span class="dw-lia ' + r.dir + '"><b>' + (r.dir === 'in' ? '+' : '−') + fmt(r.amt, 7) + ' π</b><small class="dw-pill ' + (/complet|verified|paid/i.test(st) ? 'ok' : /pend|wait|process/i.test(st) ? 'wait' : /cancel|fail|refund/i.test(st) ? 'bad' : '') + '">' + esc(st) + '</small></span></button>';
   }
+  var sortOld = false, extra = [], hMore = false;
   function actHTML() {
     var R = rows().filter(function (r) { return !showAll || filter === 'all' || r.dir === filter; });
-    if (!R.length) return '<div class="dw-list"><div class="empty" style="padding:18px 8px"><div class="big">🧾</div>' + (filter === 'in' && showAll ? 'No payments received yet.' : filter === 'out' && showAll ? 'No payments made yet.' : 'No payments yet. Your receipts appear here.') + '</div></div>';
+    if (showAll && sortOld) R.reverse();
+    var bar = showAll ? '<div class="dw-sort"><span>' + R.length + ' payment' + (R.length === 1 ? '' : 's') + (me() ? ' · backed up' : '') + '</span><button type="button" onclick="dsTxSort()">' + (sortOld ? 'Oldest first ▴' : 'Newest first ▾') + '</button></div>' : '';
+    var tools = showAll ? (hMore && me() ? '<button type="button" class="btn btn-ghost" style="width:100%;margin-top:4px" onclick="dsHistOlder(this)">Load older history</button>' : '') +
+      '<div class="dw-two"><button type="button" class="btn btn-primary" onclick="dsStatement()">📄 Statement</button><button type="button" class="btn btn-ghost" onclick="dsCsv()">⬇️ Export CSV</button></div>' : '';
+    if (!R.length) return bar + '<div class="dw-list"><div class="empty" style="padding:18px 8px"><div class="big">🧾</div>' + (filter === 'in' && showAll ? 'No payments received yet.' : filter === 'out' && showAll ? 'No payments made yet.' : 'No payments yet. Your receipts appear here.') + '</div></div>';
     if (!showAll) return '<div class="dw-list">' + R.slice(0, 4).map(txRow).join('') + '</div>';
     var out = '', day = '';
-    R.slice(0, 80).forEach(function (r) { var d = new Date(r.ts).toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' }); if (d !== day) { if (day) out += '</div>'; out += '<div class="dw-day">' + d + '</div><div class="dw-list">'; day = d; } out += txRow(r); });
-    return out + '</div>';
+    R.slice(0, 600).forEach(function (r) { var d = new Date(r.ts).toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' }); if (d !== day) { if (day) out += '</div>'; out += '<div class="dw-day">' + d + '</div><div class="dw-list">'; day = d; } out += txRow(r); });
+    return bar + out + '</div>' + tools;
+  }
+  window.dsWalletRows = function () { return rows(); };
+  window.dsTxSort = function () { sortOld = !sortOld; var e = $('dwAct'); if (e) e.innerHTML = actHTML(); };
+
+  /* ── full history, backed up on the server for this Pi account (never lost, restored on any phone) ── */
+  var tok = function () { return piUser && piUser.accessToken; };
+  function hKey(r) { var t = String(r.txid || '').toLowerCase(); if (/^[a-f0-9]{64}$/.test(t)) return 'tx:' + t + (r.kind === 'refund' ? ':r' : '') + (r.dir ? ':' + r.dir : ''); var f = String(r.ref || r.pid || r.id || ''); return f ? 'ref:' + f : ''; }
+  function hApi(b) { return fetch('/history', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(b) }).then(function (r) { return r.json(); }); }
+  var hBusy = false, hT = null;
+  function hPush() {
+    if (!tok()) return Promise.resolve();
+    var P = p2pList(), A = inAppList(), todo = [];
+    P.forEach(function (r) { if (!r.hs && hKey(r)) todo.push(['p', r]); }); A.forEach(function (r) { if (!r.hs && hKey(r) && String(r.status) === 'completed') todo.push(['a', r]); });
+    todo = todo.slice(0, 200); if (!todo.length) return Promise.resolve();
+    var items = todo.map(function (x) { var o = { src: x[0] === 'a' ? 'app' : 'p2p' }; for (var k in x[1]) if (k !== 'hs') o[k] = x[1][k]; if (!o.ts) o.ts = o.done || o.at; return o; });
+    return hApi({ a: 'push', accessToken: tok(), items: items }).then(function (d) {
+      if (!d || !d.ok) return; todo.forEach(function (x) { x[1].hs = 1; });
+      store.set('rcpts', P); store.set(histKey(), A);
+      if (todo.length === 200) return hPush();
+    });
+  }
+  function hMerge(items) {
+    var P = p2pList(), A = inAppList(), have = {}, n = 0;
+    P.concat(A, extra).forEach(function (r) { have[hKey(r)] = 1; });
+    items.forEach(function (r) { var k = hKey(r); if (!k || have[k]) return; have[k] = 1; n++; r.hs = 1; if (r.src === 'app') A.push(r); else P.push(r); });
+    if (n) {
+      P.sort(function (a, b) { return (b.ts || 0) - (a.ts || 0); }); A.sort(function (a, b) { return (b.done || b.at || 0) - (a.done || a.at || 0); });
+      if (P.length > 2500) extra = extra.concat(P.slice(2500));
+      store.set('rcpts', P.slice(0, 2500)); store.set(histKey(), A.slice(0, 2500));
+    }
+    return n;
+  }
+  function hSync() {
+    if (hBusy || !tok()) return; hBusy = true;
+    hPush().then(function () { return hApi({ a: 'pull', accessToken: tok(), limit: 500 }); }).then(function (d) {
+      if (!d || !d.ok) return; hMore = !!d.more;
+      if (hMerge(d.items || []) && current && current.id === 'piWallet') piWalletPanel();
+    }).catch(function () {}).then(function () { hBusy = false; });
+  }
+  window.dsHistSoon = function () { clearTimeout(hT); hT = setTimeout(hSync, 1500); };
+  window.dsHistOlder = function (btn) {
+    if (!tok()) return toast('Sign in with Pi to load your full history');
+    var oldest = rows().reduce(function (m, r) { return Math.min(m, r.ts || m); }, Date.now() + 864e5);
+    if (btn) { btn.disabled = true; btn.textContent = 'Loading…'; }
+    hApi({ a: 'pull', accessToken: tok(), before: oldest, limit: 500 }).then(function (d) {
+      if (!d || !d.ok) { toast((d && d.error) || 'Could not load older history'); return; }
+      hMore = !!d.more; var n = hMerge(d.items || []); toast(n ? n + ' older payments loaded' : 'You have reached the start of your history');
+    }).catch(function () { toast('No connection. Try again.'); }).then(function () { var e = $('dwAct'); if (e) e.innerHTML = actHTML(); });
+  };
+  (function () { var n = 0, iv = setInterval(function () { if (tok()) { clearInterval(iv); hSync(); } else if (++n > 150) clearInterval(iv); }, 2000); })();
+
+  /* ── CSV and monthly statement (PDF) ── */
+  function fileDate(d) { return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0'); }
+  window.dsCsv = function () {
+    var R = rows(), q = function (v) { v = String(v == null ? '' : v); return /[",\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; };
+    var lines = [['Date', 'Time', 'Direction', 'Details', 'Description', 'Amount (Pi)', 'Value at payment time (USD)', 'Network', 'Transaction ID'].join(',')];
+    R.forEach(function (r) { var d = new Date(r.ts), x = r.raw || {}; lines.push([d.toISOString().slice(0, 10), d.toTimeString().slice(0, 5), r.dir === 'in' ? 'Received' : 'Sent', r.title, String(r.sub || '').replace(/ · /g, ' - '), (r.dir === 'in' ? '' : '-') + r.amt, x.usd ? (+r.amt * x.usd).toFixed(2) : '', x.net || NETN, x.txid || ''].map(q).join(',')); });
+    var blob = new Blob(['﻿' + lines.join('\n')], { type: 'text/csv' }), name = 'DigitalSaudi-payments-' + new Date().toISOString().slice(0, 10) + '.csv';
+    DSFiles.save(blob, name, 'text/csv', 'payments file');
+  };
+  function monthRange(k) { var d = new Date(); d.setDate(1); d.setHours(0, 0, 0, 0); d.setMonth(d.getMonth() + k); var e = new Date(d); e.setMonth(e.getMonth() + 1); return [d.getTime(), e.getTime(), d]; }
+  window.dsStatement = function () {
+    var R = rows(), opts = [];
+    for (var k = 0; k > -12; k--) { var m = monthRange(k); if (k === 0 || R.some(function (r) { return r.ts >= m[0] && r.ts < m[1]; })) opts.push(k); }
+    var sel = 0;
+    showPanel('Monthly statement', back + '<p class="small" style="margin:8px 0 12px">A PDF of all your DigitalSaudi wallet payments for a month, with values and transaction IDs.</p>' +
+      '<div class="dw-tabs" id="stM">' + opts.map(function (k) { return '<button data-m="' + k + '" class="' + (k === 0 ? 'on' : '') + '">' + monthRange(k)[2].toLocaleDateString('en-GB', { month: 'short', year: 'numeric' }) + '</button>'; }).join('') + '</div>' +
+      '<div class="card dw-sec" id="stS"></div><div class="dw-two"><button class="btn btn-primary" id="stD">⬇️ Download</button><button class="btn btn-ghost" id="stH">📤 Share</button></div>', { id: 'dsStatement', share: false });
+    function info() {
+      var m = monthRange(sel), inn = 0, o = 0, n = 0; R.forEach(function (r) { if (r.ts >= m[0] && r.ts < m[1]) { n++; if (r.dir === 'in') inn += +r.amt; else o += +r.amt; } });
+      $('stS').innerHTML = '<div class="dw-stats"><div><small>Sent</small><b class="notr">' + fmt(o, 4) + ' π</b></div><div><small>Received</small><b class="notr pos">' + fmt(inn, 4) + ' π</b></div><div><small>Payments</small><b class="notr">' + n + '</b></div></div>';
+    }
+    document.querySelectorAll('#stM button').forEach(function (b) { b.onclick = function () { sel = +b.dataset.m; document.querySelectorAll('#stM button').forEach(function (x) { x.classList.toggle('on', x === b); }); info(); }; });
+    info();
+    function make(sh) {
+      toast('Preparing your statement…');
+      buildStatement(sel).then(function (o) { if (sh) DSFiles.shareFile(o.blob, o.name, 'application/pdf', 'DigitalSaudi statement', 'DigitalSaudi statement · ' + o.label); else DSFiles.save(o.blob, o.name, 'application/pdf', 'statement'); })
+        .catch(function () { toast('Could not create the statement. Please try again.'); });
+    }
+    $('stD').onclick = function () { make(false); }; $('stH').onclick = function () { make(true); };
+  };
+  function buildStatement(off) {
+    var m = monthRange(off), R = rows().filter(function (r) { return r.ts >= m[0] && r.ts < m[1]; }).sort(function (a, b) { return a.ts - b.ts; });
+    var F = "'Plus Jakarta Sans','Segoe UI',Roboto,Arial,sans-serif", MF = "ui-monospace,Menlo,Consolas,monospace", W = 1240, H = 1754, X = 80;
+    var mon = m[2].toLocaleDateString('en-GB', { month: 'long', year: 'numeric' }), inn = 0, o = 0; R.forEach(function (r) { if (r.dir === 'in') inn += +r.amt; else o += +r.amt; });
+    var pages = [R.slice(0, 11)]; for (var i = 11; i < R.length; i += 15) pages.push(R.slice(i, i + 15));
+    function txt(x, t, px, py, font, col, al) { x.font = font; x.fillStyle = col; x.textAlign = al || 'left'; x.fillText(t, px, py); }
+    function fit(x, t, mw) { t = String(t || ''); if (x.measureText(t).width <= mw) return t; while (t.length > 1 && x.measureText(t + '…').width > mw) t = t.slice(0, -1); return t + '…'; }
+    return new Promise(function (ok) { var im = new Image(); im.onload = function () { ok(im); }; im.onerror = function () { ok(null); }; im.src = '/icon-192.png'; }).then(function (logo) {
+      return Promise.all(pages.map(function (list, pg) {
+        var cv = document.createElement('canvas'); cv.width = W; cv.height = H; var x = cv.getContext('2d'), y;
+        x.fillStyle = '#FFFFFF'; x.fillRect(0, 0, W, H);
+        if (pg === 0) {
+          var g = x.createLinearGradient(0, 0, W, 300); g.addColorStop(0, '#064E3B'); g.addColorStop(.7, '#0B7A4B'); g.addColorStop(1, '#C9A227'); x.fillStyle = g; x.fillRect(0, 0, W, 300);
+          if (logo) x.drawImage(logo, X, 62, 76, 76);
+          txt(x, 'DigitalSaudi', X + 96, 116, '800 44px ' + F, '#FFFFFF');
+          txt(x, 'MONTHLY STATEMENT', W - X, 92, '700 22px ' + F, 'rgba(255,255,255,.85)', 'right'); txt(x, mon, W - X, 140, '800 40px ' + F, '#FFFFFF', 'right');
+          txt(x, fullName() + (me() && fullName() !== '@' + me() ? ' · @' + me() : ''), X, 214, '700 28px ' + F, '#FFFFFF');
+          txt(x, NETN + ' · Wallet payments', X, 254, '500 22px ' + F, 'rgba(255,255,255,.85)');
+          var bx = [['Sent', fmt(o, 4) + ' π'], ['Received', fmt(inn, 4) + ' π'], ['Net', (inn - o >= 0 ? '+' : '−') + fmt(Math.abs(inn - o), 4) + ' π'], ['Payments', String(R.length)]], bw = (W - 2 * X - 60) / 4;
+          bx.forEach(function (b, k) { var bX = X + k * (bw + 20); x.fillStyle = '#F1F7F3'; x.fillRect(bX, 340, bw, 130); txt(x, b[0].toUpperCase(), bX + 22, 382, '700 18px ' + F, '#4B5B53'); x.font = '700 32px ' + MF; txt(x, fit(x, b[1], bw - 44), bX + 22, 436, '700 32px ' + MF, k === 1 ? '#0B7A4B' : '#13261E'); });
+          y = 540;
+        } else { x.fillStyle = '#064E3B'; x.fillRect(0, 0, W, 130); if (logo) x.drawImage(logo, X, 35, 60, 60); txt(x, 'DigitalSaudi', X + 76, 78, '800 32px ' + F, '#FFFFFF'); txt(x, 'Statement · ' + mon, W - X, 78, '600 24px ' + F, '#FFFFFF', 'right'); y = 190; }
+        x.fillStyle = '#13261E'; x.fillRect(X, y, W - 2 * X, 2);
+        txt(x, 'DATE', X, y + 38, '700 17px ' + F, '#4B5B53'); txt(x, 'DETAILS', X + 170, y + 38, '700 17px ' + F, '#4B5B53'); txt(x, 'AMOUNT', W - X - 200, y + 38, '700 17px ' + F, '#4B5B53', 'right'); txt(x, 'VALUE', W - X, y + 38, '700 17px ' + F, '#4B5B53', 'right');
+        y += 58; x.fillStyle = '#E3E9E5'; x.fillRect(X, y, W - 2 * X, 1);
+        if (!list.length) txt(x, 'No payments this month.', W / 2, y + 90, '500 26px ' + F, '#4B5B53', 'center');
+        list.forEach(function (r) {
+          var d = new Date(r.ts), ii = r.dir === 'in', raw = r.raw || {};
+          txt(x, d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short' }), X, y + 40, '700 22px ' + F, '#13261E'); txt(x, d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }), X, y + 70, '500 18px ' + F, '#4B5B53');
+          x.font = '700 22px ' + F; txt(x, fit(x, r.title, 600), X + 170, y + 40, '700 22px ' + F, '#13261E');
+          var sub = [String(r.sub || ''), raw.txid ? 'Tx ' + String(raw.txid).slice(0, 10) + '…' : ''].filter(Boolean).join(' · '); x.font = '500 18px ' + F; txt(x, fit(x, sub, 600), X + 170, y + 70, '500 18px ' + F, '#4B5B53');
+          txt(x, (ii ? '+' : '−') + fmt(+r.amt, 7) + ' π', W - X - 200, y + 40, '700 22px ' + MF, ii ? '#0B7A4B' : '#13261E', 'right');
+          txt(x, raw.usd ? '$' + fmt(+r.amt * raw.usd, 2) : '—', W - X, y + 40, '600 20px ' + F, '#13261E', 'right');
+          y += 92; x.fillStyle = '#EEF3EF'; x.fillRect(X, y, W - 2 * X, 1);
+        });
+        x.fillStyle = '#E3E9E5'; x.fillRect(X, H - 120, W - 2 * X, 1);
+        txt(x, 'Generated by DigitalSaudi on ' + new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) + '. Check any payment on the Pi blockchain with its transaction ID.', X, H - 80, '500 17px ' + F, '#4B5B53');
+        txt(x, '© DigitalSaudi ' + new Date().getFullYear() + ' · digitalsaudi.pi', X, H - 52, '500 17px ' + F, '#7A8A81'); txt(x, 'Page ' + (pg + 1) + ' of ' + pages.length, W - X, H - 80, '700 17px ' + F, '#4B5B53', 'right');
+        return new Promise(function (ok, no) { cv.toBlob(function (b) { if (!b) return no(new Error('jpg')); b.arrayBuffer().then(function (ab) { ok({ w: W, h: H, bytes: new Uint8Array(ab) }); }, no); }, 'image/jpeg', 0.9); });
+      }));
+    }).then(function (imgs) { return { blob: makePdf(imgs), name: 'DigitalSaudi-statement-' + fileDate(m[2]) + '.pdf', label: mon }; });
+  }
+  function makePdf(imgs) {
+    var te = new TextEncoder(), chunks = [], len = 0, offs = [];
+    function add(v) { if (typeof v === 'string') v = te.encode(v); chunks.push(v); len += v.length; }
+    function obj(id, body) { offs[id] = len; add(id + ' 0 obj\n' + body + '\nendobj\n'); }
+    add('%PDF-1.4\n'); add(new Uint8Array([37, 226, 227, 207, 211, 10]));
+    var n = imgs.length, kids = []; for (var k = 0; k < n; k++) kids.push((3 + k * 3) + ' 0 R');
+    obj(1, '<< /Type /Catalog /Pages 2 0 R >>'); obj(2, '<< /Type /Pages /Kids [' + kids.join(' ') + '] /Count ' + n + ' >>');
+    imgs.forEach(function (im, k) {
+      var p = 3 + k * 3, img = p + 1, ct = p + 2, st = 'q 595.28 0 0 841.89 0 0 cm /Im0 Do Q';
+      obj(p, '<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595.28 841.89] /Resources << /XObject << /Im0 ' + img + ' 0 R >> >> /Contents ' + ct + ' 0 R >>');
+      offs[img] = len; add(img + ' 0 obj\n<< /Type /XObject /Subtype /Image /Width ' + im.w + ' /Height ' + im.h + ' /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ' + im.bytes.length + ' >>\nstream\n'); add(im.bytes); add('\nendstream\nendobj\n');
+      obj(ct, '<< /Length ' + st.length + ' >>\nstream\n' + st + '\nendstream');
+    });
+    var total = 3 + n * 3, xr = len, t = 'xref\n0 ' + total + '\n0000000000 65535 f \n';
+    for (var id = 1; id < total; id++) t += String(offs[id]).padStart(10, '0') + ' 00000 n \n';
+    add(t + 'trailer\n<< /Size ' + total + ' /Root 1 0 R >>\nstartxref\n' + xr + '\n%%EOF\n');
+    return new Blob(chunks, { type: 'application/pdf' });
   }
   window.dsTxAll = function (on) {
     showAll = on; var e = $('dwAct'), t = $('dwTabs'), b = $('dwSeeAll');
@@ -172,35 +319,36 @@
     var hr = new Date().getHours(), greet = hr < 12 ? 'Good morning' : hr < 17 ? 'Good afternoon' : 'Good evening', nR = rows().length;
     showAll = false; filter = 'all';
     showPanel('DigitalSaudi Wallet', `
-    <div class="dw-hello"><h2>${greet}${me() ? ', @' + esc(me()) : ''}</h2><p>${me() ? 'Here is your Pi today.' : 'Sign in with Pi to send and receive Pi.'}</p></div>
+    <div class="dw-hello"><h2>${greet}${me() ? ', @' + esc(me()) : ''}</h2><p>${me() ? 'Your Pi account at a glance.' : 'Sign in with Pi to send, receive and get paid in Pi.'}</p></div>
     <div class="pcard-wrap"><div class="pcard" id="pcard">
       <div class="pc-top"><img src="${logo}" alt="" class="pc-logo"><span class="pc-brand">DigitalSaudi <b>Wallet</b></span><span class="pc-net">${TESTNET ? 'Testnet' : 'Mainnet'}</span></div>
       <div class="pc-chip" aria-hidden="true"></div>
       <div class="pc-rate dw-rate notr" id="dwRate">${rateHTML()}</div>
       <div class="pc-bottom"><div><small>Account</small><b class="notr"><span style="overflow:hidden;text-overflow:ellipsis">${esc(fullName())}</span><button class="dw-ed" onclick="event.stopPropagation();dsEditName()" aria-label="Edit name">✎</button></b></div><div><small>Network</small><b class="notr">${TESTNET ? 'Pi Testnet' : 'Pi Mainnet'}</b></div></div>
     </div></div>
+    <div class="dw-trust"><span>🔒 Non-custodial</span><span>⛓ Verified on the Pi blockchain</span><span>✔ You approve every payment</span></div>
     <div class="dw-qa">
       <button onclick="walletTab('send')"><i>↗</i>Send</button>
       <button onclick="dsGetPaid()"><i class="g">↙</i>Request</button>
       <button onclick="dsPay()"><i class="n">▦</i>Pay</button>
-      <button onclick="openItem('merchantQR')"><i class="a">🏪</i>Poster</button>
+      <button onclick="dsBusiness()"><i class="b">▤</i>Business</button>
     </div>
     <div id="wBody"></div>
-    <div class="dw-sh"><h3>Overview</h3></div>
+    <div class="dw-sh"><h3>Account overview</h3></div>
     <div class="card dw-sec"><div class="dw-h"><div><b>This month</b><div class="small" style="opacity:.7">${new Date().toLocaleDateString('en-GB', { month: 'long', year: 'numeric' })}</div></div><button class="dw-link" onclick="dsTxAll(true);document.getElementById('dwActH').scrollIntoView({behavior:'smooth',block:'start'})">Activity ›</button></div>
       <div class="dw-stats"><div><small>Sent</small><b class="notr">${fmt(st.out, 4)} π</b></div><div><small>Received</small><b class="notr pos">${fmt(st.inn, 4)} π</b></div><div><small>Payments</small><b class="notr">${st.n}</b></div></div></div>
-    <div id="dwActH"><div class="dw-sh"><h3>Recent activity</h3>${nR > 4 ? '<button id="dwSeeAll" onclick="dsTxAll(!' + 'document.getElementById(\'dwTabs\').offsetParent)">See all</button>' : ''}</div>
+    <div id="dwActH"><div class="dw-sh"><h3>Transactions</h3>${nR > 0 ? '<button id="dwSeeAll" onclick="dsTxAll(!' + 'document.getElementById(\'dwTabs\').offsetParent)">See all</button>' : ''}</div>
       <div class="dw-tabs" id="dwTabs" style="display:none">${[['all', 'All'], ['out', 'Sent'], ['in', 'Received']].map(function (x) { return `<button data-f="${x[0]}" class="${filter === x[0] ? 'on' : ''}" onclick="dsTxFilter('${x[0]}')">${x[1]}</button>`; }).join('')}</div>
       <div id="dwAct">${actHTML()}</div></div>
-    <div class="dw-sh"><h3>Get paid · DigitalSaudi Pay</h3>${openN ? '<button onclick="dsCheckSales(true)">Check now</button>' : ''}</div>
+    <div class="dw-sh"><h3>Invoices & payment requests</h3>${openN ? '<button onclick="dsCheckSales(true)">Check now</button>' : ''}</div>
     <div class="card dw-sec">
       ${sales.length ? sales.slice(0, 6).map(function (s, i) { return `<button class="dw-sale" onclick="dsShowReq(${i})"><span class="dw-si ${s.paid ? 'ok' : ''}">${s.paid ? '✓' : '⏳'}</span><span class="dw-txt"><b>${esc(s.i)}</b><small class="notr">${s.r} · ${new Date(s.d).toLocaleDateString([], { day: 'numeric', month: 'short' })} · ${s.paid ? 'Paid' : 'Waiting for payment'}</small></span><span class="dw-txa ${s.paid ? 'in' : ''}">${s.a} π<small>${s.paid ? 'Receipt ›' : 'Share ›'}</small></span></button>`; }).join('') :
       '<div class="dw-how"><div><i>1</i>Create a request with the amount and item</div><div><i>2</i>The buyer pays from their Pi Wallet</div><div><i>3</i>Both get a receipt verified on the Pi blockchain</div></div>'}
-      <button class="btn btn-primary" style="width:100%;margin-top:12px" onclick="dsGetPaid()">＋ Create payment request</button></div>
+      <div class="dw-two" style="margin-top:12px"><button class="btn btn-primary" onclick="dsInvoice()">＋ New invoice</button><button class="btn btn-ghost" onclick="dsGetPaid()">Quick request</button></div></div>
     <div class="dw-sh"><h3>Converter</h3><button onclick="openItem('priceAlerts')">${esc(hc)} ▾</button></div>
     <div class="card dw-sec"><div class="dw-conv3"><label><span>π</span><input id="dwPi" type="number" inputmode="decimal" value="1" oninput="dsConv('pi')"></label><label><span>SAR</span><input id="dwSar" type="number" inputmode="decimal" oninput="dsConv('sar')"></label>${hc !== 'SAR' ? `<label><span>${esc(hc)}</span><input id="dwLoc" type="number" inputmode="decimal" oninput="dsConv('loc')"></label>` : ''}</div></div>
-    <button class="row" onclick="clearStuckPayment()"><div class="ic">🧹</div><div class="tx"><b>Fix “Pending payment found”</b><small>Clears an unfinished payment so you can pay again</small></div><span class="chev">›</span></button>
-    <div class="note">🔒 <b>Your Pi stays in your Pi Wallet.</b> DigitalSaudi never sees your balance, holds your Pi or asks for your passphrase. Transfers always happen in your own Pi Wallet, and only you approve them.</div>`, { id: 'piWallet', share: false });
+    <button class="row" onclick="clearStuckPayment()"><div class="ic">⟳</div><div class="tx"><b>Resolve a pending payment</b><small>Completes or clears an unfinished payment so you can pay again</small></div><span class="chev">›</span></button>
+    <div class="dw-secure"><b>🔒 Safe payments on the Pi blockchain</b><span>Every payment is approved by you in Pi’s own secure pop-up. DigitalSaudi never holds your Pi, never sees your balance and never asks for your passphrase. Every transaction has a blockchain ID you can check.</span><button onclick="dsFxSettings()">🔔 Sounds & vibration</button></div>`, { id: 'piWallet', share: false });
     dsConv('pi');
     var iv = setInterval(function () {
       if (document.hidden) return;

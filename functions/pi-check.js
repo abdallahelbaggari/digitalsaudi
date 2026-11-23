@@ -25,10 +25,11 @@ export async function onRequestGet(context) {
     const r = await fetch('https://api.minepi.com/v2/payments/digitalsaudi-key-check', { headers: { Authorization: 'Key ' + key } });
     status = r.status; body = (await r.text()).slice(0, 300);
   } catch (e) { body = String(e); }
+  const site = new URL(context.request.url).origin;
   report.verdict = status === 401 || status === 403
-    ? '❌ Pi rejected PI_API_KEY. Copy the API key from develop.pi → DigitalSaudi (MAINNET app) → API Key, save it again as the PI_API_KEY secret, then redeploy.'
+    ? '❌ Pi rejected PI_API_KEY. In develop.pi open the app whose URL is ' + site + ', copy its API Key, save it again as the PI_API_KEY secret, then redeploy.'
     : status === 404 || status === 400
-      ? '✅ PI_API_KEY is accepted by Pi. If payments still expire, check develop.pi: App URL = https://digitalsaudi.pages.dev, domain verified, and the app wallet is set up.'
+      ? '✅ PI_API_KEY is accepted by Pi. It must be the key of the app whose URL is ' + site + ' (a key from another app is also accepted here, but its payments will expire). Also check that domain is verified in develop.pi.'
       : '⚠️ Unexpected reply from Pi. Ask the admin to open this page with the admin token for details.';
   if (authorised(context)) { report.pi_api_status = status; report.pi_api_reply = body; }
   return out(report);

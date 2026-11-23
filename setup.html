@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>System status · DigitalSaudi</title><meta name="robots" content="noindex"><meta name="theme-color" content="#064E3B">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'">
+<link rel="icon" href="/favicon-32.png">
+<style>
+body{margin:0;background:#F2F5FA;color:#0B1B33;font:15px/1.55 Poppins,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+header{background:linear-gradient(150deg,#064E3B,#0B7A4B 75%,#C9A227);color:#fff;padding:18px 20px}header b{font-size:19px}header p{margin:2px 0 0;opacity:.85;font-size:13.5px}
+main{max-width:560px;margin:0 auto;padding:16px}
+.card{background:#fff;border:1px solid #E2E8F0;border-radius:18px;padding:4px 16px;margin-bottom:14px}
+.row{display:flex;gap:12px;padding:13px 0;border-bottom:1px solid #EEF2F7}.row:last-child{border:0}
+.i{flex:none;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700}
+.y{background:#E6F7F4;color:#0F766E}.n{background:#FDECEC;color:#B42318}.w{background:#FFF7E6;color:#92400E}
+.row span>b{display:block}.row small{display:block;color:#475569;font-size:13px;margin-top:2px}
+.big{padding:16px;border-radius:18px;margin-bottom:14px;font-weight:600}.big.ok{background:#E6F7F4;color:#0F766E}.big.bad{background:#FDECEC;color:#B42318}
+code{font-family:"JetBrains Mono",Menlo,monospace;font-size:12.5px;background:#EEF2F7;padding:1px 5px;border-radius:6px;overflow-wrap:anywhere}
+button{width:100%;min-height:48px;border:0;border-radius:14px;background:#0B7A4B;color:#fff;font:inherit;font-weight:600}
+.muted{color:#64748B;font-size:13px}
+</style></head><body>
+<header><a href="/" style="color:#fff;text-decoration:none;font-size:13.5px;font-weight:600">‹ Back to DigitalSaudi</a><br><b>DigitalSaudi system status</b><p>Checks everything sending Pi needs. Shows yes or no only, never a secret.</p></header>
+<main><div id="out"><p class="muted">Checking…</p></div><button id="again" type="button">Check again</button>
+<p class="muted">Cloudflare → Workers &amp; Pages → this project → Settings. After changing a secret or binding, open Deployments and choose <b>Retry deployment</b> on the latest one (or push any update), then check again.</p></main>
+<script>
+(function(){
+  var esc=function(x){return String(x==null?'':x).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});};
+  function row(ok,title,fix){return '<div class="row"><span class="i '+(ok===true?'y':ok===false?'n':'w')+'">'+(ok===true?'✓':ok===false?'✕':'!')+'</span><span><b>'+title+'</b>'+(ok===true?'':'<small>'+fix+'</small>')+'</span></div>';}
+  function run(){
+    document.getElementById('out').innerHTML='<p class="muted">Checking…</p>';
+    fetch('/transfer?a=check-setup',{cache:'no-store'}).then(function(r){return r.json();}).then(function(d){
+      if(!d.ok){document.getElementById('out').innerHTML='<div class="big bad">'+esc(d.error||'Check failed')+'</div>';return;}
+      var c=d.check,h='';
+      h+='<div class="big '+(c.ready?'ok':'bad')+'">'+(c.ready?'✓ Paying inside DigitalSaudi is working on '+esc(c.net)+'.':'✕ Sending is not ready on '+esc(c.net)+'. For the app owner: fix the red items below.')+'</div><div class="card">';
+      h+=row(c.pi_api_key,'Secret PI_API_KEY is set','Add a secret named <code>PI_API_KEY</code> with the API key from DigitalSaudi’s app in the Pi Developer Portal ('+esc(c.net)+' app).');
+      if(c.pi_api_key) h+=row(c.pi_api_key_accepted,'Pi Network accepts the API key','Pi answered '+esc(c.pi_api_key_status||'no')+'. Copy the key again from the Developer Portal. Make sure it is the key of the '+esc(c.net)+' app (mainnet and testnet apps have different keys).');
+      h+=row(c.app_wallet_seed,'Secret APP_WALLET_SEED is a wallet secret key',c.seed_looks_like_address?'This is the wallet <b>address</b> (starts with G). Use the wallet <b>secret key</b> instead: it starts with <b>S</b> and has 56 characters.':c.seed_raw_present?'The value is not a valid secret key. It must start with <b>S</b>, be 56 characters, with no spaces or quotes.':'Add a secret named <code>APP_WALLET_SEED</code> with the secret key (starts with S) of the app wallet shown in the Developer Portal for this app.');
+      if(c.app_wallet_seed) h+=row(c.app_wallet_found,'App wallet exists on '+esc(c.net),'The wallet for this secret key was not found on '+esc(c.net)+'. Use the app wallet of the '+esc(c.net)+' app, and make sure it is activated (funded).'+(c.app_wallet_address?'<br>Wallet: <code>'+esc(c.app_wallet_address)+'</code>':''));
+      h+=row(c.database?true:null,'Database (optional)','Needed to send to @usernames (these are Pi App-to-User payments) and for daily limits: Settings → Bindings → Add → D1 database, variable name <code>DS_DB</code>.');
+      if(c.database) h+=row(c.database_works,'Database answers','The database binding exists but did not answer. Remove the binding and add it again.');
+      h+=row(!c.paused,'Transfers are not paused','Delete the variable <code>TRANSFERS_ENABLED</code> (it is set to 0).');
+      h+='</div>'; if(c.variable_names) h+='<p class="muted">Variables this project has (names only): '+(c.variable_names.length?c.variable_names.map(function(n){return '<code>'+esc(n)+'</code>';}).join(' '):'none')+(c.seed_variable&&c.seed_variable!=='APP_WALLET_SEED'?'<br>Wallet key found in <code>'+esc(c.seed_variable)+'</code>.':'')+'</p>'; if(c.app_wallet_address&&c.app_wallet_found) h+='<p class="muted">App wallet: <code>'+esc(c.app_wallet_address)+'</code></p>';
+      document.getElementById('out').innerHTML=h;
+    }).catch(function(){document.getElementById('out').innerHTML='<div class="big bad">Could not reach the server. Check your connection and try again.</div>';});
+  }
+  document.getElementById('again').onclick=run; run();
+})();
+</script></body></html>
