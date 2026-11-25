@@ -90,3 +90,29 @@
     e.preventDefault(); e.stopPropagation(); dsViewImg(im.currentSrc || im.src);
   }, true);
 })();
+
+/* ── An earlier payment left unfinished (weak network, app closed): Pi is asked for it again so it is completed
+      (if it reached the blockchain) or cancelled (if it never did). Now and again after 2 minutes. ── */
+(function () {
+  'use strict';
+  var resolving = 0;
+  function resolve() {
+    if (Date.now() - resolving < 30000) return; resolving = Date.now();
+    var go = function () { try { window.__dsFoundIncomplete = false; if (!authInFlight) authStartedAt = 0; piAuth(); } catch (e) {} };
+    go(); setTimeout(go, 130000);
+  }
+  window.dsResolvePending = resolve;
+  function hook() {
+    if (!window.Pi || !Pi.createPayment || Pi._pendWrapped) return;
+    var cp = Pi.createPayment.bind(Pi); Pi._pendWrapped = true;
+    Pi.createPayment = function (data, cb) {
+      var c = Object.assign({}, cb);
+      c.onError = function (err, pay) {
+        if (/pending payment/i.test(String(err && err.message || err))) { resolve(); err = new Error('An earlier payment is being finished automatically. Please try again in 2 minutes'); try { toast('An earlier payment is being finished automatically. Please try again in 2 minutes.'); } catch (e) {} }
+        return cb.onError && cb.onError.call(this, err, pay);
+      };
+      return cp(data, c);
+    };
+  }
+  setTimeout(hook, 2000); setTimeout(hook, 6000);
+})();

@@ -233,7 +233,7 @@ export async function payout(env, request, pid) {
   // 3. Take the job: one worker at a time, and never while an earlier attempt could still land on the blockchain
   const lock = await d.prepare("UPDATE transfers SET status = ?, ts = ?, err = NULL WHERE pid = ? AND (status IN ('received', 'refund_needed') OR (status IN ('failed', 'refund_failed') AND ts < ?) OR (status IN ('paying', 'refunding') AND ts < ?))")
     .bind(job, now, pid, now - WAIT_UNCERTAIN, now - STALE).run();
-  if (!lock.meta || !lock.meta.changes) { row = await get(); return { ok: row.status === 'paid', refunded: row.status === 'refunded', pending: true, row: pub(row, net) }; }
+  if (!lock.meta || !lock.meta.changes) { row = await get(); return { ok: row.status === 'paid', refunded: row.status === 'refunded', pending: true, need_signin: /wallet_address/.test(String(row.err || '')), row: pub(row, net) }; }
   row = await get();
 
   const kp = await keypairFromSeed(walletSeed(env));
@@ -273,7 +273,7 @@ export async function payout(env, request, pid) {
     }
     await d.prepare('UPDATE transfers SET status = ?, err = ?, tries = COALESCE(tries, 0) + 1, fail_ts = COALESCE(fail_ts, ?), ts = ? WHERE pid = ?')
       .bind(refund ? 'refund_failed' : 'failed', String(e && e.message || e).slice(0, 300), now, definite ? now - WAIT_UNCERTAIN - 1 : now, pid).run();
-    return { ok: false, retry: true, error: refund ? 'The refund did not go through yet. DigitalSaudi will try again automatically.' : 'The payout did not go through yet. DigitalSaudi will try again automatically.' };
+    return { ok: false, retry: true, need_signin: /wallet_address/.test(String(e && e.message || e)), error: refund ? 'The refund did not go through yet. DigitalSaudi will try again automatically.' : 'The payout did not go through yet. DigitalSaudi will try again automatically.' };
   }
 }
 

@@ -77,13 +77,13 @@
     if (!piUser || !tok()) { pendingAction = function () { dsSendPi(pre); }; toast('Sign in with Pi to send Pi'); piLogin(); return; }
     var mode = pre.addr ? 'addr' : (CFG.usernames ? 'user' : 'addr');
     showPanel('Send Pi', back +
-      '<p class="small" style="margin:10px 0 0">Send Pi without leaving DigitalSaudi. You approve in Pi’s own pop-up here, and the Pi goes straight to the recipient’s Pi wallet, with a receipt for you.</p>' +
+      '<p class="small" style="margin:10px 0 0">Send Pi to any DigitalSaudi user, with a receipt for both of you.</p>' +
       (CFG.usernames ? '<div class="tx-tg"><button type="button" id="txM1">@ Username</button><button type="button" id="txM2">Wallet address</button></div>' : '<div style="height:10px"></div>') +
       '<div class="field"><label id="txTl">To</label><input id="txTo" autocomplete="off" autocapitalize="none" spellcheck="false"></div><div class="tx-h" id="txTh"></div>' +
       '<div class="field"><label>Amount (π)</label><input id="txA" type="number" inputmode="decimal" min="0" step="any" placeholder="0.00"></div><div class="small" id="txC" style="margin:-4px 0 10px"></div>' +
       '<div class="field"><label>What is it for?</label><input id="txX" maxlength="80" placeholder="e.g. Rent share, gift, shop order"></div>' +
       '<div id="txSum"></div><button class="btn btn-primary" style="width:100%" id="txGo">Continue</button>' +
-      '<div class="note" style="margin-top:12px">🔒 You approve every payment yourself in Pi’s pop-up. DigitalSaudi never sees your passphrase. ' + (CFG.max || CFG.daily ? 'Limits: ' + (CFG.max ? 'up to ' + CFG.max + ' π per transfer. ' : '') + (CFG.daily ? 'Up to ' + CFG.daily + ' π a day. ' : '') : 'No transfer limits. ') + 'Transfers cannot be reversed once delivered.</div>',
+      '<div class="note" style="margin-top:12px">🔒 Secured by Pi Network. DigitalSaudi never asks for your passphrase. ' + (CFG.max || CFG.daily ? 'Limits: ' + (CFG.max ? 'up to ' + CFG.max + ' π per transfer. ' : '') + (CFG.daily ? 'Up to ' + CFG.daily + ' π a day. ' : '') : 'No transfer limits. ') + 'Transfers cannot be reversed once delivered.</div>',
       { id: 'dsSend', share: false });
     var to = $('txTo'), a = $('txA'), ok = null, timer = null;
     function setMode(m) {
@@ -162,7 +162,7 @@
     if (typeof Pi === 'undefined' || !Pi.createPayment) return toast('Open DigitalSaudi in the Pi Browser to send Pi');
     var label = r.to ? '@' + r.to : short(r.addr);
     showPanel('Sending Pi', '<div class="tx-big"><b>' + num(amt) + ' π</b><span>To ' + esc(label) + ' · ' + esc(narr) + '</span></div>' +
-      '<div class="tx-steps"><div id="txs1" class="on">1 · Approve in Pi’s pop-up</div><div id="txs2">2 · Confirming your payment</div><div id="txs3">3 · Paying ' + esc(label) + ' on the blockchain</div></div><div class="tx-st wait" id="txSt">Waiting for your approval…</div>' +
+      '<div class="tx-steps"><div id="txs1" class="on">1 · Confirm payment</div><div id="txs2">2 · Confirming your payment</div><div id="txs3">3 · Paying ' + esc(label) + ' on the blockchain</div></div><div class="tx-st wait" id="txSt">Waiting for your approval…</div>' +
       '<div class="p-actions" style="justify-content:center"><button class="btn btn-ghost btn-sm" onclick="openItem(\'piWallet\')">‹ Back to wallet</button></div>',
       { id: 'dsSending', share: false });
     var refused = false;
@@ -192,7 +192,7 @@
               api('/transfer', { a: 'payout', paymentId: pid }).then(function (x) {
                 if (x.ok && x.row && x.row.txid) return finish(pid, x.row);
                 if (x.refunded && x.row) { saveRefund(x.row); return step(3, refundedMsg, 'err'); }
-                if (++tries < 40) { step(3, 'Paying ' + esc(label) + '… the Pi blockchain is busy, retrying automatically.'); setTimeout(retry, 8000); }
+                if (++tries < 40) { if (x.need_signin) step(3, esc(label) + ' needs to open DigitalSaudi and sign in again (tap Allow) to receive Pi. Your Pi is safe: it is delivered as soon as they do, or refunded to you automatically.', 'wait'); else step(3, 'Paying ' + esc(label) + '… the Pi blockchain is busy, retrying automatically.'); setTimeout(retry, 8000); }
                 else step(3, 'Your payment is safe and recorded on the Pi blockchain. DigitalSaudi keeps trying automatically: the recipient is paid, or you are refunded, and you will be notified.', 'wait');
               }).catch(function () { if (++tries < 40) setTimeout(retry, 8000); });
             })();

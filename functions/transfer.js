@@ -16,9 +16,9 @@ export async function onRequestGet({ request, env }) {
     r.seed_variable = seedName(env);
     r.variable_names = Object.keys(env).filter((k) => typeof env[k] === 'string' && /^[A-Z0-9_]{2,64}$/i.test(k)).sort();
     r.seed_looks_like_address = /^G[A-Z2-7]{55}$/.test(String(env.APP_WALLET_SEED || '').trim());
-    if (s.database) { try { await (await db(env)).prepare('SELECT 1 AS x').first(); r.database_works = true; } catch (e) { r.database_works = false; } }
-    if (s.pi_api_key) { try { const t = await fetch('https://api.minepi.com/v2/payments/incomplete_server_payments', { headers: { Authorization: 'Key ' + String(env.PI_API_KEY).trim() } }); r.pi_api_key_accepted = t.ok; r.pi_api_key_status = t.status; } catch (e) { r.pi_api_key_accepted = false; } }
-    if (s.app_wallet_seed) { try { const kp = await keypairFromSeed(walletSeed(env)); const h = await fetch(horizon + '/accounts/' + kp.address); r.app_wallet_found = h.ok; r.app_wallet_address = kp.address; } catch (e) { r.app_wallet_found = false; } }
+    if (s.database) { try { const dd = await db(env); await dd.prepare('SELECT 1 AS x').first(); r.database_works = true; try { const q = await dd.prepare('SELECT status, err, tries, ts FROM transfers ORDER BY ts DESC LIMIT 5').all(); r.recent = (q.results || []).map((x) => ({ status: x.status, err: x.err ? String(x.err).slice(0, 160) : '', tries: x.tries || 0, min: Math.max(0, Math.round((Date.now() - Number(x.ts || 0)) / 60000)) })); } catch (e) {} } catch (e) { r.database_works = false; } }
+    if (s.pi_api_key) { try { const t = await fetch('https://api.minepi.com/v2/payments/incomplete_server_payments', { headers: { Authorization: 'Key ' + String(env.PI_API_KEY).trim() } }); r.pi_api_key_accepted = t.ok; r.pi_api_key_status = t.status; try { const j = await t.clone().json(); const L = j && (j.incomplete_server_payments || j); r.incomplete_server = Array.isArray(L) ? L.length : null; } catch (e) {} } catch (e) { r.pi_api_key_accepted = false; } }
+    if (s.app_wallet_seed) { try { const kp = await keypairFromSeed(walletSeed(env)); const h = await fetch(horizon + '/accounts/' + kp.address); r.app_wallet_found = h.ok; r.app_wallet_address = kp.address; if (h.ok) { try { const a = await h.json(); const b = (a.balances || []).filter((x) => x.asset_type === 'native')[0]; r.app_wallet_balance = b ? Number(b.balance) : null; } catch (e) {} } } catch (e) { r.app_wallet_found = false; } }
     r.ready = enabled(env) && r.pi_api_key_accepted !== false && r.app_wallet_found !== false;
     return json({ ok: true, check: r });
   }

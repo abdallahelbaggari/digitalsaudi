@@ -3832,7 +3832,7 @@ function piAuth(){
   if(!authInFlight || Date.now() - authStartedAt >= 20000){
     log('Sign-in started');
     authStartedAt = Date.now();
-    const attempt = Pi.authenticate(['username','payments'], onIncompletePaymentFound).then(function(auth){
+    const attempt = Pi.authenticate(['username','payments','wallet_address'], onIncompletePaymentFound).then(function(auth){
       if(authInFlight === attempt) authInFlight = null;
       if(!piUser) onPiAuth(auth); else piUser.accessToken = auth.accessToken;
       return true;
@@ -10261,10 +10261,10 @@ if(DS_TESTNET){
 </script>
 <script src="/ds-receipt.js?v=3"></script>
 <script src="/ds-wallet.js?v=8"></script>
-<script src="/ds-transfer.js?v=2"></script>
+<script src="/ds-transfer.js?v=3"></script>
 <script src="/ds-business.js?v=1"></script>
 <link rel="stylesheet" href="/ds-pro.css?v=9">
 <script src="/ds-quran.js?v=2"></script>
-<script src="/ds-pro.js?v=3"></script>
+<script src="/ds-pro.js?v=4"></script>
 </body>
 </html>
