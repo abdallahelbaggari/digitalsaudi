@@ -2,7 +2,7 @@
 // - App shell cached on install (works offline)
 // - Pages and app files open at once from the phone; the newest copy is fetched in the background and used from the next opening
 // - Payments, Premium, AI and admin are never cached
-const CACHE = 'digitalsaudi-v69';
+const CACHE = 'digitalsaudi-v70';
 const SHELL = ['/', '/index.html', '/manifest.json', '/icon.svg', '/icon-192.png', '/privacy.html', '/terms.html', '/ds-quran-list.json', '/ds-hadith.json'];
 const NEVER = ['/transfer', '/users', '/setup.html', '/file', '/f/', '/r/', '/history', '/approve', '/complete', '/cancel-payment', '/premium', '/ai', '/admin-api', '/admin.html', '/admin', '/pi-check', '/dict', '/translate', '/poster-file', '/match', '/quran-audio', '/hadith-audio', '/referral', '/verify', '/recover', '/staff', '/report', '/merchants', '/fx'];
 

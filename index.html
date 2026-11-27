@@ -3892,24 +3892,35 @@ function onPiAuth(auth){
 /* One shared Pi sign-in. Two Pi.authenticate calls at the same time (sign-in button, "Fix pending payment",
    a payment) make the Pi Browser hang or fail, so every caller waits for the same request. */
 let authRetried = false;
+/* Pi's own connection check can fail on a weak signal ("Network error…"). That is retried automatically,
+   a few times with short pauses, before anything is shown; a new request only starts after the last one ended. */
+const NET_ERR = /network|timeout|timed out|failed to fetch|consent|connection|offline/i;
 function piAuth(){
   initPi();
   if(!authInFlight || Date.now() - authStartedAt >= 20000){
     log('Sign-in started');
     authStartedAt = Date.now();
-    const attempt = Pi.authenticate(['username','payments','wallet_address'], onIncompletePaymentFound).then(function(auth){
-      if(authInFlight === attempt) authInFlight = null;
-      if(!piUser) onPiAuth(auth); else piUser.accessToken = auth.accessToken;
-      return true;
-    }, function(err){
-      if(authInFlight === attempt) authInFlight = null;
-      log('❌ Sign-in failed:', err && err.message ? err.message : err);
-      if(!piUser){ const why = String((err && (err.message || err.error || err)) || '').slice(0, 140); toast('Sign-in failed' + (why ? ': ' + why : '') + '. Please try again.'); store.set('lastAuthError', { at: Date.now(), why: why }); }
-      return false;
-    });
+    const run = function(tries){
+      return Pi.authenticate(['username','payments','wallet_address'], onIncompletePaymentFound).then(function(auth){
+        if(!piUser) onPiAuth(auth); else piUser.accessToken = auth.accessToken;
+        return true;
+      }, function(err){
+        const why = String((err && (err.message || err.error || err)) || '').slice(0, 140);
+        log('❌ Sign-in failed:', why);
+        if(!piUser && NET_ERR.test(why) && tries < 4){
+          if(tries === 1) toast('Weak connection. Trying again…');
+          return new Promise(function(ok){ setTimeout(ok, 2500 * tries); }).then(function(){
+            if(piUser) return true;
+            if(navigator.onLine === false) return new Promise(function(ok){ window.addEventListener('online', ok, { once:true }); setTimeout(ok, 15000); }).then(function(){ return run(tries + 1); });
+            return run(tries + 1);
+          });
+        }
+        if(!piUser){ toast(NET_ERR.test(why) ? 'No connection to Pi right now. Check your internet and tap Sign in again.' : 'Sign-in did not complete. Please tap Sign in again.'); store.set('lastAuthError', { at: Date.now(), why: why }); }
+        return false;
+      });
+    };
+    const attempt = run(1).then(function(ok){ if(authInFlight === attempt) authInFlight = null; return ok; });
     authInFlight = attempt;
-    // Pi is started when the page opens, so one request is enough. A second request while the first is still
-    // waiting can make the Pi Browser hang, so a new one is only sent if the user taps Sign in again after 20 s.
   }
   return authInFlight;
 }
@@ -3922,7 +3933,7 @@ function piLogin(){
   // A slow answer from Pi is not a failure: keep waiting and sign in as soon as Pi replies.
   const slow = setTimeout(function(){
     if(authInFlight === current && !piUser){ resetBtn(); toast('Still connecting to Pi… you will be signed in when Pi answers. If nothing happens, tap Sign in again.'); }
-  }, 15000);
+  }, 30000);
   current.then(function(){ clearTimeout(slow); resetBtn(); });
 }
 function dsWaitToken(ms){
