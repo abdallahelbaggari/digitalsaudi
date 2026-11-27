@@ -35,6 +35,7 @@
   /* storage: if the phone's browser storage is full, the oldest receipts that are already backed up are trimmed
      (they stay in the server history) and the save is retried, so nothing new is ever lost */
   function put(k, v) {
+    if (k === 'addr') setTimeout(function () { try { registered = false; register(); } catch (e) {} }, 0);
     try { localStorage.setItem(K + k, JSON.stringify(v)); mirrorSoon(); if (k === 'name' || k === 'nameType') setTimeout(function () { try { HK.dirty.forEach(function (f) { f(); }); } catch (e) {} }, 0); return true; } catch (e) {}
     try {
       ['errlog', 'price', 'fx', 'payers'].forEach(function (x) { if (x !== k) localStorage.removeItem(K + x); });
@@ -565,7 +566,7 @@
     }).catch(function () {});
   }
   var registered = false;
-  function register() { if (registered || !signedIn()) return; registered = true; api('/users', { accessToken: S.token }).then(function (d) { if (!d || !d.ok) registered = false; }).catch(function () { registered = false; }); }
+  function register() { if (registered || !signedIn()) return; registered = true; api('/users', { accessToken: S.token, addr: get('addr', '') }).then(function (d) { if (!d || !d.ok) registered = false; }).catch(function () { registered = false; }); }
   function learnAddr(a) { if (a && /^G[A-Z2-7]{55}$/.test(a) && !get('addr', '')) put('addrSug', a); }
   function saveTransfer(t, dir) {
     var pend = get('pend', {}), pd = pend[t.pid] || {};
@@ -615,11 +616,11 @@
   function toLabel(t) { return isG(t) ? short(t) : '@' + t; }
   function sendSheet(pre) {
     pre = pre || {};
-    var addrOn = true, userOn = !!(S.cfg.enabled && S.cfg.usernames), kind = !userOn || (pre.u && isG(pre.u)) ? 'addr' : 'user';
+    var addrOn = true, userOn = S.cfg.enabled ? !!S.cfg.usernames : true, okName = '', kind = !userOn || (pre.u && isG(pre.u)) ? 'addr' : 'user';
     var payees = contacts().map(function (c) { return c.to; }).concat(get('payees', [])).filter(function (p, i, L) { return (userOn || isG(p)) && L.map(function (q) { return q.toLowerCase(); }).indexOf(p.toLowerCase()) === i; }).slice(0, 8);
     var w = sheet('Send Pi',
       (pre.link || pre.x && pre.a ? '<div class="note gray" style="margin-bottom:8px">' + ic('qr') + '<span>Payment request from ' + esc(isG(pre.u) ? short(pre.u) : '@' + pre.u) + (pre.a ? ' for <b>' + fpi(pre.a) + ' π</b>' : '') + (pre.x ? ' · “' + esc(pre.x) + '”' : '') + '. Check it is someone you know.</span></div>' : '') +
-      (userOn ? '<div class="seg" role="tablist" style="margin-bottom:4px"><button type="button" data-k="user">Username</button><button type="button" data-k="addr">Wallet address</button></div>' : (S.cfg.enabled ? '' : '<p class="sh-sub">Fill in the payment, then pay it from your Pi Wallet. Your receipt appears automatically.</p>')) +
+      (userOn ? '<div class="seg" role="tablist" style="margin-bottom:4px"><button type="button" data-k="user">Username</button><button type="button" data-k="addr">Wallet address</button></div>' : '') +
       '<div id="k-user"><label class="l" for="s-u">To</label><div class="to"><span>@</span><input id="s-u" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="username" maxlength="60"></div></div>' +
       '<div id="k-addr" hidden><label class="l" for="s-g">Pi wallet address</label><textarea class="in num" id="s-g" rows="2" maxlength="60" autocapitalize="characters" spellcheck="false" placeholder="G…" style="font-size:14px;resize:none"></textarea></div>' +
       '<div class="hint" id="s-uh"></div>' +
@@ -657,6 +658,7 @@
           if (kind !== 'user' || u.value.trim().replace(/^@/, '') !== name) return;
           if (!d.ok) { h.innerHTML = '<span class="bad">' + esc(d.error || 'Could not check right now.') + '</span>'; return; }
           if (d.exists && d.username.toLowerCase() === me().toLowerCase()) { h.innerHTML = '<span class="bad">That is you.</span>'; return; }
+          if (d.exists && !S.cfg.enabled) { if (/^G[A-Z2-7]{55}$/.test(d.addr || '')) { ok = d.addr; okName = d.username; h.innerHTML = '<span class="ok">✓ @' + esc(d.username) + ' · ' + esc(short(d.addr)) + '</span>'; } else h.innerHTML = '<span class="bad">@' + esc(d.username) + ' has not added a wallet address yet.</span>'; return; }
           if (d.exists) { ok = d.username; h.innerHTML = '<span class="ok">✓ @' + esc(d.username) + ' is on DigitalSaudi</span>'; }
           else h.innerHTML = '<span class="bad">@' + esc(name) + ' has not used DigitalSaudi yet.' + (addrOn ? ' You can send to their wallet address instead.' : ' They need to sign in to DigitalSaudi once to receive by @username.') + '</span>';
         }).catch(function () { h.textContent = 'No connection. Try again.'; });
@@ -690,7 +692,7 @@
       if (!to) return toast(kind === 'addr' ? 'Enter a valid Pi wallet address' : 'Enter the Pioneer’s @username');
       if (!(v >= 0.01)) return toast('The smallest payment is 0.01 π');
       if (!x) return toast('What is this payment for?');
-      if (isG(to) && !S.cfg.enabled) return review(to, v, x, cat, { wallet: true, first: get('payees', []).indexOf(to) < 0 });
+      if (isG(to) && !S.cfg.enabled) return review(to, v, x, cat, { wallet: true, name: kind === 'user' ? okName : '', first: get('payees', []).indexOf(to) < 0 });
       if (!signedIn()) { needSignIn('Sign in with Pi to send inside DigitalSaudi.'); return; }
       if (S.cfg.max && v > S.cfg.max) return toast('The most you can send at once is ' + S.cfg.max + ' π');
       if (!x) return toast('What is this payment for?');
@@ -775,11 +777,11 @@
     var dup = rcpts().filter(function (r) { return r.dir === 'out' && r.kind !== 'refund' && Date.now() - (r.ts || 0) < 30 * 60e3 && Math.abs(Number(r.amount) - amt) < 1e-7 && (A ? r.addr === to : String(r.other || '').toLowerCase() === '@' + lc); })[0]
       || pendingList().filter(function (q) { return String(q.to).toLowerCase() === lc && Math.abs(Number(q.amt) - amt) < 1e-7; })[0];
     if (dup) warn.push('<div class="note warn">' + ic('warn') + '<span>You already sent <b>' + fpi(amt) + ' π</b> to ' + esc(toLabel(to)) + ' at ' + new Date(dup.ts).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) + '. Check this is not a repeat payment.</span></div>');
-    if (A) warn.push('<div class="note warn">' + ic('warn') + '<span>You are sending to a <b>wallet address</b>. Check every character with the person. Pi sent to a wrong address cannot be recovered.</span></div>');
+    if (A && !o.name) warn.push('<div class="note warn">' + ic('warn') + '<span>You are sending to a <b>wallet address</b>. Check every character with the person. Pi sent to a wrong address cannot be recovered.</span></div>');
     if (o.first) warn.push('<div class="note gray">' + ic('shield') + '<span>DigitalSaudi staff will never ask you to send Pi.</span></div>');
     warn.push('<div class="note gray">' + ic('info') + '<span>Blockchain payments cannot be reversed.</span></div>');
     var w = sheet('Check before you send',
-      '<div class="big"><div class="v">' + fpi(amt) + ' π</div><div class="c">' + esc(conv(amt)) + '</div><div class="w">To ' + esc(toLabel(to)) + '</div></div>' +
+      '<div class="big"><div class="v">' + fpi(amt) + ' π</div><div class="c">' + esc(conv(amt)) + '</div><div class="w">To ' + esc(o.name ? '@' + o.name : toLabel(to)) + '</div></div>' +
       '<div class="sum">' + (A ? '<div style="display:block"><span>To wallet address</span><b class="num" style="display:block;text-align:left;margin-top:4px;font-size:13px;overflow-wrap:anywhere">' + esc(to) + '</b></div>' : '<div><span>To</span><b class="t">@' + esc(to) + '</b></div>') +
       '<div><span>For</span><b class="t">' + esc(narr) + '</b></div>' + (cat ? '<div><span>Category</span><b class="t">' + esc(cat) + '</b></div>' : '') +
       '<div><span>They receive</span><b>' + fpi(amt) + ' π</b></div><div><span>' + (o.wallet ? 'Network fee (Pi Wallet)' : 'Blockchain fee') + '</span><b>' + S.cfg.fee + ' π</b></div><div class="tot"><span>You pay</span><b>' + fpi(r7(amt + S.cfg.fee)) + ' π</b></div></div>' +

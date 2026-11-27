@@ -855,3 +855,39 @@ html.fp-staff #hostnav{display:none}
 @media (max-width:459px){#tabs button span.b{display:none!important}}
 @media (max-width:379px){#tabs button,#tabs button.on{font-size:11px;padding:0 2px;letter-spacing:-.01em}#tabs{gap:4px}}
 #hostnav .e{font-size:22px;line-height:24px;height:24px}
+
+/* ── fintech look: header close button, sheets, fields, buttons and motion ── */
+:root{--fx1:#0C8A55;--fx2:#065A38;--fxg:#E6BD5C}
+#top .brand .bk{width:auto!important;height:36px!important;padding:0 13px 0 10px;gap:6px;border-radius:999px!important;background:rgba(255,255,255,.2)!important;border:1.5px solid rgba(255,255,255,.55);font-size:14px!important;font-weight:800;letter-spacing:.01em;color:#fff;box-shadow:0 6px 16px -10px rgba(0,0,0,.6)}
+#top .brand .bk svg{flex:none}
+#top .brand:active .bk{transform:scale(.95)}
+@media (max-width:399px){#top .brand img{display:none!important}}
+.sh{box-shadow:0 -24px 60px -24px rgba(3,36,22,.55)}
+.sh-h h2{font-size:21px;font-weight:800;letter-spacing:-.02em;color:var(--fx2)}
+.sh .l{font-weight:700;color:#1F2D27;letter-spacing:.005em}
+.in,.to,.amt{border:1.5px solid #D6E6DD!important;background:#F7FBF9!important;transition:border-color .2s,box-shadow .2s,background-color .2s}
+.in:focus,.to:focus-within,.amt:focus-within{border-color:var(--fx1)!important;background:#fff!important;box-shadow:0 0 0 4px rgba(12,138,85,.14)}
+.amt input{color:var(--fx2)}
+.btn:not(.ghost):not(.soft):not(.danger):not(.teal){background:linear-gradient(135deg,var(--fx1) 0%,var(--fx2) 100%)!important;color:#fff;position:relative;overflow:hidden;box-shadow:0 16px 28px -16px rgba(4,60,36,.95)!important;letter-spacing:.01em}
+.btn:not(.ghost):not(.soft):not(.danger):not(.teal)::after{content:"";position:absolute;top:0;bottom:0;left:-60%;width:45%;background:linear-gradient(100deg,rgba(255,255,255,0),rgba(255,255,255,.28),rgba(255,255,255,0));pointer-events:none}
+.btn:disabled{opacity:.7}
+.chip{transition:transform .12s ease,background-color .2s,box-shadow .2s,border-color .2s}
+.chip.on{background:linear-gradient(135deg,var(--fx1),var(--fx2))!important;border-color:transparent!important;color:#fff!important;box-shadow:0 8px 16px -10px rgba(4,60,36,.9)}
+.seg{background:#E3F2EA!important}
+.seg button.on{color:var(--fx2)!important;box-shadow:0 6px 14px -8px rgba(4,60,36,.45)!important}
+.sum{background:linear-gradient(180deg,#F2F9F5,#E8F4EE)!important;border:1px solid #D3EADD}
+.sum .tot b{color:var(--fx2);font-size:16.5px}
+.hint .ok{color:#0A7A4B}
+.li{transition:background-color .15s,transform .12s}
+.li:active{transform:scale(.985)}
+@keyframes fx-up{from{transform:translateY(34px);opacity:.3}to{transform:none;opacity:1}}
+@keyframes fx-in{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes fx-shine{0%,70%{left:-60%}100%{left:130%}}
+@media (prefers-reduced-motion:no-preference){
+  .sh{animation:fx-up .36s cubic-bezier(.2,.9,.25,1) both}
+  .sh > *:not(.sh-h){animation:fx-in .4s cubic-bezier(.2,.8,.2,1) both}
+  .sh > *:nth-child(2){animation-delay:.03s}.sh > *:nth-child(3){animation-delay:.06s}.sh > *:nth-child(4){animation-delay:.09s}.sh > *:nth-child(5){animation-delay:.12s}
+  .sh > *:nth-child(6){animation-delay:.15s}.sh > *:nth-child(7){animation-delay:.18s}.sh > *:nth-child(8){animation-delay:.21s}.sh > *:nth-child(n+9){animation-delay:.24s}
+  .btn:not(.ghost):not(.soft):not(.danger):not(.teal)::after{animation:fx-shine 3.4s 1.2s ease-in-out infinite}
+  .chip:active,.btn:active{transform:scale(.97)}
+}
