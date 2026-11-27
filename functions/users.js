@@ -16,7 +16,7 @@ export async function onRequestGet({ request, env }) {
   if (!DBB(env)) return json({ ok: false, setup: true });
   const name = (new URL(request.url).searchParams.get('u') || '').replace(/^@/, '');
   if (!USER_RE.test(name)) return json({ ok: true, exists: false });
-  if (!(await rateOk(env, request, 'lookup', 150))) return json({ ok: false, error: 'Too many lookups. Please wait a while.' });
+  if (!(await rateOk(env, request, 'lookup', 600))) return json({ ok: false, error: 'Too many lookups. Please wait a while.' });
   const r = await userByName(await db(env), name);
   return json({ ok: true, exists: !!r, username: r ? r.username : '' });
 }

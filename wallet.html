@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>DigitalSaudi Wallet</title>
+<meta name="description" content="DigitalSaudi Wallet: send and receive Pi, business tools and receipts verified on the Pi blockchain.">
+<meta name="theme-color" content="#053B26">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://sdk.minepi.com https://*.minepi.com https://*.pinet.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https:; connect-src 'self' https:; frame-src https:; object-src 'none'; base-uri 'self'; form-action 'self'">
+<link rel="icon" href="favicon-32.png" sizes="32x32">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;600;700&family=Poppins:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="wallet.css?v=f5954e8c67">
+<script src="wallet-i18n.js?v=c7ace63957"></script>
+<script>(function () {
+  /* opened inside the app: use the app's Pi connection (already signed in); opened on its own: load Pi */
+  var H = null; try { if (window.parent !== window && window.parent.WALLET_HOST && window.parent.Pi) H = window.parent; } catch (e) {}
+  if (H) {
+    window.WALLET_EMBED = 1; document.documentElement.className += ' embed';
+    var Q = H.Pi; window.Pi = new Proxy({}, { get: function (t, k) { if (k === 'init') return function () {}; var v = Q[k]; return typeof v === 'function' ? v.bind(Q) : v; } });
+    document.addEventListener('click', function (e) {
+      var a = e.target.closest && e.target.closest('#top .brand, #hostnav a'); if (!a) return;
+      e.preventDefault(); e.stopPropagation(); var m = /#tab=(\w+)/.exec(a.getAttribute('href') || ''); try { H.WALLET_HOST.close(m ? m[1] : ''); } catch (x) { location.href = a.href; }
+    }, true);
+  } else document.write('<script src="https://sdk.minepi.com/pi-sdk.js"><\/script>');
+})();</script>
+</head>
+<body>
+
+<div id="landing" hidden>
+  <section class="ld-hero">
+    <div class="ld-top"><div class="brand"><img src="icon-192.png" alt="">DigitalSaudi</div><span class="ld-r"><button type="button" class="ld-lang" id="ld-lang" aria-label="Language"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg><span id="ld-lang-t"></span></button><span class="ld-net" id="ld-net">Pi Mainnet</span></span></div>
+    <h1 class="ld-h" data-i18n="hero">Your Pi, <em>clear</em> and <em>verified.</em></h1>
+    <p class="ld-p">Live Pi rates in your currency, send and receive Pi by @username or wallet address, and receipts anyone can check on the Pi blockchain.</p>
+    <div class="ld-rate" id="ld-rate"><span class="live off" id="ld-live"></span><span>1 π =</span><b id="ld-rate-v">…</b><span id="ld-rate-c"></span></div>
+  </section>
+  <section class="ld-card">
+    <div class="ld-feat">
+      <div><i><svg class="ic" viewBox="0 0 24 24"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg></i><span><b>Send &amp; receive Pi</b><small>By @username or wallet address, with a verified receipt for every payment.</small></span></div>
+      <div><i class="t"><svg class="ic" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></i><span><b>Your wallet at a glance</b><small>Balance and history in your own currency.</small></span></div>
+      <div><i><svg class="ic" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></i><span><b>Receipts verified on the blockchain</b><small>Anyone can scan and check them.</small></span></div>
+      <div><i class="t"><svg class="ic" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg></i><span><b>Business tools</b><small>Quick sale, invoices, products and reports.</small></span></div>
+    </div>
+    <button class="btn" id="signin" type="button"><span class="pi-dot">π</span><span id="signin-t">Sign in with Pi</span></button>
+    <button class="btn ghost" id="explore" type="button">Explore without signing in</button>
+    <div class="ld-msg" id="ld-msg" role="status"></div>
+    <div class="ld-safe"><svg class="ic" viewBox="0 0 24 24" style="width:16px;height:16px"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>DigitalSaudi never asks for your passphrase and never holds your balance.</div>
+  </section>
+  <footer class="ld-foot"><a href="terms.html">Terms</a>·<a href="privacy.html">Privacy</a>·<a href="terms.html">Risk disclosure</a><div style="margin-top:6px">© DigitalSaudi 2026 · digitalsaudi.pi</div></footer>
+</div>
+
+<div id="app" hidden>
+  <header id="top">
+    <a class="brand" href="/" aria-label="Back to DigitalSaudi"><span class="bk" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></span><img src="icon-192.png" alt=""><span class="bn">Wallet</span></a>
+    <div class="top-r"><span class="netb" id="netb" hidden>Testnet</span>
+      <button class="tbtn" type="button" data-act="notifs" aria-label="Notifications"><svg class="ic" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="dot" id="bell-dot" hidden></span></button>
+      <button class="avatar" type="button" data-tab="profile" id="av" aria-label="Profile">G</button>
+    </div>
+  <nav id="tabs" aria-label="Main">
+    <button type="button" data-tab="home" class="on"><span class="b"><svg class="ic" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span>Overview</button>
+    <button type="button" data-tab="pay"><span class="b"><svg class="ic" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/></svg></span>Tools</button>
+    <button type="button" data-tab="wallet"><span class="b"><svg class="ic" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></span>Balance</button>
+    <button type="button" data-tab="activity"><span class="b"><svg class="ic" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></span>Activity</button>
+    <button type="button" data-tab="profile"><span class="b"><svg class="ic" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>Profile</button>
+  </nav>
+  </header>
+  <main id="view" tabindex="-1"><div class="wl-load" role="status" aria-label="Loading"><i></i></div></main>
+
+</div>
+
+<nav id="hostnav" aria-label="DigitalSaudi"><a href="/#tab=home"><svg class="ic" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Home</a><a href="/#tab=live"><svg class="ic" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>Live</a><button type="button" class="w" data-tab="home" aria-current="page"><span><svg class="ic" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="15" rx="3"/><path d="M16 12h2"/><path d="M2 9h20"/></svg></span>Wallet</button><a href="/#tab=explore"><svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>Explore</a><a href="/#tab=tools"><svg class="ic" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>Services</a></nav>
+<div id="toast" role="status" aria-live="polite"></div>
+<script src="wallet-qr.js?v=d0a9199dea"></script>
+<script src="wallet-receipt.js?v=37faa7fc6d"></script>
+<script src="wallet.js?v=37320bd088"></script>
+<script src="wallet-bar.js?v=5e03419cb2"></script>
+<script src="wallet-biz.js?v=82a2815d81"></script>
+</body>
+</html>

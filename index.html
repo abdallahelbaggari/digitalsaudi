@@ -10263,8 +10263,59 @@ if(DS_TESTNET){
 <script src="/ds-wallet.js?v=8"></script>
 <script src="/ds-transfer.js?v=3"></script>
 <script src="/ds-business.js?v=1"></script>
-<link rel="stylesheet" href="/ds-pro.css?v=9">
-<script src="/ds-quran.js?v=2"></script>
+<link rel="stylesheet" href="/ds-pro.css?v=10">
+<script src="/ds-quran.js?v=3"></script>
 <script src="/ds-pro.js?v=4"></script>
+
+
+
+
+
+
+
+<style id="wallet-link-css">#wl-open{position:fixed;inset:0;z-index:2147483000;display:none;align-items:center;justify-content:center;background:rgba(6,30,20,.28);-webkit-backdrop-filter:blur(2px);backdrop-filter:blur(2px)}#wl-open.on{display:flex}#wl-open .wl-b{display:flex;align-items:center;gap:12px;padding:16px 22px;border-radius:18px;background:#fff;color:#064E33;font:700 16px/1.2 Poppins,system-ui,sans-serif;box-shadow:0 20px 50px -20px rgba(0,0,0,.5)}#wl-open i{width:22px;height:22px;border-radius:50%;border:3px solid #0C8A5533;border-top-color:#0C8A55;animation:wlspin .8s linear infinite}@keyframes wlspin{to{transform:rotate(360deg)}}#wl-frame{position:fixed;inset:0;width:100%;height:100%;border:0;z-index:2147482000;background:#E9FBF2;visibility:hidden;pointer-events:none}#wl-frame.on{visibility:visible;pointer-events:auto}html.wl-on,html.wl-on body{overflow:hidden}</style><script id="wallet-link">(function () {
+  /* Wallet: the full DigitalSaudi Wallet opens inside the app, over this page: DigitalSaudi stays open and signed in */
+  var fr = null, ready = false, want = null, isOpen = false;
+  function frame() {
+    if (fr) return fr;
+    fr = document.createElement('iframe'); fr.id = 'wl-frame'; fr.title = 'Wallet'; fr.src = '/wallet?in=1';
+    fr.setAttribute('allow', 'camera; microphone; clipboard-read; clipboard-write; web-share; autoplay; fullscreen');
+    fr.addEventListener('load', function () { ready = true; if (want !== null) { var h = want; want = null; show(h); } });
+    document.body.appendChild(fr); return fr;
+  }
+  function spin(on) {
+    var o = document.getElementById('wl-open');
+    if (!o) { o = document.createElement('div'); o.id = 'wl-open'; o.setAttribute('role', 'status'); o.innerHTML = '<div class="wl-b"><i></i><b>Opening Wallet</b></div>'; document.body.appendChild(o); }
+    o.className = on ? 'on' : '';
+  }
+  function show(h) {
+    spin(false); fr.classList.add('on'); document.documentElement.classList.add('wl-on'); isOpen = true;
+    try { history.pushState({ wl: 1 }, ''); } catch (e) {}
+    try { fr.contentWindow.WALLET_SHOW && fr.contentWindow.WALLET_SHOW(h || ''); fr.contentWindow.focus(); } catch (e) {}
+  }
+  function W(h) {
+    var a = (/#go=([a-z-]+)/.exec(h || '') || [])[1] || '';
+    if (isOpen) { show(a); return; }
+    frame(); if (ready) show(a); else { want = a; spin(true); }
+  }
+  function close(tab, fromBack) {
+    if (!fr || !isOpen) return; isOpen = false;
+    fr.classList.remove('on'); document.documentElement.classList.remove('wl-on');
+    if (tab && window.switchTab) { try { switchTab(tab); } catch (e) {} }
+    if (!fromBack && history.state && history.state.wl) { try { history.back(); } catch (e) {} }
+  }
+  addEventListener('popstate', function () { if (isOpen) close('', true); });
+  window.WALLET_HOST = { close: close, open: W, signed: function () { try { return !!(piUser && piUser.accessToken); } catch (e) { return false; } } };
+  function install() { var o = window.openItem; if (o && !o.__wl) { window.openItem = function (id) { if (id === 'piWallet') return W(); return o.apply(this, arguments); }; window.openItem.__wl = 1; } }
+  install(); addEventListener('DOMContentLoaded', install); addEventListener('load', function () { install(); setTimeout(install, 0); setTimeout(install, 1500); });
+  document.addEventListener('click', function (e) { var t = e.target.closest && e.target.closest('[onclick]'); if (!t) return; if (/^\s*openItem\('piWallet'\)\s*;?\s*$/.test(t.getAttribute('onclick') || '')) { e.preventDefault(); e.stopPropagation(); W(); } }, true);
+  // the wallet gets ready in the background once DigitalSaudi is open, so it appears at once when tapped
+  var iv = setInterval(function () { var c = navigator.connection; if (c && c.saveData) return; try { if (entered && piUser && piUser.accessToken) { clearInterval(iv); setTimeout(frame, 1500); } } catch (e) {} }, 1000);
+  setTimeout(function () { clearInterval(iv); }, 600000);
+  if (/^#(wallet|piWallet)$/.test(location.hash)) addEventListener('load', function () { W(); });
+  // links that open a section of DigitalSaudi (#tab=live …)
+  var m = /^#tab=(home|live|explore|tools)$/.exec(location.hash);
+  if (m) { try { history.replaceState(null, '', location.pathname + location.search); } catch (e) {} var go = function () { try { if (window.switchTab) switchTab(m[1]); } catch (e) {} }; if (document.readyState === 'complete') go(); else addEventListener('load', function () { go(); setTimeout(go, 600); }); }
+})();</script>
 </body>
 </html>

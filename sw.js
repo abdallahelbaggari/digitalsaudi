@@ -2,9 +2,9 @@
 // - App shell cached on install (works offline)
 // - Network-first for GET requests, falling back to the last saved copy
 // - Payments, Premium, AI and admin are never cached
-const CACHE = 'digitalsaudi-v60';
+const CACHE = 'digitalsaudi-v66';
 const SHELL = ['/', '/index.html', '/manifest.json', '/icon.svg', '/icon-192.png', '/privacy.html', '/terms.html', '/ds-quran-list.json', '/ds-hadith.json'];
-const NEVER = ['/transfer', '/users', '/setup.html', '/file', '/f/', '/r/', '/history', '/approve', '/complete', '/cancel-payment', '/premium', '/ai', '/admin-api', '/admin.html', '/admin', '/pi-check', '/dict', '/translate', '/poster-file', '/match', '/quran-audio', '/referral', '/verify'];
+const NEVER = ['/transfer', '/users', '/setup.html', '/file', '/f/', '/r/', '/history', '/approve', '/complete', '/cancel-payment', '/premium', '/ai', '/admin-api', '/admin.html', '/admin', '/pi-check', '/dict', '/translate', '/poster-file', '/match', '/quran-audio', '/hadith-audio', '/referral', '/verify', '/recover', '/staff', '/report', '/merchants', '/fx'];
 
 self.addEventListener('install', e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL))); self.skipWaiting(); });
 self.addEventListener('activate', e => {
@@ -27,6 +27,11 @@ self.addEventListener('fetch', e => {
       if (hit) { e.waitUntil(net.catch(() => {})); return hit; }
       return net;
     })));
+    return;
+  }
+  // Wallet files carry a version number: answer from the phone at once (a new version has a new number)
+  if (u.origin === location.origin && /^\/wallet[\w-]*(\/[\w-]+)?\.(js|css)$/.test(u.pathname) && /[?&]v=/.test(u.search)) {
+    e.respondWith(caches.open(CACHE).then(c => c.match(req).then(hit => hit || fetch(req).then(res => { if (res && res.ok) c.put(req, res.clone()); return res; }))));
     return;
   }
   e.respondWith(

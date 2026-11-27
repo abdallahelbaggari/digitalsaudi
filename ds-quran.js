@@ -178,13 +178,45 @@
       put('hlast', n);
       showPanel('Hadith ' + n, '<div class="hq-top"><button type="button" class="hq-back" onclick="DSH.list()">‹ 40 Hadith</button><div class="hq-tools"><button type="button" onclick="DSQ.size(-2)" aria-label="Smaller text">A−</button><button type="button" onclick="DSQ.size(2)" aria-label="Larger text">A+</button></div></div>' +
         '<div class="hq-head"><div class="hq-head-ar" lang="ar">الحديث ' + arNum(n) + '</div><div class="hq-head-en">Hadith ' + n + ' of 42 · Forty Hadith of an-Nawawi</div></div>' +
+        '<div class="hd-pl" id="hd-pl" data-n="' + n + '"><button type="button" class="hd-btn" id="hd-btn" onclick="DSH.play(' + n + ')" aria-label="Listen">' + PLAY + '</button>' +
+        '<div class="hd-info"><b>Listen · Arabic reading</b><div class="hd-bar" id="hd-bar" onclick="DSH.seek(event)"><i id="hd-prog"></i></div><small id="hd-time">Hadith ' + n + '</small></div>' +
+        '<button type="button" class="hd-all' + (HA.all ? ' on' : '') + '" id="hd-all" onclick="DSH.all()" aria-pressed="' + (HA.all ? 'true' : 'false') + '">Play all</button></div>' +
         '<div class="hq-ay"><div class="hq-ay-ar" lang="ar" dir="rtl" style="font-size:' + Math.max(20, S.opt.fs - 4) + 'px;font-family:Amiri,serif">' + E(h.ar) + '</div><div class="hq-ay-en" style="white-space:pre-line">' + E(h.en) + '</div>' +
         '<div class="hq-ay-act"><button type="button" onclick="DSH.share(' + n + ')">Share</button></div></div>' +
         '<div class="hq-foot">' + (n > 1 ? '<button type="button" class="btn btn-ghost btn-sm" onclick="DSH.open(' + (n - 1) + ')">‹ Previous</button>' : '<span></span>') + (n < 42 ? '<button type="button" class="btn btn-primary btn-sm" onclick="DSH.open(' + (n + 1) + ')">Next ›</button>' : '') + '</div>' +
         '<div class="hq-src">Imam Yahya ibn Sharaf an-Nawawi · Arabic and English text</div>', { id: 'hadith40', share: false });
+      paint();
     });
   }
-  window.DSH = { list: hList, open: hOpen, share: function (n) { var h = (H || []).filter(function (x) { return x.n === n; })[0]; if (h) shareText('Hadith ' + n + ' · 40 Hadith of an-Nawawi', h.ar + '\n\n' + h.en + '\n\n— Forty Hadith of an-Nawawi, ' + n + '\nDigitalSaudi · digitalsaudi.pi'); } };
+  /* ── listening: one hadith at a time, or all in order ── */
+  var PLAY = '<svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.4-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5z"/></svg>';
+  var PAUSE = '<svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><rect x="6" y="5" width="4.2" height="14" rx="1.2"/><rect x="13.8" y="5" width="4.2" height="14" rx="1.2"/></svg>';
+  var HA = new Audio(); HA.preload = 'none'; HA.n = 0; HA.all = !!get('hall', false);
+  var tm = function (x) { x = Math.max(0, Math.floor(x || 0)); return Math.floor(x / 60) + ':' + ('0' + (x % 60)).slice(-2); };
+  function paint() {
+    var pl = $('hd-pl'); if (!pl) return; var mine = +pl.dataset.n === HA.n, b = $('hd-btn'), on = mine && !HA.paused && !HA.ended;
+    if (b) { b.innerHTML = on ? PAUSE : PLAY; b.setAttribute('aria-label', on ? 'Pause' : 'Listen'); b.classList.toggle('busy', mine && HA.busy); }
+    var p = $('hd-prog'); if (p) p.style.width = (mine && HA.duration ? Math.min(100, HA.currentTime / HA.duration * 100) : 0) + '%';
+    var t = $('hd-time'); if (t) t.textContent = mine && HA.busy ? 'Loading…' : mine && HA.duration ? tm(HA.currentTime) + ' / ' + tm(HA.duration) : 'Hadith ' + pl.dataset.n;
+  }
+  ['play', 'pause', 'timeupdate', 'loadedmetadata', 'playing', 'waiting', 'ended'].forEach(function (ev) { HA.addEventListener(ev, function () {
+    if (ev === 'waiting') HA.busy = true; if (ev === 'playing' || ev === 'pause') HA.busy = false;
+    if (ev === 'timeupdate' && !$('hd-pl')) { HA.pause(); return; } // the reader was closed
+    paint();
+  }); });
+  HA.addEventListener('ended', function () { if (HA.all && HA.n < 42 && $('hd-pl')) { var nx = HA.n + 1; hOpen(nx); setTimeout(function () { hPlay(nx); }, 400); } });
+  HA.addEventListener('error', function () { if (!HA.n) return; HA.busy = false; paint(); say('Audio is not available right now. Check your connection and try again.'); });
+  function hPlay(n) {
+    try { if (S.audio && !S.audio.paused) S.audio.pause(); } catch (e) {}
+    if (HA.n === n && HA.src) { if (HA.paused || HA.ended) { HA.play().catch(function () {}); } else HA.pause(); paint(); return; }
+    HA.n = n; HA.busy = true; HA.src = '/hadith-audio?n=' + n; paint();
+    HA.play().catch(function () { HA.busy = false; paint(); });
+    try { if ('mediaSession' in navigator) navigator.mediaSession.metadata = new MediaMetadata({ title: 'Hadith ' + n, artist: 'Forty Hadith of an-Nawawi', album: 'DigitalSaudi', artwork: [{ src: '/icon-512.png', sizes: '512x512', type: 'image/png' }] }); } catch (e) {}
+  }
+  window.DSH = { play: hPlay,
+    all: function () { HA.all = !HA.all; put('hall', HA.all); var b = $('hd-all'); if (b) { b.classList.toggle('on', HA.all); b.setAttribute('aria-pressed', HA.all ? 'true' : 'false'); } },
+    seek: function (e) { var bar = $('hd-bar'), pl = $('hd-pl'); if (!bar || !pl || +pl.dataset.n !== HA.n || !HA.duration) return; var r = bar.getBoundingClientRect(), k = (e.clientX - r.left) / r.width; HA.currentTime = Math.max(0, Math.min(1, k)) * HA.duration; paint(); },
+    list: hList, open: function (n) { hOpen(n); setTimeout(paint, 300); }, share: function (n) { var h = (H || []).filter(function (x) { return x.n === n; })[0]; if (h) shareText('Hadith ' + n + ' · 40 Hadith of an-Nawawi', h.ar + '\n\n' + h.en + '\n\n— Forty Hadith of an-Nawawi, ' + n + '\nDigitalSaudi · digitalsaudi.pi'); } };
 
   /* ── wiring: replace the old Quran reader, add 40 Hadith ── */
   function wire() {

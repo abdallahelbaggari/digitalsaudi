@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Verify a payment · DigitalSaudi</title>
+<meta name="description" content="Check a DigitalSaudi receipt against the public Pi blockchain.">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com data:; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'">
+<meta name="theme-color" content="#0C4A2C">
+<link rel="icon" href="favicon-32.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--g:#21BC71;--g2:#0C4A2C;--gold:#997215;--t:#0B2C1C;--m:#64748B;--bd:#E3EFE9;--bg:#F2FAF6}
+*{box-sizing:border-box}html,body{margin:0}
+body{font-family:Poppins,system-ui,sans-serif;background:var(--bg);color:var(--t);min-height:100vh;padding:0 16px 32px}
+.wrap{max-width:480px;margin:0 auto}
+.top{display:flex;align-items:center;gap:10px;padding:16px 0}.top img{width:38px;height:38px;border-radius:10px}
+.top b{font-size:18px;color:var(--g2)}.top small{display:block;font-size:12px;color:var(--gold);font-weight:700;letter-spacing:0}
+.card{background:#fff;border:1px solid var(--bd);border-radius:22px;box-shadow:0 10px 30px rgba(11,44,28,.08);overflow:hidden}
+.res{padding:22px 20px;text-align:center}
+.res .ic{width:70px;height:70px;border-radius:50%;margin:0 auto 10px;display:flex;align-items:center;justify-content:center;font-size:36px}
+.ok .ic{background:#F6F2E7;color:#8B6819}.bad .ic{background:#FEECEC;color:#B42318}.wait .ic{background:#FFF8E8;color:#7A5C18}
+.res h1{font-size:21px;margin:0}.res p{color:var(--m);font-size:14px;margin:6px 0 0;line-height:1.5}
+.amt{font-size:42px;font-weight:800;margin:14px 0 0}
+.seal{margin:0 20px 16px;padding:14px;border-radius:16px;text-align:center;background:linear-gradient(135deg,#EFFEF7,#F9F4E7);border:1.5px dashed #21BC71}.seal span{display:block;font-size:12px;font-weight:700;color:#475569;text-transform:uppercase;letter-spacing:.08em}.seal b{display:block;font-family:'JetBrains Mono',monospace;font-size:24px;letter-spacing:.06em;color:#0E6038;margin:4px 0}.seal small{display:block;font-size:12px;color:#64748B}
+.rows{padding:4px 20px 14px}
+.row{display:flex;justify-content:space-between;gap:12px;padding:11px 0;border-bottom:1px solid #EEF7F3;font-size:14px}.row:last-child{border:0}
+.row span{color:var(--m);flex:none}.row b{text-align:right;word-break:break-all}.mono{font-family:'JetBrains Mono',monospace;font-size:12.5px}
+.btn{display:block;text-align:center;margin-top:12px;padding:13px;border-radius:14px;background:var(--g);color:#fff;font-weight:800;text-decoration:none}
+.btn.ghost{background:#fff;color:var(--t);border:1px solid var(--bd)}
+.note{margin-top:14px;padding:13px;border-radius:14px;background:#fff;border:1px solid var(--bd);font-size:12.5px;color:var(--m);line-height:1.55}
+.note b{color:var(--t)}
+form{display:flex;gap:8px;margin-top:12px}input{flex:1;min-width:0;padding:12px;border:1px solid var(--bd);border-radius:12px;font:inherit;font-family:'JetBrains Mono',monospace;font-size:13px}
+button{border:0;border-radius:12px;background:var(--g);color:#fff;font:inherit;font-weight:800;padding:0 16px;cursor:pointer}
+.foot{text-align:center;font-size:12px;color:var(--m);margin-top:18px}.foot a{color:var(--g);font-weight:700;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><img src="icon-192.png" alt=""><div><b>DigitalSaudi</b><small>Payment check · digitalsaudi.pi</small></div></div>
+  <div class="card" id="out"><div class="res wait"><div class="ic">⏳</div><h1>Checking the Pi blockchain…</h1></div></div>
+  <form id="f"><input id="h" placeholder="Paste a transaction ID to check" autocomplete="off" aria-label="Transaction ID"><button>Check</button></form>
+  <div class="note"><b>How this works.</b> A receipt image can be edited by anyone, but the Pi blockchain cannot. This page reads the transaction straight from the public Pi blockchain, so compare the amount, the recipient address and the reference with the receipt you were given. If they do not match, the receipt is not genuine.</div>
+  <div class="foot"><a href="/">Open DigitalSaudi</a> · <a href="privacy.html">Privacy</a> · <a href="terms.html">Terms</a></div>
+</div>
+<script>
+(function () {
+  'use strict';
+  var $ = function (id) { return document.getElementById(id); };
+  var esc = function (x) { return String(x == null ? '' : x).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
+  var q = new URLSearchParams((location.hash || '').slice(1));
+  var tx = (q.get('tx') || '').toLowerCase(), net = q.get('net') === 'test' ? 'test' : 'main', NETN = net === 'test' ? 'Pi Testnet' : 'Pi Mainnet';
+  function show(cls, ic, title, text, extra) { $('out').innerHTML = '<div class="res ' + cls + '"><div class="ic">' + ic + '</div><h1>' + title + '</h1>' + (text ? '<p>' + text + '</p>' : '') + '</div>' + (extra || ''); }
+  function check(h) {
+    if (!/^[a-f0-9]{64}$/.test(h)) { show('bad', '!', 'No transaction to check', 'Scan the QR code on a DigitalSaudi receipt, or paste a 64-character transaction ID below.'); return; }
+    show('wait', '⏳', 'Checking the Pi blockchain…', '');
+    fetch('/verify?tx=' + h + '&net=' + net).then(function (r) { return r.json(); }).then(function (d) {
+      if (!d.ok) { show('bad', '✕', 'Not found on the ' + NETN, esc(d.error || 'This transaction does not exist.') + ' A receipt with this transaction ID is not genuine.'); return; }
+      var t = d.tx, pays = t.payments || [];
+      if (!t.ok) { show('bad', '✕', 'This transaction failed', 'It is on the blockchain, but no Pi was moved.'); return; }
+      var total = pays.reduce(function (a, p) { return a + parseFloat(p.amount || 0); }, 0), p0 = pays[0] || {};
+      var when = new Date(t.at);
+      show('ok', '✓', 'Genuine payment on the ' + NETN, 'This transaction is recorded on the public Pi blockchain.',
+        '<div class="res" style="padding-top:0"><div class="amt">' + esc(+total.toFixed(7)) + ' π</div></div><div class="rows">' +
+        '<div class="row"><span>From</span><b class="mono">' + esc(p0.from || '—') + '</b></div>' +
+        '<div class="row"><span>To</span><b class="mono">' + esc(p0.to || '—') + '</b></div>' +
+        (pays.length > 1 ? '<div class="row"><span>Payments</span><b>' + pays.length + ' in this transaction</b></div>' : '') +
+        '<div class="row"><span>Memo / reference</span><b>' + esc(t.memo || '—') + '</b></div>' +
+        '<div class="row"><span>Date</span><b>' + esc(when.toLocaleString([], { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' })) + '</b></div>' +
+        '<div class="row"><span>Network</span><b>' + NETN + '</b></div>' +
+        '<div class="row"><span>Transaction ID</span><b class="mono">' + esc(t.hash) + '</b></div></div>' +
+        (t.seal ? '<div class="seal"><span>Verification code</span><b>' + esc(t.seal) + '</b><small>A genuine DigitalSaudi receipt shows this same code and amount.</small></div>' : '') +
+        '<div style="padding:0 20px 18px"><a class="btn ghost" rel="noopener" href="https://blockexplorer.minepi.com/' + (net === 'test' ? 'testnet' : 'mainnet') + '/transactions/' + esc(t.hash) + '">View on Pi Block Explorer ›</a></div>');
+    }).catch(function () { show('bad', '!', 'Could not reach the Pi blockchain', 'Check your connection and try again.'); });
+  }
+  $('f').onsubmit = function (e) { e.preventDefault(); var h = $('h').value.trim().toLowerCase(); history.replaceState(null, '', '#tx=' + h + '&net=' + net); check(h); };
+  check(tx);
+})();
+</script>
+</body>
+</html>

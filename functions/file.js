@@ -15,7 +15,7 @@ export async function onRequestPost({ request, env }) {
     if (len > MAX_BYTES) return json({ ok: false, error: 'This file is too large' });
     const d = await filesDb(env);
     if (!d) return json({ ok: false, unavailable: true, error: 'Saving is not available right now' });
-    if (!(await rateOk(env, request, 'file', 120))) return json({ ok: false, error: 'Too many files at once. Try again in a few minutes.' });
+    if (!(await rateOk(env, request, 'file', 300))) return json({ ok: false, error: 'Too many files at once. Try again in a few minutes.' });
     const bytes = new Uint8Array(await request.arrayBuffer());
     if (!bytes.length || bytes.length > MAX_BYTES) return json({ ok: false, error: 'This file is empty or too large' });
     const sig = { 'image/jpeg': [0xff, 0xd8], 'image/png': [0x89, 0x50], 'application/pdf': [0x25, 0x50] }[type];

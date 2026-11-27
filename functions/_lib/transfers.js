@@ -17,7 +17,7 @@ export const USER_RE = /^[A-Za-z0-9_.-]{2,40}$/;
 const round7 = (n) => Math.round(Number(n) * 1e7) / 1e7;
 
 // On automatically once the app wallet key is added; TRANSFERS_ENABLED = 0 pauses transfers at any time.
-// The database binding is DS_DB (the same D1 database DigitalSaudi uses for its directory and events), or DB.
+// The database binding is DS_DB (or DB).
 export function DBB(env) { return env.DS_DB || env.DB || null; }
 // The app wallet secret key. APP_WALLET_SEED is the recommended name; common alternatives are accepted too.
 const SEED_NAMES = ['APP_WALLET_SEED', 'APP_WALLET_SECRET', 'APP_WALLET_SECRET_KEY', 'APP_WALLET_PRIVATE_KEY', 'WALLET_SEED', 'WALLET_SECRET', 'WALLET_SECRET_KEY', 'WALLET_PRIVATE_KEY', 'PI_WALLET_SEED', 'PI_WALLET_SECRET', 'SEED', 'SECRET_SEED', 'SECRET_KEY', 'PRIVATE_KEY'];
@@ -70,12 +70,12 @@ export async function paidBefore(env, fromUid, toUid, toAddr) {
   return !!r;
 }
 /* Light abuse protection: at most `max` calls per hour per bucket from one network. The IP is never stored, only a salted one-way hash. */
-export async function rateOk(env, request, bucket, max) {
+export async function rateOk(env, request, bucket, max, who) {
   try {
     const d = DBB(env); if (!d) return true;
     await d.exec('CREATE TABLE IF NOT EXISTS rl (k TEXT PRIMARY KEY, n INTEGER, w INTEGER)');
     const ip = request.headers.get('CF-Connecting-IP') || request.headers.get('x-forwarded-for') || 'x', w = Math.floor(Date.now() / 3600000);
-    const h = [...new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(bucket + '|' + ip + '|' + (env.PI_API_KEY || 'hm'))))].map((b) => b.toString(16).padStart(2, '0')).join('').slice(0, 32);
+    const h = [...new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(bucket + '|' + ip + '|' + String(who || '').slice(-48) + '|' + (env.PI_API_KEY || 'hm'))))].map((b) => b.toString(16).padStart(2, '0')).join('').slice(0, 32);
     await d.prepare('INSERT INTO rl (k, n, w) VALUES (?, 1, ?) ON CONFLICT(k) DO UPDATE SET n = CASE WHEN rl.w = excluded.w THEN rl.n + 1 ELSE 1 END, w = excluded.w').bind(bucket + ':' + h, w).run();
     const r = await d.prepare('SELECT n FROM rl WHERE k = ?').bind(bucket + ':' + h).first();
     if (Math.random() < 0.02) await d.prepare('DELETE FROM rl WHERE w < ?').bind(w - 1).run();
@@ -112,12 +112,12 @@ export async function userByName(d, name) { return d.prepare('SELECT uid, userna
 export const isAddr = (a) => { if (!/^G[A-Z2-7]{55}$/.test(String(a || ''))) return false; try { accountToBytes(a); return true; } catch (e) { return false; } };
 const netOf = (pay, request) => request ? NET(isTest(request)) : NET(/test/i.test(String((pay && pay.network) || '')));
 /* the memo written on a direct payment: a short, unique reference derived from the sender's payment ID */
-export async function refMemo(pid) { const h = [...new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode('digitalsaudi|' + pid)))].map((b) => b.toString(16).padStart(2, '0')).join(''); return 'DS ' + h.slice(0, 20); }
+export async function refMemo(pid) { const h = [...new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode('digitalsaudi|' + pid)))].map((b) => b.toString(16).padStart(2, '0')).join(''); return 'DigitalSaudi ' + h.slice(0, 20); }
 async function accountExists(net, a) { const r = await fetch(net.horizon + '/accounts/' + a); if (r.status === 404) return false; if (!r.ok) throw new Error('Could not check the address'); return true; }
 async function appAddress(env) { try { return (await keypairFromSeed(walletSeed(env))).address; } catch (e) { return ''; } }
 
 /* Is the app wallet for this key real on this network? (cached for 5 minutes) */
-const WCACHE = globalThis.__dsWallet || (globalThis.__dsWallet = {});
+const WCACHE = globalThis.__fpWallet || (globalThis.__fpWallet = {});
 export async function walletReady(env, request) {
   if (!seedOk(env)) return { ok: false };
   const net = NET(isTest(request)), seed = walletSeed(env), k = net.name + '|' + seed.slice(-8), c = WCACHE[k];
@@ -233,7 +233,7 @@ export async function payout(env, request, pid) {
   // 3. Take the job: one worker at a time, and never while an earlier attempt could still land on the blockchain
   const lock = await d.prepare("UPDATE transfers SET status = ?, ts = ?, err = NULL WHERE pid = ? AND (status IN ('received', 'refund_needed') OR (status IN ('failed', 'refund_failed') AND ts < ?) OR (status IN ('paying', 'refunding') AND ts < ?))")
     .bind(job, now, pid, now - WAIT_UNCERTAIN, now - STALE).run();
-  if (!lock.meta || !lock.meta.changes) { row = await get(); return { ok: row.status === 'paid', refunded: row.status === 'refunded', pending: true, need_signin: /wallet_address/.test(String(row.err || '')), row: pub(row, net) }; }
+  if (!lock.meta || !lock.meta.changes) { row = await get(); return { ok: row.status === 'paid', refunded: row.status === 'refunded', pending: true, row: pub(row, net) }; }
   row = await get();
 
   const kp = await keypairFromSeed(walletSeed(env));
@@ -273,7 +273,7 @@ export async function payout(env, request, pid) {
     }
     await d.prepare('UPDATE transfers SET status = ?, err = ?, tries = COALESCE(tries, 0) + 1, fail_ts = COALESCE(fail_ts, ?), ts = ? WHERE pid = ?')
       .bind(refund ? 'refund_failed' : 'failed', String(e && e.message || e).slice(0, 300), now, definite ? now - WAIT_UNCERTAIN - 1 : now, pid).run();
-    return { ok: false, retry: true, need_signin: /wallet_address/.test(String(e && e.message || e)), error: refund ? 'The refund did not go through yet. DigitalSaudi will try again automatically.' : 'The payout did not go through yet. DigitalSaudi will try again automatically.' };
+    return { ok: false, retry: true, error: refund ? 'The refund did not go through yet. DigitalSaudi will try again automatically.' : 'The payout did not go through yet. DigitalSaudi will try again automatically.' };
   }
 }
 
