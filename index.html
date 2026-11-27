@@ -967,6 +967,71 @@ header.scrolled{box-shadow:0 1px 0 var(--line),0 10px 24px -18px rgba(0,0,0,.6)}
 @media (max-width:350px){.hp-st{padding:9px 9px}.hp-st b{font-size:14px}}
 </style>
 <link rel="stylesheet" href="/ds-wallet.css?v=7">
+
+<style id="scores-look">
+/* ===== Scores: league colours, match states and motion ===== */
+#live-scores [data-c]{--lc:#0C8A55;--lt:rgba(12,138,85,.10)}
+#live-scores [data-c=PL]{--lc:#5B2A86;--lt:rgba(91,42,134,.10)}
+#live-scores [data-c=CL]{--lc:#1B3FA0;--lt:rgba(27,63,160,.10)}
+#live-scores [data-c=PD]{--lc:#E0532A;--lt:rgba(224,83,42,.10)}
+#live-scores [data-c=SA]{--lc:#0A6AC2;--lt:rgba(10,106,194,.10)}
+#live-scores [data-c=BL1]{--lc:#D7192C;--lt:rgba(215,25,44,.09)}
+#live-scores [data-c=FL1]{--lc:#1F3A8A;--lt:rgba(31,58,138,.10)}
+#live-scores [data-c=DED]{--lc:#EF6C1A;--lt:rgba(239,108,26,.10)}
+#live-scores [data-c=PPL]{--lc:#0B8F4A;--lt:rgba(11,143,74,.10)}
+#live-scores [data-c=ELC]{--lc:#2C6CB0;--lt:rgba(44,108,176,.10)}
+#live-scores [data-c=BSA]{--lc:#159A43;--lt:rgba(21,154,67,.10)}
+#live-scores [data-c=WC]{--lc:#8A1538;--lt:rgba(138,21,56,.10)}
+#live-scores [data-c=EC]{--lc:#1450A3;--lt:rgba(20,80,163,.10)}
+#live-scores .comp-box{position:relative;overflow:hidden;border-radius:20px;padding:8px 8px 0 12px;background:linear-gradient(180deg,var(--lt),rgba(0,0,0,0) 140px);border:1px solid var(--lt)}
+#live-scores .comp-box::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--lc)}
+[dir=rtl] #live-scores .comp-box{padding:8px 12px 0 8px}
+[dir=rtl] #live-scores .comp-box::before{left:auto;right:0}
+#live-scores .comp-badge{background:var(--lc);color:#fff;border-radius:9px;box-shadow:0 6px 14px -8px var(--lc)}
+#live-scores .comp-head b{letter-spacing:-.01em}
+#live-scores .match{position:relative;border-radius:18px;padding:12px 14px 10px}
+#live-scores > #scoreList > .match{border-left:4px solid var(--lc)}
+[dir=rtl] #live-scores > #scoreList > .match{border-left:0;border-right:4px solid var(--lc)}
+#live-scores .match .top{align-items:center}
+#live-scores .mst{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:800;border-radius:999px;padding:3px 10px;line-height:1.4;font-variant-numeric:tabular-nums}
+#live-scores .m-up .mst{background:rgba(12,138,85,.12);color:#0A7A4B}
+#live-scores .m-up .mst::before{content:"";width:6px;height:6px;border-radius:50%;background:#0C8A55}
+#live-scores .m-ft .mst{background:rgba(100,116,139,.14);color:var(--muted)}
+#live-scores .m-off .mst{background:rgba(245,158,11,.15);color:#B45309}
+#live-scores .m-live .mst{padding:0;background:none}
+#live-scores .live-b{display:inline-flex;align-items:center;gap:5px;background:#E0352B;color:#fff;font-size:11px;font-weight:800;padding:3px 10px;border-radius:999px;animation:none}
+#live-scores .live-b::before{content:"";width:7px;height:7px;border-radius:50%;background:#fff;animation:sc-dot 1.2s ease-in-out infinite}
+#live-scores .m-live{border:1.5px solid rgba(224,53,43,.45)}
+#live-scores .team .sc{min-width:30px;height:28px;display:inline-flex;align-items:center;justify-content:center;border-radius:9px;font-variant-numeric:tabular-nums}
+#live-scores .m-live .team .sc{background:rgba(224,53,43,.10);color:#C2281F}
+#live-scores .m-dec .team.win .sc{background:var(--lt);color:var(--lc)}
+#live-scores .m-dec .team:not(.win) .nm,#live-scores .m-dec .team:not(.win) .sc{opacity:.62}
+#live-scores .sc-sum button{position:relative;overflow:hidden;border-radius:16px;padding:12px 4px 10px}
+#live-scores .sc-sum button::before{content:"";position:absolute;left:0;right:0;top:0;height:3px;background:var(--k)}
+#live-scores .sc-sum .s-live{--k:#E0352B;--kt:rgba(224,53,43,.10)}
+#live-scores .sc-sum .s-today{--k:#0C8A55;--kt:rgba(12,138,85,.10)}
+#live-scores .sc-sum .s-next{--k:#C9971C;--kt:rgba(201,151,28,.12)}
+#live-scores .sc-sum .s-done{--k:#64748B;--kt:rgba(100,116,139,.12)}
+#live-scores .sc-sum b{color:var(--k);font-variant-numeric:tabular-nums}
+#live-scores .sc-sum button.on{background:var(--kt);border-color:var(--k)}
+#live-scores #compChips .chip.on,#live-scores #scoreViews .chip.on{background:linear-gradient(135deg,#0E9A5F,#086B42);color:#fff;border-color:transparent;box-shadow:0 8px 18px -10px rgba(8,107,66,.9)}
+@keyframes sc-dot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.35;transform:scale(.7)}}
+@keyframes sc-in{from{opacity:0;transform:translateY(12px) scale(.985)}to{opacity:1;transform:none}}
+@keyframes sc-glow{0%{box-shadow:0 0 0 0 rgba(224,53,43,.32)}70%{box-shadow:0 0 0 9px rgba(224,53,43,0)}100%{box-shadow:0 0 0 0 rgba(224,53,43,0)}}
+@keyframes sc-pop{0%{transform:scale(.6);opacity:0}60%{transform:scale(1.12);opacity:1}100%{transform:scale(1)}}
+@media (prefers-reduced-motion:no-preference){
+  #live-scores .match{animation:sc-in .45s cubic-bezier(.2,.8,.2,1) both}
+  #live-scores .m-live{animation:sc-in .45s cubic-bezier(.2,.8,.2,1) both,sc-glow 2.2s .5s ease-out infinite}
+  #live-scores .comp-box{animation:sc-in .45s cubic-bezier(.2,.8,.2,1) both}
+  #live-scores .sc-sum b{display:inline-block;animation:sc-pop .55s cubic-bezier(.2,.8,.2,1) both}
+  #live-scores .sc-sum button:nth-child(2) b{animation-delay:.06s}
+  #live-scores .sc-sum button:nth-child(3) b{animation-delay:.12s}
+  #live-scores .sc-sum button:nth-child(4) b{animation-delay:.18s}
+  #live-scores .chip{transition:transform .15s ease,background-color .2s,box-shadow .2s}
+  #live-scores .chip:active,#live-scores .comp-head:active{transform:scale(.96)}
+}
+@media (prefers-reduced-motion:reduce){ #live-scores .live-b::before{animation:none} }
+</style>
 </head>
 <body>
 
@@ -1319,7 +1384,6 @@ header.scrolled{box-shadow:0 1px 0 var(--line),0 10px 24px -18px rgba(0,0,0,.6)}
         <div class="chips" id="compChips"></div>
         <div class="chips" id="scoreViews"></div>
         <div id="scoreList"></div>
-        <p class="small" style="text-align:center;margin-top:8px">Times shown in Saudi time (UTC+3)</p>
       </div>
 
       <div id="live-markets" class="lv" style="display:none">
@@ -2960,7 +3024,7 @@ const PANELS = {
 
   worldclock: function(){
     showPanel('Time difference', `<div class="grid"><div class="result"><small>Saudi Arabia</small><b id="wcK">—</b></div><div class="result"><small>Your time</small><b id="wcL">—</b></div></div>
-      <p style="margin-top:14px" id="wcDiff"></p><p class="small" style="margin-top:8px">Saudi Arabia is on UTC+3 all year (no daylight saving). Nigeria (WAT) is UTC+1, so Saudi is 2 hours ahead of Nigeria.</p>`, { id:'worldclock' });
+      <p style="margin-top:14px" id="wcDiff"></p>`, { id:'worldclock' });
     tickWorld(); const h = setInterval(tickWorld, 1000); panelCleanup = function(){ clearInterval(h); };
   },
 
@@ -3404,7 +3468,7 @@ function renderScores(d, view, comp){
 function compIndex(c){ const i = COMPS.findIndex(function(x){ return x[0] === c; }); return i < 0 ? 99 : i; }
 function scoreSummaryHTML(list, view){
   const live = list.filter(isLive).length, done = list.filter(function(m){ return m.status === 'FINISHED'; }).length, next = list.length - live - done;
-  return `<div class="sc-sum"><button class="${view === 'live' ? 'on' : ''}" onclick="setScoreView('live')"><b class="${live ? 'lv' : ''}">${live}</b><small>🔴 Live now</small></button><button class="${view === 'today' ? 'on' : ''}" onclick="setScoreView('today')"><b>${list.length}</b><small>⚽ Today</small></button><button onclick="setScoreView('today')"><b>${next}</b><small>⏳ Still to play</small></button><button onclick="setScoreView('results')"><b>${done}</b><small>✅ Finished</small></button></div>`;
+  return `<div class="sc-sum"><button class="s-live ${view === 'live' ? 'on' : ''}" onclick="setScoreView('live')"><b class="${live ? 'lv' : ''}">${live}</b><small>🔴 Live now</small></button><button class="s-today ${view === 'today' ? 'on' : ''}" onclick="setScoreView('today')"><b>${list.length}</b><small>⚽ Today</small></button><button class="s-next" onclick="setScoreView('today')"><b>${next}</b><small>⏳ Still to play</small></button><button class="s-done" onclick="setScoreView('results')"><b>${done}</b><small>✅ Finished</small></button></div>`;
 }
 function allMatchesHTML(ms, view){
   const byDay = view === 'upcoming' || view === 'results';
@@ -3423,7 +3487,7 @@ function allMatchesHTML(ms, view){
     const g = groups[k], live = g.list.filter(isLive).length;
     const dh = byDay && g.day !== lastDay ? `<h2 class="sec">${g.day}</h2>` : ''; lastDay = g.day;
     const label = (COMPS.find(function(c){ return c[0] === g.comp; }) || [0, g.name || g.comp])[1];
-    return dh + `<div class="comp-box"><button class="comp-head" onclick="setComp('${esc(g.comp)}')"><span class="comp-badge">${esc(g.comp)}</span><b>${esc(label)}</b>${live ? '<span class="live-b">' + live + ' LIVE</span>' : ''}<small>${g.list.length} ${g.list.length === 1 ? 'match' : 'matches'} ›</small></button>` +
+    return dh + `<div class="comp-box" data-c="${esc(g.comp)}"><button class="comp-head" onclick="setComp('${esc(g.comp)}')"><span class="comp-badge">${esc(g.comp)}</span><b>${esc(label)}</b>${live ? '<span class="live-b">' + live + ' LIVE</span>' : ''}<small>${g.list.length} ${g.list.length === 1 ? 'match' : 'matches'} ›</small></button>` +
       g.list.map(function(m){ return matchHTML(m, i++); }).join('') + '</div>';
   }).join('');
 }
@@ -3440,7 +3504,8 @@ function matchHTML(m, i){
   const fav = store.get('favTeam', null), fid = fav && fav.id;
   const hs = m.home.score, as = m.away.score, played = hs != null && as != null;
   const hw = played && hs > as, aw = played && as > hs;
-  return `<button class="match" style="animation-delay:${Math.min(i, 10) * 0.03}s" onclick="openMatch(${m.id})"><div class="top"><span>${esc(m.stage || m.compName || '')}${m.matchday ? ' · MD ' + m.matchday : ''}</span><span>${matchStatus(m)}</span></div>
+  const st = isLive(m) ? 'm-live' : m.status === 'FINISHED' ? 'm-ft' : (m.status === 'POSTPONED' || m.status === 'CANCELLED' || m.status === 'SUSPENDED') ? 'm-off' : 'm-up';
+  return `<button class="match ${st}${hw || aw ? ' m-dec' : ''}" data-c="${esc(m.comp || '')}" style="animation-delay:${Math.min(i, 10) * 0.045}s" onclick="openMatch(${m.id})"><div class="top"><span>${esc(m.stage || m.compName || '')}${m.matchday ? ' · MD ' + m.matchday : ''}</span><span class="mst">${matchStatus(m)}</span></div>
     <div class="team ${hw ? 'win' : ''}">${crest(m.home.crest)}<span class="nm">${m.home.id === fid ? '★ ' : ''}${esc(m.home.name)}</span><span class="sc">${played ? hs : ''}</span></div>
     <div class="team ${aw ? 'win' : ''}">${crest(m.away.crest)}<span class="nm">${m.away.id === fid ? '★ ' : ''}${esc(m.away.name)}</span><span class="sc">${played ? as : ''}</span></div></button>`;
 }
@@ -3456,7 +3521,7 @@ function openMatch(id){
         <div style="font-size:34px;font-weight:900">${played ? m.home.score + ' – ' + m.away.score : 'vs'}</div>
         <div>${m.away.crest ? `<img src="${esc(m.away.crest)}" style="width:56px;height:56px;margin:0 auto 6px;object-fit:contain" alt="">` : ''}<b style="font-size:14px">${esc(m.away.name)}</b></div>
       </div>${m.ht && m.ht.home != null ? `<div class="small" style="margin-top:8px">Half-time: ${m.ht.home} – ${m.ht.away}</div>` : ''}</div>
-    <div class="card" style="margin-top:12px"><div class="rate"><span>Kick-off (Saudi time)</span><b>${when}</b></div>${m.venue ? `<div class="rate"><span>Venue</span><b>${esc(m.venue)}</b></div>` : ''}${m.matchday ? `<div class="rate"><span>Matchday</span><b>${m.matchday}</b></div>` : ''}<div class="rate" style="border:0"><span>Competition</span><b>${esc(m.compName || '')}</b></div></div>
+    <div class="card" style="margin-top:12px"><div class="rate"><span>Kick-off</span><b>${when}</b></div>${m.venue ? `<div class="rate"><span>Venue</span><b>${esc(m.venue)}</b></div>` : ''}${m.matchday ? `<div class="rate"><span>Matchday</span><b>${m.matchday}</b></div>` : ''}<div class="rate" style="border:0"><span>Competition</span><b>${esc(m.compName || '')}</b></div></div>
     <h4>Favourite team</h4><div class="p-actions">
       <button class="btn ${fav && fav.id === m.home.id ? 'btn-gold' : 'btn-ghost'} btn-sm" onclick="setFav({id:${m.home.id},name:'${esc(m.home.name).replace(/'/g, '')}',crest:'${esc(m.home.crest || '')}'})">★ ${esc(m.home.name)}</button>
       <button class="btn ${fav && fav.id === m.away.id ? 'btn-gold' : 'btn-ghost'} btn-sm" onclick="setFav({id:${m.away.id},name:'${esc(m.away.name).replace(/'/g, '')}',crest:'${esc(m.away.crest || '')}'})">★ ${esc(m.away.name)}</button></div>
@@ -4086,7 +4151,7 @@ document.addEventListener('DOMContentLoaded', function(){
   setupInfinite();
   const off = function(){ $('offline').classList.toggle('on', !navigator.onLine); };
   window.addEventListener('online', function(){ off(); toast('Back online'); }); window.addEventListener('offline', off); off();
-  if('serviceWorker' in navigator){ navigator.serviceWorker.register('/sw.js').catch(function(){}); addEventListener('load', function () { navigator.serviceWorker.ready.then(function (reg) { setTimeout(function () { try { var o = location.origin, L = [location.pathname + location.search].concat(performance.getEntriesByType('resource').map(function (x) { return x.name; }).filter(function (x) { return x.indexOf(o + '/') === 0 && !/\.(mp4|webm|mp3)(\?|$)/.test(x); }).map(function (x) { return x.slice(o.length); })); if (reg.active) reg.active.postMessage({ warm: L }); } catch (e) {} }, 3000); }); }); }
+  if('serviceWorker' in navigator){ navigator.serviceWorker.register('/sw.js').catch(function(){}); addEventListener('load', function () { navigator.serviceWorker.ready.then(function (reg) { setTimeout(function () { try { var o = location.origin, L = [location.pathname + location.search].concat(performance.getEntriesByType('resource').map(function (x) { return x.name; }).filter(function (x) { return x.indexOf(o + '/') === 0 && !/\.(mp4|webm|mp3)(\?|$)/.test(x); }).map(function (x) { return x.slice(o.length); })); if (reg.active) reg.active.postMessage({ warm: L }); } catch (e) {} }, 20000); }); }); }
 });
 document.addEventListener('keydown', function(e){ if(e.key === 'Escape') closePanel(); });
 
@@ -7807,7 +7872,7 @@ function srAllLangs(text){
     const ch = +p.change || 0, up = ch >= 0; chg.className = up ? 'up' : 'down'; chg.textContent = (up ? '▲ ' : '▼ ') + Math.abs(ch).toFixed(2) + '% · 24h';
     const sv = p.sar || p.usd * 3.75;
     sar.textContent = '≈ ' + fmt(sv, 4) + ' SAR';
-    src.textContent = t('Updated') + ' ' + fmtTime(p.upd || p.t) + ' ' + t('Saudi time');
+    src.textContent = t('Updated') + ' ' + fmtTime(p.upd || p.t);
     const a = (p.spark || []).map(Number).filter(isFinite);
     if(a.length > 2){
       const mn = Math.min.apply(null, a), mx = Math.max.apply(null, a), r = (mx - mn) || 1;
@@ -7857,7 +7922,7 @@ function srAllLangs(text){
   window.ovEnd = function(){
     if(!open && !el.classList.contains('open')) return;
     open = false; cancelAnimationFrame(raf); clearTimeout(watchdog); clearTimeout(endT);
-    try{ v.pause(); }catch(e){}
+    try{ v.pause(); v.removeAttribute('src'); v.load(); }catch(e){}
     try{ if(window.dsAmb) dsAmb.stop(); }catch(e){}
     const sb = $('ovSound'); if(sb){ sb.classList.remove('on'); sb.setAttribute('aria-pressed', 'false'); }
     document.removeEventListener('keydown', keys);
@@ -9930,7 +9995,7 @@ PANELS.streakInfo = function(){
     <h4>${esc(t('Milestones'))}</h4>
     <div class="dd-ms">${DS_MILESTONES.map(function(m){ const b = BADGES.find(function(x){ return x.id === 'streak' + m; }); const got = n >= m || (store.get(badgeKey(), []).indexOf('streak' + m) >= 0); return `<div class="${got ? 'on' : ''}"><span>${b ? b.ic : '🔥'}</span><b class="notr">${m}</b><small>${esc(t(got ? 'Done' : 'days'))}</small></div>`; }).join('')}</div>
     <h4>${esc(t('How it works'))}</h4>
-    <ul><li>${esc(t('Open DigitalSaudi once a day to keep your streak.'))}</li><li>${esc(t('Miss a day and it starts again from 1.'))}</li><li>${esc(t('Each milestone unlocks a badge in your profile.'))}</li><li>${esc(t('Days follow Saudi time (midnight in Makkah).'))}</li></ul>
+    <ul><li>${esc(t('Open DigitalSaudi once a day to keep your streak.'))}</li><li>${esc(t('Miss a day and it starts again from 1.'))}</li><li>${esc(t('Each milestone unlocks a badge in your profile.'))}</li></ul>
     <button class="btn btn-primary" style="width:100%;margin-top:8px" onclick="openItem('invite')">🤝 ${esc(t('Invite friends to join you'))}</button>`, { id:'streakInfo', share:false });
 };
 
