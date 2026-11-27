@@ -4086,7 +4086,7 @@ document.addEventListener('DOMContentLoaded', function(){
   setupInfinite();
   const off = function(){ $('offline').classList.toggle('on', !navigator.onLine); };
   window.addEventListener('online', function(){ off(); toast('Back online'); }); window.addEventListener('offline', off); off();
-  if('serviceWorker' in navigator){ navigator.serviceWorker.register('/sw.js').catch(function(){}); }
+  if('serviceWorker' in navigator){ navigator.serviceWorker.register('/sw.js').catch(function(){}); addEventListener('load', function () { navigator.serviceWorker.ready.then(function (reg) { setTimeout(function () { try { var o = location.origin, L = [location.pathname + location.search].concat(performance.getEntriesByType('resource').map(function (x) { return x.name; }).filter(function (x) { return x.indexOf(o + '/') === 0 && !/\.(mp4|webm|mp3)(\?|$)/.test(x); }).map(function (x) { return x.slice(o.length); })); if (reg.active) reg.active.postMessage({ warm: L }); } catch (e) {} }, 3000); }); }); }
 });
 document.addEventListener('keydown', function(e){ if(e.key === 'Escape') closePanel(); });
 

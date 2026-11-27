@@ -365,7 +365,7 @@
         if (v.notes || b.terms) { T(x, 'NOTES', X, ny, '700 20px ' + FONT, '#64748B'); x.font = '500 23px ' + FONT; wrap(x, [v.notes, b.terms].filter(Boolean).join(' · '), W - 2 * X).slice(0, 3).forEach(function (s, j) { T(x, s, X, ny + 38 + j * 32, '500 23px ' + FONT, '#2F4B3E'); }); }
         // footer
         x.fillStyle = '#E3EFE9'; x.fillRect(X, H - 120, W - 2 * X, 2);
-        T(x, 'Payments in Pi are recorded on the Pi blockchain. Include ' + v.no + ' in the narration.', X, H - 76, '500 20px ' + FONT, '#64748B');
+        T(x, 'Include ' + v.no + ' in the narration.', X, H - 76, '500 20px ' + FONT, '#64748B');
         T(x, 'Created with DigitalSaudi · digitalsaudi.pi', X, H - 44, '500 20px ' + FONT, '#94A3B8'); T(x, K.NETN, W - X, H - 44, '600 20px ' + FONT, '#94A3B8', 'right');
         return cv;
       });
@@ -848,7 +848,7 @@
         y = 1020; x.fillStyle = '#F5FBF8'; rr(x, X, y, W - 2 * X, 120, 20); x.fill();
         [['Invoices paid', D.paid.length], ['Invoices issued', D.issued.length], ['Items sold', fpi(r7(D.n))]].forEach(function (k, i) { var cx = X + 30 + i * ((W - 2 * X - 60) / 3); T(x, k[0], cx, y + 46, '600 19px ' + FONT, '#64748B'); T(x, String(k[1]), cx, y + 92, '800 32px ' + MONO, '#0B2C1C'); });
         x.fillStyle = '#E3EFE9'; x.fillRect(X, H - 130, W - 2 * X, 2);
-        T(x, 'Values in Pi. Local values are at today’s rate.', X, H - 92, '500 19px ' + FONT, '#64748B');
+        
         T(x, 'Created with DigitalSaudi · ' + K.NETN, X, H - 58, '500 19px ' + FONT, '#94A3B8');
         if (FR.microline) FR.microline(x, 'DIGITALSAUDI•END-OF-DAY SUMMARY•' + bizName().toUpperCase() + '•' + iso(D.a) + '•', X, H - 26, W - 2 * X);
         return cv;
@@ -1441,7 +1441,7 @@
         iv.forEach(function (k, i) { var cx = X + i * (cw + 20); x.fillStyle = '#F5FBF8'; rr(x, cx, y + 20, cw, 110, 18); x.fill(); T(x, k[0], cx + 20, y + 56, '600 18px ' + FONT, '#64748B'); T(x, String(k[1]), cx + 20, y + 104, '800 30px ' + MONO, i === 3 && k[1] ? '#B42318' : '#0B2C1C'); x.font = '600 19px ' + MONO; T(x, fit(x, fpi(k[2]) + ' π', cw - 90), cx + cw - 20, y + 104, '600 19px ' + MONO, '#2F4B3E', 'right'); });
         // footer
         x.fillStyle = '#E3EFE9'; x.fillRect(X, H - 150, W - 2 * X, 2);
-        T(x, 'Values in Pi. Local values are at today’s rate. Each payment can be checked on the Pi blockchain with its transaction ID.', X, H - 112, '500 17px ' + FONT, '#64748B');
+        
         T(x, 'Created with DigitalSaudi · digitalsaudi.pi', X, H - 80, '500 17px ' + FONT, '#94A3B8');
         if (DOC) T(x, 'Document ID ' + DOC, W - X, H - 80, '700 17px ' + MONO, '#0E6038', 'right');
         if (FR.watermark) { FR.watermark(x, 0, 300, W, H - 460, 'DIGITALSAUDI BUSINESS REPORT · ' + bizName() + ' · ' + perName(per) + (DOC ? ' · ' + DOC : ''), .035); FR.microline(x, 'DIGITALSAUDI•BUSINESS REPORT•' + bizName().toUpperCase() + '•' + perName(per).toUpperCase() + '•' + (DOC || '') + '•', X, H - 40, W - 2 * X); }

@@ -152,7 +152,7 @@
   function cname(c) { try { return DN ? DN.of(c) : c; } catch (e) { return c; } }
   function money(v, c, dp) {
     if (v == null || isNaN(v)) return '—';
-    var d = dp != null ? dp : (Math.abs(v) >= 1000 ? 0 : Math.abs(v) >= 1 ? 2 : 4);
+    var d = dp != null ? dp : (v === 0 || Math.abs(v) >= 1000 ? (v === 0 ? 2 : 0) : Math.abs(v) >= 1 ? 2 : 4);
     try { return new Intl.NumberFormat('en-US', { style: 'currency', currency: c, currencyDisplay: 'narrowSymbol', minimumFractionDigits: d, maximumFractionDigits: d }).format(v); }
     catch (e) { return c + ' ' + Number(v).toFixed(d); }
   }
@@ -386,12 +386,12 @@
       var wi = r.dir === 'in';
       return Object.assign(base, { title: wi ? 'Payment received' : 'Payment receipt',
         rows: [['From', wi ? short(r.from || r.addr) : mine], ['To', wi ? mine : short(r.addr)], ['Narration', r.narr || '—'], ['Category', wi ? '' : r.cat], ['Value', valTxt(r)], ['Pi rate', rate], ['Paid with', 'Pi Wallet'], ['Reference', r.pid]].concat(when, [['Network', r.net], ['Sender address', r.from, 1], ['Recipient address', wi ? r.to : r.addr, 1], ['Transaction ID', r.txid, 1]]),
-        thanks: wi ? 'Received · verified by DigitalSaudi' : 'Paid · verified by DigitalSaudi', note: 'Paid from Pi Wallet · verified on the Pi blockchain.' });
+        thanks: wi ? 'Received · verified by DigitalSaudi' : 'Paid · verified by DigitalSaudi', note: 'Paid from Pi Wallet' });
     }
     var inn = r.dir === 'in', fee = inn ? 0 : (r.fee || 0.01), A = r.tk === 'address';
     return Object.assign(base, { title: inn ? 'Transfer received' : 'Transfer receipt',
       rows: [['From', inn ? r.other : mine], ['To', inn ? mine : (A ? 'Pi wallet address' : r.other)], ['Narration', r.narr || '—'], ['Category', inn ? '' : r.cat], ['Value', valTxt(r)], ['Pi rate', rate]].concat(fee ? [['Blockchain fee', fpi(fee) + ' π'], ['Total paid', fpi(r7(Number(r.amount) + fee)) + ' π']] : [], [['Reference', r.pid]], when, [['Network', r.net], [inn ? 'Your address' : 'Recipient address', r.addr, 1], ['Transaction ID', r.txid, 1]]),
-      thanks: inn ? 'Received with DigitalSaudi' : 'Sent with DigitalSaudi', note: (A ? 'Paid in DigitalSaudi · delivered to the wallet address on the Pi blockchain.' : 'Paid in DigitalSaudi · delivered through Pi Network payments.') + ' Scan the code to check it on the Pi blockchain.' });
+      thanks: inn ? 'Received with DigitalSaudi' : 'Sent with DigitalSaudi', note: 'Paid in DigitalSaudi' });
   }
   function fontsReady() { try { return document.fonts && document.fonts.ready ? Promise.race([document.fonts.ready, new Promise(function (r) { setTimeout(r, 1500); })]) : Promise.resolve(); } catch (e) { return Promise.resolve(); } }
   function rcName(r) { var d = new Date(r.ts); return 'DigitalSaudi-receipt-' + d.getFullYear() + String(d.getMonth() + 1).padStart(2, '0') + String(d.getDate()).padStart(2, '0') + '-' + String(r.txid || r.pid || Date.now()).slice(0, 8) + '.jpg'; }
@@ -605,7 +605,7 @@
       loadCfg();
       sheet('Sending is not available yet', '<div class="note warn">' + ic('info') + '<span>DigitalSaudi is finishing its secure payment setup. Sending will open here automatically as soon as it is ready. Nothing has been charged.</span></div>' +
         '<div class="card" style="margin-top:12px"><h3>Meanwhile you can</h3><p>• Receive Pi with your @username or wallet address<br>• Check the live Pi rate and convert<br>• See your wallet balance and receipts</p></div>' +
-        '<button type="button" class="btn" data-act="receive">' + ic('req') + 'Receive Pi</button><button type="button" class="btn ghost" data-act="status">' + ic('shield') + 'System status</button>');
+        '<button type="button" class="btn" data-act="receive">' + ic('req') + 'Receive Pi</button>');
       return false;
     }
     if (!window.Pi || !initPi()) { toast('Open DigitalSaudi in the Pi Browser to pay'); return false; }
@@ -629,7 +629,7 @@
       '<label class="l" for="s-x">Narration</label><input class="in" id="s-x" maxlength="80" placeholder="What is it for? e.g. Rent, groceries, gift">' +
       '<div class="sum" id="s-sum" hidden></div>' +
       '<button type="button" class="btn" id="s-go">Continue</button>' +
-      '<p class="small muted" style="margin-top:12px;text-align:center">' + ic('lock', 'width:14px;height:14px;vertical-align:-2px') + (S.cfg.enabled && S.cfg.max ? ' Up to ' + S.cfg.max + ' π per payment · recorded on the Pi blockchain' : ' Recorded on the Pi blockchain with a verified receipt') + '</p>');
+      '<p class="small muted" style="margin-top:12px;text-align:center">' + ic('lock', 'width:14px;height:14px;vertical-align:-2px') + (S.cfg.enabled && S.cfg.max ? ' Up to ' + S.cfg.max + ' π per payment' : '') + '</p>');
     var u = $('#s-u', w), g = $('#s-g', w), a = $('#s-a', w), h = $('#s-uh', w), ok = null, tm = null, cat = pre.cat || '';
     function setKind(k) {
       kind = k; ok = null; h.innerHTML = '';
@@ -745,7 +745,7 @@
   var RREASON = [['scam', 'Scam or fraud'], ['nodelivery', 'Paid, nothing delivered'], ['impersonation', 'Pretends to be someone else'], ['fake', 'Fake receipt or payment'], ['other', 'Other']];
   function reportSheet(pre) {
     var why = 'scam';
-    var w = sheet('Report a scam', '<p class="sh-sub">Reports help protect every Pioneer. A warning is shown once 50 different Pioneers report the same address or username.</p>' +
+    var w = sheet('Report a scam', '' +
       '<label class="l" for="rp-k">@username or Pi wallet address</label><textarea class="in num" id="rp-k" rows="2" maxlength="60" autocapitalize="none" spellcheck="false" style="font-size:14px;resize:none" placeholder="@username or G…">' + esc(pre ? (isG(pre) ? pre : '@' + pre) : '') + '</textarea>' +
       '<label class="l">What happened?</label><div class="chips" id="rp-r">' + RREASON.map(function (x) { return '<button type="button" class="chip' + (x[0] === why ? ' on' : '') + '" data-rw="' + x[0] + '">' + x[1] + '</button>'; }).join('') + '</div>' +
       '<div class="hint" id="rp-h"></div><button type="button" class="btn danger" id="rp-go">' + ic('warn') + 'Send report</button>', { stack: true });
@@ -764,7 +764,7 @@
   }
   function trustedSheet() {
     var L = contacts().filter(function (c) { return c.trusted; });
-    var w = sheet('Trusted recipients', '<p class="sh-sub">Payments to trusted recipients are marked safe in the risk check. Add only people and businesses you know.</p>' +
+    var w = sheet('Trusted recipients', ''+
       '<div class="list">' + (L.length ? L.map(function (c) { return '<button type="button" class="li" data-tp="' + esc(c.to) + '"><span class="ico in">' + ic('shield') + '</span><span class="grow"><b>' + esc(c.name) + '</b><small class="num">' + esc(toLabel(c.to)) + '</small></span><span class="go">' + ic('chev') + '</span></button>'; }).join('') : '<div class="empty">' + ic('shield') + '<div>No trusted recipients yet.</div></div>') + '</div>' +
       '<button type="button" class="btn" data-x="add">' + ic('plus') + 'Add trusted recipient</button>');
     $$('[data-tp]', w).forEach(function (b) { b.onclick = function () { var all = contacts(), i = -1; all.forEach(function (c, k) { if (c.to === b.dataset.tp) i = k; }); contactEdit(i); }; });
@@ -1024,8 +1024,8 @@
   /* ── receive: your @username and your wallet address ── */
   function receiveSheet() {
     var a = get('addr', ''), sug = get('addrSug', ''), un = S.cfg.enabled && S.cfg.usernames && signedIn();
-    var w = sheet('Receive Pi', '<p class="sh-sub">Share your ' + (un ? '@username or ' : '') + 'wallet address. People pay you from Pi Wallet' + (un ? ' or DigitalSaudi' : '') + '.</p>' +
-      (!un ? '' : '<div class="card" style="margin-top:8px"><p class="small">Your DigitalSaudi username</p><div class="row"><div class="grow" style="font-size:24px;font-weight:700;overflow-wrap:anywhere">@' + esc(me()) + '</div><button type="button" class="tbtn" data-x="cu" aria-label="Copy username">' + ic('copy') + '</button></div><p class="small muted" style="margin-top:4px">DigitalSaudi users send to this in seconds.</p></div>') +
+    var w = sheet('Receive Pi', ''+
+      (!un ? '' : '<div class="card" style="margin-top:8px"><p class="small">Your DigitalSaudi username</p><div class="row"><div class="grow" style="font-size:24px;font-weight:700;overflow-wrap:anywhere">@' + esc(me()) + '</div><button type="button" class="tbtn" data-x="cu" aria-label="Copy username">' + ic('copy') + '</button></div></div>') +
       '<div class="card"><p class="small">Your Pi wallet address</p>' + (a ? (window.FPQR ? '<div class="qr" style="border:0;padding:6px 0 10px">' + FPQR.svg(a, 200, '#0C4A2C') + '</div>' : '') + '<div class="row"><div class="grow num" style="font-size:13.5px;overflow-wrap:anywhere">' + esc(a) + '</div><button type="button" class="tbtn" data-x="ca" aria-label="Copy address">' + ic('copy') + '</button></div><p class="small muted" style="margin-top:4px">Anyone can scan this code or send to the address from Pi Wallet or DigitalSaudi.</p>'
         : (sug ? '<button type="button" class="btn soft" data-x="ua">' + ic('check') + 'Use my address ' + esc(short(sug)) + '</button>' : '') + '<button type="button" class="btn ghost" data-x="aa">' + ic('card') + 'Add my wallet address</button>') + '</div>' +
       (a ? '<button type="button" class="btn" data-x="sh">' + ic('share') + 'Share my wallet address</button>' : ''));
@@ -1245,7 +1245,7 @@
     if (codes.indexOf('USD') < 0) codes.push('USD');
     var list = codes.map(function (c) { return { c: c, n: cname(c) }; }).sort(function (a, b) { return a.n.localeCompare(b.n); });
     var cur = travel ? get('cur2', '') : curr();
-    var w = sheet(travel ? 'Travel currency' : 'Your currency', '<p class="sh-sub">' + (travel ? 'Pi values in the currency of the country you visit.' : 'Payments are always in Pi.') + '</p>' + (travel && cur ? '<button type="button" class="btn ghost" id="cu-off">' + ic('x') + 'Turn off travel currency</button>' : '') + '<div class="to" style="margin-top:6px">' + ic('search', 'color:var(--mute)') + '<input id="cu-q" placeholder="Search currency" autocomplete="off"></div><div class="list cur-list" id="cu-l"></div>');
+    var w = sheet(travel ? 'Travel currency' : 'Your currency', '<p class="sh-sub">' + (travel ? 'Pi values in the currency of the country you visit.' : '') + '</p>' + (travel && cur ? '<button type="button" class="btn ghost" id="cu-off">' + ic('x') + 'Turn off travel currency</button>' : '') + '<div class="to" style="margin-top:6px">' + ic('search', 'color:var(--mute)') + '<input id="cu-q" placeholder="Search currency" autocomplete="off"></div><div class="list cur-list" id="cu-l"></div>');
     function draw() {
       var q = $('#cu-q', w).value.trim().toLowerCase();
       $('#cu-l', w).innerHTML = list.filter(function (x) { return !q || x.c.toLowerCase().indexOf(q) >= 0 || x.n.toLowerCase().indexOf(q) >= 0; }).slice(0, 80).map(function (x) {
@@ -1343,7 +1343,7 @@
       '<button type="button" class="btn" data-x="chk">' + ic('refresh') + 'Check now</button>');
     $('[data-x="chk"]', w).onclick = function () { closeSheets(); toast('Checking…'); checkPendingInApp(); };
   }
-  var TIPS = ['DigitalSaudi staff will never ask you to send Pi or share your passphrase.', 'Check the @username and amount before you confirm.', 'A receipt is genuine only when its QR code is verified on the Pi blockchain.', 'Never share your passphrase or secret key.'];
+  var TIPS = ['DigitalSaudi staff will never ask you to send Pi or share your passphrase.', 'Check the @username and amount before you confirm.', 'Never share your passphrase or secret key.'];
   var T = {
     home: function () {
       var R = rcpts();
@@ -1389,12 +1389,12 @@
         '<div class="sec"><h2>Settings</h2></div><div class="list">' +
         row('edit', 'Name on receipts', get('name', '') ? NTYPE[nType()].l + ' · ' + get('name', '') : 'Your name, business, store or shop', 'name') + row('globe', 'Currency', cname(curr()) + ' (' + curr() + ')', 'currency') + (window.FPL && Object.keys(FPL.LANGS).length > 1 ? row('globe', 'Language', FPL.LANGS[FPL.lang()], 'lang') : '') + (canInstall() ? row('down', 'Install DigitalSaudi', 'Add to home screen', 'install') : '') +
         row('bell', 'Notifications', !('Notification' in window) ? 'In-app alerts on' : get('push', false) ? 'Phone and in-app alerts' : 'In-app alerts on', 'push') + row('pie', 'Monthly budget', get('budget', 0) ? fpi(get('budget', 0)) + ' π' : 'Not set', 'budget') + row('card', 'Wallet address', get('addr', '') ? short(get('addr', '')) : 'Not added', 'addr-set') + hook('settings') + '</div>' +
-        '<div class="sec"><h2>Support</h2></div><div class="list">' + row('info', 'Welcome tour', 'A quick look at DigitalSaudi', 'tour') +
+        '<div class="sec"><h2>Support</h2></div><div class="list">' +
         row('shield', 'Trust center', 'Payments, limits and records', 'security') + row('refresh', 'Reset', 'Pending payment or a problem? Reset fixes it', 'repair') + row('heart', sup ? 'You are a Supporter' : 'Become a Supporter', sup ? 'Thank you!' : '1 π · Supporter badge', 'supporter') +
         row('mail', 'Help & contact', 'Contact the DigitalSaudi team', 'help') + '</div>' +
         '<div class="sec"><h2>Legal</h2></div><div class="list">' + lrow('Terms of Service', 'terms.html') + lrow('Privacy Policy', 'privacy.html') + '</div>' +
         (signedIn() ? '<button type="button" class="btn danger" data-act="signout" style="margin-top:18px">' + ic('out') + 'Sign out</button>' : '') +
-        '<p class="small muted" style="text-align:center;margin-top:16px">DigitalSaudi 1.1.0 · ' + NETN + ' · digitalsaudi.pi</p>';
+        '<p class="small muted" style="text-align:center;margin-top:16px">DigitalSaudi Wallet 1.2.0 · ' + NETN + ' · digitalsaudi.pi</p>';
       function row(i, t, s, a) { return '<button type="button" class="li" data-act="' + a + '"><span class="ico">' + ic(i) + '</span><span class="grow"><b>' + esc(t) + '</b><small>' + esc(s) + '</small></span><span class="go">' + ic('chev') + '</span></button>'; }
       function lrow(t, h) { return '<a class="li" href="' + h + '"><span class="ico">' + ic('rcpt') + '</span><span class="grow"><b>' + t + '</b></span><span class="go">' + ic('chev') + '</span></a>'; }
     }
@@ -1529,7 +1529,7 @@
       '<div class="li"><span class="ico">1</span><span class="grow"><b>Tap the Share button</b><small>At the bottom of Safari</small></span></div><div class="li"><span class="ico">2</span><span class="grow"><b>Choose Add to Home Screen</b><small>Then tap Add</small></span></div></div>');
   }
   function piDomainSheet() {
-    var w = sheet('Pay a .pi name', '<div class="pd-hero">' + ic('globe') + '<b>Pay anyone by their .pi name</b><span>Send Pi to names such as shop.pi, with the same verified receipt.</span><em class="sv-soon">Coming soon</em></div>' +
+    var w = sheet('Pay a .pi name', '<div class="pd-hero">' + ic('globe') + '<b>Pay anyone by their .pi name</b><span>Send Pi to names such as shop.pi.</span><em class="sv-soon">Coming soon</em></div>' +
       '<label class="l" for="pd-i">.pi name</label><div class="pd-in"><input class="in" id="pd-i" placeholder="name" disabled><span>.pi</span></div>' +
       '<button type="button" class="btn" disabled>' + ic('send') + 'Coming soon</button><button type="button" class="btn ghost" data-pd="send">' + ic('send') + 'Send by @username or address</button>');
     $('[data-pd="send"]', w).onclick = function () { A.send(); };
@@ -1564,7 +1564,7 @@
     var R = rcpts(), done = R.filter(function (r) { return r.hs; }).length, bi = HK.bizInfo ? HK.bizInfo() : null;
     var w = sheet('Backup', '<div class="bk-hero"><div class="bk-i">' + ic('cloud') + '</div><b>Backed up to your Pi account</b><small>@' + esc(me()) + ' · ' + NETN + '</small></div>' +
       '<div class="list" style="margin-top:12px"><div class="txr"><span>Payments and receipts</span><b>' + done + ' of ' + R.length + ' saved</b></div>' + (bi ? '<div class="txr"><span>Business records</span><b>' + (bi.items ? bi.items + ' items · ' : '') + (bi.up ? 'saved ' + ago(bi.up) : 'nothing to save yet') + '</b></div>' : '') +
-      '<div class="txr"><span>Restore</span><b>Automatic on any phone after sign-in</b></div></div>' +
+      '</div>' +
       '<button type="button" class="btn" id="bk-go">' + ic('refresh') + 'Back up now</button><button type="button" class="btn ghost" data-act="repair">' + ic('cloud') + 'Restore from backup</button>');
     $('#bk-go', w).onclick = function () {
       var b = this; b.disabled = true; b.textContent = 'Backing up…';
@@ -1575,7 +1575,7 @@
   /* Repair app: clears temporary files and cached screens, checks saved data and restores history and business
      records from the backup. Payments, receipts and business records are kept. */
   function repairSheet() {
-    var w = sheet('Reset', '<p class="sh-sub">Finishes any pending payment and fixes technical problems. Your payments, receipts and business records are kept.</p>' +
+    var w = sheet('Reset', ''+
       '<div class="list rp-l">' + ['Finish pending payments', 'Clear temporary files', 'Check saved data', 'Restore from backup', 'Restart DigitalSaudi'].map(function (t, i) { return '<div class="li" data-rs="' + i + '"><span class="ico">' + ic('refresh') + '</span><span class="grow"><b>' + t + '</b></span><span class="rp-s"></span></div>'; }).join('') + '</div>' +
       '<button type="button" class="btn" id="rp-go">' + ic('refresh') + 'Reset now</button>');
     function step(i, st) { var r = $('[data-rs="' + i + '"]', w); if (!r) return; r.classList.toggle('busy', st === 'busy'); r.classList.toggle('done', st === 'done'); $('.ico', r).innerHTML = ic(st === 'done' ? 'check' : 'refresh'); }
@@ -1642,7 +1642,7 @@
   }
   function contactsSheet() {
     var L = contacts();
-    var w = sheet('Contacts', '<p class="sh-sub">People and businesses you pay often. Saved on this phone only.</p>' +
+    var w = sheet('Contacts', ''+
       (L.length ? '<div class="list">' + L.map(function (c, i) { return '<div class="li"><span class="ico">' + ic(isG(c.to) ? 'card' : 'user') + '</span><button type="button" class="grow lb" data-cs="' + i + '"><b>' + esc(c.name) + (c.trusted ? ' <span class="tr-b">' + ic('shield') + 'Trusted</span>' : '') + '</b><small class="num">' + esc(toLabel(c.to)) + '</small></button><button type="button" class="tbtn" data-ce="' + i + '" aria-label="Edit ' + esc(c.name) + '">' + ic('edit') + '</button></div>'; }).join('') + '</div>'
         : '<div class="list"><div class="empty">' + ic('users') + '<div>No contacts yet. Add the people you pay often.</div></div></div>') +
       '<button type="button" class="btn" data-x="add">' + ic('users') + 'Add contact</button>');
@@ -1694,7 +1694,7 @@
   }
   function needTarget(what) {
     if (myTarget()) return false;
-    var w0 = sheet(what, '<p class="sh-sub">Add your Pi wallet address once. People will pay to it from DigitalSaudi or Pi Wallet.</p><button type="button" class="btn" data-x="aa">' + ic('card') + 'Add my wallet address</button>');
+    var w0 = sheet(what, '<button type="button" class="btn" data-x="aa">' + ic('card') + 'Add my wallet address</button>');
     $('[data-x="aa"]', w0).onclick = function () { addrSheet(true); }; return true;
   }
   function linksSheet() {
@@ -1948,7 +1948,7 @@
         });
         /* footer */
         x.fillStyle = '#E3EFE9'; x.fillRect(X, H - 120, W - 2 * X, 1);
-        txt(x, 'Generated by DigitalSaudi on ' + new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) + '. Check any payment on the Pi blockchain with its transaction ID.', X, H - 80, '400 17px ' + F, '#64748B');
+        txt(x, 'Generated by DigitalSaudi on ' + new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) + '.', X, H - 80, '400 17px ' + F, '#64748B');
         txt(x, '© DigitalSaudi ' + new Date().getFullYear() + ' · digitalsaudi.pi', X, H - 52, '400 17px ' + F, '#94A3B8');
         txt(x, 'Page ' + (pi + 1) + ' of ' + pages.length, W - X, H - 80, '600 17px ' + F, '#64748B', 'right');
         if (DOC) txt(x, 'Document ID ' + DOC, W - X, H - 52, '600 17px ' + MF, '#0E6038', 'right');
@@ -2076,20 +2076,20 @@
     resolvepend: function () { repairSheet(); }, backup: function () { backupSheet(); }, travel: function () { curSheet(true); }, insights: function () { S.seg = 'ins'; go('activity'); }, catsort: function () { catSort(S.month); }, repair: function () { repairSheet(); },
     security: function () {
       sheet('Trust center', '<div class="trust big-t">' + trustChips() + '</div>' +
-        '<div class="card" style="margin-top:12px"><h3>Payments</h3><p>Every transfer is processed through Pi Network’s official payments and delivered within seconds. If delivery is not possible, the Pi is refunded automatically. Each payment is checked on the Pi blockchain, so nothing is paid twice.</p></div>' +
+        
         '<div class="card"><h3>Limits and fees</h3><p>' + (S.cfg.max || S.cfg.daily ? (S.cfg.max ? 'Up to ' + S.cfg.max + ' π per transfer. ' : '') + (S.cfg.daily ? 'Up to ' + S.cfg.daily + ' π per Pioneer per day. ' : '') : 'No transfer limits. ') + 'Blockchain fee: ' + S.cfg.fee + ' π per transfer.</p></div>' +
-        '<div class="card"><h3>Your records</h3><p>Receipts verified on the Pi blockchain. History and business records backed up to your Pi account. Statements and reports for any period.</p></div>' +
+        '' +
         '<div class="card"><h3>Good practice</h3><p>• Pay Pioneers and businesses you know.<br>• Check the @username and amount before you confirm.<br>• DigitalSaudi staff never ask you to send Pi.<br>• Keep your passphrase private.</p></div>' +
         '');
     },
     supporter: function () {
       if (get('supporter', false)) return toast('You are already a Supporter. Thank you!');
       if (needSignIn('Sign in with Pi to become a Supporter.')) return;
-      var w = sheet('Become a Supporter', '<div class="big"><div class="v">1 π</div><div class="c">' + esc(conv(1)) + '</div><div class="w">DigitalSaudi Supporter badge</div></div><p class="sh-sub" style="margin-top:12px">Support DigitalSaudi’s development and get a Supporter badge on your profile. Every feature stays free. The badge gives no reward or financial return.</p><button type="button" class="btn" id="sp-go">' + ic('heart') + 'Support with 1 π</button>');
+      var w = sheet('Become a Supporter', '<div class="big"><div class="v">1 π</div><div class="c">' + esc(conv(1)) + '</div><div class="w">DigitalSaudi Supporter badge</div></div><p class="sh-sub" style="margin-top:12px">The badge gives no reward or financial return.</p><button type="button" class="btn" id="sp-go">' + ic('heart') + 'Support with 1 π</button>');
       $('#sp-go', w).onclick = supporterPay;
     },
     status: function () { location.href = 'setup.html'; },
-    help: function () { sheet('Help & contact', '<p class="sh-sub">DigitalSaudi support will reply as soon as possible.</p><a class="btn" href="mailto:' + SUPPORT + '?subject=DigitalSaudi%20help">' + ic('mail') + 'Email DigitalSaudi support</a><div class="card" style="margin-top:14px"><h3>Common questions</h3><p><b>Where is my Pi?</b> In your own Pi Wallet. DigitalSaudi never holds balances.<br><br><b>A transfer did not arrive.</b> DigitalSaudi keeps delivering automatically, or refunds you. You will be notified either way.<br><br><b>Can a transfer be reversed?</b> No. Delivered blockchain payments are final.</p></div>'); },
+    help: function () { sheet('Help & contact', '<p class="sh-sub">DigitalSaudi support will reply as soon as possible.</p><a class="btn" href="mailto:' + SUPPORT + '?subject=DigitalSaudi%20help">' + ic('mail') + 'Email DigitalSaudi support</a>'); },
     signout: function () { S.user = null; S.token = null; registered = false; put('user', null); closeSheets(); $('#app').hidden = true; $('#landing').hidden = false; toast('Signed out'); }
   };
   function supporterPay() {
@@ -2149,7 +2149,7 @@
     addEventListener('hashchange', function () { var c = readHash(); if (c) { if ($('#app').hidden) { pendingCode = c; } else openCode(c); } });
     var bgN = 0; setInterval(function () { if (!document.hidden) { loadPrice(); sync(); checkPendingWallet(); checkPendingInApp(); checkRems(); } else if (++bgN % 2 === 0) { sync(); checkRems(); } }, 60000);
     document.addEventListener('visibilitychange', function () { if (!document.hidden) { loadPrice(); sync(); checkPendingWallet(); checkPendingInApp(); checkRems(); } });
-    if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(function () {});
+    if ('serviceWorker' in navigator) { navigator.serviceWorker.register('sw.js').catch(function () {}); navigator.serviceWorker.ready.then(function (reg) { setTimeout(function () { try { var o = location.origin, L = [location.pathname + location.search].concat(performance.getEntriesByType('resource').map(function (x) { return x.name; }).filter(function (x) { return x.indexOf(o + '/') === 0 && !/\.(mp4|webm|mp3)(\?|$)/.test(x); }).map(function (x) { return x.slice(o.length); })); if (reg.active) reg.active.postMessage({ warm: L }); } catch (e) {} }, 3000); }); }
   }
   window.DigitalSaudi = { S: S, render: render, sync: sync, showRcpt: showRcpt, sendSheet: sendSheet,
     kit: { HK: HK, P: P, A: A, T: T, get: get, put: put, esc: esc, ic: ic, toast: toast, sheet: sheet, closeSheets: closeSheets, copy: copy, fpi: fpi, conv: conv, money: money, rateIn: rateIn, curr: curr, short: short, r7: r7,
