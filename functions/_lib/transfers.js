@@ -126,13 +126,32 @@ export async function walletReady(env, request) {
   let ok = false; try { ok = (await fetch(net.horizon + '/accounts/' + kp.address)).ok; } catch (e) { ok = c ? c.ok : false; }
   return (WCACHE[k] = { ok, address: kp.address, t: Date.now() });
 }
+const BCACHE = globalThis.__fpBal || (globalThis.__fpBal = {});
+async function freeBalance(env, request, address) {
+  const net = NET(isTest(request)), k = net.name + '|' + address, c = BCACHE[k];
+  if (c && Date.now() - c.t < 30000) return c.v;
+  let v = null;
+  try {
+    const r = await fetch(net.horizon + '/accounts/' + address);
+    if (r.ok) { const a = await r.json(), n = (a.balances || []).find((x) => x.asset_type === 'native'); if (n) v = Number(n.balance) - 1 - 0.5 * Number(a.subentry_count || 0); }
+  } catch (e) {}
+  if (v == null && c) v = c.v;
+  BCACHE[k] = { v, t: Date.now() };
+  return v;
+}
+// Pi held for transfers that are paid but not yet delivered
+async function inFlight(env) {
+  if (!DBB(env)) return 0;
+  try { const r = await (await db(env)).prepare("SELECT COALESCE(SUM(amount), 0) AS s FROM transfers WHERE status IN ('received', 'paying', 'failed', 'refund_needed', 'refunding', 'refund_failed')").first(); return Number(r && r.s) || 0; } catch (e) { return 0; }
+}
 const UNAVAILABLE = 'Sending is temporarily unavailable. Nothing was charged.';
 export async function checkTransferPayment(env, pay, request) {
   if (!enabled(env)) return 'Transfers are not switched on';
   if (request) {
     const w = await walletReady(env, request);
     if (!w.ok) return UNAVAILABLE;
-    if (pay && pay.to_address && pay.to_address !== w.address) return UNAVAILABLE;   // the payment would go to a wallet DigitalSaudi cannot pay from
+    const md0 = (pay && pay.metadata) || {}, need = round7(Number(md0.amt) || 0) + FEE, free = await freeBalance(env, request, w.address);
+    if (free != null && free - (await inFlight(env)) < need) return UNAVAILABLE;   // the outgoing wallet cannot pay this transfer right now
   }
   const md = (pay && pay.metadata) || {}, amt = round7(md.amt), paid = Number(pay && pay.amount);
   if (!(amt >= 0.01)) return 'The smallest transfer is 0.01 π';
