@@ -291,7 +291,7 @@
   }
   function netBar() {
     var b = $('#netbar'); if (navigator.onLine) { if (b) b.remove(); return; }
-    if (!b) { b = document.createElement('div'); b.id = 'netbar'; b.setAttribute('role', 'status'); b.textContent = 'Offline · DigitalSaudi updates when you reconnect'; document.body.insertBefore(b, document.body.firstChild); }
+    if (!b) { b = document.createElement('div'); b.id = 'netbar'; b.setAttribute('role', 'status'); b.textContent = 'Offline'; document.body.insertBefore(b, document.body.firstChild); }
   }
   addEventListener('offline', netBar); addEventListener('online', function () { netBar(); try { loadPrice(true); sync(); } catch (e) {} });
   function bellDot() { var d = $('#bell-dot'); if (d) d.hidden = !notes().some(function (x) { return !x.read; }); }
@@ -1349,14 +1349,14 @@
   var T = {
     home: function () {
       var R = rcpts();
-      return '<div class="band"><div class="hello"><h1>' + hour() + (signedIn() ? ', @' + esc(me()) : '') + '</h1><p>' + (signedIn() ? 'Your Pi at a glance.' : 'Sign in with Pi to send and receive.') + '</p></div>' +
+      return '<div class="band"><div class="hello"><h1>' + hour() + (signedIn() ? ', @' + esc(me()) : '') + '</h1><p>' + (signedIn() ? 'Your Pi at a glance.' : '') + '</p>' + (signedIn() ? '' : '<button type="button" class="hello-si" data-act="signin"><span class="pi-dot">π</span>Sign in with Pi</button>') + '</div>' +
         '<div class="hero" data-act="price" data-p="hero" role="button" tabindex="0" aria-label="Pi price details">' + heroHTML() + '</div></div>' +
         '<div class="qa"><button type="button" data-act="send"><i>' + ic('send') + '</i>Send</button><button type="button" data-act="request"><i class="t">' + ic('req') + '</i>Request</button><button type="button" data-act="scan"><i class="n">' + ic('qr') + '</i>Scan</button><button type="button" data-act="receive"><i class="a">' + ic('card') + '</i>Receive</button></div>' +
         dueHTML() + '<div class="sec"><h2>Services</h2><button type="button" data-tab="pay">All services</button></div>' + svcGrid(HOME_SVC.map(svcById), 'home') + hook('home') + '<div class="sec"><h2>Overview</h2></div><div class="card" data-p="month">' + monthHTML() + '</div>' +
         '<div class="sec"><h2>Recent activity</h2>' + (R.length ? '<button type="button" data-tab="activity">See all</button>' : '') + '</div>' +
         (pendingList().length ? '<div class="list" style="margin-bottom:10px">' + pendingList().slice(0, 3).map(pendRow).join('') + '</div>' : '') +
-        (R.length ? '<div class="list">' + R.slice(0, 4).map(txRow).join('') + '</div>' : pendingList().length ? '' : '<div class="list"><div class="empty">' + ic('act') + '<div>No payments yet. Your receipts appear here.</div></div></div>') +
-        trustHTML();
+        (R.length ? '<div class="list">' + R.slice(0, 4).map(txRow).join('') + '</div>' : pendingList().length ? '' : '<div class="list"><div class="empty">' + ic('act') + '<div>No payments yet.</div></div></div>') +
+        '';
     },
     pay: function () {
       var pl = contacts().map(function (c) { return c.to; }).concat(get('payees', [])).filter(function (p, i, L) { return (isG(p) || userSends()) && L.map(function (q) { return q.toLowerCase(); }).indexOf(p.toLowerCase()) === i; });
@@ -1373,7 +1373,7 @@
         '<div class="sec"><h2>Converter</h2><button type="button" data-act="currency">' + esc(c) + ' ▾</button></div>' +
         '<div class="card conv"><label><span>π</span><input id="cv-pi" type="number" inputmode="decimal" value="1" aria-label="Pi"></label><label><span>USD</span><input id="cv-usd" type="number" inputmode="decimal" aria-label="US dollars"></label>' + (c !== 'USD' ? '<label><span>' + esc(c) + '</span><input id="cv-loc" type="number" inputmode="decimal" aria-label="' + esc(cname(c)) + '"></label>' : '') + (cur2() ? '<label class="cv-tr"><span>' + esc(cur2()) + '</span><input id="cv-tr" type="number" inputmode="decimal" aria-label="' + esc(cname(cur2())) + '"></label>' : '') + '</div>' + '<button type="button" class="lnk" data-act="travel" style="margin:8px 4px 0">' + ic('globe', 'width:15px;height:15px;vertical-align:-3px') + ' ' + (cur2() ? 'Travel currency: ' + esc(cname(cur2())) : 'Add a travel currency') + '</button>' +
         '<div class="sec"><h2>Tools</h2></div><div class="tiles"><button type="button" class="tile" data-act="get-rcpt"><i class="n">' + ic('rcpt') + '</i><b>Get a receipt</b><small>For any Pi payment, from its transaction ID</small></button><button type="button" class="tile" data-act="verify"><i>' + ic('check') + '</i><b>Verify receipt</b><small>Scan, upload or enter any receipt</small></button><button type="button" class="tile" data-act="check-addr"><i class="t">' + ic('search') + '</i><b>Check an address</b><small>Balance and payments of any Pi address</small></button><button type="button" class="tile" data-act="receive"><i class="a">' + ic('qr') + '</i><b>My QR code</b><small>Your wallet address to get paid</small></button><button type="button" class="tile" data-act="alerts"><i class="t">' + ic('bell') + '</i><b>Price alerts</b><small>Know when Pi reaches your price</small></button><button type="button" class="tile" data-act="statement"><i>' + ic('rcpt') + '</i><b>Statement</b><small>Monthly PDF of your payments</small></button></div>' +
-        trustHTML();
+        '';
     },
     activity: function () {
       var R = rcpts();
