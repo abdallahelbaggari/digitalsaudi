@@ -503,13 +503,24 @@
   // One sign-in at a time: a second tap (or the automatic sign-in on opening) reuses the request already
   // waiting for Pi. A slow answer is not treated as a failure: DigitalSaudi signs in as soon as Pi replies.
   var authP = null, authAt = 0;
+  var NET_ERR = /network|timeout|timed out|failed to fetch|consent|connection|offline/i;
+  function authTry(n) {
+    return Pi.authenticate(['username', 'payments', 'wallet_address'], onIncomplete).catch(function (e) {
+      var why = String((e && (e.message || e.error || e)) || '');
+      if (!NET_ERR.test(why) || n >= 4) throw e;
+      if (n === 1) toast('Weak connection. Trying again…');
+      return new Promise(function (ok) { setTimeout(ok, 2500 * n); }).then(function () {
+        if (navigator.onLine === false) return new Promise(function (ok) { addEventListener('online', ok, { once: true }); setTimeout(ok, 15000); });
+      }).then(function () { return authTry(n + 1); });
+    });
+  }
   function signIn(silent) {
     var btn = $('#signin'), msg = $('#ld-msg');
     if (!window.Pi || !initPi()) { if (!silent) { msg.textContent = 'Open DigitalSaudi in the Pi Browser to sign in with Pi.'; toast('Open DigitalSaudi in the Pi Browser'); } return Promise.resolve(false); }
     if (btn && !silent) { btn.disabled = true; $('#signin-t').textContent = 'Signing in…'; }
     if (!authP || Date.now() - authAt >= 20000) {
       authAt = Date.now();
-      var attempt = Pi.authenticate(['username', 'payments', 'wallet_address'], onIncomplete).then(function (a) {
+      var attempt = authTry(1).then(function (a) {
         if (authP === attempt) authP = null;
         if (S.token && !S.guest) return true; // already signed in by an earlier attempt
         S.user = { username: a.user.username, uid: a.user.uid }; S.token = a.accessToken; S.guest = false; window.WALLET_TOKEN = a.accessToken;
