@@ -129,8 +129,8 @@
 
     /* ── DigitalSaudi voice: "DigitalSaudi! You have received 25 Pi." Spoken only after DigitalSaudi itself has checked the
        transaction on the Pi blockchain (never from a screenshot, a link or a message). ── */
-    var VTXT = { en: 'Digital Saudi! You have received {a} Pi.', fr: 'Digital Saudi ! Vous avez reçu {a} Pi.', es: '¡Digital Saudi! Has recibido {a} Pi.', pt: 'Digital Saudi! Você recebeu {a} Pi.', ar: 'ديجيتال سعودي! لقد استلمت {a} باي.', ha: 'Digital Saudi! Ka karɓi Pi {a}.' };
-    var VLOC = { en: 'en', fr: 'fr', es: 'es', pt: 'pt', ar: 'ar', ha: 'ha' };
+    var VTXT = { en: 'Digital Saudi! You have received {a} Pi.', fr: 'Digital Saudi ! Vous avez reçu {a} Pi.', es: '¡Digital Saudi! Has recibido {a} Pi.', pt: 'Digital Saudi! Você recebeu {a} Pi.', ar: 'ديجيتال سعودي! لقد استلمت {a} باي.', ur: 'ڈیجیٹل سعودی! آپ کو {a} Pi موصول ہوئے۔', id: 'Digital Saudi! Anda telah menerima {a} Pi.', ha: 'Digital Saudi! Ka karɓi Pi {a}.' };
+    var VLOC = { en: 'en', fr: 'fr', es: 'es', pt: 'pt', ar: 'ar', ur: 'ur', id: 'id', ha: 'ha' };
     function vLang() { var l = window.FPL ? FPL.lang() : 'en'; return VTXT[l] ? l : 'en'; }
     function voices() { try { return (window.speechSynthesis && speechSynthesis.getVoices()) || []; } catch (e) { return []; } }
     function pickVoice(l) {

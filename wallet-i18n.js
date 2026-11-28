@@ -2,10 +2,10 @@
    Receipts, invoices, statements and reports stay in English so every document reads the same everywhere. */
 (function () {
   'use strict';
-  var LANGS = { en: 'English', fr: 'Français', es: 'Español', pt: 'Português', ar: 'العربية', ha: 'Hausa' };
+  var LANGS = { en: 'English', fr: 'Français', es: 'Español', pt: 'Português', ar: 'العربية', ur: 'اردو', id: 'Bahasa Indonesia', ha: 'Hausa' };
   var D = {}, lang = 'en';
   function saved() { try { var v = JSON.parse(localStorage.getItem('dsw_v1_lang') || 'null'); return LANGS[v] ? v : ''; } catch (e) { return ''; } }
-  function auto() { var l = String((navigator.languages && navigator.languages[0]) || navigator.language || '').slice(0, 2).toLowerCase(); return { fr: 1, es: 1, pt: 1, ar: 1 }[l] ? l : 'en'; }
+  function auto() { var l = String((navigator.languages && navigator.languages[0]) || navigator.language || '').slice(0, 2).toLowerCase(); return { fr: 1, es: 1, pt: 1, ar: 1, ur: 1, id: 1 }[l] ? l : 'en'; }
   function host() { try { var v = JSON.parse(localStorage.getItem('ds_lang') || 'null'); return LANGS[v] ? v : ''; } catch (e) { return ''; } }
   lang = saved() || host() || auto();
   var FPL = window.FPL = {
@@ -16,8 +16,8 @@
     sheet: sheet
   };
   document.documentElement.lang = lang;
-  if (lang === 'ar') document.documentElement.dir = 'rtl';
-  if (lang !== 'en') document.write('<script src="wallet-i18n/' + lang + '.js?v=60eac415d0"><\/script>');
+  if (lang === 'ar' || lang === 'ur') document.documentElement.dir = 'rtl';
+  if (lang !== 'en') document.write('<script src="wallet-i18n/' + lang + '.js?v=ddee2cfeb3"><\/script>');
 
   // the greeting carries the user's name, so it is matched by its start
   var PRE = ['Good morning', 'Good afternoon', 'Good evening'];
@@ -75,7 +75,7 @@
   function sheet() {
     var w = document.createElement('div'); w.className = 'sh-wrap';
     w.innerHTML = '<div class="sh" role="dialog" aria-modal="true" aria-label="Language"><div class="sh-h"><h2>Language</h2><button type="button" class="sh-x" aria-label="Close"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div><div class="list" data-noi18n>' +
-      Object.keys(LANGS).map(function (k) { return '<button type="button" class="li lg-li' + (k === lang ? ' on' : '') + '" data-lg="' + k + '" lang="' + k + '"' + (k === 'ar' ? ' dir="rtl"' : '') + '><span class="grow"><b>' + LANGS[k] + '</b></span>' + (k === lang ? '<span class="lg-ok">✓</span>' : '') + '</button>'; }).join('') + '</div></div>';
+      Object.keys(LANGS).map(function (k) { return '<button type="button" class="li lg-li' + (k === lang ? ' on' : '') + '" data-lg="' + k + '" lang="' + k + '"' + (k === 'ar' || k === 'ur' ? ' dir="rtl"' : '') + '><span class="grow"><b>' + LANGS[k] + '</b></span>' + (k === lang ? '<span class="lg-ok">✓</span>' : '') + '</button>'; }).join('') + '</div></div>';
     w.addEventListener('click', function (e) { if (e.target === w || e.target.closest('.sh-x')) w.remove(); var b = e.target.closest('[data-lg]'); if (b) { if (b.dataset.lg === lang) w.remove(); else FPL.set(b.dataset.lg); } });
     document.body.appendChild(w);
   }
