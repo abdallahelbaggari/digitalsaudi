@@ -10,7 +10,7 @@
 <link rel="icon" href="favicon-32.png" sizes="32x32">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;600;700&family=Poppins:wght@400;500;600;700&display=swap">
-<link rel="stylesheet" href="wallet.css?v=36f526d86c">
+<link rel="stylesheet" href="wallet.css?v=34dff2ed00">
 <script src="wallet-i18n.js?v=c7ace63957"></script>
 <script>(function () {
   /* opened inside the app: use the app's Pi connection (already signed in); opened on its own: load Pi */
@@ -24,6 +24,7 @@
     }, true);
   } else document.write('<script src="https://sdk.minepi.com/pi-sdk.js"><\/script>');
 })();</script>
+<script>(function () { try { var m = JSON.parse(localStorage.getItem('dsw_v1_theme') || '"auto"'), d = m === 'dark'; if (m === 'auto') { var t = null; try { if (window.WALLET_EMBED) t = parent.document.documentElement.getAttribute('data-theme'); } catch (e) {} d = t ? t !== 'light' : !!(window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches); } if (d) document.documentElement.className += ' dk'; } catch (e) {} })();</script>
 </head>
 <body>
 
@@ -71,7 +72,7 @@
 <div id="toast" role="status" aria-live="polite"></div>
 <script src="wallet-qr.js?v=d0a9199dea"></script>
 <script src="wallet-receipt.js?v=37faa7fc6d"></script>
-<script src="wallet.js?v=dcb402fc4d"></script>
+<script src="wallet.js?v=2da4619c29"></script>
 <script src="wallet-bar.js?v=5e03419cb2"></script>
 <script src="wallet-biz.js?v=a800dfcf71"></script>
 </body>

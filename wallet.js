@@ -81,6 +81,7 @@
 
   /* ── icons (Feather, MIT) ── */
   var P = {
+    moon: '<path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/>', half: '<circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor"/>',
     scan: '<path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2"/><line x1="7" y1="12" x2="17" y2="12"/>',
     pos: '<rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="8" y1="10" x2="8" y2="10.01"/><line x1="12" y1="10" x2="12" y2="10.01"/><line x1="16" y1="10" x2="16" y2="10.01"/><line x1="8" y1="14" x2="8" y2="14.01"/><line x1="12" y1="14" x2="12" y2="14.01"/><line x1="16" y1="14" x2="16" y2="14.01"/><line x1="8" y1="18" x2="16" y2="18"/>',
     pin: '<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>',
@@ -181,6 +182,15 @@
   var tT = null;
   function toast(m) { var t = $('#toast'); t.textContent = m; t.classList.add('on'); clearTimeout(tT); tT = setTimeout(function () { t.classList.remove('on'); }, 3200); }
   window.toast = toast;
+  /* ── appearance: automatic (follows DigitalSaudi, or the phone when opened on its own), light or dark ── */
+  var THEMES = [['auto', 'Automatic', 'half'], ['light', 'Light', 'sun'], ['dark', 'Dark', 'moon']];
+  function hostDark() { try { if (window.WALLET_EMBED) { var t = parent.document.documentElement.getAttribute('data-theme'); if (t) return t !== 'light'; } } catch (e) {} return null; }
+  function wantDark() { var m = get('theme', 'auto'); if (m === 'dark') return true; if (m === 'light') return false; var h = hostDark(); if (h !== null) return h; return !!(window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches); }
+  function applyTheme() { var d = wantDark(); document.documentElement.classList.toggle('dk', d); var mt = document.querySelector('meta[name="theme-color"]'); if (mt) mt.content = d ? '#08140F' : '#053B26'; }
+  function themeName() { var m = get('theme', 'auto'); return THEMES.filter(function (x) { return x[0] === m; })[0][1]; }
+  applyTheme();
+  try { matchMedia('(prefers-color-scheme: dark)').addEventListener('change', applyTheme); } catch (e) {}
+  try { if (window.WALLET_EMBED) new parent.MutationObserver(applyTheme).observe(parent.document.documentElement, { attributes: true, attributeFilter: ['data-theme'] }); } catch (e) {}
   function sheet(title, body, o) {
     o = o || {};
     if (!o.stack) closeSheets();
@@ -628,14 +638,14 @@
   function sendSheet(pre) {
     pre = pre || {};
     var addrOn = true, userOn = S.cfg.enabled ? !!S.cfg.usernames : true, okName = '', kind = !userOn || (pre.u && isG(pre.u)) ? 'addr' : 'user';
-    var payees = contacts().map(function (c) { return c.to; }).concat(get('payees', [])).filter(function (p, i, L) { return (userOn || isG(p)) && L.map(function (q) { return q.toLowerCase(); }).indexOf(p.toLowerCase()) === i; }).slice(0, 8);
+    var payees = favs().map(function (c) { return c.to; }).concat(contacts().map(function (c) { return c.to; })).concat(get('payees', [])).filter(function (p, i, L) { return (userOn || isG(p)) && L.map(function (q) { return q.toLowerCase(); }).indexOf(p.toLowerCase()) === i; }).slice(0, 8);
     var w = sheet('Send Pi',
       (pre.link || pre.x && pre.a ? '<div class="note gray" style="margin-bottom:8px">' + ic('qr') + '<span>Payment request from ' + esc(isG(pre.u) ? short(pre.u) : '@' + pre.u) + (pre.a ? ' for <b>' + fpi(pre.a) + ' π</b>' : '') + (pre.x ? ' · “' + esc(pre.x) + '”' : '') + '. Check it is someone you know.</span></div>' : '') +
       (userOn ? '<div class="seg" role="tablist" style="margin-bottom:4px"><button type="button" data-k="user">Username</button><button type="button" data-k="addr">Wallet address</button></div>' : '') +
       '<div id="k-user"><label class="l" for="s-u">To</label><div class="to"><span>@</span><input id="s-u" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="username" maxlength="60"></div></div>' +
       '<div id="k-addr" hidden><label class="l" for="s-g">Pi wallet address</label><textarea class="in num" id="s-g" rows="2" maxlength="60" autocapitalize="characters" spellcheck="false" placeholder="G…" style="font-size:14px;resize:none"></textarea></div>' +
       '<div class="hint" id="s-uh"></div>' +
-      (payees.length && !pre.u ? '<div class="chips" style="margin-top:2px">' + payees.map(function (p) { return '<button type="button" class="chip" data-pu="' + esc(p) + '">' + (isG(p) ? ic('card', 'width:15px;height:15px;vertical-align:-3px') + ' ' : '') + esc(cName(p) || toLabel(p)) + '</button>'; }).join('') + '</div>' : '') +
+      (payees.length && !pre.u ? '<div class="chips" style="margin-top:2px">' + payees.map(function (p) { return '<button type="button" class="chip" data-pu="' + esc(p) + '">' + (favs().some(function (c) { return c.to.toLowerCase() === p.toLowerCase(); }) ? ic('star', 'width:14px;height:14px;vertical-align:-2px;color:#E0B24E;fill:currentColor') + ' ' : isG(p) ? ic('card', 'width:15px;height:15px;vertical-align:-3px') + ' ' : '') + esc(cName(p) || toLabel(p)) + '</button>'; }).join('') + '</div>' : '') +
       '<label class="l" for="s-a">Amount</label><div class="amt"><input id="s-a" type="number" inputmode="decimal" min="0" step="any" placeholder="0.00"><span>π</span></div><div class="hint num" id="s-c"></div>' +
       '<label class="l">Category</label><div class="chips" id="s-cat">' + CATS.map(function (c) { return '<button type="button" class="chip" data-c="' + c + '">' + c + '</button>'; }).join('') + '</div>' +
       '<label class="l" for="s-x">Narration</label><input class="in" id="s-x" maxlength="80" placeholder="What is it for? e.g. Rent, groceries, gift">' +
@@ -1283,6 +1293,8 @@
   /* ── month maths ── */
   function monthRange(off) { var d = new Date(); d.setDate(1); d.setHours(0, 0, 0, 0); d.setMonth(d.getMonth() + (off || 0)); var e = new Date(d); e.setMonth(e.getMonth() + 1); return [d.getTime(), e.getTime(), d]; }
   function catKey(r) { return String(r.other || r.addr || '').replace(/^@/, '').toLowerCase(); }
+  var CATC = { Food: '#F59E0B', Transport: '#3B82F6', Shopping: '#EC4899', Bills: '#8B5CF6', Family: '#10B981', Business: '#0EA5E9', Gifts: '#F43F5E', Charity: '#14B8A6', Other: '#94A3B8', 'Not sorted': '#CBD5E1' };
+  function catC(c) { return CATC[c] || '#94A3B8'; }
   function catOf(r) { return r.cat || (get('catMap', {}) || {})[catKey(r)] || ''; }
   function rkeyOf(r) { return String(r.txid || r.pid || r.ts); }
   function catSort(off) {
@@ -1363,7 +1375,7 @@
       return '<div class="band"><div class="hello"><h1>' + hour() + (signedIn() ? ', @' + esc(me()) : '') + '</h1><p>' + (signedIn() ? 'Your Pi at a glance.' : '') + '</p>' + (signedIn() ? '' : '<button type="button" class="hello-si" data-act="signin"><span class="pi-dot">π</span>Sign in with Pi</button>') + '</div>' +
         '<div class="hero" data-act="price" data-p="hero" role="button" tabindex="0" aria-label="Pi price details">' + heroHTML() + '</div></div>' +
         '<div class="qa"><button type="button" data-act="send"><i>' + ic('send') + '</i>Send</button><button type="button" data-act="request"><i class="t">' + ic('req') + '</i>Request</button><button type="button" data-act="scan"><i class="n">' + ic('qr') + '</i>Scan</button><button type="button" data-act="receive"><i class="a">' + ic('card') + '</i>Receive</button></div>' +
-        dueHTML() + '<div class="sec"><h2>Services</h2><button type="button" data-tab="pay">All services</button></div>' + svcGrid(HOME_SVC.map(svcById), 'home') + hook('home') + '<div class="sec"><h2>Overview</h2></div><div class="card" data-p="month">' + monthHTML() + '</div>' +
+        favHTML() + dueHTML() + '<div class="sec"><h2>Services</h2><button type="button" data-tab="pay">All services</button></div>' + svcGrid(HOME_SVC.map(svcById), 'home') + hook('home') + '<div class="sec"><h2>Overview</h2></div><div class="card" data-p="month">' + monthHTML() + '</div>' +
         '<div class="sec"><h2>Recent activity</h2>' + (R.length ? '<button type="button" data-tab="activity">See all</button>' : '') + '</div>' +
         (pendingList().length ? '<div class="list" style="margin-bottom:10px">' + pendingList().slice(0, 3).map(pendRow).join('') + '</div>' : '') +
         (R.length ? '<div class="list">' + R.slice(0, 4).map(txRow).join('') + '</div>' : pendingList().length ? '' : '<div class="list"><div class="empty">' + ic('act') + '<div>No payments yet.</div></div></div>') +
@@ -1400,7 +1412,7 @@
       return '<div class="pcard"><div class="avatar">' + esc(signedIn() ? me().charAt(0) : 'G') + '</div><div class="grow"><b>' + (signedIn() ? '@' + esc(me()) : 'Guest') + '</b><small>' + (get('name', '') ? esc(get('name', '')) + ' · ' : '') + NETN + '</small>' + (sup ? '<div class="badge">' + ic('star') + 'DigitalSaudi Supporter</div>' : '') + '</div></div>' +
         (!signedIn() ? '<button type="button" class="btn" data-act="signin" style="margin-top:14px"><span class="pi-dot">π</span>Sign in with Pi</button>' : '') +
         '<div class="sec"><h2>Settings</h2></div><div class="list">' +
-        row('edit', 'Name on receipts', get('name', '') ? NTYPE[nType()].l + ' · ' + get('name', '') : 'Your name, business, store or shop', 'name') + row('globe', 'Currency', cname(curr()) + ' (' + curr() + ')', 'currency') + (window.FPL && Object.keys(FPL.LANGS).length > 1 ? row('globe', 'Language', FPL.LANGS[FPL.lang()], 'lang') : '') + (canInstall() ? row('down', 'Install DigitalSaudi', 'Add to home screen', 'install') : '') +
+        row('edit', 'Name on receipts', get('name', '') ? NTYPE[nType()].l + ' · ' + get('name', '') : 'Your name, business, store or shop', 'name') + row('globe', 'Currency', cname(curr()) + ' (' + curr() + ')', 'currency') + row('moon', 'Appearance', themeName(), 'theme') + (window.FPL && Object.keys(FPL.LANGS).length > 1 ? row('globe', 'Language', FPL.LANGS[FPL.lang()], 'lang') : '') + (canInstall() ? row('down', 'Install DigitalSaudi', 'Add to home screen', 'install') : '') +
         row('bell', 'Notifications', !('Notification' in window) ? 'In-app alerts on' : get('push', false) ? 'Phone and in-app alerts' : 'In-app alerts on', 'push') + row('pie', 'Monthly budget', get('budget', 0) ? fpi(get('budget', 0)) + ' π' : 'Not set', 'budget') + row('card', 'Wallet address', get('addr', '') ? short(get('addr', '')) : 'Not added', 'addr-set') + hook('settings') + '</div>' +
         '<div class="sec"><h2>Support</h2></div><div class="list">' +
         row('shield', 'Trust center', 'Payments, limits and records', 'security') + row('refresh', 'Reset', 'Pending payment or a problem? Reset fixes it', 'repair') + row('heart', sup ? 'You are a Supporter' : 'Become a Supporter', sup ? 'Thank you!' : '1 π · Supporter badge', 'supporter') +
@@ -1631,10 +1643,15 @@
       (S.month === 0 ? forecastHTML(b) : '') +
       '<div class="card tr-card"><div class="row small"><b class="grow">Spending · last 6 months</b><span class="muted">π</span></div>' + trendSvg() + '</div>' +
       '<div class="sec"><h2>Where your Pi went</h2><button type="button" data-act="budget">' + (b ? 'Edit budget' : 'Set budget') + '</button></div>' +
-      (cats.length ? '<div class="card">' + cats.map(function (x) { return '<div class="cat' + (x[0] === 'Not sorted' ? ' ns' : '') + '"><div class="row"><span>' + esc(x[0]) + '</span><b>' + fpi(x[1]) + ' π</b></div><div class="bar"><i style="width:' + Math.max(4, x[1] / top * 100) + '%"></i></div><small>' + Math.round(x[1] / (s.out || 1) * 100) + '% of spending' + (x[0] === 'Not sorted' ? ' · <button type="button" class="lnk" data-act="catsort">Sort these payments</button>' : '') + '</small></div>'; }).join('') + '</div>'
+      (cats.length ? '<div class="card">' + '<div class="cat-ring">' + catRing(cats, s.out) + '</div>' + cats.map(function (x) { return '<div class="cat' + (x[0] === 'Not sorted' ? ' ns' : '') + '"' + (x[0] !== 'Not sorted' ? ' data-catq="' + esc(x[0]) + '" role="button" tabindex="0"' : '') + ' style="--cc:' + catC(x[0]) + '"><div class="row"><span><i class="cat-d"></i>' + esc(x[0]) + '</span><b>' + fpi(x[1]) + ' π</b></div><div class="bar"><i style="width:' + Math.max(4, x[1] / top * 100) + '%"></i></div><small>' + Math.round(x[1] / (s.out || 1) * 100) + '% of spending' + (x[0] === 'Not sorted' ? ' · <button type="button" class="lnk" data-act="catsort">Sort these payments</button>' : '') + '</small></div>'; }).join('') + '</div>'
         : '<div class="list"><div class="empty">' + ic('pie') + '<div>No spending this month. Choose a category when you send Pi to see it here.</div></div></div>');
   }
 
+  function catRing(cats, total) {
+    if (!cats.length || !(total > 0)) return '';
+    var R = 15.915, off = 25, segs = cats.map(function (x) { var p = Math.min(100, x[1] / total * 100), c = '<circle r="' + R + '" cx="21" cy="21" fill="none" stroke="' + catC(x[0]) + '" stroke-width="5" stroke-dasharray="' + p.toFixed(2) + ' ' + (100 - p).toFixed(2) + '" stroke-dashoffset="' + off.toFixed(2) + '"></circle>'; off -= p; return c; }).join('');
+    return '<svg viewBox="0 0 42 42" class="ring" aria-hidden="true"><circle r="' + R + '" cx="21" cy="21" fill="none" stroke="var(--line2)" stroke-width="5"></circle>' + segs + '</svg><div class="ring-c"><b class="num">' + fpi(total) + ' π</b><small>Spent</small></div>';
+  }
   function render(tab) {
     S.tab = tab; var v = $('#view'); if (!v) return;
     try { v.innerHTML = T[tab](); } catch (e) { guardErr(e && e.message); v.innerHTML = '<div class="list" style="margin-top:20px"><div class="empty">' + ic('refresh') + '<div>This screen did not load.</div><button type="button" class="btn" data-act="repair" style="margin-top:14px">' + ic('refresh') + 'Repair app</button></div></div>'; }
@@ -1646,21 +1663,33 @@
 
   /* ── contacts: people and businesses you pay often (stay on this phone) ── */
   function contacts() { return get('contacts', []); }
+  function favs() { return contacts().filter(function (c) { return c.fav; }); }
+  var CCOL = ['#1AC271', '#D97706', '#2563EB', '#DB2777', '#7C3AED', '#0D9488', '#B45309', '#DC2626'];
+  function avCol(n) { var h = 0; String(n || '').split('').forEach(function (ch) { h = (h * 31 + ch.charCodeAt(0)) >>> 0; }); return CCOL[h % CCOL.length]; }
+  function favHTML() {
+    var F = favs().slice(0, 8); if (!F.length) return '';
+    return '<div class="sec"><h2>Favourites</h2><button type="button" data-act="contacts">Edit</button></div><div class="favs">' + F.map(function (c) {
+      return '<button type="button" class="fav" data-fav="' + esc(c.to) + '"><span class="fav-a" style="background:' + avCol(c.name || c.to) + '">' + esc((c.name || toLabel(c.to)).replace(/^@/, '').charAt(0).toUpperCase()) + '</span><span class="fav-n">' + esc(c.name || toLabel(c.to)) + '</span></button>'; }).join('') + '</div>';
+  }
+  function toggleFav(i) { var L = contacts(); if (!L[i]) return; L[i].fav = !L[i].fav; put('contacts', L); toast(L[i].fav ? 'Added to favourites' : 'Removed from favourites'); return L[i].fav; }
   function cName(to) { to = String(to || '').toLowerCase(); var c = contacts().filter(function (x) { return x.to.toLowerCase() === to; })[0]; return c ? c.name : ''; }
-  function userSends() { return !!(S.cfg.enabled && S.cfg.usernames); }
+  // @username: with in-app sending on, when switched on there; before that, through the recipient's saved address
+  function userSends() { return S.cfg.enabled ? !!S.cfg.usernames : true; }
   function payTo(to, pre) {
-    pre = pre || {}; pre.u = to;
+    pre = pre || {}; pre.u = isG(to) ? to : String(to || '').replace(/^@/, '');
     if (!isG(to) && !userSends()) return toast('Paying a @username opens soon. Use their wallet address for now.');
     sendSheet(pre);
   }
   function contactsSheet() {
     var L = contacts();
+    if (L.some(function (c) { return c.fav; })) { L = L.map(function (c, i) { return [c, i]; }).sort(function (a, b) { return (b[0].fav ? 1 : 0) - (a[0].fav ? 1 : 0) || a[1] - b[1]; }).map(function (x) { return x[0]; }); put('contacts', L); }
     var w = sheet('Contacts', ''+
-      (L.length ? '<div class="list">' + L.map(function (c, i) { return '<div class="li"><span class="ico">' + ic(isG(c.to) ? 'card' : 'user') + '</span><button type="button" class="grow lb" data-cs="' + i + '"><b>' + esc(c.name) + (c.trusted ? ' <span class="tr-b">' + ic('shield') + 'Trusted</span>' : '') + '</b><small class="num">' + esc(toLabel(c.to)) + '</small></button><button type="button" class="tbtn" data-ce="' + i + '" aria-label="Edit ' + esc(c.name) + '">' + ic('edit') + '</button></div>'; }).join('') + '</div>'
+      (L.length ? '<div class="list">' + L.map(function (c, i) { return '<div class="li"><span class="ico">' + ic(isG(c.to) ? 'card' : 'user') + '</span><button type="button" class="grow lb" data-cs="' + i + '"><b>' + esc(c.name) + (c.trusted ? ' <span class="tr-b">' + ic('shield') + 'Trusted</span>' : '') + '</b><small class="num">' + esc(toLabel(c.to)) + '</small></button><button type="button" class="tbtn fv-t' + (c.fav ? ' on' : '') + '" data-cf="' + i + '" aria-pressed="' + (c.fav ? 'true' : 'false') + '" aria-label="Favourite ' + esc(c.name) + '">' + ic('star') + '</button><button type="button" class="tbtn" data-ce="' + i + '" aria-label="Edit ' + esc(c.name) + '">' + ic('edit') + '</button></div>'; }).join('') + '</div>'
         : '<div class="list"><div class="empty">' + ic('users') + '<div>No contacts yet. Add the people you pay often.</div></div></div>') +
       '<button type="button" class="btn" data-x="add">' + ic('users') + 'Add contact</button>');
     $$('[data-cs]', w).forEach(function (b) { b.onclick = function () { payTo(L[+b.dataset.cs].to); }; });
     $$('[data-ce]', w).forEach(function (b) { b.onclick = function () { contactEdit(+b.dataset.ce); }; });
+    $$('[data-cf]', w).forEach(function (b) { b.onclick = function () { var on = toggleFav(+b.dataset.cf); b.classList.toggle('on', !!on); b.setAttribute('aria-pressed', on ? 'true' : 'false'); if (S.tab === 'home') render('home'); }; });
     $('[data-x="add"]', w).onclick = function () { contactEdit(-1); };
   }
   function contactEdit(i, preTo) {
@@ -1694,7 +1723,7 @@
   function rerenderUnder() { var v = $('#view'); if (v && !$('#app').hidden) { S.y = scrollY; v.innerHTML = T[S.tab](); } }
 
   /* ── payment links: reusable links and QR codes that open DigitalSaudi ready to pay you ── */
-  function myTarget() { var un = userSends() && signedIn(); return un ? me() : get('addr', ''); }
+  function myTarget() { var un = !!(S.cfg.enabled && S.cfg.usernames) && signedIn(); return un ? me() : get('addr', ''); }
   function links() { return get('links', []); }
   function linkText(o) { var who = isG(o.u) ? 'I' : '@' + o.u; return who + (o.a ? ' requested ' + fpi(o.a) + ' π' + (conv(o.a) ? ' (' + conv(o.a).replace('≈ ', '≈') + ')' : '') : ' shared a payment link') + (o.x ? ' for “' + o.x + '”' : '') + '. Pay with DigitalSaudi:\n' + payLink({ u: o.u, a: o.a || 0, x: o.x || '' }); }
   function showLink(o, title) {
@@ -2045,6 +2074,11 @@
 
   /* ── actions ── */
   var A = {
+    theme: function () {
+      var cur = get('theme', 'auto');
+      var w = sheet('Appearance', '<div class="list th-list">' + THEMES.map(function (x) { return '<button type="button" class="li' + (x[0] === cur ? ' on' : '') + '" data-th="' + x[0] + '"><span class="ico">' + ic(x[2]) + '</span><span class="grow"><b>' + x[1] + '</b></span>' + (x[0] === cur ? '<span class="go th-ok">' + ic('check') + '</span>' : '') + '</button>'; }).join('') + '</div>');
+      [].forEach.call(w.querySelectorAll('[data-th]'), function (b) { b.onclick = function () { put('theme', b.getAttribute('data-th')); applyTheme(); closeSheets(); render(S.tab); }; });
+    },
     send: function () { sendSheet(); }, receive: function () { receiveSheet(); }, request: function () { requestSheet(); }, scan: function () { scanSheet(); }, 'get-rcpt': function () { addTxSheet(null); },
     'send-to': function (el) { payTo(el.dataset.u); },
     contacts: contactsSheet, links: linksSheet, split: splitSheet, rems: remsSheet, alerts: alertsSheet, statement: statementSheet, tour: function () { onboarding(true); },
@@ -2134,8 +2168,10 @@
     if (e.target.closest('[data-more]')) { S.page += 100; actPaint(); return; }
     var ol = e.target.closest('[data-older]'); if (ol) { hOlder(ol); return; }
     var mo = e.target.closest('[data-mon]'); if (mo) { S.month = Math.min(0, S.month + Number(mo.dataset.mon)); render('activity'); return; }
+    var fv = e.target.closest('[data-fav]'); if (fv && !fv.closest('.sh-wrap')) { payTo(fv.dataset.fav); return; }
     var rc = e.target.closest('[data-rc]'); if (rc) { var ri = rc.dataset.rc; showRcpt(ri.charAt(0) === 'x' ? S.extra[+ri.slice(1)] : rcpts()[+ri]); return; }
     var pe = e.target.closest('[data-pend]'); if (pe) { pendSheet(pe.dataset.pend); return; }
+    var cq = e.target.closest('[data-catq]'); if (cq) { S.q = cq.dataset.catq; S.filter = 'out'; S.seg = 'tx'; go('activity'); return; }
     var a = e.target.closest('[data-act]'); if (a && A[a.dataset.act]) { A[a.dataset.act](a, e); }
   });
   document.addEventListener('keydown', function (e) { if ((e.key === 'Enter' || e.key === ' ') && e.target.matches('[role="button"][data-act]')) { e.preventDefault(); e.target.click(); } });
