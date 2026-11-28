@@ -948,7 +948,7 @@
       if (K.needTarget('Staff mode')) return;
       var sc = get('staffC', {});
       if (!sc.code) {
-        var w = sheet('Staff mode', '<div class="pd-hero">' + ic('users') + '<b>Let your staff take sales</b><span>Your worker records sales on their own phone. Payments go straight to you, and every sale appears in your DigitalSaudi. Staff never see your wallet.</span></div>' +
+        var w = sheet('Staff mode', '<div class="pd-hero">' + ic('users') + '<b>Let your staff take sales</b></div>' +
           '<label class="l" for="st-n">Staff name</label><input class="in" id="st-n" maxlength="30" placeholder="e.g. Cashier 1">' +
           '<button type="button" class="btn" id="st-go">' + ic('link') + 'Create staff link</button>');
         $('#st-go', w).onclick = function () {

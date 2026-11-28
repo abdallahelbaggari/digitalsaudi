@@ -160,7 +160,7 @@ h2{font-size:15px;margin:22px 4px 10px}
       rows: [['Paid to', (inv.n || '—') + (inv.u ? ' (@' + inv.u + ')' : '')], ['Paid by', (!mine && me) ? me : short(tx.from)], ['For', inv.i || 'Payment'], ['Reference', inv.r],
         ['Date', new Date(tx.at).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })], ['Time', new Date(tx.at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })],
         ['Network', NETN], ['Seller address', inv.t, 1], ['Transaction ID', tx.hash, 1]],
-      thanks: 'Paid with DigitalSaudi Pay', note: 'Verified by DigitalSaudi on the Pi blockchain. DigitalSaudi never holds funds.' };
+      thanks: 'Paid with DigitalSaudi Pay', note: 'Verified on the Pi blockchain.' };
   }
   function paid(tx) {
     clearTimeout(timer);

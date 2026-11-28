@@ -28,6 +28,7 @@
 <link rel="dns-prefetch" href="https://api.alquran.cloud">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@300..700&family=Reem+Kufi:wght@500..700&family=Amiri+Quran&family=Amiri:wght@400;700&display=swap">
+<script>/* copy: fall back when the browser blocks clipboard access */(function(){try{var c=navigator.clipboard;if(!c||!c.writeText||c.__fb)return;var o=c.writeText.bind(c);function fb(t){return new Promise(function(ok,no){try{var a=document.createElement('textarea');a.value=t;a.setAttribute('readonly','');a.style.cssText='position:fixed;top:-1000px;opacity:0';document.body.appendChild(a);a.select();var r=document.execCommand('copy');a.remove();r?ok():no(new Error('copy failed'))}catch(e){no(e)}})}c.writeText=function(t){return o(t).catch(function(){return fb(String(t))})};c.__fb=1}catch(e){}})();</script>
 <script src="https://sdk.minepi.com/pi-sdk.js"></script>
 <style>
 :root{
@@ -3162,7 +3163,6 @@ const PANELS = {
   feedback: function(){ openFeedback(''); },
   about: function(){
     showPanel('About DigitalSaudi', `<p>DigitalSaudi is a Pi Network app that helps visitors, pilgrims, workers and residents with Saudi Arabia: live news, football scores, the Pi price, visas, e-services, Umrah, Quran and practical tools — in one place.</p>
-      <h4>Data sources</h4><ul><li>News: BBC, Al Jazeera, Arab News, Saudi Gazette and Cointelegraph feeds — headlines, short summaries and links; articles belong to their publishers</li><li>Football: football-data.org</li><li>Pi price: OKX, Gate.io, Bitget, MEXC or CoinGecko (the source is shown next to the price) · Currency rates: <a href="https://www.exchangerate-api.com" target="_blank" rel="noopener">Rates By Exchange Rate API</a></li><li>Weather: <a href="https://www.met.no/en" target="_blank" rel="noopener">MET Norway</a> (CC BY 4.0) · Prayer times: Aladhan (Umm al-Qura)</li><li>Maps &amp; places: © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors (ODbL), Overpass, Photon by komoot</li><li>Quran: alquran.cloud</li><li>AI features: Google Gemini, Cloudflare Workers AI, Anthropic — answers are AI-generated</li><li>Green calculators: SEC tariffs, Climate Transparency, Our World in Data (estimates)</li></ul>
       <h4>Contact</h4><p><a href="mailto:${CONTACT_EMAIL}">${CONTACT_EMAIL}</a></p><p class="small"><span class="notr" dir="ltr">© 2026 DigitalSaudi</span></p>`, { id:'about' });
   }
 };
@@ -5547,8 +5547,7 @@ function piWalletPanel(){
       <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap"><span class="chg">Paid in DigitalSaudi: ${fmt(paid, 2)} π</span>${store.get('pi', null) ? '<span class="chg">1 π ≈ $' + fmt(store.get('pi').usd, 4) + '</span>' : ''}</div></div>
     <div class="seg" style="margin-top:14px"><button class="on" id="wTabReq" onclick="walletTab('req')">📥 Request</button><button id="wTabSend" onclick="walletTab('send')">📤 Send</button><button id="wTabHist" onclick="walletTab('hist')">🧾 History</button></div>
     <div id="wBody"></div>
-    <button class="row" onclick="clearStuckPayment()"><div class="ic">🧹</div><div class="tx"><b>Fix “Pending payment found”</b><small>Clears an unfinished payment so you can pay again</small></div><span class="chev">›</span></button>
-    <div class="note">🔒 For your safety, Pi apps can never see your balance, hold your Pi or send it for you. Transfers always happen in your own Pi Wallet, and only you approve them.</div>`, { id:'piWallet', share:false });
+    <button class="row" onclick="clearStuckPayment()"><div class="ic">🧹</div><div class="tx"><b>Fix “Pending payment found”</b><small>Clears an unfinished payment so you can pay again</small></div><span class="chev">›</span></button>`, { id:'piWallet', share:false });
   walletTab('req');
 }
 function walletTab(t){
@@ -6901,8 +6900,7 @@ piWalletPanel = function(){
       <button onclick="walletTab('hist')"><span><svg class="i"><use href="#i-receipt"/></svg></span>Activity</button>
     </div>
     <div id="wBody"></div>
-    <button class="row" onclick="clearStuckPayment()"><div class="ic">🧹</div><div class="tx"><b>Fix “Pending payment found”</b><small>Clears an unfinished payment so you can pay again</small></div><span class="chev">›</span></button>
-    <div class="note">🔒 Pi apps can never see your balance, hold your Pi or send it for you. Transfers always happen in your own Pi Wallet, and only you approve them.</div>`, { id:'piWallet', share:false });
+    <button class="row" onclick="clearStuckPayment()"><div class="ic">🧹</div><div class="tx"><b>Fix “Pending payment found”</b><small>Clears an unfinished payment so you can pay again</small></div><span class="chev">›</span></button>`, { id:'piWallet', share:false });
   walletTab(hist.length ? 'hist' : 'req');
   const c = $('pcard');
   if(c && !CALM){
@@ -10350,9 +10348,9 @@ if(DS_TESTNET){
 
 </script>
 <script src="/ds-receipt.js?v=3"></script>
-<script src="/ds-wallet.js?v=8"></script>
+<script src="/ds-wallet.js?v=9"></script>
 <script src="/ds-transfer.js?v=3"></script>
-<script src="/ds-business.js?v=1"></script>
+<script src="/ds-business.js?v=2"></script>
 <link rel="stylesheet" href="/ds-pro.css?v=10">
 <script src="/ds-quran.js?v=3"></script>
 <script src="/ds-pro.js?v=4"></script>

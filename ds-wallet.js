@@ -35,7 +35,7 @@
       sub: r.usd ? '≈ ' + fmt(r.amount * r.sar, 2) + ' SAR · $' + fmt(r.amount * r.usd, 2) + ' at payment time' : '',
       rows: [['Paid to', inn ? (r.name || r.seller || '—') + (r.user ? ' (@' + r.user + ')' : '') : r.other], ['Paid by', inn ? short(r.from) : (r.name || short(r.from))], ['For', r.item || r.memo || 'Payment'], ['Reference', r.ref]]
         .concat(when(r.ts), [['Network', r.net], ['Seller address', r.to, 1], ['Transaction ID', r.txid, 1]]),
-      thanks: 'Paid with DigitalSaudi Pay', note: 'Verified by DigitalSaudi on the Pi blockchain. DigitalSaudi never holds funds.' };
+      thanks: 'Paid with DigitalSaudi Pay', note: 'Verified on the Pi blockchain.' };
   }
   openReceipt = function (id) {
     var h = inAppList().find(function (x) { return x.id === id; }); if (!h) return;
@@ -348,7 +348,7 @@
     <div class="dw-sh"><h3>Converter</h3><button onclick="openItem('priceAlerts')">${esc(hc)} ▾</button></div>
     <div class="card dw-sec"><div class="dw-conv3"><label><span>π</span><input id="dwPi" type="number" inputmode="decimal" value="1" oninput="dsConv('pi')"></label><label><span>SAR</span><input id="dwSar" type="number" inputmode="decimal" oninput="dsConv('sar')"></label>${hc !== 'SAR' ? `<label><span>${esc(hc)}</span><input id="dwLoc" type="number" inputmode="decimal" oninput="dsConv('loc')"></label>` : ''}</div></div>
     <button class="row" onclick="clearStuckPayment()"><div class="ic">⟳</div><div class="tx"><b>Resolve a pending payment</b><small>Completes or clears an unfinished payment so you can pay again</small></div><span class="chev">›</span></button>
-    <div class="dw-secure"><b>🔒 Safe payments on the Pi blockchain</b><span>Every payment is approved by you in Pi’s own secure pop-up. DigitalSaudi never holds your Pi, never sees your balance and never asks for your passphrase. Every transaction has a blockchain ID you can check.</span><button onclick="dsFxSettings()">🔔 Sounds & vibration</button></div>`, { id: 'piWallet', share: false });
+    <div class="dw-secure"><b>🔒 Safe payments on the Pi blockchain</b><button onclick="dsFxSettings()">🔔 Sounds & vibration</button></div>`, { id: 'piWallet', share: false });
     dsConv('pi');
     var iv = setInterval(function () {
       if (document.hidden) return;

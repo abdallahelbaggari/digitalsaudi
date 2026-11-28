@@ -156,7 +156,7 @@
     DSReceipt.sheet({ title: 'Invoice ' + s.no, status: { text: s.paid ? '✓  Paid' : st[0] === 'Overdue' ? 'Overdue' : 'Unpaid' + (s.due ? ' · due ' + dstr(s.due + 'T12:00:00', { day: 'numeric', month: 'short' }) : ''), ok: !!s.paid },
       amount: fmt(s.a, 7), sub: window.dsConvLine ? dsConvLine(+s.a) : '', rows: rows,
       thanks: s.paid ? 'Paid with DigitalSaudi Pay' : 'Pay securely with DigitalSaudi Pay',
-      note: s.paid ? 'Verified on the Pi blockchain. DigitalSaudi never holds funds.' : 'Open the payment link to pay from Pi Wallet with reference ' + s.r + '. DigitalSaudi never holds funds.' },
+      note: s.paid ? 'Verified on the Pi blockchain.' : 'Open the payment link to pay from Pi Wallet with reference ' + s.r + '.' },
       'DigitalSaudi-invoice-' + s.no + '.png', 'Invoice ' + s.no + ' from ' + s.n + ': ' + s.a + ' π' + (s.paid ? ' · Paid' : '\nPay here: ' + dsPayLink(s)), 'Invoice ' + s.no);
   };
 

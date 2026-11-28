@@ -542,7 +542,7 @@
   }
   function needSignIn(why) {
     if (signedIn()) return false;
-    sheet('Sign in with Pi', '<p class="sh-sub">' + esc(why || 'Sign in with your Pi account to continue.') + '</p><div class="note">' + ic('lock') + '<span>DigitalSaudi only receives your Pi username. It never sees your passphrase or balance.</span></div><button type="button" class="btn" data-x="go"><span class="pi-dot">π</span>Sign in with Pi</button>');
+    sheet('Sign in with Pi', '<p class="sh-sub">' + esc(why || 'Sign in with your Pi account to continue.') + '</p><button type="button" class="btn" data-x="go"><span class="pi-dot">π</span>Sign in with Pi</button>');
     $('.sh [data-x="go"]').onclick = function () { closeSheets(); signIn(); };
     return true;
   }
