@@ -1500,7 +1500,7 @@
       return '<div class="sec"><h2>Business</h2><button type="button" data-act="biz">Dashboard</button></div><div class="tiles">' +
         '<button type="button" class="tile" data-act="invs"><i>' + ic('inv') + '</i><b>Invoices</b><small>Items, due dates, paid automatically</small></button>' +
         '<button type="button" class="tile" data-act="myqr"><i class="t">' + ic('qr') + '</i><b>My Pi QR</b><small>A poster to print or share</small></button>' +
-        '<button type="button" class="tile" data-act="cust"><i class="n">' + ic('users') + '</i><b>Customers</b><small>Who pays you and what is due</small></button>' +
+        '<button type="button" class="tile" data-act="cust"><i class="n">' + ic('users') + '</i><b>Customers</b><small>Client records and payment history and what is due</small></button>' +
         '<button type="button" class="tile" data-act="recur"><i class="a">' + ic('repeat') + '</i><b>Recurring requests</b><small>Weekly or monthly invoices</small></button></div>';
     };
     K.HK.html.profile = function () {

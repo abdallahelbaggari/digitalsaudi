@@ -8,7 +8,7 @@
   var short = function (a) { a = String(a || ''); return a.length > 16 ? a.slice(0, 6) + '…' + a.slice(-6) : a; };
   var me = function () { return piUser ? piUser.username : ''; };
   var fullName = function () { return store.get('fullname', '') || (me() ? '@' + me() : 'Guest'); };
-  var home = function () { return store.get('homeCur', 'NGN'); };
+  var home = function () { return store.get('homeCur', 'USD'); };
   var SYM = { NGN: '₦', USD: '$', EUR: '€', GBP: '£', AED: 'AED ', EGP: 'E£', PKR: 'Rs ', INR: '₹', IDR: 'Rp ', BDT: '৳', PHP: '₱', GHS: 'GH₵', XOF: 'CFA ' };
   function pi() { return store.get('pi', null); }
   function locRate() { var c = home(), r = convert(1, 'PI', c), p = pi(); if (r == null && c === 'NGN' && p && p.ngn) r = p.ngn; return r; }

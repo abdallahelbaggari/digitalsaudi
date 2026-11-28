@@ -2,11 +2,12 @@
    Receipts, invoices, statements and reports stay in English so every document reads the same everywhere. */
 (function () {
   'use strict';
-  var LANGS = { en: 'English' };
+  var LANGS = { en: 'English', fr: 'Français', es: 'Español', pt: 'Português', ar: 'العربية', ha: 'Hausa' };
   var D = {}, lang = 'en';
   function saved() { try { var v = JSON.parse(localStorage.getItem('dsw_v1_lang') || 'null'); return LANGS[v] ? v : ''; } catch (e) { return ''; } }
-  function auto() { var l = String((navigator.languages && navigator.languages[0]) || navigator.language || '').slice(0, 2).toLowerCase(); return 'en'; }
-  lang = saved() || auto();
+  function auto() { var l = String((navigator.languages && navigator.languages[0]) || navigator.language || '').slice(0, 2).toLowerCase(); return { fr: 1, es: 1, pt: 1, ar: 1 }[l] ? l : 'en'; }
+  function host() { try { var v = JSON.parse(localStorage.getItem('ds_lang') || 'null'); return LANGS[v] ? v : ''; } catch (e) { return ''; } }
+  lang = saved() || host() || auto();
   var FPL = window.FPL = {
     LANGS: LANGS, lang: function () { return lang; },
     add: function (l, d) { if (l === lang) D = d; },
@@ -16,7 +17,7 @@
   };
   document.documentElement.lang = lang;
   if (lang === 'ar') document.documentElement.dir = 'rtl';
-  if (lang !== 'en') document.write('<script src="wallet-i18n/' + lang + '.js?v=6"><\/script>');
+  if (lang !== 'en') document.write('<script src="wallet-i18n/' + lang + '.js?v=60eac415d0"><\/script>');
 
   // the greeting carries the user's name, so it is matched by its start
   var PRE = ['Good morning', 'Good afternoon', 'Good evening'];
@@ -33,6 +34,13 @@
     for (var i = 0; i < PRE.length; i++) if (k.indexOf(PRE[i] + ',') === 0 && D[PRE[i]]) return s.replace(PRE[i], D[PRE[i]]);
     // labels joined with " · " are translated part by part
     if (k.indexOf(' · ') > 0) { var parts = k.split(' · '), hit = false; parts = parts.map(function (x) { var t = one(x); if (t) { hit = true; return t; } return x; }); if (hit) return s.replace(k, parts.join(' · ')); }
+    // sentences built around a name or date ("<report> saved to Downloads")
+    var TP = D['@tpl']; if (TP) for (var q = 0; q < TP.length; q++) { var mm = new RegExp(TP[q][0]).exec(k); if (mm) { var out = TP[q][1].replace(/\$(\d)/g, function (_, g) { var x = mm[+g] || ''; var y = one(x); if (y) return y; var dm = /^(.*?) ((?:\d{1,2} )?(?:[A-Z][a-z]+ )?\d{4}|\d{1,2} [A-Z][a-z]+ \d{4})$/.exec(x); if (dm) { var hd = one(dm[1]) || one(dm[1].charAt(0).toUpperCase() + dm[1].slice(1)); if (hd) return (dm[1].charAt(0) === dm[1].charAt(0).toLowerCase() && !/^(ar|ur)$/.test('') ? hd.charAt(0).toLowerCase() + hd.slice(1) : hd) + ' ' + (D['@mon'] ? dm[2].replace(/[A-Z][a-z]+/g, function (w) { return D['@mon'][w] || w; }) : dm[2]); } var lw = one(x.charAt(0).toUpperCase() + x.slice(1)); return lw ? lw.toLowerCase() : x; }); return s.replace(k, out); } }
+    // "Name (@user)": the label is translated, the part in brackets stays
+    var br = /^(.*\S) \(([^)]*)\)$/.exec(k); if (br && one(br[1])) return s.replace(k, one(br[1]) + ' (' + br[2] + ')');
+    // month and day names in dates, for languages the browser cannot format
+    var M = D['@mon']; if (M && M[k]) return s.replace(k, M[k]);
+    if (M && /\d/.test(k)) { var r = k.replace(/\b(January|February|March|April|May|June|July|August|September|October|November|December|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec|Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday|Mon|Tue|Wed|Thu|Fri|Sat|Sun)\b/g, function (x) { return M[x] || x; }); if (r !== k) return s.replace(k, r); }
     return null;
   }
   function node(n) {

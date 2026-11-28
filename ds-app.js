@@ -11,7 +11,7 @@ const VISAS = [
     <h4>Official source</h4><p>nusuk.sa</p>` },
   { id:'v-hajj', ic:'🤲', t:'Hajj', s:'Through your country\u2019s Hajj mission', body:`
     <h4>Registration</h4><p>Hajj requires a dedicated Hajj visa issued under your country's quota. You register through your national Hajj authority or its licensed operators — never through a random online agent.</p>
-    <h4>Examples</h4><ul><li><b>Nigeria:</b> National Hajj Commission of Nigeria (NAHCON) and state pilgrims welfare boards</li><li>Western countries: Nusuk Hajj portal</li></ul>
+    <h4>Examples</h4><ul><li><b>Most countries:</b> the national Hajj authority or a licensed Hajj operator</li><li>Western countries: Nusuk Hajj portal</li></ul>
     <div class="note">⚠️ Beware of fake Hajj offers on social media. Only pay through your official Hajj board or a licensed operator.</div>` },
   { id:'v-work', ic:'💼', t:'Work visa & Iqama', s:'Employer-sponsored residency', body:`
     <h4>Process overview</h4><ol><li>Saudi employer issues a job offer and visa authorisation</li><li>Medical check and document attestation in your home country</li><li>Visa stamped through the embassy / visa centre</li><li>After arrival: medical, fingerprints and <b>Iqama</b> (residence ID) issued</li><li>Employment contract documented on <b>Qiwa</b></li></ol>
@@ -170,7 +170,7 @@ const META = {
   madinah:{t:'Visiting Madinah',ic:'🕌',s:'Rawdah, Quba & etiquette'},
   umrahPack:{t:'Umrah packing checklist',ic:'🎒',s:'Tick off as you pack',prem:true},
   docs:{t:'Document checklist',ic:'📋',s:'Made for your trip type'},
-  budget:{t:'Trip budget planner',ic:'💵',s:'SAR · NGN · USD · Pi',prem:true},
+  budget:{t:'Trip budget planner',ic:'💵',s:'SAR · USD · EUR · Pi',prem:true},
   travelPlan:{t:'7-day first-trip plan',ic:'🗺️',s:'Jeddah · Makkah · Madinah',prem:true},
   arrival:{t:'Arrival checklist',ic:'🛬',s:'First 48 hours',prem:true},
   train:{t:'Trains & airports',ic:'🚄',s:'Haramain railway, airports'},
@@ -179,7 +179,7 @@ const META = {
   emergency:{t:'Emergency numbers',ic:'🚨',s:'911, 997, 998…'},
   etiquette:{t:'Culture & etiquette',ic:'🤝',s:'Dress, prayer times, Ramadan'},
   weather:{t:'Climate & best time',ic:'☀️',s:'When to visit'},
-  converter:{t:'Currency converter',ic:'💱',s:'Live SAR · NGN · USD · Pi'},
+  converter:{t:'Currency converter',ic:'💱',s:'Live SAR · USD · EUR · Pi'},
   vat:{t:'VAT calculator',ic:'🧮',s:'Add / remove 15%'},
   split:{t:'Bill splitter',ic:'🧾',s:'Share costs + VAT'},
   units:{t:'Unit converter',ic:'📏',s:'km, kg, °C…'},
@@ -491,7 +491,7 @@ const PANELS = {
 
   hajj: function(){
     showPanel('Hajj day by day', `<p style="margin-bottom:14px">An overview of Hajj al-Tamattuʿ, the form most international pilgrims perform. Follow your group scholar for rulings.</p>` + stepsHTML(HAJJ) +
-      `<div class="note">🕋 Hajj requires a Hajj visa and permit through your country's official Hajj authority (in Nigeria: NAHCON and state pilgrims welfare boards).</div>
+      `<div class="note">🕋 Hajj requires a Hajj visa and permit through your country's official Hajj authority.</div>
       <div class="p-actions"><button class="btn btn-ghost btn-sm" onclick="openItem('duas')">🤲 Duas</button><button class="btn btn-ghost btn-sm" onclick="openDocType('hajj')">📋 Hajj documents</button></div>` + reviewedHTML('Hajj guide'), { id:'hajj' });
   },
 
@@ -524,7 +524,7 @@ const PANELS = {
     const nums = [['911','Unified emergency number','🚨'],['999','Police','👮'],['997','Ambulance','🚑'],['998','Civil Defence (fire)','🚒'],['993','Traffic police','🚓']];
     showPanel('Emergency numbers', nums.map(function(n){ return `<a class="row" href="tel:${n[0]}"><div class="ic">${n[2]}</div><div class="tx"><b style="font-size:20px">${n[0]}</b><small>${n[1]}</small></div><span class="chev">📞</span></a>`; }).join('') +
       `<button class="row" onclick="openItem('ecard')"><div class="ic">🆘</div><div class="tx"><b>My emergency card</b><small>Your details, works offline</small></div><span class="chev">›</span></button>
-      <div class="note">Nigerian citizens can contact the Embassy of Nigeria in Riyadh or the Consulate General in Jeddah. Save your embassy's number on your phone.</div>` + reviewedHTML('Emergency numbers'), { id:'emergency' });
+      <div class="note">Save your embassy's number on your phone.</div>` + reviewedHTML('Emergency numbers'), { id:'emergency' });
   },
 
   etiquette: function(){
@@ -545,7 +545,7 @@ const PANELS = {
     const opts = function(sel){ return curs.map(function(c){ return `<option value="${c[0]}" ${c[0] === sel ? 'selected' : ''}>${c[1]}</option>`; }).join(''); };
     showPanel('Currency converter', `
       <div class="field"><label>Amount</label><input id="cvAmt" type="number" inputmode="decimal" value="100" oninput="calcConv()"></div>
-      <div class="two"><div class="field"><label>From</label><select id="cvFrom" onchange="calcConv()">${opts('SAR')}</select></div><div class="field"><label>To</label><select id="cvTo" onchange="calcConv()">${opts('NGN')}</select></div></div>
+      <div class="two"><div class="field"><label>From</label><select id="cvFrom" onchange="calcConv()">${opts('SAR')}</select></div><div class="field"><label>To</label><select id="cvTo" onchange="calcConv()">${opts('USD')}</select></div></div>
       <button class="btn btn-ghost btn-sm" style="margin:0 auto 12px" onclick="swapConv()">⇅ Swap</button>
       <div class="result"><small id="cvLbl">Result</small><b id="cvOut">—</b></div>
       <p class="small" style="margin-top:12px" id="cvSrc"></p>`, { id:'converter' });
@@ -612,7 +612,7 @@ const PANELS = {
       <div class="two">${f('food','Food per day')}${f('transport','Transport per day')}</div>
       <div class="two">${f('visa','Visa & insurance')}${f('extra','Gifts & extras')}</div>
       <div class="result"><small>Total (SAR)</small><b id="bgSar">—</b></div>
-      <div class="grid-3" style="margin-top:10px"><div class="result"><small>NGN</small><b id="bgNgn" style="font-size:16px">—</b></div><div class="result"><small>USD</small><b id="bgUsd" style="font-size:16px">—</b></div><div class="result"><small>Pi</small><b id="bgPi" style="font-size:16px">—</b></div></div>
+      <div class="grid-3" style="margin-top:10px"><div class="result"><small>EUR</small><b id="bgNgn" style="font-size:16px">—</b></div><div class="result"><small>USD</small><b id="bgUsd" style="font-size:16px">—</b></div><div class="result"><small>Pi</small><b id="bgPi" style="font-size:16px">—</b></div></div>
       <div id="bgBreak" style="margin-top:14px"></div>`, { id:'budget' });
     ensureRates().then(calcBudget); calcBudget();
   },
@@ -791,7 +791,7 @@ function clearData(){
 }
 
 /* ================= RATES (FX + PI) ================= */
-const CUR_LABELS = [['SAR','🇸🇦 Saudi Riyal (SAR)'],['PI','π Pi (PI)'],['NGN','🇳🇬 Nigerian Naira (NGN)'],['USD','🇺🇸 US Dollar (USD)'],['EUR','🇪🇺 Euro (EUR)'],['GBP','🇬🇧 British Pound (GBP)'],['AED','🇦🇪 UAE Dirham (AED)'],['EGP','🇪🇬 Egyptian Pound (EGP)'],['PKR','🇵🇰 Pakistani Rupee (PKR)'],['INR','🇮🇳 Indian Rupee (INR)'],['XOF','🌍 CFA Franc (XOF)'],['GHS','🇬🇭 Ghana Cedi (GHS)']];
+const CUR_LABELS = [['SAR','🇸🇦 Saudi Riyal (SAR)'],['PI','π Pi (PI)'],['NGN','Naira (NGN)'],['USD','🇺🇸 US Dollar (USD)'],['EUR','🇪🇺 Euro (EUR)'],['GBP','🇬🇧 British Pound (GBP)'],['AED','🇦🇪 UAE Dirham (AED)'],['EGP','🇪🇬 Egyptian Pound (EGP)'],['PKR','🇵🇰 Pakistani Rupee (PKR)'],['INR','🇮🇳 Indian Rupee (INR)'],['XOF','🌍 CFA Franc (XOF)'],['GHS','🇬🇭 Ghana Cedi (GHS)']];
 function currencyList(){ return CUR_LABELS; }
 function sarPer(code){
   if(code === 'SAR') return 1;
@@ -856,7 +856,7 @@ function calcBudget(){
   const tot = parts.reduce(function(s, p){ return s + p[1]; }, 0);
   $('bgSar').textContent = fmt(tot, 0) + ' SAR';
   const c = function(to){ const r = convert(tot, 'SAR', to); return r == null ? '—' : fmt(r, to === 'PI' ? 2 : 0); };
-  $('bgNgn').textContent = c('NGN'); $('bgUsd').textContent = c('USD'); $('bgPi').textContent = c('PI');
+  $('bgNgn').textContent = c('EUR'); $('bgUsd').textContent = c('USD'); $('bgPi').textContent = c('PI');
   $('bgBreak').innerHTML = '<div class="card">' + parts.map(function(p){ const pct = tot ? Math.round(p[1] / tot * 100) : 0; return `<div class="rate"><span>${p[0]}</span><b>${fmt(p[1], 0)} SAR <small class="small">${pct}%</small></b></div>`; }).join('') + '</div>';
 }
 const UNITS = {
@@ -1129,14 +1129,14 @@ function renderMarkets(){
   if(p && p.usd){
     $('piUsd').textContent = '$' + fmt(p.usd, 4);
     const ch = p.change || 0; $('piChg').textContent = (ch >= 0 ? '▲ ' : '▼ ') + Math.abs(ch).toFixed(2) + '% 24h'; $('piChg').style.color = ch >= 0 ? '#86EFAC' : '#FCA5A5';
-    $('piOther').textContent = (p.sar ? fmt(p.sar, 4) + ' SAR' : '') + (p.ngn ? ' · ₦' + fmt(p.ngn, 2) : '');
+    $('piOther').textContent = (p.sar ? fmt(p.sar, 4) + ' SAR' : '');
     $('piSpark').innerHTML = sparkSVG(p.spark, '#FFFFFF');   // white line on the green card; the badge shows up/down
     $('piUpd').textContent = (p.stale ? 'Last known price' : '7-day chart · updated ' + ago(p.t)) + (p.src === 'CoinGecko' ? ' · CoinGecko' : '');
     if($('piSrc')) $('piSrc').textContent = 'PI · live price';
   } else { $('piUsd').textContent = '—'; $('piUpd').textContent = 'Pi price unavailable right now'; }
   const fx = store.get('fx', null);
   if(fx && fx.rates){
-    const r = [['🇳🇬 NGN','NGN',2],['🇺🇸 USD','USD',4],['🇪🇺 EUR','EUR',4],['🇬🇧 GBP','GBP',4],['🇦🇪 AED','AED',4],['🇪🇬 EGP','EGP',3],['🇵🇰 PKR','PKR',2],['🇮🇳 INR','INR',2],['🇬🇭 GHS','GHS',3],['🌍 XOF','XOF',2]];
+    const r = [['🇺🇸 USD','USD',4],['🇪🇺 EUR','EUR',4],['🇬🇧 GBP','GBP',4],['🇦🇪 AED','AED',4],['🇪🇬 EGP','EGP',3],['🇵🇰 PKR','PKR',2],['🇮🇳 INR','INR',2],['🇬🇭 GHS','GHS',3],['🌍 XOF','XOF',2]];
     $('rateList').innerHTML = '<div class="small" style="margin-bottom:4px">1 SAR equals</div>' + r.map(function(x){ return fx.rates[x[1]] ? `<div class="rate"><span>${x[0]}</span><b>${fmt(fx.rates[x[1]], x[2])}</b></div>` : ''; }).join('') +
       (p && p.sar ? `<div class="rate" style="border:0"><span>π PI</span><b>${fmt(1 / p.sar, 4)}</b></div>` : '') + `<div class="small" style="margin-top:6px">${esc(t('Updated'))} ${ago(fx.t)}</div>`;
   }
@@ -1423,7 +1423,7 @@ function recordPremium(paymentId, tier){
 function refreshPremiumUI(){ renderLists(); renderProfile(); if($('panel').classList.contains('open') && current && current.id === 'premium') renderPremium(); }
 function renderPremium(){
   const on = isPremium();
-  const perks = ['Umrah packing checklist','7-day Jeddah · Makkah · Madinah plan','Arrival checklist for your first 48 hours','Trip budget planner with live SAR · NGN · Pi','Premium badge ⭐ and supporter status','Supports new features and updates'];
+  const perks = ['Umrah packing checklist','7-day Jeddah · Makkah · Madinah plan','Arrival checklist for your first 48 hours','Trip budget planner with live SAR · USD · Pi','Premium badge ⭐ and supporter status','Supports new features and updates'];
   showPanel('DigitalSaudi Premium', (on ? `<div class="lock-wrap"><div class="big">⭐</div><h3>Premium is active</h3><p class="small">${premiumLabel()}</p></div>` + ['umrahPack','travelPlan','arrival','budget'].map(rowHTML).join('') : `<div class="lock-wrap"><div class="big">⭐</div><h3>Go Premium</h3><p class="small">Unlock planners and checklists for your trip.</p></div>`) +
     `<h4>What you get</h4><ul>${perks.map(function(p){ return '<li>' + p + '</li>'; }).join('')}</ul>` +
     (getPremium() && getPremium().tier === 'lifetime' ? '' : `<h4>${on ? 'Extend or upgrade' : 'Choose a plan'}</h4>` +
@@ -2415,7 +2415,7 @@ function submitBusiness(){
 function piHubPanel(){
   const p = store.get('pi', null);
   showPanel('Pi Hub', `<div class="pi-card"><div style="display:flex;align-items:center;gap:10px"><div class="sym" aria-hidden="true"><svg class="i"><use href="#i-chart"/></svg></div><div><b>Pi Network</b><br><small>Live from ${p && p.src ? esc(p.src) : 'market data'}</small></div></div>
-      <div class="price">${p && p.usd ? '$' + fmt(p.usd, 4) : '—'}</div><small>${p && p.sar ? fmt(p.sar, 4) + ' SAR' : ''}${p && p.ngn ? ' · ₦' + fmt(p.ngn, 2) : ''}${p && p.change != null ? ' · ' + (p.change >= 0 ? '▲' : '▼') + Math.abs(p.change).toFixed(2) + '% 24h' : ''}</small></div>
+      <div class="price">${p && p.usd ? '$' + fmt(p.usd, 4) : '—'}</div><small>${p && p.sar ? fmt(p.sar, 4) + ' SAR' : ''}${p && p.change != null ? ' · ' + (p.change >= 0 ? '▲' : '▼') + Math.abs(p.change).toFixed(2) + '% 24h' : ''}</small></div>
     <div class="grid-4" style="margin-top:12px">
       <button class="tile" onclick="openItem('piWallet')"><div class="ic">🧾</div><span>Requests</span></button>
       <button class="tile" onclick="openDirectory(true)"><div class="ic">π</div><span>Merchants</span></button>
@@ -2459,7 +2459,7 @@ function calcHotel(){
   const g = function(k){ return Math.max(0, parseFloat($('hc_' + k).value) || 0); };
   let t = g('n') * g('r') * g('p'); if($('hc_v').value === 'no') t *= 1.15; t *= 1 + g('o') / 100;
   const c = function(x){ const r = convert(t, 'SAR', x); return r == null ? '' : fmt(r, x === 'PI' ? 1 : 0) + ' ' + (x === 'PI' ? 'π' : x); };
-  $('hcT').textContent = fmt(t, 0) + ' SAR'; $('hcO').textContent = [c('NGN'), c('USD'), c('PI')].filter(Boolean).join(' · ');
+  $('hcT').textContent = fmt(t, 0) + ' SAR'; $('hcO').textContent = [c('USD'), c('EUR'), c('PI')].filter(Boolean).join(' · ');
 }
 
 /* =====================================================================
@@ -2475,7 +2475,7 @@ function cvBuilderPanel(){
   showPanel('CV builder', `<p class="small" style="margin-bottom:12px">Fill in your details — saved automatically on this device. Then preview and download as PDF.</p>
     ${f('name','Full name')}${f('title','Job title / target role','e.g. Agricultural Engineer')}
     <div class="two">${f('phone','Phone','+234… / +966…')}${f('email','Email')}</div>
-    <div class="two">${f('city','City, Country','Maiduguri, Nigeria')}${f('nationality','Nationality / visa status (optional)')}</div>
+    <div class="two">${f('city','City, Country','Jeddah, Saudi Arabia')}${f('nationality','Nationality / visa status (optional)')}</div>
     ${t('summary','Professional summary','3–4 lines about your strengths and goals', 3)}
     ${t('experience','Experience — one per line','Role — Organisation — 2023–2025 — key achievement', 5)}
     ${t('education','Education — one per line','B.Eng Agricultural Engineering — University — 2026', 3)}
@@ -2534,9 +2534,9 @@ function calcSalary(){
   const gross = s.basic + s.housing + s.transport + s.other, ded = Math.min(s.basic + s.housing, 45000) * s.gosi / 100, net = gross - ded;
   $('slG').textContent = fmt(gross, 0); $('slN').textContent = fmt(net, 0);
   const c = function(x){ const r = convert(net, 'SAR', x); return r == null ? '—' : fmt(r, 0); };
-  const ngn = c('NGN'), usd = c('USD');   // v6.3: no "−0" and no "₦—" rows when a rate is missing
+  const ngn = c('EUR'), usd = c('USD');   // v6.3: no "−0" and no "₦—" rows when a rate is missing
   $('slX').innerHTML = `<div class="rate"><span>${t('GOSI deduction')}</span><b>${ded > 0 ? '−' : ''}${fmt(ded, 0)} SAR</b></div><div class="rate"${ngn === '—' && usd === '—' ? ' style="border:0"' : ''}><span>${t('Net per year')}</span><b>${fmt(net * 12, 0)} SAR</b></div>` +
-    (ngn !== '—' ? `<div class="rate"><span>${t('Net / month in NGN')}</span><b>₦${ngn}</b></div>` : '') + (usd !== '—' ? `<div class="rate" style="border:0"><span>${t('Net / month in USD')}</span><b>$${usd}</b></div>` : '');
+    (ngn !== '—' ? `<div class="rate"><span>${t('Net / month in EUR')}</span><b>€${ngn}</b></div>` : '') + (usd !== '—' ? `<div class="rate" style="border:0"><span>${t('Net / month in USD')}</span><b>$${usd}</b></div>` : '');
 }
 function gratuityPanel(){
   const g = store.get('gratuity', { start:'2020-01-01', end:ksaDate(), wage:8000, reason:'end' });
@@ -2701,11 +2701,11 @@ function toggleSaveEvent(id){
 const AI_MODES = [
   ['general','🇸🇦','Saudi AI',['What should I know before my first trip to Saudi Arabia?','How do I renew my Iqama?','What is Vision 2030?']],
   ['travel','🧳','Travel planner',['I have 5 days in Riyadh and SAR 2,000. Plan my trip.','Plan 3 days in AlUla for a family','Best way to travel from Jeddah to Madinah?']],
-  ['pilgrim','🕌','Pilgrimage',['I’m travelling from Nigeria to Saudi Arabia for Umrah. Create my checklist.','Explain the steps of Umrah simply','What should women know for Umrah?']],
+  ['pilgrim','🕌','Pilgrimage',['I’m travelling to Saudi Arabia for Umrah. Create my checklist.','Explain the steps of Umrah simply','What should women know for Umrah?']],
   ['city','🏙️','City guide',['What are the best things to do in Jeddah?','Which areas of Riyadh are good for families?','What is special about Abha?']],
   ['food','🍽️','Food finder',['What traditional Saudi dishes should I try?','Where can I find good mandi in Riyadh?','Healthy food options near the Haram?']],
   ['career','💼','Career',['Review my CV summary and improve it','Run a mock interview for an engineering job','How do I find graduate jobs in Saudi Arabia?']],
-  ['finance','💰','Finance',['How much should I budget for a 10-day Umrah from Lagos?','Explain end-of-service gratuity','How do I send money home cheaply?']],
+  ['finance','💰','Finance',['How much should I budget for a 10-day Umrah?','Explain end-of-service gratuity','How do I send money home cheaply?']],
   ['knowledge','📚','Saudi knowledge',['Tell me the history of Diriyah','What is the Saudi Green Initiative?','Explain Saudi coffee culture']],
   ['translate','🔤','Translator',['Translate to Arabic: Where is the nearest pharmacy?','How do I say “thank you very much” in Saudi dialect?','Translate to English: الحساب لو سمحت']],
   ['safety','🛡️','Safety',['I lost my passport in Makkah — what do I do?','How do I avoid heat stroke during Hajj?','Is this job offer a scam? It asks me to pay for a visa.']]
@@ -2840,7 +2840,7 @@ Object.assign(META, {
   merchantQR:{ t:'Merchant QR', ic:'▦', s:'Show your Pi username as QR', short:'Pi QR' },
   career:{ t:'Career hub', ic:'💼', s:'CV builder, interviews, salary, gratuity', short:'Career' },
   cvBuilder:{ t:'CV builder', ic:'📄', s:'Create & download a PDF CV', short:'CV' },
-  salary:{ t:'Salary calculator', ic:'💵', s:'Net pay, GOSI, in NGN/USD', short:'Salary' },
+  salary:{ t:'Salary calculator', ic:'💵', s:'Net pay, GOSI, in USD/EUR', short:'Salary' },
   gratuity:{ t:'End-of-service gratuity', ic:'🏁', s:'Saudi Labor Law estimate', short:'Gratuity' },
   skills:{ t:'Skills assessment', ic:'🎯', s:'Find strengths & gaps', short:'Skills' },
   safety:{ t:'Safety center', ic:'🛡️', s:'Guides, checklists & emergency help', short:'Safety' },
@@ -3120,7 +3120,7 @@ function walletTab(t){
     $('wBody').innerHTML = list.length ? '<div class="card hist">' + list.map(function(h){ return `<button class="h" onclick="openReceipt('${esc(h.id)}')"><div><b>${esc(h.memo)}</b><div class="small">${new Date(h.at).toLocaleDateString('en-GB', { day:'numeric', month:'short', year:'numeric' })}</div></div><div style="text-align:right"><b>${h.amount} π</b><div><span class="status ${h.status === 'completed' ? 's-ok' : h.status === 'pending' ? 's-pend' : 's-bad'}">${h.status}</span></div></div></button>`; }).join('') + '</div>' : '<div class="empty"><div class="big">🧾</div>No payments in DigitalSaudi yet.</div>';
   }
 }
-function wrConv(){ const a = parseFloat($('wrAmt').value) || 0, n = convert(a, 'PI', 'NGN'), s = convert(a, 'PI', 'SAR'); $('wrConvOut').textContent = a && s ? '≈ ' + fmt(s, 2) + ' SAR' + (n ? ' · ₦' + fmt(n, 0) : '') : ''; }
+function wrConv(){ const a = parseFloat($('wrAmt').value) || 0, n = convert(a, 'PI', 'USD'), s = convert(a, 'PI', 'SAR'); $('wrConvOut').textContent = a && s ? '≈ ' + fmt(s, 2) + ' SAR' + (n ? ' · $' + fmt(n, 2) : '') : ''; }
 function makeRequest(){
   const to = $('wrTo').value.trim().replace(/^@/, ''), amt = parseFloat($('wrAmt').value), memo = $('wrMemo').value.trim();
   if(!to) return toast('Enter your Pi username or wallet address');
@@ -4379,8 +4379,8 @@ function celebrate(title, sub, tone){
 /* ==========================================================================
    v4.2 — Money: Wise-style converter, Wallet-style Pi card
    ========================================================================== */
-const CUR_FLAG = { SAR:'🇸🇦', USD:'🇺🇸', EUR:'🇪🇺', GBP:'🇬🇧', NGN:'🇳🇬', AED:'🇦🇪', EGP:'🇪🇬', PKR:'🇵🇰', INR:'🇮🇳', IDR:'🇮🇩', BDT:'🇧🇩', PHP:'🇵🇭', GHS:'🇬🇭', XOF:'🌍', MYR:'🇲🇾', TRY:'🇹🇷', JOD:'🇯🇴', KWD:'🇰🇼', QAR:'🇶🇦', BHD:'🇧🇭', OMR:'🇴🇲', CNY:'🇨🇳', LKR:'🇱🇰', NPR:'🇳🇵', ETB:'🇪🇹', KES:'🇰🇪', SDN:'🇸🇩', MAD:'🇲🇦', DZD:'🇩🇿', TND:'🇹🇳', SDG:'🇸🇩', PI:'π' };
-const cvState = Object.assign({ from:'SAR', to:'NGN', amt:100 }, store.get('cv', {}));
+const CUR_FLAG = { SAR:'🇸🇦', USD:'🇺🇸', EUR:'🇪🇺', GBP:'🇬🇧', AED:'🇦🇪', EGP:'🇪🇬', PKR:'🇵🇰', INR:'🇮🇳', IDR:'🇮🇩', BDT:'🇧🇩', PHP:'🇵🇭', GHS:'🇬🇭', XOF:'🌍', MYR:'🇲🇾', TRY:'🇹🇷', JOD:'🇯🇴', KWD:'🇰🇼', QAR:'🇶🇦', BHD:'🇧🇭', OMR:'🇴🇲', CNY:'🇨🇳', LKR:'🇱🇰', NPR:'🇳🇵', ETB:'🇪🇹', KES:'🇰🇪', SDN:'🇸🇩', MAD:'🇲🇦', DZD:'🇩🇿', TND:'🇹🇳', SDG:'🇸🇩', PI:'π' };
+const cvState = Object.assign({ from:'SAR', to:'USD', amt:100 }, store.get('cv', {}));
 function curOpts(sel){ return currencyList().map(function(c){ return `<option value="${c[0]}" ${c[0] === sel ? 'selected' : ''}>${c[0] === 'PI' ? 'π Pi' : c[0]}</option>`; }).join(''); }
 function curName(code){ const c = currencyList().find(function(x){ return x[0] === code; }); return c ? c[1].replace(/^\S+\s/, '') : code; }
 function digits(v){ return v == null ? 2 : v < 1 ? 6 : v < 100 ? 4 : 2; }
@@ -4538,7 +4538,7 @@ const SR_CUR_WORDS = { riyal:'SAR', riyals:'SAR', sar:'SAR', sr:'SAR', dollar:'U
 function srCode(w){ w = (w || '').toLowerCase(); if(SR_CUR_WORDS[w]) return SR_CUR_WORDS[w]; const u = w.toUpperCase(); return currencyList().some(function(c){ return c[0] === u; }) ? u : null; }
 function srAnswers(q){
   const out = [];
-  // 1) currency: "100 sar to ngn", "50 usd", "10 pi in naira"
+  // 1) currency: "100 sar to usd", "50 usd", "10 pi in euro"
   const m = q.match(/^([\d.,]+)\s*([a-zπ]+)(?:\s+(?:to|in|=|into)\s+([a-zπ]+))?$/i) || q.match(/^([a-zπ]+)\s*([\d.,]+)(?:\s+(?:to|in)\s+([a-zπ]+))?$/i);
   if(m){
     const num = /^\d/.test(m[1]) ? m[1] : m[2], c1 = srCode(/^\d/.test(m[1]) ? m[2] : m[1]), amt = parseFloat(num.replace(/,/g, ''));
@@ -4575,7 +4575,7 @@ runSearch = function(raw){
     const quick = [['exchange', 'Convert', "srGo('item','converter')"], ['mosque', 'Prayer', "closePanel();switchTab('tools')"], ['pin', 'Near me', "srGo('map','all')"], ['spark', 'Ask AI', "srGo('ai',0,'')"], ['pi', 'Pi price', "srGo('live','markets')"]];
     box.innerHTML = `<div class="sr-quick">${quick.map(function(x){ return `<button onclick="${x[2]}"><span>${ico(x[0])}</span>${x[1]}</button>`; }).join('')}</div>` +
       (rec.length ? `<div class="sr-h"><span>Recent searches</span><button onclick="store.set('sq_recent',[]);runSearch('')">Clear</button></div><div class="chips sr-recent">${rec.map(function(r){ return `<button class="chip" onclick="$('sq').value=this.textContent;runSearch(this.textContent)">${esc(r)}</button>`; }).join('')}</div>` : '') +
-      `<div class="sr-h"><span>Try</span></div><div class="chips">${['100 SAR to NGN', 'pharmacy near me', 'Umrah steps', 'work visa', 'thank you in Arabic', 'Maghrib'].map(function(r){ return `<button class="chip" onclick="$('sq').value=this.textContent;runSearch(this.textContent)">${r}</button>`; }).join('')}</div>` +
+      `<div class="sr-h"><span>Try</span></div><div class="chips">${['100 SAR to USD', 'pharmacy near me', 'Umrah steps', 'work visa', 'thank you in Arabic', 'Maghrib'].map(function(r){ return `<button class="chip" onclick="$('sq').value=this.textContent;runSearch(this.textContent)">${r}</button>`; }).join('')}</div>` +
       `<div class="sr-h"><span>Popular</span></div>` + ['umrah','visas','nearMe','scores','piHub','whatToDo'].map(rowHTML).join('');
     return;
   }
@@ -6321,7 +6321,7 @@ const DS_SURAHS = 'Al-Faatiha|The Opening|7|M|الفاتحة;Al-Baqara|The Cow|2
     ['Visit Saudi — official tourism site','روح السعودية — الموقع السياحي الرسمي','وزٹ سعودی — سرکاری سیاحتی سائٹ','Visit Saudi — situs pariwisata resmi','Visit Saudi — shafin yawon buɗe ido na hukuma','Visit Saudi — site touristique officiel'],
     ['GOSI deduction','استقطاع التأمينات (GOSI)','GOSI کٹوتی','Potongan GOSI','Ragin GOSI','Retenue GOSI'],
     ['Net per year','الصافي سنوياً','سالانہ خالص','Bersih per tahun','Net a shekara','Net par an'],
-    ['Net / month in NGN','الصافي شهرياً بالنيرة','ماہانہ خالص (NGN)','Bersih / bulan dalam NGN','Net / wata a NGN','Net / mois en NGN'],
+    ['Net / month in EUR','الصافي شهرياً باليورو','ماہانہ خالص (EUR)','Bersih / bulan dalam EUR','Net / wata a EUR','Net / mois en EUR'],
     ['Net / month in USD','الصافي شهرياً بالدولار','ماہانہ خالص (USD)','Bersih / bulan dalam USD','Net / wata a USD','Net / mois en USD'],
     ['Full award','المكافأة الكاملة','مکمل انعام','Pesangon penuh','Cikakken lada','Indemnité complète'],
     ['100%','100%','100%','100%','100%','100 %'], ['None','لا شيء','کچھ نہیں','Tidak ada','Babu','Aucune'],
@@ -6658,7 +6658,7 @@ const DS_SURAHS = 'Al-Faatiha|The Opening|7|M|الفاتحة;Al-Baqara|The Cow|2
   ['KSA vs your time','توقيت السعودية مقابل توقيتك','سعودی وقت بمقابلہ آپ کا وقت','Waktu Saudi vs waktu Anda','Lokacin Saudiyya da naka','Heure saoudienne et la vôtre'],
   ['Share costs + VAT','تقسيم التكاليف + الضريبة','اخراجات تقسیم + VAT','Bagi biaya + PPN','Raba kuɗi + VAT','Partager les frais + TVA'],
   ['Add / remove 15%','إضافة / إزالة 15%','15% شامل / منہا کریں','Tambah / hapus 15%','Ƙara / cire 15%','Ajouter / retirer 15 %'],
-  ['Live SAR · NGN · USD · Pi','مباشر: ريال · نيرة · دولار · Pi','لائیو SAR · NGN · USD · Pi','Langsung SAR · NGN · USD · Pi','Kai tsaye SAR · NGN · USD · Pi','En direct SAR · NGN · USD · Pi'],
+  ['Live SAR · USD · EUR · Pi','مباشر: ريال · دولار · يورو · Pi','لائیو SAR · USD · EUR · Pi','Langsung SAR · USD · EUR · Pi','Kai tsaye SAR · USD · EUR · Pi','En direct SAR · USD · EUR · Pi'],
   ['Weather · Makkah','الطقس · مكة','موسم · مکہ','Cuaca · Makkah','Yanayi · Makka','Météo · La Mecque']
   ];
   // the page translator looks words up without their icons and arrows ("🕌 Religious" → "Religious"), so store both forms
@@ -7701,13 +7701,13 @@ function dsInviteLoad(){
    v7.1 — automatic price alerts
    • Pi price above / below a target (USD or SAR)
    • Pi big move in 24 h (3%, 5% or 10%)
-   • Currency targets: 1 SAR in NGN, PKR, INR, EGP, USD… above / below a value
+   • Currency targets: 1 SAR in USD, EUR, PKR, INR, EGP… above / below a value
    • Daily price summary (once a day, after 8 am Saudi time)
    Checked automatically every 2 minutes while DigitalSaudi is open and every
    time it is opened again. Alerts go to the 🔔 inbox, as a pop-up and — when
    the phone allows it — as a phone notification. Information only, not advice.
    ========================================================================== */
-const PA_CURS = ['NGN', 'USD', 'EUR', 'GBP', 'AED', 'EGP', 'PKR', 'INR', 'IDR', 'BDT', 'PHP', 'GHS', 'XOF'];
+const PA_CURS = ['USD', 'EUR', 'GBP', 'AED', 'EGP', 'PKR', 'INR', 'IDR', 'BDT', 'PHP', 'GHS', 'XOF'];
 function paCfg(){ return Object.assign({ move:5, daily:true, list:[] }, store.get('priceAlerts', {})); }
 function paSave(c){ store.set('priceAlerts', c); }
 function paPi(){ return store.get('pi', null); }
@@ -7750,7 +7750,7 @@ function paCheck(){
   // daily summary (after 8 am Saudi time)
   const hr = +new Intl.DateTimeFormat('en-GB', { timeZone:'Asia/Riyadh', hour:'2-digit', hour12:false }).format(new Date());
   if(c.daily && hr >= 8 && p && p.usd){
-    const home = store.get('homeCur', 'NGN'), r = fx && fx.rates && fx.rates[home];
+    const home = store.get('homeCur', 'USD'), r = fx && fx.rates && fx.rates[home];
     const ch = p.change != null ? ' (' + (p.change >= 0 ? '+' : '') + (+p.change).toFixed(1) + '%)' : '';
     notify('pi', 'padaily_' + today, '☀️', t('Today’s prices'), 'Pi $' + fmt(p.usd, 4) + ch + (r ? ' · 1 SAR = ' + fmt(r, r < 10 ? 4 : 2) + ' ' + home : ''), 'live:markets');
   }
@@ -7767,7 +7767,7 @@ setTimeout(paTick, 6000);
 /* ---------- the Price alerts screen ---------- */
 META.priceAlerts = { t:'Price alerts', ic:'🔔', s:'Pi and currency rates, automatically' };
 PANELS.priceAlerts = function(){
-  const c = paCfg(), p = paPi(), fx = paFx(), home = store.get('homeCur', 'NGN');
+  const c = paCfg(), p = paPi(), fx = paFx(), home = store.get('homeCur', 'USD');
   const perm = 'Notification' in window ? Notification.permission : 'unsupported';
   const piNow = p && p.usd ? '$' + fmt(p.usd, 4) + ' · ≈ ' + fmt(p.sar || p.usd * 3.75, 4) + ' SAR' : t('Price unavailable right now');
   const list = c.list.length ? c.list.map(function(a){ const now = paNow(a);

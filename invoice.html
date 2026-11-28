@@ -77,7 +77,7 @@ h2{font-size:15px;margin:22px 4px 10px}
   var TEST = inv.k === 'test', NETN = TEST ? 'Pi Testnet' : 'Pi Mainnet';
   if (TEST) { $('net').textContent = 'Pi Testnet · test Pi'; $('net').classList.add('test'); }
   var sales = get('sales', []), mine = sales.some(function (s) { return s.r === inv.r; });
-  var price = null, fx = null, lc = (function () { try { return JSON.parse(localStorage.getItem('ds_homeCur') || '"NGN"'); } catch (e) { return 'NGN'; } })();
+  var price = null, fx = null, lc = (function () { try { return JSON.parse(localStorage.getItem('ds_homeCur') || '"USD"'); } catch (e) { return 'USD'; } })();
   var SYM = { NGN: '₦', PKR: 'Rs ', INR: '₹', IDR: 'Rp ', BDT: '৳', EGP: 'E£', TRY: '₺', MYR: 'RM ', GBP: '£', EUR: '€', AED: 'AED ', XOF: 'CFA ', GHS: 'GH₵', KES: 'KSh ', USD: '$', SAR: 'SAR ' };
   function fxLine() {
     if (!price || !price.sar) return 'Live value loading…';
